@@ -1,0 +1,27 @@
+{
+  "name": "douluo-frontend",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "smoke:browser": "npm run build && node browser-smoke.mjs",
+    "smoke:sea-exploration": "npm run build && node browser-sea-exploration.mjs",
+    "smoke:location-modes": "npm run build && node browser-location-modes.mjs",
+    "smoke:oral-012": "npm run build && node browser-oral-012.mjs"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.8",
+    "playwright-core": "^1.62.1",
+    "vite": "^8.2.0",
+    "vitest": "^3.2.4"
+  },
+  "dependencies": {
+    "pinia": "^4.0.2",
+    "vue": "^3.5.40",
+    "vue-router": "^4.6.4"
+  }
+}

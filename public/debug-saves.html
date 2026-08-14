@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>存档恢复工具</title>
+<style>
+body{background:#1a1510;color:#e8dcc8;font-family:'Microsoft YaHei',sans-serif;padding:20px;max-width:900px;margin:0 auto}
+h1{color:#c9a84c;font-size:24px;border-bottom:1px solid #3a2f1a;padding-bottom:10px}
+.section{background:#262012;border:1px solid #3a2f1a;border-radius:8px;padding:16px;margin:16px 0}
+h2{color:#c9a84c;font-size:18px;margin-top:0}
+button{background:#4a3a20;color:#e8dcc8;border:1px solid #c9a84c;padding:8px 16px;border-radius:4px;cursor:pointer;margin:5px;font-size:14px}
+button:hover{background:#5a4a30}
+.save-info{background:#14100a;border:1px solid #3a2f1a;border-radius:4px;padding:12px;margin:8px 0;font-size:13px;line-height:1.8}
+.high-lv{border-color:#c9a84c;background:#1f1a0a}
+pre{background:#0d0a06;border:1px solid #3a2f1a;border-radius:4px;padding:12px;overflow:auto;max-height:300px;font-size:11px;color:#a89a7c}
+.success{color:#66bb6a}
+.error{color:#ff6b6b}
+.warn{color:#facc15}
+</style>
+</head>
+<body>
+<h1>斗罗大陆·存档恢复工具</h1>
+
+<div class="section">
+<h2>本地存储 (localStorage) 内容</h2>
+<button onclick="checkStorage()">刷新扫描</button>
+<button onclick="checkBackup()">检查备份存档</button>
+<div id="storage-result"></div>
+</div>
+
+<div class="section">
+<h2>服务器端存档列表</h2>
+<button onclick="loadServerSaves()">加载服务器存档</button>
+<div id="server-result"></div>
+</div>
+
+<div class="section">
+<h2>操作</h2>
+<button onclick="restorePrompt()">输入存档JSON恢复</button>
+<div id="restore-result"></div>
+</div>
+
+<script>
+const LS_KEY = 'dldl_text_rpg_save';
+
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+
+function checkStorage(){
+  const result = document.getElementById('storage-result');
+  let html = '';
+  
+  // 列出所有localStorage键
+  const keys = [];
+  for(let i=0;i<localStorage.length;i++){
+    keys.push(localStorage.key(i));
+  }
+  html += `<div class="save-info">找到 ${keys.length} 个 localStorage 条目：<br>${keys.map(k=>'• '+esc(k)).join('<br>')}</div>`;
+  
+  // 读取主存档
+  const mainRaw = localStorage.getItem(LS_KEY);
+  const backupRaw = localStorage.getItem(LS_KEY + '_backup');
+  
+  if(mainRaw){
+    try{
+      const main = JSON.parse(mainRaw);
+      const isHigh = main.level >= 50;
+      html += `<div class="save-info ${isHigh?'high-lv':''}">
+        <b>主存档：</b><br>
+        名字：${esc(main.name)}<br>
+        等级：<b style="color:${isHigh?'#ffd700':'#e8dcc8'}">Lv.${main.level}</b><br>
+        武魂：${esc(main.spirit?main.spirit.name:'无')}<br>
+        魂环：${(main.rings||[]).length}个<br>
+        存档版本：v${main._saveVersion||1}<br>
+        保存时间：${main._saveTime?new Date(main._saveTime).toLocaleString('zh-CN'):'未知'}<br>
+        ${isHigh?'<span class="success">✓ 这可能是你要找的高级存档！</span>':'<span class="warn">等级较低</span>'}
+      </div>`;
+    }catch(e){
+      html += `<div class="save-info error">主存档解析失败: ${esc(e.message)}</div>`;
+    }
+  }else{
+    html += `<div class="save-info warn">未找到主存档</div>`;
+  }
+  
+  if(backupRaw){
+    try{
+      const backup = JSON.parse(backupRaw);
+      const isHigh = backup.level >= 50;
+      html += `<div class="save-info ${isHigh?'high-lv':''}">
+        <b>备份存档：</b><br>
+        名字：${esc(backup.name)}<br>
+        等级：<b style="color:${isHigh?'#ffd700':'#e8dcc8'}">Lv.${backup.level}</b><br>
+        武魂：${esc(backup.spirit?backup.spirit.name:'无')}<br>
+        魂环：${(backup.rings||[]).length}个<br>
+        保存时间：${backup._saveTime?new Date(backup._saveTime).toLocaleString('zh-CN'):'未知'}<br>
+        ${isHigh?'<span class="success">✓ 这可能是你要找的高级存档！</span>':'<span class="warn">等级较低</span>'}
+        <br><button onclick="useBackup()">使用此备份恢复为主存档</button>
+      </div>`;
+    }catch(e){
+      html += `<div class="save-info error">备份存档解析失败: ${esc(e.message)}</div>`;
+    }
+  }else{
+    html += `<div class="save-info warn">未找到备份存档</div>`;
+  }
+  
+  // 查找其他可能的存档键
+  const otherKeys = keys.filter(k => k !== LS_KEY && k !== LS_KEY+'_backup' && (k.includes('dldl')||k.includes('save')||k.includes('斗罗')));
+  if(otherKeys.length){
+    html += `<div class="save-info">其他可能相关的键：${otherKeys.map(k=>{
+      try{
+        const d = JSON.parse(localStorage.getItem(k));
+        return `<br>• ${esc(k)}: ${esc(d.name||'?')} Lv.${d.level||'?'} (${esc(d.spirit?d.spirit.name:'?')})`;
+      }catch{return `<br>• ${esc(k)} (无法解析)`;}
+    }).join('')}</div>`;
+  }
+  
+  result.innerHTML = html;
+}
+
+function useBackup(){
+  const backupRaw = localStorage.getItem(LS_KEY + '_backup');
+  if(!backupRaw){alert('没有备份存档');return;}
+  localStorage.setItem(LS_KEY, backupRaw);
+  alert('备份已恢复为主存档！刷新游戏页面即可。');
+  checkStorage();
+}
+
+function checkBackup(){
+  checkStorage();
+}
+
+async function loadServerSaves(){
+  const result = document.getElementById('server-result');
+  try{
+    const resp = await fetch('/api/player/list');
+    const data = await resp.json();
+    if(!data.success){result.innerHTML='<div class="error">加载失败</div>';return;}
+    let html = `<div class="save-info">共 ${data.list.length} 个服务器存档：</div>`;
+    data.list.forEach(s => {
+      const isHigh = s.level >= 50;
+      html += `<div class="save-info ${isHigh?'high-lv':''}">
+        ID: ${esc(s.playerId)}<br>
+        名字：${esc(s.name)}<br>
+        等级：<b style="color:${isHigh?'#ffd700':'#e8dcc8'}">Lv.${s.level}</b><br>
+        武魂：${esc(s.spirit? (s.spirit.name||s.spirit) : '无')}<br>
+        最后保存：${s.lastSave?new Date(s.lastSave).toLocaleString('zh-CN'):'未知'}
+        ${isHigh?'<br><span class="success">✓ 高级存档</span>':''}
+      </div>`;
+    });
+    result.innerHTML = html;
+  }catch(e){
+    result.innerHTML = `<div class="error">请求失败: ${esc(e.message)}</div>`;
+  }
+}
+
+function restorePrompt(){
+  const result = document.getElementById('restore-result');
+  const json = prompt('请粘贴存档JSON内容：');
+  if(!json)return;
+  try{
+    const data = JSON.parse(json);
+    if(!data.name || !data.level){alert('JSON格式不正确，缺少name或level字段');return;}
+    localStorage.setItem(LS_KEY, JSON.stringify(data));
+    result.innerHTML = `<div class="save-info success">存档已恢复！名字：${esc(data.name)}，等级：Lv.${data.level}。刷新游戏页面即可加载。</div>`;
+  }catch(e){
+    result.innerHTML = `<div class="error">JSON解析失败: ${esc(e.message)}</div>`;
+  }
+}
+
+// 自动扫描
+checkStorage();
+loadServerSaves();
+</script>
+</body>
+</html>

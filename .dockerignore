@@ -1,0 +1,19 @@
+node_modules
+frontend/node_modules
+frontend/src
+frontend/tests
+tests
+docs
+scripts
+tools
+data
+# Dockerfile only needs the two API JSON files; frontend/dist carries the
+# browser-facing public assets, so keep the large source image tree out of the
+# build context while re-including the API data directory below.
+public/*
+!public/data/
+!public/data/spirits.json
+!public/data/beasts.json
+.git
+.trae
+*.log

@@ -1,0 +1,237 @@
+/**
+ * 游戏规则计算 composable
+ * 包含属性计算、等级提升、阶段名称等核心公式
+ * 从 game.js 的 calcBaseStats / previewStats / finalStats / getMaxSpiritPower 迁移
+ */
+import { usePlayerStore } from '@/stores/player'
+import { useEventStore } from '@/stores/event'
+import { useGameStore } from '@/stores/game'
+import { TITLES } from '@/data/game-data'
+import { experienceNeededForLevel, rankTitleForLevel } from '@/engine/rules'
+
+const TIER_NAMES = { low: '低级武魂', mid: '中级武魂', high: '高级武魂', top: '顶级武魂', god: '神级武魂' }
+const TIER_COLORS = { low: '#94a3b8', mid: '#22c55e', high: '#3b82f6', top: '#a855f7', god: '#fbbf24' }
+
+const RING_LEVELS = [10, 20, 30, 40, 50, 60, 70, 80, 90]
+
+const FORMATIONS = [
+  { id: 'none', name: '无阵法', attack: 0, defense: 0, speed: 0, spirit: 0 },
+  { id: 'attack', name: '冲锋阵', attack: 0.15, defense: -0.10, speed: 0, spirit: 0 },
+  { id: 'defense', name: '铁桶阵', attack: -0.05, defense: 0.20, speed: 0, spirit: 0 },
+  { id: 'speed', name: '疾风阵', attack: 0, defense: 0, speed: 0.25, spirit: 0 },
+  { id: 'spirit', name: '聚灵阵', attack: 0, defense: 0, speed: 0, spirit: 0.30 }
+]
+
+const NPC_RELATION_REWARDS = {
+  20: { bonus: {} },
+  50: { bonus: { expMul: 1.05 } },
+  100: { bonus: { attack: 3, defense: 2 } },
+  200: { bonus: { attack: 8, defense: 5, hp: 50 } },
+  350: { bonus: { attack: 15, defense: 10, hp: 100, speed: 5, fateMul: 1.1 } },
+  500: { bonus: {} }
+}
+
+function runtimeFlag(key, fallback) {
+  const event = useEventStore()
+  return event._dynamicFlags && event._dynamicFlags[key] !== undefined
+    ? event._dynamicFlags[key]
+    : fallback
+}
+
+function activeFormation() {
+  const id = runtimeFlag('_activeFormation', 'none')
+  return FORMATIONS.find(formation => formation.id === id) || FORMATIONS[0]
+}
+
+function activeTitle() {
+  const id = runtimeFlag('_activeTitle', 'novice')
+  return TITLES.find(title => title.id === id) || TITLES.find(title => title.id === 'novice') || null
+}
+
+function titleBonus() {
+  return activeTitle()?.bonus || {}
+}
+
+function npcRelationBonuses() {
+  const game = useGameStore()
+  const result = { attack: 0, defense: 0, hp: 0, speed: 0, expMul: 1, fateMul: 1 }
+  for (const affinity of Object.values(game._npcRelations || {})) {
+    for (const [threshold, definition] of Object.entries(NPC_RELATION_REWARDS)) {
+      if (Number(affinity) < Number(threshold)) continue
+      const bonus = definition.bonus || {}
+      result.attack += Number(bonus.attack) || 0
+      result.defense += Number(bonus.defense) || 0
+      result.hp += Number(bonus.hp) || 0
+      result.speed += Number(bonus.speed) || 0
+      if (bonus.expMul) result.expMul *= Number(bonus.expMul)
+      if (bonus.fateMul) result.fateMul *= Number(bonus.fateMul)
+    }
+  }
+  return result
+}
+
+function phaseForLevel(level) {
+  level = Number(level) || 1
+  if (level <= 6) return 'academy'
+  if (level <= 18) return 'adventure'
+  if (level <= 40) return 'master'
+  return 'god'
+}
+
+function phaseName(level) {
+  const phase = phaseForLevel(level)
+  return { academy: '学院篇', adventure: '冒险篇', master: '宗师篇', god: '封神篇' }[phase] || '学院篇'
+}
+
+function levelCapForRings(ringCount) {
+  if (ringCount >= 9) return Infinity
+  return RING_LEVELS[ringCount] || 10
+}
+
+function expNeeded(level) {
+  return experienceNeededForLevel(level)
+}
+
+/**
+ * 基础属性计算（与 game.js calcBaseStats 完全一致）
+ */
+function calcBaseStats(spiritBase, originBonus, level, weapon) {
+  const lv = Math.max(1, Math.floor(Number(level) || 1))
+  const factor = 1 + lv * 0.05
+  const weaponAtk = weapon ? Number(weapon.attack) || 0 : 0
+  const bonus = originBonus || { attack: 0, defense: 0, hp: 0, speed: 0 }
+  const sb = spiritBase || { attack: 0, defense: 0, hp: 0, speed: 0 }
+  return {
+    attack: Math.round((Number(sb.attack) || 0) * factor + (bonus.attack || 0) + weaponAtk),
+    defense: Math.round((Number(sb.defense) || 0) * factor + (bonus.defense || 0)),
+    hp: Math.round((Number(sb.hp) || 0) * factor + (bonus.hp || 0) + 60),
+    speed: Math.round((Number(sb.speed) || 0) * factor + (bonus.speed || 0))
+  }
+}
+
+/**
+ * 预览属性（觉醒界面用，与 finalStats 基础部分一致）
+ */
+function previewStats(spirit, origin, level) {
+  const lv = Math.max(1, Math.floor(Number(level) || 1))
+  return calcBaseStats(
+    { attack: spirit.attack || 0, defense: spirit.defense || 0, hp: spirit.hp || 0, speed: spirit.speed || 0 },
+    origin.stats || { attack: 0, defense: 0, hp: 0, speed: 0 },
+    lv,
+    origin.weapon || null
+  )
+}
+
+/**
+ * 最终属性计算（含魂环、魂骨、技能树、称号加成）
+ * 从 game.js finalStats 迁移，简化版（暂不含阵法/NPC好感度，后续阶段补全）
+ */
+function finalStats() {
+  const player = usePlayerStore()
+  const lv = player.level
+
+  let ringAtk = 0, ringDef = 0, ringHp = 0
+  ;(player.rings || []).forEach(r => {
+    const bonus = r.bonus || {}
+    ringAtk += Number(bonus.attack) || 0
+    ringDef += Number(bonus.defense) || 0
+    ringHp += Number(bonus.hp) || 0
+  })
+
+  const crafted = player._craftedBones || []
+  const craftedAtk = crafted.reduce((sum, bone) => sum + (Number(bone.attack) || 0), 0)
+  const craftedDef = crafted.reduce((sum, bone) => sum + (Number(bone.defense) || 0), 0)
+  const craftedHp = crafted.reduce((sum, bone) => sum + (Number(bone.hp) || 0), 0)
+  const craftedSpd = crafted.reduce((sum, bone) => sum + (Number(bone.speed) || 0), 0)
+
+  const base = calcBaseStats(player.spiritBase, player.originBonus, lv, player.weapon)
+
+  const skillBonus = player._skillBonuses || {}
+  const equippedTitleBonus = titleBonus()
+  const formation = activeFormation()
+  const npcBonus = npcRelationBonuses()
+
+  let attack = base.attack + (player.bonus?.attack || 0) + ringAtk + craftedAtk + (Number(equippedTitleBonus.attack) || 0)
+  let defense = base.defense + (player.bonus?.defense || 0) + ringDef + craftedDef + (Number(equippedTitleBonus.defense) || 0)
+  let maxHp = base.hp + (player.bonus?.hp || 0) + ringHp + craftedHp + (Number(equippedTitleBonus.hp) || 0)
+  let speed = base.speed + (player.bonus?.speed || 0) + craftedSpd + (Number(equippedTitleBonus.speed) || 0)
+
+  attack = Math.round(attack * (1 + (Number(skillBonus.attackMult) || 0) + formation.attack))
+  defense = Math.round(defense * (1 + (Number(skillBonus.defenseMult) || 0) + formation.defense))
+  maxHp = Math.round(maxHp * (1 + (Number(skillBonus.hpMult) || 0)))
+  speed = Math.round(speed * (1 + (Number(skillBonus.speedMult) || 0) + formation.speed))
+
+  attack += npcBonus.attack
+  defense += npcBonus.defense
+  maxHp += npcBonus.hp
+  speed += npcBonus.speed
+
+  return {
+    attack: Math.max(1, attack),
+    defense: Math.max(0, defense),
+    maxHp: Math.max(1, maxHp),
+    speed: Math.max(1, speed),
+    npcBonus,
+    titleBonus: equippedTitleBonus,
+    formation
+  }
+}
+
+/**
+ * 最大魂力计算
+ */
+function getMaxSpiritPower() {
+  const player = usePlayerStore()
+  const skillMultiplier = Number(player._skillBonuses?.mpMult) || 0
+  const formationMultiplier = Number(activeFormation().spirit) || 0
+  const titlePower = Math.max(0, Number(titleBonus().spiritPowerGain) || 0)
+  return Math.max(1, Math.round((Number(player.spiritPowerMax) || 1) * (1 + skillMultiplier + formationMultiplier) + titlePower))
+}
+
+/**
+ * 随机选取数组元素
+ */
+function pick(arr) {
+  return arr[Math.floor(Math.random() * arr.length)]
+}
+
+/**
+ * 武魂品质抽取
+ */
+function rollSpiritTier(boost) {
+  const r = Math.random() * 100
+  let tier
+  if (r < 40) tier = 'low'
+  else if (r < 75) tier = 'mid'
+  else if (r < 93) tier = 'high'
+  else if (r < 99) tier = 'top'
+  else tier = 'god'
+  if (boost && tier !== 'god' && Math.random() < 0.10) {
+    tier = { low: 'mid', mid: 'high', high: 'top', top: 'god' }[tier]
+  }
+  return tier
+}
+
+export function useGameRules() {
+  return {
+    TIER_NAMES,
+    TIER_COLORS,
+    RING_LEVELS,
+    FORMATIONS,
+    phaseForLevel,
+    rankTitleForLevel,
+    phaseName,
+    levelCapForRings,
+    expNeeded,
+    calcBaseStats,
+    previewStats,
+    finalStats,
+    getMaxSpiritPower,
+    activeFormation,
+    activeTitle,
+    titleBonus,
+    npcRelationBonuses,
+    pick,
+    rollSpiritTier
+  }
+}

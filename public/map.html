@@ -1,0 +1,1394 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>斗罗大陆 · 万象地图</title>
+<link rel="stylesheet" href="css/tokens.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+/* 主题 token 统一引自 css/tokens.css（K3-1）。
+   以下为地图页私有覆盖：地图页整体比主界面更暗一档，保持原视觉不变。 */
+:root{
+  --bg:#1a1408;
+  --ink:#e8dcc0;
+  --ink-dim:#8a7d62;
+  --seal:#8b2500;
+  --line:#3a2f1a;
+}
+
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+
+body{
+  background:var(--bg-deep);color:var(--ink);
+  font-family:var(--font-body);
+  min-height:100vh;overflow:hidden;
+  user-select:none;-webkit-user-select:none;
+}
+
+/* === 粒子背景 === */
+#particles{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+}
+
+/* === 主容器 === */
+#app{
+  position:fixed;inset:0;z-index:1;
+  display:flex;flex-direction:column;
+}
+
+/* === 顶部导航 === */
+.topbar{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:10px 20px;z-index:10;
+  background:linear-gradient(180deg,rgba(10,8,4,.95) 0%,rgba(10,8,4,.7) 80%,transparent);
+}
+.nav-link{
+  color:var(--ink-dim);text-decoration:none;
+  font-family:'Ma Shan Zheng',serif;font-size:16px;letter-spacing:2px;
+  padding:6px 16px;border:1px solid var(--line);border-radius:3px;
+  transition:all .25s;background:rgba(36,28,14,.5);
+}
+.nav-link:hover{color:var(--gold);border-color:var(--gold);}
+.player-badge{
+  font-family:'Ma Shan Zheng',serif;font-size:12.5px;letter-spacing:1px;
+  color:#b9e7c0;border:1px solid rgba(127,196,140,.7);border-radius:3px;
+  background:rgba(18,40,34,.7);padding:4px 10px;white-space:nowrap;
+}
+.map-title{
+  font-family:'Ma Shan Zheng',serif;font-size:26px;color:var(--gold);
+  letter-spacing:6px;text-shadow:0 0 20px rgba(201,168,76,.3);
+}
+
+/* === 地图视口 === */
+.map-viewport{
+  flex:1;position:relative;overflow:hidden;
+  cursor:grab;margin:0 12px 12px;
+  border:2px solid var(--line);border-radius:8px;
+  box-shadow:0 0 60px rgba(0,0,0,.8),inset 0 0 40px rgba(0,0,0,.4);
+}
+.map-viewport:active{cursor:grabbing}
+.map-viewport.zooming{cursor:zoom-in}
+
+/* 地图图层 */
+.map-layer{
+  position:absolute;transform-origin:0 0;
+  transition:transform .1s ease-out;
+  will-change:transform;
+}
+.map-bg{
+  display:block;width:1600px;height:900px;
+  filter:brightness(.85) saturate(1.1);
+  image-rendering:auto;
+}
+
+/* 地图阅读层：把区域、陆路、海路和任务路线放到同一张图上，避免地点像浮在背景上的圆点。 */
+.map-routes{
+  position:absolute;inset:0;width:1600px;height:900px;z-index:1;overflow:visible;pointer-events:none;
+}
+.map-region-wash{fill:rgba(201,168,76,.045);stroke:rgba(201,168,76,.34);stroke-width:2;stroke-dasharray:8 10;}
+.map-region-wash.sea{fill:rgba(42,169,161,.045);stroke:rgba(42,169,161,.42);}
+.map-region-label{fill:rgba(226,213,179,.54);font-family:'Ma Shan Zheng',serif;font-size:17px;letter-spacing:4px;text-anchor:middle;paint-order:stroke;stroke:rgba(20,14,7,.75);stroke-width:5px;}
+.map-region-label.sea{fill:rgba(143,216,210,.72);}
+.map-route{fill:none;stroke-linecap:round;stroke-linejoin:round;opacity:.48;}
+.map-route.land{stroke:rgba(126,102,54,.92);stroke-width:3;stroke-dasharray:5 8;}
+.map-route.sea{stroke:rgba(56,178,190,.92);stroke-width:3;stroke-dasharray:2 9;}
+.map-route.objective{stroke:#e6c878;stroke-width:7;stroke-dasharray:1 15;opacity:.95;filter:drop-shadow(0 0 4px rgba(201,168,76,.8));}
+.map-route.objective-sea{stroke:#8fddd8;}
+.map-route-node{fill:#e6c878;stroke:#fff5cc;stroke-width:2;opacity:.9;}
+.map-route-node.sea{fill:#5bc8ca;stroke:#d7ffff;}
+.map-route-node.next{fill:#fff;stroke:#e6c878;stroke-width:3;}
+.map-route-caption{fill:#e6c878;font-family:var(--font-body);font-size:12px;letter-spacing:2px;text-anchor:middle;paint-order:stroke;stroke:rgba(10,8,4,.86);stroke-width:5px;}
+
+/* 地点标记 */
+.location-marker{
+  position:absolute;cursor:pointer;
+  width:60px;height:60px;
+  transform:translate(-50%,-50%);
+  z-index:2;
+}
+/* 用真实子元素代替 ::before 伪元素作为大面积点击区域，确保鼠标事件可靠捕获 */
+.location-marker .marker-hitarea{
+  position:absolute;inset:0;border-radius:50%;
+  cursor:pointer;z-index:0;
+  /* 无背景色，不遮挡视觉内容 */
+}
+.location-marker > *:not(.marker-hitarea){
+  z-index:1;
+  pointer-events:none; /* 点击穿透到 hitarea，确保鼠标事件总被 marker 捕获 */
+}
+.location-marker .marker-label{
+  pointer-events:auto;cursor:pointer; /* 文字自身也是可点击目标（P1-02） */
+}
+.location-marker .marker-icon{
+  pointer-events:none; /* 图标不拦截点击 */
+}
+.location-marker .marker-dot{
+  pointer-events:none; /* 圆点不拦截点击 */
+}
+.location-marker:hover,.location-marker:focus-visible{z-index:10;transform:translate(-50%,-50%);}
+.location-marker:focus-visible{outline:none;}
+.location-marker.fogged{opacity:.2;filter:grayscale(1) brightness(.55)}
+.location-marker.fogged .marker-focus{display:none}
+.location-marker.fogged .marker-label{color:#665f51;text-shadow:none}
+.location-marker.adjacent .marker-focus{opacity:.28;border-style:dashed}
+.location-marker.current{z-index:8}
+.location-marker.current .marker-dot{width:20px;height:20px;background:#fff!important;box-shadow:0 0 10px #fff,0 0 28px var(--gold)!important}
+.location-marker.current .marker-label{color:#fff;font-size:15px}
+.location-marker.current .marker-focus{opacity:.62;border-color:#fff!important;box-shadow:0 0 0 1px rgba(201,168,76,.4),0 0 18px rgba(201,168,76,.28),inset 0 0 18px rgba(201,168,76,.08)}
+.location-marker.level-locked{filter:saturate(.35)}
+.location-marker.recommended .marker-dot{border-color:#f4d06f;box-shadow:0 0 14px #f4d06f,0 0 30px rgba(201,168,76,.8)!important}
+.location-marker.recommended .marker-label{color:#f4d06f}
+.location-marker.next-hop .marker-dot{background:#fff!important;box-shadow:0 0 12px #fff,0 0 28px var(--gold)!important}
+.location-marker.objective{z-index:9}
+.location-marker.next-hop{z-index:12}
+.location-marker.objective .marker-dot{width:22px;height:22px;background:#e8c96e!important;border:3px solid #fff;box-shadow:0 0 12px #fff,0 0 32px #1abc9c,0 0 52px rgba(201,168,76,.9)!important}
+.location-marker.objective .marker-label{color:#fff;font-size:16px;text-shadow:0 0 12px #1abc9c,0 0 8px rgba(0,0,0,.95)}
+.objective-badge{position:absolute;left:50%;top:-18px;transform:translateX(-50%);padding:2px 7px;border:1px solid #e8c96e;border-radius:10px;background:rgba(18,40,34,.94);color:#f4d06f;font-size:10px;letter-spacing:1px;white-space:nowrap;pointer-events:none}
+
+/* BUG-DIALOG-006：单一地点影响区。
+   根命中盒永不缩放，避免 hover 边界反复进出；不再叠加常驻脉动 glow 与旋转 ring。 */
+.marker-focus{
+  position:absolute;left:50%;top:50%;
+  width:74px;height:48px;border-radius:50%;
+  transform:translate(-50%,-50%) scale(.82);
+  opacity:0;
+  border:1.5px solid var(--marker-color,var(--gold));
+  background:radial-gradient(ellipse at center,rgba(201,168,76,.12) 0%,rgba(201,168,76,.045) 48%,transparent 72%);
+  box-shadow:0 0 14px color-mix(in srgb,var(--marker-color,var(--gold)) 32%,transparent),inset 0 0 14px rgba(201,168,76,.06);
+  transition:opacity .18s ease-out,transform .18s ease-out;
+  pointer-events:none;
+}
+.location-marker:hover .marker-focus,
+.location-marker:focus-visible .marker-focus,
+.location-marker:focus-within .marker-focus{
+  opacity:.92;
+  transform:translate(-50%,-50%) scale(1);
+}
+
+/* 标记点 */
+.marker-dot{
+  position:absolute;left:50%;top:50%;
+  width:14px;height:14px;border-radius:50%;
+  transform:translate(-50%,-50%);
+  background:var(--gold);
+  box-shadow:0 0 12px var(--gold),0 0 24px var(--gold);
+  border:2px solid #fff;
+  transition:all .3s;
+}
+.location-marker:hover .marker-dot{
+  box-shadow:0 0 16px var(--marker-color,var(--gold)),0 0 26px var(--marker-color,var(--gold));
+}
+
+/* 标签 */
+.marker-label{
+  position:absolute;left:50%;top:22px;
+  transform:translateX(-50%);
+  font-family:'Ma Shan Zheng',serif;
+  font-size:13px;color:var(--ink);
+  white-space:nowrap;
+  text-shadow:0 0 8px rgba(0,0,0,.9),0 0 4px rgba(0,0,0,.9);
+  transition:all .3s;
+  letter-spacing:2px;
+}
+.location-marker:hover .marker-label{
+  color:#fff;
+  text-shadow:0 0 12px rgba(201,168,76,.8),0 0 6px rgba(0,0,0,.9);
+}
+
+/* 地点标记采用“印章 + 地名签”层级，状态通过根节点伪元素表达，不增加键盘命中目标。 */
+.location-marker{width:74px;height:70px;}
+.location-marker .marker-dot{width:18px;height:18px;border-radius:42% 58% 55% 45%;transform:translate(-50%,-50%) rotate(45deg);background:var(--marker-color,var(--gold));border:2px solid rgba(255,249,218,.92);box-shadow:0 0 8px var(--marker-color,var(--gold)),0 0 20px color-mix(in srgb,var(--marker-color,var(--gold)) 55%,transparent);}
+.location-marker .marker-icon{font-size:19px;line-height:1;filter:drop-shadow(0 1px 3px rgba(0,0,0,.9));}
+.location-marker .marker-label{top:29px;padding:3px 8px 4px;border:1px solid rgba(138,122,69,.58);border-radius:2px;background:rgba(18,13,7,.78);box-shadow:0 3px 8px rgba(0,0,0,.28);font-size:12px;letter-spacing:1px;}
+.location-marker:hover .marker-label,.location-marker:focus-visible .marker-label{border-color:var(--marker-color,var(--gold));background:rgba(36,28,14,.94);}
+.location-marker.exploration-active .marker-dot{border-color:#b9e7c0;box-shadow:0 0 10px #b9e7c0,0 0 22px rgba(127,196,140,.72);}
+.location-marker.exploration-suspended .marker-dot{border-color:#f4d06f;box-shadow:0 0 10px #f4d06f,0 0 22px rgba(201,168,76,.7);}
+.location-marker.exploration-completed .marker-label{border-color:rgba(127,196,140,.7);}
+.location-marker[data-exploration-label]::after{content:attr(data-exploration-label);position:absolute;left:50%;bottom:-19px;transform:translateX(-50%);padding:2px 6px;border:1px solid rgba(138,122,69,.65);border-radius:9px;background:rgba(18,13,7,.9);color:var(--gold-hi);font:10px/1 var(--font-body);letter-spacing:1px;white-space:nowrap;pointer-events:none;}
+.location-marker.exploration-active[data-exploration-label]::after{color:#b9e7c0;border-color:rgba(127,196,140,.62);}
+.location-marker.exploration-suspended[data-exploration-label]::after{color:#f4d06f;}
+
+/* 地点图标 */
+.marker-icon{
+  position:absolute;left:50%;top:50%;
+  font-size:22px;transform:translate(-50%,-50%);
+  filter:drop-shadow(0 0 4px rgba(0,0,0,.8));
+  transition:all .3s;
+}
+.location-marker:hover .marker-icon,
+.location-marker:focus-visible .marker-icon{filter:drop-shadow(0 0 7px var(--marker-color,var(--gold))) brightness(1.16);}
+
+/* === 详情面板 === */
+.detail-panel{
+  position:fixed;right:-420px;top:50%;transform:translateY(-50%);
+  width:380px;max-height:75vh;z-index:20;
+  background:linear-gradient(160deg,#2a2110,#1e1710 60%,#1a1408);
+  border:1px solid #8a7a45;border-left:3px solid var(--gold);
+  border-radius:8px 0 0 8px;
+  box-shadow:-8px 0 30px rgba(0,0,0,.6),0 0 20px rgba(201,168,76,.08);
+  padding:0;overflow:hidden;
+  visibility:hidden;
+  transition:right .25s ease-out,visibility 0s linear .25s;
+  backdrop-filter:blur(10px);
+}
+.detail-panel.open{right:0;visibility:visible;transition-delay:0s;}
+
+.panel-header{
+  position:relative;height:160px;overflow:hidden;
+}
+.panel-header img{
+  width:100%;height:100%;object-fit:cover;
+  filter:brightness(.6) sepia(.2);
+}
+.panel-header::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(26,20,8,.95) 0%,rgba(26,20,8,.3) 50%,transparent 100%);
+}
+.panel-title{
+  position:absolute;bottom:14px;left:18px;z-index:2;
+  font-family:'Ma Shan Zheng',serif;font-size:28px;color:var(--gold);
+  letter-spacing:4px;text-shadow:0 2px 8px rgba(0,0,0,.8);
+}
+.panel-close{
+  position:absolute;top:10px;right:12px;z-index:3;
+  background:rgba(0,0,0,.5);border:none;color:var(--ink);
+  font-size:20px;cursor:pointer;width:30px;height:30px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .25s;
+}
+.panel-close:hover{background:var(--seal);color:#fff;}
+
+.panel-body{padding:18px;max-height:calc(75vh - 180px);overflow-y:auto;}
+.panel-body::-webkit-scrollbar{width:6px}
+.panel-body::-webkit-scrollbar-track{background:transparent}
+.panel-body::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+
+.panel-region{
+  display:inline-block;font-size:11px;color:var(--ink-dim);letter-spacing:2px;
+  padding:3px 12px;border:1px solid var(--line);border-radius:2px;
+  margin-bottom:12px;background:rgba(201,168,76,.06);
+}
+.panel-desc{font-size:13px;color:var(--ink);line-height:1.9;margin-bottom:12px;}
+
+.panel-section{margin-top:12px;}
+.panel-section-title{
+  font-family:'Ma Shan Zheng',serif;font-size:16px;color:var(--gold);
+  letter-spacing:3px;margin-bottom:8px;padding-bottom:4px;
+  border-bottom:1px solid var(--line);
+}
+.panel-tags{display:flex;flex-wrap:wrap;gap:6px;}
+.panel-tag{
+  font-size:11px;padding:3px 10px;border:1px solid var(--line);
+  border-radius:2px;color:var(--ink-dim);background:rgba(36,28,14,.5);
+  transition:all .25s;
+}
+.panel-tag:hover{border-color:var(--gold);color:var(--gold);}
+.panel-itinerary{
+  display:grid;gap:7px;padding:10px 12px;border:1px solid rgba(201,168,76,.32);
+  border-left:3px solid var(--gold);border-radius:3px;background:rgba(201,168,76,.055);
+}
+.panel-itinerary-row{display:grid;grid-template-columns:68px minmax(0,1fr);gap:8px;font-size:12px;line-height:1.65;}
+.panel-itinerary-key{color:var(--ink-dim);letter-spacing:1px;}
+.panel-itinerary-value{color:var(--ink);overflow-wrap:anywhere;}
+.panel-route-meta{margin-top:8px;color:var(--ink-dim);font-size:11px;line-height:1.6;}
+.location-exploration-panel.active .panel-section-title{color:#b9e7c0;}
+.location-exploration-panel.suspended .panel-section-title{color:var(--gold-hi);}
+.location-exploration-panel.completed .panel-section-title{color:var(--ink-dim);}
+.panel-link{
+  display:inline-block;margin-top:14px;padding:8px 20px;
+  border:1px solid var(--gold);border-radius:3px;
+  color:var(--gold);text-decoration:none;font-size:13px;letter-spacing:2px;
+  transition:all .25s;font-family:'Ma Shan Zheng',serif;
+}
+.panel-link:hover{background:rgba(201,168,76,.15);}
+.panel-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.panel-travel{
+  flex:1;min-height:42px;padding:8px 14px;border:1px solid var(--gold);border-radius:4px;
+  color:var(--gold);background:rgba(201,168,76,.08);font-family:inherit;font-size:13px;letter-spacing:1px;
+}
+.panel-travel:hover:not(:disabled){background:rgba(201,168,76,.18)}
+.panel-travel:disabled{opacity:.45;cursor:not-allowed}
+.map-state-tip{position:fixed;top:72px;left:50%;transform:translateX(-50%);z-index:15;padding:6px 14px;border:1px solid var(--line);border-radius:4px;background:rgba(26,20,8,.88);color:var(--ink-dim);font-size:12px;pointer-events:none}
+.objective-banner{position:fixed;top:98px;left:50%;transform:translateX(-50%);z-index:16;width:min(720px,calc(100vw - 32px));padding:9px 14px;border:1px solid rgba(201,168,76,.82);border-left:4px solid #1abc9c;border-radius:5px;background:rgba(18,40,34,.94);box-shadow:0 5px 22px rgba(0,0,0,.38);color:var(--ink);font-size:12px;line-height:1.55;pointer-events:none}
+.objective-banner strong{color:#f4d06f;letter-spacing:1px}.objective-route{color:#b9e7c0}.objective-next{color:#f4d06f}
+
+/* BUG-DIALOG-009：把隐藏判定翻译成不剧透的传闻、进度与下一步。 */
+.rumor-toggle{
+  position:fixed;top:102px;left:24px;z-index:18;min-height:38px;padding:8px 13px;
+  border:1px solid rgba(201,168,76,.72);border-radius:4px;background:rgba(26,20,8,.94);
+  color:var(--gold);font:13px/1.2 var(--font-body);letter-spacing:1px;cursor:pointer;
+  box-shadow:0 4px 18px rgba(0,0,0,.38);transition:border-color .2s,background .2s;
+}
+.rumor-toggle:hover,.rumor-toggle[aria-expanded="true"]{border-color:#e8c96e;background:rgba(52,39,16,.96)}
+.rumor-panel{
+  position:fixed;top:148px;left:-410px;z-index:19;width:370px;max-height:calc(100vh - 180px);
+  display:flex;flex-direction:column;visibility:hidden;overflow:hidden;
+  border:1px solid #8a7a45;border-left:3px solid var(--gold);border-radius:0 8px 8px 0;
+  background:linear-gradient(160deg,#2a2110,#1e1710 60%,#1a1408);box-shadow:8px 8px 30px rgba(0,0,0,.62);
+  transition:left .22s ease-out,visibility 0s linear .22s;backdrop-filter:blur(10px);
+}
+.rumor-panel.open{left:0;visibility:visible;transition-delay:0s}
+.rumor-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--line)}
+.rumor-title{font-family:'Ma Shan Zheng',serif;font-size:21px;color:var(--gold);letter-spacing:3px}
+.rumor-close{width:30px;height:30px;border:0;border-radius:50%;background:rgba(0,0,0,.4);color:var(--ink);font-size:17px;cursor:pointer}
+.rumor-summary{padding:10px 16px;color:var(--ink-dim);font-size:11px;line-height:1.65;border-bottom:1px solid rgba(58,47,26,.72)}
+.rumor-list{padding:10px;overflow-y:auto;overscroll-behavior:contain}
+.rumor-card{padding:11px 12px;margin-bottom:9px;border:1px solid rgba(138,122,69,.55);border-radius:5px;background:rgba(10,8,4,.26)}
+.rumor-card.ready{border-color:rgba(127,196,140,.72);box-shadow:inset 3px 0 rgba(127,196,140,.55)}
+.rumor-card.discovered{opacity:.72;border-color:rgba(127,196,140,.45)}
+.rumor-card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:7px}
+.rumor-name{color:var(--ink);font-size:14px;letter-spacing:1px}
+.rumor-status{flex:none;padding:2px 7px;border-radius:10px;border:1px solid var(--line);color:var(--ink-dim);font-size:10px}
+.rumor-card.ready .rumor-status,.rumor-card.discovered .rumor-status{color:#b9e7c0;border-color:rgba(127,196,140,.55)}
+.rumor-clue{color:#c7b993;font-size:12px;line-height:1.65;margin-bottom:8px}
+.rumor-progress{display:grid;gap:4px;margin-bottom:8px}
+.rumor-progress-row{display:flex;gap:7px;color:#857a63;font-size:11px;line-height:1.45}
+.rumor-progress-row.done{color:#9fc7a5}.rumor-check{width:13px;flex:none;text-align:center}
+.rumor-next{padding-top:7px;border-top:1px dashed rgba(138,122,69,.4);color:var(--gold);font-size:11px;line-height:1.5}
+
+/* === 缩放控件 === */
+.zoom-controls{
+  position:fixed;bottom:30px;right:24px;z-index:15;
+  display:flex;flex-direction:column;gap:6px;
+}
+.zoom-btn{
+  width:38px;height:38px;border-radius:50%;
+  border:1px solid var(--line);background:rgba(26,20,8,.92);
+  color:var(--ink-dim);font-size:20px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .25s;font-family:'Noto Serif SC',serif;
+}
+.zoom-btn:hover{color:var(--gold);border-color:var(--gold);background:rgba(36,28,14,.95);}
+
+/* === 罗盘 === */
+.compass{
+  position:fixed;top:100px;right:24px;z-index:15;
+  width:70px;height:70px;opacity:.7;pointer-events:none;
+}
+.compass-outer{
+  width:100%;height:100%;border-radius:50%;
+  border:2px solid var(--gold);position:relative;
+  background:rgba(26,20,8,.7);
+}
+.compass-n{
+  position:absolute;top:6px;left:50%;transform:translateX(-50%);
+  font-family:'Ma Shan Zheng',serif;font-size:14px;color:var(--gold);
+}
+.compass-arrow{
+  position:absolute;top:50%;left:50%;
+  width:2px;height:30px;background:var(--gold);
+  transform:translate(-50%,-100%);
+}
+.compass-arrow::after{
+  content:'';position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);
+  border-left:6px solid transparent;border-right:6px solid transparent;
+  border-top:10px solid var(--gold);
+}
+.compass-center{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:6px;height:6px;border-radius:50%;background:var(--gold);
+}
+
+/* === 图例 === */
+.legend{
+  position:fixed;bottom:30px;left:24px;z-index:15;
+  display:flex;flex-wrap:wrap;gap:8px;
+  padding:10px 14px;border:1px solid var(--line);border-radius:6px;
+  background:rgba(26,20,8,.85);max-width:340px;
+}
+.legend-item{
+    appearance:none;background:transparent;font-family:inherit;
+    display:flex;align-items:center;gap:5px;
+  font-size:11px;color:var(--ink-dim);cursor:pointer;
+  padding:4px 8px;border-radius:3px;transition:all .25s;
+  border:1px solid transparent;letter-spacing:1px;
+}
+.legend-item:hover{color:var(--ink);border-color:var(--line);}
+.legend-item.active{color:var(--gold);border-color:var(--gold);background:rgba(201,168,76,.1);}
+.legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.map-reading-key{position:fixed;right:24px;bottom:30px;z-index:15;display:flex;gap:10px;padding:8px 11px;border:1px solid var(--line);border-radius:5px;background:rgba(26,20,8,.82);color:var(--ink-dim);font-size:10px;letter-spacing:1px;}
+.map-reading-key span{display:inline-flex;align-items:center;gap:5px;white-space:nowrap;}
+.key-swatch{display:inline-block;width:18px;height:0;border-top:2px dashed #8a7440;}
+.key-swatch.sea{border-top-color:#38b2be;border-top-style:dotted;}
+.key-swatch.objective{border-top-color:#e6c878;border-top-style:dotted;border-top-width:3px;}
+
+/* === 响应式 === */
+@media(max-width:768px){
+  .detail-panel{width:calc(100vw - 20px);right:-105vw;max-height:70vh}
+  .panel-body{max-height:calc(70vh - 180px)}
+  .panel-header{height:120px}
+  .panel-title{font-size:24px;letter-spacing:2px}
+  .legend{bottom:80px;max-width:calc(100vw - 48px)}
+  .map-reading-key{right:10px;bottom:80px;max-width:calc(100vw - 48px);flex-wrap:wrap;gap:6px;}
+  .zoom-controls{bottom:80px}
+  .compass{top:90px;right:10px;width:50px;height:50px}
+  .map-title{font-size:20px;letter-spacing:3px}
+  .rumor-toggle{top:92px;left:12px}
+  .rumor-panel{top:138px;width:min(370px,calc(100vw - 18px));max-height:calc(100vh - 150px);left:-105vw}
+  .objective-banner{top:126px;font-size:11px;padding:7px 10px}
+}
+@media(max-width:480px){
+  .detail-panel{width:calc(100vw - 10px);right:-105vw;max-height:65vh}
+  .panel-body{max-height:calc(65vh - 140px);padding:12px;font-size:13px}
+  .panel-header{height:100px}
+  .panel-title{font-size:20px;letter-spacing:2px;bottom:8px;left:12px}
+  .panel-region{font-size:10px;padding:2px 8px;margin-bottom:8px}
+  .panel-section-title{font-size:14px}
+  .panel-close{top:6px;right:8px;width:26px;height:26px;font-size:16px}
+  .topbar{flex-wrap:wrap;gap:4px;padding:8px}
+  .map-title{font-size:16px;letter-spacing:2px}
+  .nav-link{font-size:12px;padding:4px 8px}
+  .legend{bottom:70px;max-width:calc(100vw - 32px);gap:4px}
+  .map-reading-key{right:6px;bottom:70px;max-width:calc(100vw - 32px);padding:6px 8px;gap:5px;font-size:9px;}
+  .legend-item{font-size:10px;padding:3px 6px}
+  .zoom-controls{bottom:70px;right:6px}
+  .zoom-btn{width:32px;height:32px;font-size:16px}
+  .compass{top:80px;right:6px;width:40px;height:40px}
+  .marker-label{font-size:10px;letter-spacing:1px}
+  .rumor-toggle{top:76px;left:8px;min-height:34px;padding:7px 10px;font-size:11px}
+  .rumor-panel{top:116px;width:calc(100vw - 10px);max-height:calc(100vh - 126px)}
+  .objective-banner{top:112px;width:calc(100vw - 16px);font-size:10px}
+  .rumor-header{padding:11px 12px}.rumor-title{font-size:18px}.rumor-summary{padding:8px 12px}
+}
+/* 横屏手机（如 844×390）：图例/缩放/罗盘让位，避免互相遮挡地图 */
+@media (max-height: 560px) and (orientation:landscape){
+  .legend{bottom:12px;left:12px;max-width:min(340px,58vw);padding:6px 10px}
+  .zoom-controls{bottom:12px;right:12px}
+  .map-reading-key{right:64px;bottom:12px;max-width:48vw;}
+  .compass{top:64px;right:8px;width:42px;height:42px}
+  .map-state-tip{top:56px}
+  .objective-banner{top:80px}
+  .detail-panel{max-height:80vh}
+  .rumor-toggle{top:54px}.rumor-panel{top:96px;max-height:calc(100vh - 104px)}
+}
+@media(prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  /* K3-8/K3-9：减少动态偏好下停用常驻粒子画布（JS 侧同步停帧，见底部脚本） */
+  #particles{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- 粒子画布 -->
+<canvas id="particles"></canvas>
+
+<!-- 主界面 -->
+<div id="app">
+  <div class="topbar">
+    <a href="codex.html" class="nav-link" id="nav-codex">← 万象图鉴</a>
+    <span class="player-badge" id="player-badge" hidden></span>
+    <span class="map-title">斗罗大陆 · 万象地图</span>
+    <a href="game.html" class="nav-link" id="nav-game">← 武魂觉醒</a>
+  </div>
+
+  <div class="map-viewport" id="viewport">
+    <div class="map-layer" id="mapLayer">
+      <img class="map-bg" src="assets/map_bg.jpg" alt="斗罗大陆" width="1600" height="900" fetchpriority="high" draggable="false" id="mapBg">
+      <svg class="map-routes" id="routeLayer" viewBox="0 0 1600 900" aria-hidden="true"></svg>
+      <!-- 地点标记由JS动态生成 -->
+      <div id="markersLayer"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 缩放控件 -->
+<div class="zoom-controls">
+  <button class="zoom-btn" id="zoomIn" aria-label="放大地图" title="放大">+</button>
+  <button class="zoom-btn" id="zoomOut" aria-label="缩小地图" title="缩小">−</button>
+  <button class="zoom-btn" id="zoomReset" aria-label="重置地图缩放" title="重置">⟲</button>
+</div>
+
+<!-- 罗盘 -->
+<div class="compass">
+  <div class="compass-outer">
+    <span class="compass-n">北</span>
+    <div class="compass-arrow"></div>
+    <div class="compass-center"></div>
+  </div>
+</div>
+
+<!-- 图例 -->
+<div class="legend" id="legend"></div>
+<div class="map-reading-key" aria-label="地图路线图例">
+  <span><i class="key-swatch land"></i>陆路</span>
+  <span><i class="key-swatch sea"></i>海路</span>
+  <span><i class="key-swatch objective"></i>任务路线</span>
+</div>
+<section class="objective-banner" id="objectiveBanner" aria-live="polite" hidden></section>
+
+<button type="button" class="rumor-toggle" id="rumorToggle" aria-expanded="false" aria-controls="rumorPanel" hidden>秘境传闻</button>
+<section class="rumor-panel" id="rumorPanel" role="dialog" aria-modal="false" aria-labelledby="rumorTitle">
+  <div class="rumor-header">
+    <div class="rumor-title" id="rumorTitle">秘境传闻</div>
+    <button type="button" class="rumor-close" id="rumorClose" aria-label="关闭秘境传闻">✕</button>
+  </div>
+  <div class="rumor-summary" id="rumorSummary"></div>
+  <div class="rumor-list" id="rumorList"></div>
+</section>
+
+<!-- 详情面板 -->
+<div class="detail-panel" id="detailPanel">
+  <div class="panel-header">
+    <img id="panelImg" src="" alt="">
+    <button class="panel-close" id="panelClose" aria-label="关闭地点详情">✕</button>
+    <div class="panel-title" id="panelTitle"></div>
+  </div>
+  <div class="panel-body" id="panelBody"></div>
+</div>
+
+<script>
+// ========== 地点数据 ==========
+const LOCATIONS = [
+  {id:'史莱克学院',x:52,y:42,region:'大陆中部',icon:'🏯',color:'#7fc48c',
+   desc:'只收怪物不收普通人的传奇学院，史莱克七怪成长之地'},
+  {id:'星斗大森林外围',x:58,y:48,region:'大陆中部',icon:'🌳',color:'#3a8c3a',
+   desc:'星斗大森林最外层的区域，十年到百年魂兽出没，无数魂师在此猎取魂环'},
+  {id:'星斗大森林深处',x:62,y:45,region:'大陆中部',icon:'🌲',color:'#246b2d',
+   desc:'千年、万年魂兽盘踞的核心区域，只有真正的强者才敢涉足'}, 
+  {id:'武魂城',x:38,y:62,region:'大陆中部',icon:'🏰',color:'#9b59b6',
+   desc:'武魂殿总部所在地，大陆魂师力量的巅峰中心'},
+  {id:'武魂殿',x:40,y:58,region:'大陆中部',icon:'⛪',color:'#8e44ad',
+   desc:'统治大陆魂师界的庞大组织，教皇比比东的宫殿'},
+  {id:'天斗城',x:48,y:35,region:'大陆中部',icon:'🏙️',color:'#3498db',
+   desc:'天斗帝国首都，大陆最繁华的城市之一'},
+  {id:'东海港口',x:67,y:42,region:'东方海域',icon:'⚓',color:'#2aa9a1',
+   desc:'面向东方海域的深水港，前往海神岛的第一站，船队与海魂师在此补给'},
+  {id:'昊天宗',x:30,y:28,region:'北方地区',icon:'⛰️',color:'#e74c3c',
+   desc:'天下第一宗门，昊天锤武魂的传承之地'},
+  {id:'七宝琉璃宗',x:55,y:38,region:'大陆中部',icon:'💎',color:'#2980b9',
+   desc:'七宝琉璃塔武魂的传承宗门，天下第一辅助系'},
+  {id:'杀戮之都',x:22,y:52,region:'地下世界',icon:'💀',color:'#c0392b',
+   desc:'罪恶与杀戮的乐园，修罗神的试炼场'},
+  {id:'海神岛',x:85,y:55,region:'东方海域',icon:'🌊',color:'#1abc9c',
+   desc:'茫茫大海中的神秘岛屿，海神传承之地'},
+  {id:'落日森林',x:68,y:35,region:'大陆中部',icon:'🌲',color:'#27ae60',
+   desc:'天斗帝国东部的古老森林，落日余晖下的秘境'},
+  {id:'冰封森林',x:65,y:18,region:'北方地区',icon:'❄️',color:'#85c1e9',
+   desc:'极北之地的冰雪森林，冰系魂兽的栖息地'},
+  {id:'圣魂村',x:50,y:55,region:'大陆中部',icon:'🏡',color:'#d4a76a',
+   desc:'唐三的故乡，一个平凡而又不凡的小村庄'},
+  {id:'龙之谷',x:78,y:42,region:'东方海域',icon:'🐉',color:'#e67e22',
+   desc:'龙族魂兽的聚集地，隐藏着远古龙神的秘密'},
+  {id:'灵药谷',x:42,y:45,region:'大陆中部',icon:'🌿',color:'#2ecc71',
+   desc:'仙草灵药遍布的神秘山谷，魂师修炼宝地'},
+  {id:'死亡沙漠',x:35,y:72,region:'南方地区',icon:'🏜️',color:'#d4a76a',
+   desc:'酷热无情的死亡之地，埋藏着远古文明的遗迹'},
+  {id:'钢铁之城',x:45,y:32,region:'大陆中部',icon:'⚙️',color:'#7f8c8d',
+   desc:'楼高大师的锻造之城，天下最强魂导器产地'},
+  {id:'暗影沼泽',x:62,y:62,region:'南方地区',icon:'🕸️',color:'#2c3e50',
+   desc:'毒雾弥漫的诡异沼泽，暗影系魂兽的乐园'},
+  {id:'元素峡谷',x:72,y:52,region:'南方地区',icon:'⚡',color:'#f39c12',
+   desc:'元素之力汇聚的峡谷，四种元素在此交融碰撞'},
+  {id:'远古遗迹',x:25,y:65,region:'西方极地',icon:'🏛️',color:'#95a5a6',
+   desc:'上古神祇遗留的废墟，埋藏着失落的传承'},
+  {id:'深渊裂缝',x:18,y:45,region:'地下世界',icon:'🕳️',color:'#1a1a2e',
+   desc:'通往地底深渊的裂缝，黑暗力量的源头'},
+  {id:'天空之城',x:55,y:12,region:'天空领域',icon:'☁️',color:'#bdc3c7',
+   desc:'悬浮于云端的天空之城，风系魂师的圣地'},
+  {id:'力之一族领地',x:32,y:22,region:'北方地区',icon:'💪',color:'#e74c3c',
+   desc:'力之一族的聚居地，以锻造和力量闻名'},
+  {id:'敏之一族领地',x:28,y:20,region:'北方地区',icon:'🦅',color:'#9b59b6',
+   desc:'敏之一族的领地，以速度和敏捷著称'},
+  {id:'御之一族领地',x:35,y:18,region:'北方地区',icon:'🛡️',color:'#2ecc71',
+   desc:'御之一族的家园，以防御力闻名天下'},
+  {id:'破之一族领地',x:38,y:20,region:'北方地区',icon:'⚔️',color:'#e67e22',
+   desc:'破之一族的驻地，以攻击力称雄'},
+  {id:'邪魔森林',x:70,y:65,region:'南方地区',icon:'👹',color:'#8b0000',
+   desc:'邪魔魂兽盘踞的黑暗森林，生人勿近的禁地'},
+];
+
+const LOCATION_KEYS = {
+  '史莱克学院':'shrek_academy','星斗大森林外围':'star_duo_outer','星斗大森林':'star_duo_outer','星斗大森林深处':'star_duo_deep',
+  '武魂城':'wuhun_city','武魂殿':'spirit_hall','天斗城':'tian_dou_city','昊天宗':'haotian_sect',
+  '七宝琉璃宗':'seven_treasure_glaze','杀戮之都':'slaughter_city','东海港口':'east_sea_port','海神岛':'sea_god_island',
+  '落日森林':'sunset_forest','冰封森林':'ice_forest','圣魂村':'holy_soul_village','龙之谷':'dragon_valley',
+  '灵药谷':'medicine_valley','死亡沙漠':'desert_death','钢铁之城':'steel_city','暗影沼泽':'shadow_swamp',
+  '元素峡谷':'element_valley','远古遗迹':'ancient_ruins','深渊裂缝':'abyss_rift','天空之城':'sky_city',
+  '力之一族领地':'strength_clan','敏之一族领地':'speed_clan','御之一族领地':'defense_clan',
+  '破之一族领地':'breaking_clan','邪魔森林':'evil_forest'
+};
+LOCATIONS.forEach(location => { location.key = LOCATION_KEYS[location.id] || location.id; });
+const LOCATION_CONNECTIONS = {
+  shrek_academy:['star_duo_outer','tian_dou_city'],
+  star_duo_outer:['shrek_academy','star_duo_deep','sunset_forest'],
+  star_duo_deep:['star_duo_outer','ancient_ruins'],
+  wuhun_city:['tian_dou_city','slaughter_city'],
+  spirit_hall:['wuhun_city','tian_dou_city'],
+  tian_dou_city:['shrek_academy','wuhun_city','sunset_forest','east_sea_port'],
+  east_sea_port:['tian_dou_city','sea_god_island'],
+  sunset_forest:['star_duo_outer','tian_dou_city','medicine_valley'],
+  sea_god_island:['east_sea_port'],
+  ice_forest:['star_duo_deep','ancient_ruins'],
+  slaughter_city:['wuhun_city','abyss_rift'],
+  ancient_ruins:['star_duo_deep','ice_forest','abyss_rift'],
+  abyss_rift:['slaughter_city','ancient_ruins','evil_forest'],
+  sky_city:['element_valley','dragon_valley'],
+  element_valley:['sky_city','desert_death','ice_forest'],
+  desert_death:['element_valley','medicine_valley','shadow_swamp'],
+  medicine_valley:['sunset_forest','desert_death','shadow_swamp'],
+  shadow_swamp:['desert_death','medicine_valley','evil_forest'],
+  steel_city:['tian_dou_city','dragon_valley'],
+  dragon_valley:['sky_city','steel_city','evil_forest'],
+  evil_forest:['abyss_rift','shadow_swamp','dragon_valley'],
+  holy_soul_village:['shrek_academy','tian_dou_city'],
+  haotian_sect:['holy_soul_village','tian_dou_city'],
+  seven_treasure_glaze:['tian_dou_city','steel_city'],
+  strength_clan:['steel_city','tian_dou_city','haotian_sect'],
+  speed_clan:['tian_dou_city','haotian_sect','defense_clan'],
+  defense_clan:['tian_dou_city','speed_clan','breaking_clan'],
+  breaking_clan:['tian_dou_city','defense_clan','medicine_valley']
+};
+LOCATIONS.forEach(location => { location.connectedTo = LOCATION_CONNECTIONS[location.key] || []; });
+let gameMapState = null;
+let mapStateSignature = '';
+const requestedFocusId = new URLSearchParams(window.location.search).get('focus') || '';
+let requestedFocusHandled = false;
+function stateFor(location){
+  return gameMapState && (gameMapState.locations || []).find(item => item.id === location.key);
+}
+
+const routeLayer = document.getElementById('routeLayer');
+const REGION_OVERLAYS = [
+  { label:'北境 · 霜寒山脉', x:510, y:112, d:'M 110 74 C 330 18 710 18 920 88 C 830 184 570 220 300 198 C 220 164 150 122 110 74 Z' },
+  { label:'中部 · 幽影森林', x:820, y:430, d:'M 250 238 C 520 190 910 190 1240 268 C 1160 512 950 600 610 555 C 410 500 300 402 250 238 Z' },
+  { label:'南境 · 炎漠', x:500, y:750, d:'M 130 630 C 410 555 880 558 1160 650 C 1040 836 700 860 320 824 C 222 770 172 700 130 630 Z' },
+  { label:'东方海域', x:1355, y:426, sea:true, d:'M 1210 92 C 1470 60 1570 168 1572 790 C 1450 842 1280 780 1184 654 C 1268 500 1270 290 1210 92 Z' }
+];
+
+function mapPoint(location){
+  return { x: Number(location?.x || 0) / 100 * 1600, y: Number(location?.y || 0) / 100 * 900 };
+}
+
+function mapRoutePath(from, to, sea = false){
+  const a = mapPoint(from);
+  const b = mapPoint(to);
+  const dx = b.x - a.x;
+  const dy = b.y - a.y;
+  const length = Math.max(1, Math.hypot(dx, dy));
+  const bend = sea ? 42 : Math.min(30, length * .12);
+  const control = {
+    x: (a.x + b.x) / 2 - (dy / length) * bend,
+    y: (a.y + b.y) / 2 + (dx / length) * bend
+  };
+  return `M ${a.x.toFixed(1)} ${a.y.toFixed(1)} Q ${control.x.toFixed(1)} ${control.y.toFixed(1)} ${b.x.toFixed(1)} ${b.y.toFixed(1)}`;
+}
+
+function renderRouteNetwork(){
+  if(!routeLayer) return;
+  const byId = new Map(LOCATIONS.map(location => [location.key, location]));
+  const edges = [];
+  const seen = new Set();
+  LOCATIONS.forEach(location => {
+    (location.connectedTo || []).forEach(targetId => {
+      const target = byId.get(targetId);
+      if(!target) return;
+      const key = [location.key, target.key].sort().join('|');
+      if(seen.has(key)) return;
+      seen.add(key);
+      const sea = location.region === '东方海域' || target.region === '东方海域' || key.includes('east_sea_port');
+      edges.push({ from: location, to: target, sea, key });
+    });
+  });
+  const routeIds = Array.isArray(gameMapState?.routeIds) ? gameMapState.routeIds : [];
+  const routeEdges = new Set(routeIds.slice(1).map((id, index) => [routeIds[index], id].sort().join('|')));
+  const regionMarkup = REGION_OVERLAYS.map(region => `<path class="map-region-wash${region.sea ? ' sea' : ''}" d="${region.d}"/><text class="map-region-label${region.sea ? ' sea' : ''}" x="${region.x}" y="${region.y}">${region.label}</text>`).join('');
+  const networkMarkup = edges.map(edge => `<path class="map-route ${edge.sea ? 'sea' : 'land'}" d="${mapRoutePath(edge.from, edge.to, edge.sea)}"/>`).join('');
+  const objectiveMarkup = edges.filter(edge => routeEdges.has(edge.key)).map(edge => `<path class="map-route objective${edge.sea ? ' objective-sea' : ''}" d="${mapRoutePath(edge.from, edge.to, edge.sea)}"/>`).join('');
+  const nodeMarkup = routeIds.slice(1).map((id, index) => {
+    const location = byId.get(id);
+    if(!location) return '';
+    const point = mapPoint(location);
+    const isNext = index === 0;
+    return `<circle class="map-route-node${location.region === '东方海域' ? ' sea' : ''}${isNext ? ' next' : ''}" cx="${point.x}" cy="${point.y}" r="${isNext ? 8 : 5}"/>`;
+  }).join('');
+  const caption = routeIds.length > 1
+    ? `<text class="map-route-caption" x="${mapPoint(byId.get(routeIds[1]) || LOCATIONS[0]).x}" y="${mapPoint(byId.get(routeIds[1]) || LOCATIONS[0]).y - 18}">任务路线</text>`
+    : '';
+  routeLayer.innerHTML = `<g class="region-overlay">${regionMarkup}</g><g class="route-network">${networkMarkup}</g><g class="route-objective">${objectiveMarkup}${nodeMarkup}${caption}</g>`;
+}
+
+function escapeMapText(value){
+  return String(value == null ? '' : value)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+function focusRequestedLocation(){
+  if(!requestedFocusId || requestedFocusHandled) return;
+  if(window.parent !== window && !gameMapState) return;
+  const location = LOCATIONS.find(item => item.key === requestedFocusId || item.id === requestedFocusId);
+  if(!location) return;
+  requestedFocusHandled = true;
+  const point = mapPoint(location);
+  if(typeof viewport !== 'undefined' && typeof scale === 'number'){
+    const rect = viewport.getBoundingClientRect();
+    translateX = rect.width / 2 - point.x * scale;
+    translateY = rect.height / 2 - point.y * scale;
+    updateTransform();
+  }
+  showDetail(location);
+}
+
+const rumorToggle = document.getElementById('rumorToggle');
+const rumorPanel = document.getElementById('rumorPanel');
+const rumorClose = document.getElementById('rumorClose');
+
+function renderRumorLedger(){
+  const clues = Array.isArray(gameMapState && gameMapState.hiddenClues) ? gameMapState.hiddenClues : [];
+  rumorToggle.hidden = !clues.length;
+  if(!clues.length){ rumorPanel.classList.remove('open'); return; }
+  const discovered = clues.filter(clue => clue.discovered).length;
+  const ready = clues.filter(clue => clue.status === 'ready').length;
+  rumorToggle.textContent = `秘境传闻 ${discovered}/${clues.length}${ready ? ` · ${ready}条可追查` : ''}`;
+  document.getElementById('rumorSummary').textContent = `已发现 ${discovered}/${clues.length}。线索只说明方向；条件具备后，仍需进行一次地图旅行才能发现秘境。`;
+  const statusOrder = { ready:0, near:1, locked:2, discovered:3 };
+  const ordered = [...clues].sort((a,b)=>(statusOrder[a.status] ?? 9) - (statusOrder[b.status] ?? 9));
+  document.getElementById('rumorList').innerHTML = ordered.map(clue => {
+    const progress = Array.isArray(clue.progress) ? clue.progress : [];
+    return `<article class="rumor-card ${escapeMapText(clue.status)}" data-rumor-id="${escapeMapText(clue.id)}">
+      <div class="rumor-card-head"><span class="rumor-name">${escapeMapText(clue.name)}</span><span class="rumor-status">${escapeMapText(clue.statusLabel)}</span></div>
+      <p class="rumor-clue">${escapeMapText(clue.clue)}</p>
+      <div class="rumor-progress">${progress.map(item => `<div class="rumor-progress-row ${item.done ? 'done' : ''}"><span class="rumor-check">${item.done ? '✓' : '○'}</span><span>${escapeMapText(item.label)}</span></div>`).join('')}</div>
+      <div class="rumor-next">下一步：${escapeMapText(clue.nextStep)}</div>
+    </article>`;
+  }).join('');
+}
+
+function closeRumorPanel(){
+  if(!rumorPanel.classList.contains('open')) return;
+  rumorPanel.classList.remove('open');
+  rumorToggle.setAttribute('aria-expanded','false');
+  rumorToggle.focus();
+}
+
+rumorToggle.addEventListener('click',()=>{
+  const opening = !rumorPanel.classList.contains('open');
+  rumorPanel.classList.toggle('open', opening);
+  rumorToggle.setAttribute('aria-expanded', String(opening));
+  if(opening){ detailPanel.classList.remove('open'); rumorClose.focus(); }
+});
+rumorClose.addEventListener('click',closeRumorPanel);
+function isKnown(location){
+  const state = stateFor(location);
+  return !gameMapState || Boolean(state && (state.known || state.current || state.visited || state.adjacent));
+}
+
+function routeLabel(ids){
+  if(!Array.isArray(ids) || !ids.length) return '暂无可用路线';
+  const names = ids.map(id => { const location = LOCATIONS.find(item => item.key === id || item.id === id); return location?.name || location?.id || id; });
+  return names.join(' → ');
+}
+
+function renderObjectiveBanner(){
+  const banner = document.getElementById('objectiveBanner');
+  const objective = gameMapState && gameMapState.objective;
+  if(!banner || !objective){ if(banner) banner.hidden = true; return; }
+  const route = routeLabel(objective.routeIds);
+  const next = objective.nextHopId
+    ? (LOCATIONS.find(location => location.key === objective.nextHopId)?.name || LOCATIONS.find(location => location.key === objective.nextHopId)?.id || objective.nextHopId)
+    : objective.objectiveLocationName;
+  banner.innerHTML = `<strong>活动任务 · 第${escapeMapText(objective.ordinal || Math.round((objective.objectiveLevel || 0) / 10))}魂环目标：${escapeMapText(objective.objectiveLocationName)}</strong><br><span class="objective-route">推荐路线：${escapeMapText(route)}</span><br><span class="objective-next">下一站：${escapeMapText(next || '已抵达目标地点')}</span>`;
+  banner.hidden = false;
+}
+
+// 地点详情数据缓存
+let locationsData = {};
+fetch('data/location-codex.json')
+  .then(r=>r.json())
+  .then(d=>{ d.locations.forEach(l=>{ locationsData[l.id]=l; }); })
+  .catch(()=>{});
+
+// ========== 粒子特效 ==========
+const canvas = document.getElementById('particles');
+const ctx = canvas.getContext('2d');
+let particles = [];
+
+function resizeCanvas(){
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+class Particle{
+  constructor(){
+    this.reset();
+    this.y = Math.random() * canvas.height;
+  }
+  reset(){
+    this.x = Math.random() * canvas.width;
+    this.y = -10;
+    this.size = Math.random() * 2.5 + 1;
+    this.speedY = Math.random() * .4 + .15;
+    this.speedX = (Math.random() - .5) * .3;
+    this.opacity = Math.random() * .5 + .15;
+    this.flicker = Math.random() * Math.PI * 2;
+  }
+  update(){
+    this.y += this.speedY;
+    this.x += this.speedX + Math.sin(this.flicker) * .2;
+    this.flicker += .02;
+    if(this.y > canvas.height + 10) this.reset();
+  }
+  draw(){
+    const alpha = this.opacity * (Math.sin(this.flicker) * .3 + .7);
+    ctx.fillStyle = `rgba(201,168,76,${alpha})`;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+
+for(let i = 0; i < 20; i++) particles.push(new Particle());
+
+let particleAnimRunning = true;
+function animateParticles(){
+  if(!particleAnimRunning){ requestAnimationFrame(animateParticles); return; }
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach(p=>{ p.update(); p.draw(); });
+  requestAnimationFrame(animateParticles);
+}
+animateParticles();
+
+// 页面不可见时暂停粒子（节省资源）
+document.addEventListener('visibilitychange', () => {
+  particleAnimRunning = !document.hidden;
+});
+
+// ========== 地图交互 ==========
+const viewport = document.getElementById('viewport');
+const mapLayer = document.getElementById('mapLayer');
+const mapBg = document.getElementById('mapBg');
+const markersLayer = document.getElementById('markersLayer');
+const detailPanel = document.getElementById('detailPanel');
+
+let scale = 1;
+let translateX = 0, translateY = 0;
+let isDragging = false;
+let dragStart = {x:0,y:0};
+let dragStartTrans = {x:0,y:0};
+const MIN_SCALE = .6, MAX_SCALE = 2.5;
+
+function updateTransform(){
+  mapLayer.style.transform = `translate(${translateX}px,${translateY}px) scale(${scale})`;
+}
+
+function fitMapToViewport(){
+  const vw = viewport.clientWidth;
+  const vh = viewport.clientHeight;
+  const mw = 1600, mh = 900;
+  const fitScale = Math.min(vw / mw, vh / mh) * .85;
+  scale = fitScale;
+  translateX = (vw - mw * scale) / 2;
+  translateY = (vh - mh * scale) / 2;
+  updateTransform();
+}
+
+// 初始适配
+window.addEventListener('load', ()=>{
+  setTimeout(fitMapToViewport, 100);
+});
+window.addEventListener('resize', fitMapToViewport);
+
+// 缩放
+function zoomTo(newScale, cx, cy){
+  const oldScale = scale;
+  scale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, newScale));
+  const ratio = scale / oldScale;
+  translateX = cx - (cx - translateX) * ratio;
+  translateY = cy - (cy - translateY) * ratio;
+  updateTransform();
+}
+
+viewport.addEventListener('wheel', (e)=>{
+  e.preventDefault();
+  const rect = viewport.getBoundingClientRect();
+  const cx = e.clientX - rect.left;
+  const cy = e.clientY - rect.top;
+  const delta = e.deltaY > 0 ? .9 : 1.1;
+  zoomTo(scale * delta, cx, cy);
+}, {passive:false});
+
+document.getElementById('zoomIn').addEventListener('click',()=>{
+  const rect = viewport.getBoundingClientRect();
+  zoomTo(scale * 1.25, rect.width/2, rect.height/2);
+});
+document.getElementById('zoomOut').addEventListener('click',()=>{
+  const rect = viewport.getBoundingClientRect();
+  zoomTo(scale * .8, rect.width/2, rect.height/2);
+});
+document.getElementById('zoomReset').addEventListener('click', fitMapToViewport);
+
+// 拖拽
+viewport.addEventListener('mousedown',(e)=>{
+  // 检查点击是否在标记上（使用指针位置穿透检测）
+  const markerEl = e.target.closest('.location-marker');
+  if(markerEl || e.composedPath().some(el => el.classList && el.classList.contains('location-marker'))) return;
+  isDragging = true;
+  dragStart = {x:e.clientX, y:e.clientY};
+  dragStartTrans = {x:translateX, y:translateY};
+  viewport.style.cursor = 'grabbing';
+});
+
+window.addEventListener('mousemove',(e)=>{
+  if(!isDragging) return;
+  translateX = dragStartTrans.x + (e.clientX - dragStart.x);
+  translateY = dragStartTrans.y + (e.clientY - dragStart.y);
+  updateTransform();
+});
+
+window.addEventListener('mouseup',()=>{
+  isDragging = false;
+  viewport.style.cursor = 'grab';
+});
+
+// 触摸支持
+viewport.addEventListener('touchstart',(e)=>{
+  const markerEl = e.target.closest('.location-marker');
+  if(markerEl || e.composedPath().some(el => el.classList && el.classList.contains('location-marker'))) return;
+  if(e.touches.length === 1){
+    isDragging = true;
+    dragStart = {x:e.touches[0].clientX, y:e.touches[0].clientY};
+    dragStartTrans = {x:translateX, y:translateY};
+  }
+});
+viewport.addEventListener('touchmove',(e)=>{
+  if(!isDragging || e.touches.length !== 1) return;
+  translateX = dragStartTrans.x + (e.touches[0].clientX - dragStart.x);
+  translateY = dragStartTrans.y + (e.touches[0].clientY - dragStart.y);
+  updateTransform();
+});
+viewport.addEventListener('touchend',()=>{ isDragging = false; });
+
+// 已发现秘境在地图上的坐标（与 game.js HIDDEN_LOCATIONS 的 mapX/mapY 保持一致）
+const HIDDEN_LOCATION_POINTS = {
+  secret_cave:   { x:59, y:47 },
+  ancient_altar: { x:26, y:64 },
+  dragon_nest:   { x:79, y:41 },
+  abyss_rift:    { x:19, y:44 },
+  fairy_pool:    { x:43, y:44 },
+  star_fall:     { x:50, y:28 }
+};
+
+// ========== 已发现秘境标记（T25） ==========
+function renderHiddenMarkers(){
+  const hiddenList = gameMapState && gameMapState.discoveredHidden;
+  document.querySelectorAll('.hidden-marker').forEach(el => el.remove());
+  if(!hiddenList || !hiddenList.length) return;
+  hiddenList.forEach(h => {
+    const cfg = HIDDEN_LOCATION_POINTS[h.id];
+    if(!cfg) return;
+    const marker = document.createElement('div');
+    marker.className = 'location-marker hidden-marker';
+    marker.setAttribute('role', 'button');
+    marker.setAttribute('tabindex', '0');
+    marker.setAttribute('aria-label', '已发现秘境：' + (h.name || ''));
+    marker.style.left = (cfg.mapX / 100 * 1600) + 'px';
+    marker.style.top = (cfg.mapY / 100 * 900) + 'px';
+    marker.title = h.name || '';
+    const hitArea = document.createElement('div'); hitArea.className = 'marker-hitarea'; marker.appendChild(hitArea);
+    const icon = document.createElement('span'); icon.className = 'marker-icon'; icon.textContent = '🗝'; marker.appendChild(icon);
+    const label = document.createElement('span'); label.className = 'marker-label'; label.textContent = h.name || ''; marker.appendChild(label);
+    const show = () => {
+      document.getElementById('panelTitle').textContent = h.name || '';
+      document.getElementById('panelImg').src = 'assets/map_bg.jpg';
+      document.getElementById('panelBody').innerHTML =
+        '<span class="panel-region">✦ 秘境</span><p class="panel-desc">' + (h.desc || '') + '</p>' +
+        '<div class="panel-actions"><button class="panel-travel" id="panel-hidden-tip">可在「快速旅行」中前往探索</button></div>';
+      detailPanel.classList.add('open');
+      document.getElementById('panelClose').focus();
+    };
+    marker.addEventListener('click', e => { e.stopPropagation(); show(); });
+    marker.addEventListener('touchstart', e => { show(); }, { passive:true });
+    marker.addEventListener('keydown', e => {
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); show(); }
+    });
+    markersLayer.appendChild(marker);
+  });
+}
+
+// ========== 渲染地点标记 ==========
+function renderMarkers(){
+  markersLayer.innerHTML = '';
+  renderRouteNetwork();
+  LOCATIONS.forEach(loc=>{
+    const state = stateFor(loc);
+    const known = isKnown(loc);
+    const marker = document.createElement('div');
+    marker.className = 'location-marker';
+    if(!known) marker.classList.add('fogged');
+    if(state && state.current) marker.classList.add('current');
+    if(state && state.adjacent && !state.visited) marker.classList.add('adjacent');
+    if(state && state.recommended) marker.classList.add('recommended');
+    if(state && state.nextHop) marker.classList.add('next-hop');
+    if(state && state.objective) marker.classList.add('objective');
+    if(state && state.explorationInProgress){
+      marker.classList.add(state.explorationActive ? 'exploration-active' : 'exploration-suspended');
+      marker.dataset.explorationLabel = `${state.explorationActive ? '进行中' : '暂停'} ${state.explorationCompletedStages || 0}/${state.explorationStageCount || 4}`;
+    } else if(state && state.explorationStatus === 'completed') {
+      marker.classList.add('exploration-completed');
+      marker.dataset.explorationLabel = '已完成一轮';
+    }
+    if(state && gameMapState.level < state.unlockedLevel) marker.classList.add('level-locked');
+    marker.setAttribute('role', 'button');
+    marker.setAttribute('tabindex', '0');
+    marker.setAttribute('aria-label', known ? `查看${loc.name || loc.id}详情` : '未探索地点');
+    marker.style.left = (loc.x / 100 * 1600) + 'px';
+    marker.style.top = (loc.y / 100 * 900) + 'px';
+    marker.style.setProperty('--marker-color', loc.color);
+    marker.dataset.locationId = loc.key;
+    marker.title = loc.name || loc.id;
+
+    // 透明大面积点击区域（真实DOM元素，确保鼠标事件可靠到达）
+    const hitArea = document.createElement('div');
+    hitArea.className = 'marker-hitarea';
+    marker.appendChild(hitArea);
+
+    const focus = document.createElement('div');
+    focus.className = 'marker-focus';
+    focus.setAttribute('aria-hidden', 'true');
+    marker.appendChild(focus);
+
+    const dot = document.createElement('div');
+    dot.className = 'marker-dot';
+    dot.style.background = loc.color;
+    dot.style.boxShadow = `0 0 12px ${loc.color}, 0 0 24px ${loc.color}`;
+    marker.appendChild(dot);
+
+    const icon = document.createElement('span');
+    icon.className = 'marker-icon';
+    icon.textContent = known ? loc.icon : '？';
+    marker.appendChild(icon);
+
+    const label = document.createElement('span');
+    label.className = 'marker-label';
+    label.textContent = known ? (loc.name || loc.id) + (state && state.current ? '（当前）' : '') : '未探索';
+    marker.appendChild(label);
+    if(state && state.objective){
+      const badge = document.createElement('span');
+      badge.className = 'objective-badge';
+      badge.textContent = `第${escapeMapText(gameMapState?.objective?.ordinal || 1)}魂环目标`;
+      marker.appendChild(badge);
+    } else if(state && state.nextHop){
+      const badge = document.createElement('span');
+      badge.className = 'objective-badge';
+      badge.textContent = '下一站';
+      marker.appendChild(badge);
+    }
+
+    // 标记点击处理：直接绑定在 marker 上，事件冒泡到 marker 处理
+    // 注意：mousedown 不阻止传播，因为 viewport 的 mousedown 已通过 e.target.closest 检查跳过标记区域
+    marker.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      showDetail(loc);
+    });
+    // 触摸设备支持
+    marker.addEventListener('touchstart', (e)=>{
+      // 触摸时立即响应，避免延迟
+      showDetail(loc);
+    }, { passive: true });
+    // 键盘支持
+    marker.addEventListener('keydown', e => {
+      if(e.key === 'Enter' || e.key === ' '){
+        e.preventDefault();
+        showDetail(loc);
+      }
+    });
+
+    markersLayer.appendChild(marker);
+  });
+}
+
+// ========== 渲染图例 ==========
+function renderLegend(){
+  const legend = document.getElementById('legend');
+  const regions = [...new Set(LOCATIONS.map(l=>l.region))];
+  const regionColors = {
+    '大陆中部':'#7fc48c','北方地区':'#85c1e9','南方地区':'#d4a76a',
+    '东方海域':'#1abc9c','地下世界':'#c0392b','西方极地':'#95a5a6',
+    '天空领域':'#bdc3c7'
+  };
+  legend.innerHTML = regions.map(r=>`
+    <button type="button" class="legend-item" data-region="${r}" aria-pressed="false">
+      <span class="legend-dot" aria-hidden="true" style="background:${regionColors[r]||'#888'}"></span>
+      ${r}
+    </button>
+  `).join('');
+  legend.querySelectorAll('.legend-item').forEach(item => {
+    item.addEventListener('click', () => filterByRegion(item.dataset.region, item));
+  });
+}
+
+function filterByRegion(region, el){
+  const wasActive = el.classList.contains('active');
+  document.querySelectorAll('.legend-item').forEach(i=>{
+    i.classList.remove('active');
+    i.setAttribute('aria-pressed', 'false');
+  });
+  if(!wasActive){
+    el.classList.add('active');
+    el.setAttribute('aria-pressed', 'true');
+  }
+  
+  document.querySelectorAll('.location-marker').forEach(m=>{
+    const loc = LOCATIONS.find(l=>l.id === m.title);
+    if(!loc) return;
+    if(wasActive || loc.region === region){
+      m.style.opacity = '1';
+      m.style.pointerEvents = 'auto';
+    } else {
+      m.style.opacity = '.2';
+      m.style.pointerEvents = 'none';
+    }
+  });
+}
+
+// ========== 详情面板 ==========
+function detailTagList(value){
+  if(Array.isArray(value)) return value.map(item=>String(item || '').trim()).filter(Boolean);
+  if(typeof value === 'string' && value.trim()) return [value.trim()];
+  return [];
+}
+
+function showDetail(loc){
+  const state = stateFor(loc);
+  const known = isKnown(loc);
+  const data = locationsData[loc.id];
+  const imgSrc = data ? data.image : `assets/locations/${loc.id}.jpg`;
+  const panelImage = document.getElementById('panelImg');
+  panelImage.src = known ? imgSrc : 'assets/map_bg.jpg';
+  panelImage.style.filter = known ? '' : 'brightness(.25) grayscale(1) blur(3px)';
+  document.getElementById('panelTitle').textContent = known ? (loc.name || loc.id) : '未探索区域';
+  
+  let body = known ? `<span class="panel-region">${loc.region}</span><p class="panel-desc">${loc.desc}</p>` :
+    '<p class="panel-desc">这里仍被战争迷雾笼罩。请先前往与当前位置相邻的地点，逐步扩展足迹。</p>';
+  
+  if(known && data){
+    if(data.history){
+      body += `<div class="panel-section">
+        <div class="panel-section-title">历史渊源</div>
+        <p class="panel-desc">${data.history.substring(0,120)}...</p>
+      </div>`;
+    }
+    if(data.geography){
+      body += `<div class="panel-section">
+        <div class="panel-section-title">地理环境</div>
+        <p class="panel-desc">${data.geography.substring(0,120)}...</p>
+      </div>`;
+    }
+    const famousEvents = detailTagList(data.famousEvents);
+    if(famousEvents.length){
+      body += `<div class="panel-section">
+        <div class="panel-section-title">重大事件</div>
+        <div class="panel-tags">${famousEvents.slice(0,4).map(e=>`<span class="panel-tag">${escapeMapText(e)}</span>`).join('')}</div>
+      </div>`;
+    }
+    const famousFigures = detailTagList(data.famousFigures);
+    if(famousFigures.length){
+      body += `<div class="panel-section">
+        <div class="panel-section-title">著名人物</div>
+        <div class="panel-tags">${famousFigures.slice(0,4).map(f=>`<span class="panel-tag">${escapeMapText(f)}</span>`).join('')}</div>
+      </div>`;
+    }
+  }
+
+  const plan = state && state.destinationPlan;
+  const objective = gameMapState && gameMapState.objective;
+  if(known && state){
+    const activities = Array.isArray(state.activities) ? state.activities : [];
+    const npcs = Array.isArray(state.npcs) ? state.npcs : [];
+    body += `<div class="panel-section" data-testid="location-actions">
+      <div class="panel-section-title">当地玩法</div>
+      <div class="panel-tags">${activities.slice(0,6).map(item=>`<span class="panel-tag">${escapeMapText(item)}</span>`).join('') || '<span class="panel-desc">调查当地线索</span>'}</div>
+      <div class="panel-section-title">当地人物</div>
+      <div class="panel-tags">${npcs.slice(0,5).map(item=>`<span class="panel-tag">${escapeMapText(item)}</span>`).join('') || '<span class="panel-desc">当地向导</span>'}</div>
+      </div>`;
+  }
+  if(known && state && state.explorationInProgress){
+    const explorationStatus = state.explorationActive ? '进行中' : '已暂停';
+    const explorationColor = state.explorationActive ? 'active' : 'suspended';
+    body += `<div class="panel-section location-exploration-panel ${explorationColor}" data-testid="location-exploration">
+      <div class="panel-section-title">地点探索 · ${escapeMapText(explorationStatus)}</div>
+      <div class="panel-itinerary">
+        <div class="panel-itinerary-row"><span class="panel-itinerary-key">行动模式</span><span class="panel-itinerary-value">${escapeMapText(state.explorationModeLabel || '当地探索')}</span></div>
+        <div class="panel-itinerary-row"><span class="panel-itinerary-key">阶段进度</span><span class="panel-itinerary-value">${escapeMapText(state.explorationCompletedStages || 0)} / ${escapeMapText(state.explorationStageCount || 4)} · 抵达后可继续</span></div>
+      </div>
+    </div>`;
+  } else if(known && state && state.explorationStatus === 'completed') {
+    body += `<div class="panel-section location-exploration-panel completed" data-testid="location-exploration">
+      <div class="panel-section-title">地点探索 · 已完成一轮</div>
+      <p class="panel-route-meta">这里仍可开启下一轮当地行动。</p>
+    </div>`;
+  }
+  if(known && state && objective && (state.objective || state.recommended)){
+    const route = routeLabel(objective.routeIds);
+    const nextName = objective.nextHopId
+      ? (LOCATIONS.find(item => item.key === objective.nextHopId)?.name || LOCATIONS.find(item => item.key === objective.nextHopId)?.id || objective.nextHopId)
+      : objective.objectiveLocationName;
+    body += `<div class="panel-section" data-testid="active-objective">
+      <div class="panel-section-title">当前任务 · 第${escapeMapText(objective.ordinal || 1)}魂环</div>
+      <div class="panel-itinerary">
+        <div class="panel-itinerary-row"><span class="panel-itinerary-key">任务目标</span><span class="panel-itinerary-value">${escapeMapText(objective.objectiveLocationName)}</span></div>
+        <div class="panel-itinerary-row"><span class="panel-itinerary-key">推荐路线</span><span class="panel-itinerary-value">${escapeMapText(route)}</span></div>
+        <div class="panel-itinerary-row"><span class="panel-itinerary-key">下一站</span><span class="panel-itinerary-value">${escapeMapText(nextName || '已抵达目标地点')}</span></div>
+      </div>
+    </div>`;
+  }
+  if(known && plan){
+    body += `<div class="panel-section" data-testid="destination-plan">
+      <div class="panel-section-title">抵达后可做</div>
+      <div class="panel-itinerary">
+        <div class="panel-itinerary-row"><span class="panel-itinerary-key">首要目标</span><span class="panel-itinerary-value">${escapeMapText(plan.primary)}</span></div>
+        <div class="panel-itinerary-row"><span class="panel-itinerary-key">武魂适配</span><span class="panel-itinerary-value">${escapeMapText(plan.fit)}</span></div>
+        <div class="panel-itinerary-row"><span class="panel-itinerary-key">人物线索</span><span class="panel-itinerary-value">${escapeMapText(plan.contact)}</span></div>
+        <div class="panel-itinerary-row"><span class="panel-itinerary-key">区域评估</span><span class="panel-itinerary-value">${escapeMapText(plan.risk)} · ${escapeMapText(plan.visit)}</span></div>
+      </div>
+    </div>`;
+  }
+  
+  if(known) body += `<a href="codex.html" class="panel-link" id="panel-codex-link">📜 查看完整百科</a>`;
+  let travelFast = false;
+  if(gameMapState && state){
+    let label = '尚不可前往';
+    let disabled = true;
+    if(state.current){ label = '✓ 当前所在'; }
+    else if(gameMapState.level < state.unlockedLevel){ label = `🔒 需要 Lv.${state.unlockedLevel}`; }
+    else if(state.visited){ label = `快速旅行 · ${state.fastCost}金币 · 约${state.fastDays}天`; disabled = false; travelFast = true; }
+    else if(state.adjacent){
+      label = state.nextHop
+        ? `任务导航 · 前往下一站 · ${state.normalCost}金币 · 约${state.normalDays}天`
+        : `首次探索 · ${state.normalCost}金币 · 约${state.normalDays}天`;
+      disabled = false;
+    } else if(state.recommended){
+      label = '推荐路线 · 请先前往下一站';
+    }
+    const routeMeta = disabled || state.current ? '' : travelFast
+      ? `快速旅行将路程压缩至约${state.fastDays}天，途中遭遇率约${state.fastEncounterPercent}%；抵达后仍会保留上方地点行动线索。`
+      : state.nextHop
+        ? `这是任务推荐的下一段路线。首次抵达会按路线探索并生成${escapeMapText(loc.name)}的地点行动界面。`
+        : `首次探索路程约${state.normalDays}天，途中遭遇率约${state.normalEncounterPercent}%；抵达后会生成当地行动界面。`;
+    body += `<div class="panel-actions"><button class="panel-travel" id="panel-travel" ${disabled ? 'disabled' : ''}>${label}</button></div>${routeMeta ? `<p class="panel-route-meta">${escapeMapText(routeMeta)}</p>` : ''}`;
+  }
+  document.getElementById('panelBody').innerHTML = body;
+  const travelButton = document.getElementById('panel-travel');
+  if(travelButton && !travelButton.disabled) travelButton.addEventListener('click', () => {
+    travelButton.disabled = true;
+    travelButton.textContent = '旅途中…';
+    window.parent.postMessage({ type:'map-travel', locationId:loc.key, fast:travelFast }, '*');
+  });
+  const codexLink = document.getElementById('panel-codex-link');
+  if(codexLink && window.parent !== window) codexLink.addEventListener('click', event => {
+    event.preventDefault();
+    window.parent.postMessage({ type:'navigate', view:'codex' }, '*');
+  });
+  panelReturnFocus = document.activeElement;
+  detailPanel.classList.add('open');
+  document.getElementById('panelClose').focus();
+}
+
+let panelReturnFocus = null;
+function closeDetailPanel(){
+  if(!detailPanel.classList.contains('open')) return;
+  detailPanel.classList.remove('open');
+  if(panelReturnFocus && typeof panelReturnFocus.focus === 'function') panelReturnFocus.focus();
+}
+document.getElementById('panelClose').addEventListener('click', closeDetailPanel);
+
+// ESC关闭并在详情面板内约束焦点
+window.addEventListener('keydown',(e)=>{
+  if(e.key === 'Escape' && rumorPanel.classList.contains('open')){ closeRumorPanel(); return; }
+  if(!detailPanel.classList.contains('open')) return;
+  if(e.key === 'Escape'){ closeDetailPanel(); return; }
+  if(e.key !== 'Tab') return;
+  const focusable = [...detailPanel.querySelectorAll('button:not(:disabled),[href],[tabindex]:not([tabindex="-1"])')].filter(element => element.offsetParent !== null);
+  if(!focusable.length) return;
+  const first = focusable[0], last = focusable[focusable.length - 1];
+  if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+  else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+});
+
+// 点击空白关闭
+viewport.addEventListener('click',(e)=>{
+  if(e.target === viewport || e.target === mapLayer || e.target === mapBg || e.target === markersLayer){
+    closeDetailPanel();
+  }
+});
+
+// ========== 初始化 ==========
+// 独立打开：若存在进行中的文字版角色，则在顶栏显示当前角色角标
+(function(){
+  if(window.parent !== window) return;
+  try{
+    const raw = localStorage.getItem('dldl_text_rpg_save');
+    if(!raw) return;
+    const data = JSON.parse(raw);
+    if(!data || !data.playerId || data.finished) return;
+    const badge = document.getElementById('player-badge');
+    if(badge){ badge.hidden = false; badge.textContent = `当前角色：${data.name} · Lv.${data.level}`; }
+    const navGame = document.getElementById('nav-game');
+    if(navGame) navGame.textContent = '← 继续游戏';
+  }catch(e){}
+})();
+renderMarkers();
+renderHiddenMarkers();
+renderLegend();
+renderObjectiveBanner();
+focusRequestedLocation();
+
+window.addEventListener('message', event => {
+  // B-1：仅接受本站点父页面的地图状态同步
+  if(event.origin !== window.location.origin) return;
+  if(event.source !== window.parent) return;
+  if(!event.data || event.data.type !== 'map-state') return;
+  const nextSignature = JSON.stringify(event.data);
+  if(nextSignature === mapStateSignature) return;
+  mapStateSignature = nextSignature;
+   gameMapState = event.data;
+   renderMarkers();
+   renderHiddenMarkers();
+   renderRumorLedger();
+   renderObjectiveBanner();
+  let tip = document.getElementById('mapStateTip');
+  if(!tip){
+    tip = document.createElement('div');
+    tip.id = 'mapStateTip';
+    tip.className = 'map-state-tip';
+    document.body.appendChild(tip);
+  }
+  const current = (gameMapState.locations || []).find(location => location.current);
+  const next = gameMapState.nextHopId
+    ? (gameMapState.locations || []).find(location => location.id === gameMapState.nextHopId)
+    : null;
+   tip.textContent = current
+     ? `当前位置：${current.name}　·　金币：${gameMapState.gold}　·　${next ? `任务下一站：${next.name}` : '点击地点查看行动'}`
+     : '点击地点查看旅行条件';
+   detailPanel.classList.remove('open');
+   focusRequestedLocation();
+ });
+if(window.parent !== window) window.parent.postMessage({ type:'map-ready' }, '*');
+
+// ========== iframe导航 ==========
+// 如果在iframe中，隐藏自身导航栏（由父窗口SPA容器提供导航），并重定向导航链接
+(function(){
+  if(window.parent === window) return; // 不在iframe中，保持独立显示
+  // 隐藏自身导航栏
+  const topbar = document.querySelector('.topbar');
+  if(topbar) topbar.style.display = 'none';
+  // 将导航链接改为向父窗口发送消息
+  const navCodex = document.getElementById('nav-codex');
+  const navGame = document.getElementById('nav-game');
+  if(navCodex) navCodex.addEventListener('click', function(e){
+    e.preventDefault();
+    window.parent.postMessage({ type: 'navigate', view: 'codex' }, '*');
+  });
+  if(navGame) navGame.addEventListener('click', function(e){
+    e.preventDefault();
+    window.parent.postMessage({ type: 'navigate', view: 'game' }, '*');
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>斗罗大陆 · 旧版Canvas原型</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .proto-tag{display:inline-block;font-size:12px;color:#a89a7c;border:1px solid #4a3d22;border-radius:3px;padding:1px 8px;vertical-align:middle;letter-spacing:1px;margin-left:6px}
+    .menu-note{margin-top:12px;font-size:12px;color:#a89a7c;letter-spacing:1px}
+  </style>
+</head>
+<body>
+  <!-- 启动屏 -->
+  <div id="loading-screen" class="screen active">
+    <div class="loading-content">
+      <h1 class="title-glow">斗罗大陆</h1>
+      <h2 class="subtitle">武魂觉醒</h2>
+      <div class="loading-bar">
+        <div class="loading-fill" id="loading-fill"></div>
+      </div>
+      <p class="loading-text" id="loading-text">正在加载世界...</p>
+      <p class="loading-lore" id="loading-lore" aria-live="polite">武魂觉醒，是每个魂师一生中最重要的时刻</p>
+    </div>
+  </div>
+
+  <!-- 主菜单 -->
+  <div id="menu-screen" class="screen">
+    <div class="menu-content">
+      <h1 class="title-glow">斗罗大陆</h1>
+      <h2 class="subtitle">武魂觉醒 <span class="proto-tag">旧版原型</span></h2>
+      <div class="menu-emblem" aria-hidden="true"><span>武</span><span>魂</span><span>觉</span><span>醒</span></div>
+      <p class="menu-lore">在这片大陆上，每个人都有一个武魂……</p>
+      <div class="menu-buttons">
+        <button class="btn btn-primary" id="btn-new-game">开始新游戏</button>
+        <button class="btn" id="btn-load-game">读取存档</button>
+        <button class="btn" id="btn-help">操作说明</button>
+      </div>
+      <div class="menu-divider"></div>
+      <div class="menu-buttons">
+        <a class="btn btn-link" href="/game.html">✦ 进入正式版 · 文字RPG</a>
+        <a class="btn btn-link" href="/codex.html">万象图鉴</a>
+        <a class="btn btn-link" href="/map.html">万象地图</a>
+      </div>
+      <p class="menu-note">本页面为旧版 Canvas 原型，正式版请使用「文字RPG」模式。</p>
+      <div id="save-list" class="save-list hidden"></div>
+    </div>
+  </div>
+
+  <!-- 武魂选择界面 -->
+  <div id="spirit-select-screen" class="screen">
+    <div class="spirit-select-content">
+      <h2 class="screen-title">武魂觉醒</h2>
+      <p class="screen-desc">选择你的武魂,踏上魂师之路</p>
+      <div class="spirit-grid" id="spirit-grid"></div>
+      <div class="spirit-detail" id="spirit-detail">
+        <div class="spirit-detail-placeholder">悬停或点击武魂查看详情</div>
+      </div>
+      <div class="name-input-area">
+        <input type="text" id="player-name" class="text-input" aria-label="魂师名号" name="playerName" autocomplete="off" placeholder="输入魂师名号…" maxlength="8">
+        <span class="confirm-spirit-wrap" data-tooltip="请先选择武魂并输入名号">
+          <button class="btn btn-primary" id="btn-confirm-spirit" disabled title="请先选择武魂并输入名号">确认武魂</button>
+        </span>
+      </div>
+      <button class="btn btn-back" id="btn-back-menu">返回</button>
+    </div>
+  </div>
+
+  <!-- 游戏主界面 -->
+  <div id="game-screen" class="screen">
+    <canvas id="game-canvas"></canvas>
+    
+    <!-- 顶部HUD -->
+    <div class="hud-top">
+      <div class="hud-player-info">
+        <div class="hud-name" id="hud-name">魂师</div>
+        <div class="hud-level">Lv.<span id="hud-level">1</span></div>
+        <div class="hud-spirit" id="hud-spirit">武魂</div>
+      </div>
+      <div class="hud-bars">
+        <div class="bar-container">
+          <div class="bar-label">HP</div>
+          <div class="bar hp-bar"><div class="bar-fill" id="hud-hp"></div><span class="bar-text" id="hud-hp-text">100/100</span></div>
+        </div>
+        <div class="bar-container">
+          <div class="bar-label">EXP</div>
+          <div class="bar exp-bar"><div class="bar-fill" id="hud-exp"></div><span class="bar-text" id="hud-exp-text">0/100</span></div>
+        </div>
+      </div>
+      <div class="hud-rings" id="hud-rings"></div>
+    </div>
+
+    <!-- 技能栏 -->
+    <div class="skill-bar" aria-label="魂技栏">
+      <div class="skill-slot" id="skill-slot" title="按 Q 释放武魂技能">
+        <div class="skill-key">Q</div>
+        <div class="skill-icon" id="skill-icon">✦</div>
+        <div class="skill-name" id="skill-name">技能</div>
+        <div class="skill-cooldown" id="skill-cooldown"></div>
+      </div>
+      <div class="skill-slot locked" aria-label="W 技能尚未解锁"><div class="skill-key">W</div><div class="skill-icon">🔒</div><div class="skill-name">未解锁</div></div>
+      <div class="skill-slot locked" aria-label="E 技能尚未解锁"><div class="skill-key">E</div><div class="skill-icon">🔒</div><div class="skill-name">未解锁</div></div>
+      <div class="skill-slot locked" aria-label="R 技能尚未解锁"><div class="skill-key">R</div><div class="skill-icon">🔒</div><div class="skill-name">未解锁</div></div>
+    </div>
+
+    <!-- 小地图 -->
+    <canvas id="minimap" class="minimap"></canvas>
+
+    <!-- 提示信息 -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- 暂停菜单 -->
+    <div id="pause-menu" class="overlay" role="dialog" aria-modal="true" aria-labelledby="pause-title" aria-hidden="true">
+      <div class="pause-content">
+        <h2 id="pause-title">已暂停</h2>
+        <button class="btn btn-primary" id="btn-resume">继续游戏</button>
+        <button class="btn" id="btn-save">保存进度</button>
+        <button class="btn" id="btn-quit">返回主菜单</button>
+      </div>
+    </div>
+
+    <!-- 升级提示 -->
+    <div id="level-up-overlay" class="overlay" role="dialog" aria-modal="true" aria-labelledby="level-up-title" aria-hidden="true">
+      <div class="level-up-content">
+        <h2 class="level-up-title" id="level-up-title">等级提升!</h2>
+        <p id="level-up-text"></p>
+        <button class="btn btn-primary" id="btn-level-up-ok">好的</button>
+      </div>
+    </div>
+
+    <!-- 死亡界面 -->
+    <div id="death-overlay" class="overlay" role="dialog" aria-modal="true" aria-labelledby="death-title" aria-hidden="true">
+      <div class="death-content">
+        <h2 class="death-title" id="death-title">魂师陨落</h2>
+        <p>你已被魂兽击败...</p>
+        <button class="btn btn-primary" id="btn-revive">原地复活(损失10%经验)</button>
+        <button class="btn" id="btn-respawn">回到重生点</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 帮助界面 -->
+  <div id="help-screen" class="screen">
+    <div class="help-content">
+      <h2 class="screen-title">操作说明</h2>
+      <div class="help-section">
+        <h3>基本操作</h3>
+        <p><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> 或 方向键 - 移动</p>
+        <p><kbd>鼠标左键</kbd> - 普通攻击</p>
+        <p><kbd>Q</kbd> - 释放武魂技能</p>
+        <p><kbd>空格</kbd> - 拾取魂环</p>
+        <p><kbd>ESC</kbd> - 暂停菜单</p>
+        <p><kbd>Shift</kbd> - 冲刺(消耗体力)</p>
+      </div>
+      <div class="help-section">
+        <h3>游戏目标</h3>
+        <p>1. 在大地图中探索,寻找魂兽</p>
+        <p>2. 击杀魂兽有几率掉落对应年份的魂环</p>
+        <p>3. 靠近魂环按空格吸收,提升属性</p>
+        <p>4. 每个魂师最多吸收9个魂环</p>
+        <p>5. 魂环年限不能超过自身等级承受能力</p>
+      </div>
+      <button class="btn btn-primary" id="btn-help-back">明白了</button>
+    </div>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/input.js"></script>
+  <script src="js/physics.js"></script>
+  <script src="js/pixel-art.js"></script>
+  <script src="js/world.js"></script>
+  <script src="js/player.js"></script>
+  <script src="js/beasts.js"></script>
+  <script src="js/rings.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,1515 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>斗罗大陆 · 万象图鉴</title>
+<link rel="stylesheet" href="css/tokens.css">
+<style>
+/* K3-1：主题 token 同源自 css/tokens.css；下方仅保留本页差异值作页面覆盖 */
+*{margin:0;padding:0;box-sizing:border-box}
+
+:root{
+  --bg:#1a1408;
+  --bg2:#221a0c;
+  --gold:#c9a84c;
+  --gold-dim:#8a7440;
+  --ink:#d4c5a0;
+  --ink-dim:#8a7d62;
+  --seal:#8b2500;
+  --card:#241c0e;
+  --line:#3a2f1a;
+  --line2:#4a3d22;
+}
+
+html{scroll-behavior:smooth}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:'Noto Serif SC',SimSun,宋体,serif;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* 纸张纹理 + 边缘暗角 */
+body::before{
+  content:'';
+  position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,.6) 100%),
+    repeating-linear-gradient(90deg, rgba(255,255,255,.014) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(0deg, rgba(0,0,0,.035) 0 1px, transparent 1px 5px);
+}
+
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:#120d05}
+::-webkit-scrollbar-thumb{background:#3a2f1a;border-radius:5px;border:2px solid #120d05}
+::-webkit-scrollbar-thumb:hover{background:var(--gold)}
+
+.page{position:relative;z-index:1;max-width:1400px;margin:0 auto;padding:0 24px 90px}
+
+/* ===== 顶部 ===== */
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:18px 0 6px}
+.home-link{
+  color:var(--ink-dim);text-decoration:none;
+  font-family:'Ma Shan Zheng',SimSun,serif;font-size:18px;letter-spacing:2px;
+  padding:7px 18px;border:1px solid var(--line);border-radius:3px;
+  transition:all .25s;background:rgba(36,28,14,.5);
+}
+.home-link:hover{color:var(--gold);border-color:var(--gold);transform:translateX(-3px)}
+.player-badge{
+  font-family:'Ma Shan Zheng',serif;font-size:12.5px;letter-spacing:1px;
+  color:#b9e7c0;border:1px solid rgba(127,196,140,.7);border-radius:3px;
+  background:rgba(18,40,34,.7);padding:4px 10px;white-space:nowrap;
+}
+.seal-mark{
+  font-family:'Ma Shan Zheng',serif;color:var(--seal);
+  border:2px solid var(--seal);padding:4px 12px;font-size:15px;
+  border-radius:4px;transform:rotate(3deg);opacity:.88;letter-spacing:2px;
+  background:rgba(139,37,0,.06);
+}
+
+header{text-align:center;padding:28px 0 8px}
+.main-title{
+  font-family:'Ma Shan Zheng',SimSun,serif;
+  font-size:clamp(40px,7vw,72px);
+  color:var(--gold);letter-spacing:8px;line-height:1.2;
+  text-shadow:0 0 32px rgba(201,168,76,.28),0 2px 4px rgba(0,0,0,.6);
+}
+.title-rule{
+  width:140px;height:2px;margin:20px auto 14px;position:relative;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+}
+.title-rule::after{
+  content:'❖';position:absolute;left:50%;top:50%;
+  transform:translate(-50%,-50%);
+  color:var(--gold);font-size:13px;background:var(--bg);padding:0 9px;
+}
+.sub-title{
+  display:inline-block;
+  font-size:15px;color:var(--ink-dim);letter-spacing:2px;line-height:1.8;
+  max-width:680px;padding:0 6px 10px;
+  border-bottom:1px solid var(--seal);
+}
+
+/* ===== 标签页 ===== */
+.tabs{display:flex;justify-content:center;gap:6px;margin:28px 0 6px;flex-wrap:wrap}
+.tab{
+  background:none;border:none;cursor:pointer;
+  font-family:'Ma Shan Zheng',SimSun,serif;
+  font-size:clamp(20px,3vw,28px);letter-spacing:5px;
+  color:var(--ink-dim);padding:8px 28px 11px;position:relative;
+  transition:color .3s;
+}
+.tab::after{
+  content:'';position:absolute;left:14%;right:14%;bottom:0;height:2px;
+  background:var(--gold);transform:scaleX(0);
+  transition:transform .35s ease;
+  box-shadow:0 0 8px rgba(201,168,76,.6);
+}
+.tab:hover{color:var(--ink)}
+.tab.active{color:var(--gold)}
+.tab.active::after{transform:scaleX(1)}
+
+/* ===== Banner ===== */
+.banner{
+  position:relative;height:clamp(170px,28vw,320px);
+  border-radius:6px;overflow:hidden;margin:18px 0 26px;
+  border:1px solid var(--line);
+}
+.banner img{
+  width:100%;height:100%;object-fit:cover;
+  filter:sepia(.22) saturate(.85) brightness(.68);
+  transition:filter .6s ease,transform .6s ease;
+}
+.banner:hover img{filter:sepia(.05) saturate(1.08) brightness(.98);transform:scale(1.05)}
+.banner::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(26,20,8,.94) 0%,rgba(26,20,8,.4) 45%,transparent 75%);
+}
+.banner-caption{
+  position:absolute;left:28px;bottom:20px;z-index:2;
+  font-family:'Ma Shan Zheng',serif;
+  font-size:clamp(22px,3vw,32px);color:var(--gold);letter-spacing:5px;
+  text-shadow:0 2px 10px rgba(0,0,0,.85);
+}
+.banner-caption small{
+  display:block;font-family:'Noto Serif SC',serif;font-size:12px;
+  color:var(--ink-dim);letter-spacing:3px;margin-top:4px;
+}
+
+/* ===== 统计条 ===== */
+.stats-bar{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:26px}
+.stat-chip{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 18px;border:1px solid var(--line);border-radius:20px;
+  cursor:pointer;font-size:13px;color:var(--ink-dim);
+  background:rgba(36,28,14,.6);transition:all .25s;user-select:none;
+}
+.stat-chip:hover{transform:translateY(-2px);border-color:var(--gold);color:var(--ink)}
+.stat-chip.active{border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,.12)}
+.stat-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;box-shadow:0 0 6px currentColor}
+.stat-count{font-weight:700;color:var(--ink)}
+
+/* ===== 筛选与搜索 ===== */
+.filter-row{
+  display:flex;flex-wrap:wrap;gap:14px;
+  justify-content:space-between;align-items:center;margin-bottom:30px;
+}
+.filter-tags{display:flex;flex-wrap:wrap;gap:8px}
+.filter-tag{
+  padding:6px 16px;border:1px solid var(--line);border-radius:3px;
+  background:transparent;color:var(--ink-dim);
+  font-family:'Noto Serif SC',serif;font-size:13px;letter-spacing:1px;
+  cursor:pointer;transition:all .25s;
+}
+.filter-tag:hover{transform:translateY(-2px);border-color:var(--gold);color:var(--ink)}
+.filter-tag.active{border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,.1)}
+.search-box{position:relative}
+.search-box input{
+  background:rgba(36,28,14,.8);border:1px solid var(--line);border-radius:3px;
+  color:var(--ink);font-family:'Noto Serif SC',serif;font-size:14px;
+  padding:9px 14px 9px 36px;width:260px;outline:none;
+  transition:border-color .25s;
+}
+.search-box input:focus{border-color:var(--gold)}
+.search-box input::placeholder{color:#5a5040}
+.search-box::before{
+  content:'🔍';position:absolute;left:11px;top:50%;
+  transform:translateY(-50%);font-size:13px;opacity:.55;
+}
+
+/* ===== 等级分区 ===== */
+.tier-section{margin-bottom:48px;opacity:0;animation:fadeInUp .55s ease forwards}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.tier-header{
+  display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;
+  margin-bottom:20px;padding-bottom:11px;border-bottom:1px solid var(--line);
+}
+.tier-name{font-family:'Ma Shan Zheng',SimSun,serif;font-size:28px;letter-spacing:3px}
+.tier-desc{font-size:13px;color:var(--ink-dim);letter-spacing:1px}
+.tier-count{margin-left:auto;font-size:12px;color:var(--ink-dim);letter-spacing:1px}
+
+/* ===== 卡片 ===== */
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:16px}
+.card{
+  background:var(--card);border:1px solid var(--line);border-radius:5px;
+  overflow:hidden;cursor:pointer;
+  transition:transform .3s,box-shadow .3s,border-color .3s;
+}
+.card:hover,.card:focus-visible{
+  transform:translateY(-4px);border-color:var(--gold);
+  box-shadow:0 8px 24px rgba(0,0,0,.5),0 0 18px rgba(201,168,76,.22);
+}
+.card-img{
+  position:relative;width:100%;aspect-ratio:1;overflow:hidden;
+  background:#171106;display:flex;align-items:center;justify-content:center;
+}
+.card-img img{
+  width:100%;height:100%;object-fit:cover;
+  filter:sepia(.15) saturate(.9) brightness(.85);
+  transition:filter .45s ease,transform .45s ease;
+}
+.card:hover .card-img img{filter:sepia(0) saturate(1.1) brightness(1);transform:scale(1.05)}
+.card-tier-bar{position:absolute;top:0;left:0;right:0;height:3px;z-index:2}
+.icon-fallback{font-size:54px;filter:grayscale(.3) opacity(.8)}
+.card-body{padding:12px 12px 14px}
+.card-name{
+  font-family:'Ma Shan Zheng',SimSun,serif;
+  font-size:19px;color:var(--ink);letter-spacing:2px;margin-bottom:5px;
+}
+.card-meta{font-size:11.5px;color:var(--ink-dim);line-height:1.6;letter-spacing:.5px;margin-bottom:9px;min-height:2.6em}
+.card-traits{display:flex;flex-wrap:wrap;gap:5px}
+.trait-chip{
+  font-size:10.5px;color:var(--ink-dim);
+  border:1px solid var(--line);border-radius:2px;
+  padding:2px 7px;letter-spacing:.5px;white-space:nowrap;
+}
+.empty-hint{
+  text-align:center;color:var(--ink-dim);
+  font-family:'Ma Shan Zheng',serif;font-size:22px;letter-spacing:4px;
+  padding:70px 0;
+}
+
+/* ===== 详情弹窗 ===== */
+.modal-overlay{
+  position:fixed;inset:0;z-index:100;
+  background:rgba(10,8,3,.86);backdrop-filter:blur(4px);
+  display:flex;align-items:center;justify-content:center;padding:20px;
+  opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity .25s ease-out,visibility 0s linear .25s;
+}
+.modal-overlay.show{opacity:1;visibility:visible;pointer-events:auto;transition-delay:0s}
+.modal{
+  background:linear-gradient(160deg,#2a2110,#1e1710 60%,#1a1408);
+  border:1px solid #8a7a45;border-radius:6px;
+  max-width:980px;width:100%;max-height:90vh;max-height:90dvh;
+  /* K3任务1：头部（图+标题）固定、正文内部滚动，关闭按钮始终可见 */
+  display:flex;flex-direction:column;overflow:hidden;overscroll-behavior:contain;
+  position:relative;
+  box-shadow:0 24px 80px rgba(0,0,0,.8),0 0 44px rgba(201,168,76,.14),inset 0 0 60px rgba(0,0,0,.35);
+  opacity:0;transform:scale(.95) translateY(10px);
+  transition:opacity .25s ease-out,transform .25s ease-out;
+}
+.modal-overlay.show .modal{opacity:1;transform:scale(1) translateY(0)}
+.modal-close{
+  position:absolute;top:14px;right:14px;z-index:5;
+  width:36px;height:36px;border-radius:50%;
+  background:rgba(26,20,8,.88);border:1px solid var(--line);
+  color:var(--ink-dim);font-size:20px;cursor:pointer;line-height:1;
+  transition:all .25s;
+}
+.modal-close:hover{color:var(--gold);border-color:var(--gold);transform:rotate(90deg)}
+
+.modal-head{
+  flex:0 0 auto;
+  display:grid;grid-template-columns:minmax(220px,340px) 1fr;
+  gap:26px;padding:28px 28px 0;align-items:start;
+}
+.modal-img{
+  position:relative;width:100%;aspect-ratio:1;
+  border:1px solid var(--line);border-radius:4px;overflow:hidden;
+  background:#171106;display:flex;align-items:center;justify-content:center;
+}
+.modal-img img{width:100%;height:100%;object-fit:cover}
+.modal-img .icon-fallback{font-size:96px}
+.modal-img-frame{
+  position:absolute;inset:0;border-radius:4px;pointer-events:none;
+  box-shadow:inset 0 0 0 1px rgba(201,168,76,.25),inset 0 0 30px rgba(0,0,0,.4);
+}
+.entry-no{
+  position:absolute;top:8px;left:8px;z-index:2;
+  font-family:'Ma Shan Zheng',serif;font-size:12px;letter-spacing:1px;
+  color:var(--ink-dim);background:rgba(10,8,3,.7);
+  padding:3px 9px;border-radius:2px;border:1px solid var(--line);
+}
+.modal-tier-tag{
+  display:inline-block;margin-top:14px;
+  font-family:'Ma Shan Zheng',serif;font-size:15px;letter-spacing:2px;
+  padding:4px 18px;border:1px solid;border-radius:3px;
+}
+.modal-title-block{padding-top:6px}
+.modal-name{
+  font-family:'Ma Shan Zheng',SimSun,serif;
+  font-size:clamp(30px,4vw,44px);letter-spacing:5px;line-height:1.2;
+  margin-bottom:12px;
+}
+.modal-type-line{font-size:14px;color:var(--ink-dim);letter-spacing:2px;line-height:1.9}
+.modal-type-line b{color:var(--ink);font-weight:600}
+.rarity-badge{
+  display:inline-block;font-size:12px;letter-spacing:1px;
+  padding:2px 10px;border:1px solid var(--gold-dim);border-radius:2px;
+  color:var(--gold);margin-left:8px;background:rgba(201,168,76,.07);
+}
+.tier-quote{
+  margin-top:12px;padding:8px 14px;
+  border-left:2px solid var(--seal);
+  font-size:13px;color:var(--ink-dim);letter-spacing:1px;line-height:1.8;
+  background:rgba(139,37,0,.05);
+}
+
+.modal-body{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:24px 28px 32px}
+.sec-title{
+  font-family:'Ma Shan Zheng',serif;font-size:21px;color:var(--gold);
+  letter-spacing:3px;margin:24px 0 14px;
+  display:flex;align-items:center;gap:12px;
+}
+.sec-title::before{
+  content:'';width:6px;height:6px;background:var(--gold);
+  transform:rotate(45deg);flex-shrink:0;
+}
+.sec-title::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--line),transparent)}
+.sec-title:first-child{margin-top:0}
+.modal-desc{
+  font-size:14.5px;line-height:2.15;color:var(--ink);
+  text-indent:2em;letter-spacing:.5px;
+}
+
+/* 战力评估 */
+.assess{display:grid;grid-template-columns:220px 1fr;gap:24px;align-items:center}
+.radar-wrap{display:flex;flex-direction:column;align-items:center;gap:10px}
+.radar{width:200px;height:200px}
+.power-badge{
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  padding:8px 14px;border:1px solid var(--line);border-radius:4px;
+  background:rgba(26,20,8,.6);
+}
+.power-score{font-size:12px;color:var(--ink-dim);letter-spacing:1px}
+.power-score b{font-size:18px;color:var(--ink);font-weight:700}
+.power-rating{font-family:'Ma Shan Zheng',serif;font-size:18px;letter-spacing:3px}
+.bars{display:flex;flex-direction:column;gap:11px}
+.bar-row{display:grid;grid-template-columns:48px 1fr 56px;align-items:center;gap:10px}
+.bar-label{font-size:12px;color:var(--ink-dim);letter-spacing:1px}
+.bar-track{height:9px;background:rgba(26,20,8,.8);border:1px solid var(--line);border-radius:5px;overflow:hidden}
+.bar-fill{height:100%;border-radius:4px;transition:width .6s ease}
+.bar-val{font-size:13px;color:var(--ink);font-weight:700;text-align:right;letter-spacing:.5px}
+
+.attr-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.attr-cell{
+  display:flex;justify-content:space-between;align-items:center;
+  background:rgba(26,20,8,.75);border:1px solid var(--line);
+  border-radius:3px;padding:11px 16px;
+}
+.attr-label{font-size:13px;color:var(--ink-dim);letter-spacing:2px}
+.attr-value{font-size:16px;font-weight:700;color:var(--ink);letter-spacing:1px}
+.attr-value.small{font-size:13px;font-weight:400;text-align:right}
+
+/* 评注块 */
+.commentary-block{
+  position:relative;
+  background:linear-gradient(180deg,rgba(201,168,76,.06),rgba(201,168,76,.02));
+  border:1px solid rgba(201,168,76,.22);border-radius:4px;
+  padding:16px 20px 16px 22px;
+}
+.commentary-block::before{
+  content:'评';position:absolute;left:-1px;top:14px;
+  writing-mode:vertical-rl;
+  font-family:'Ma Shan Zheng',serif;font-size:13px;color:var(--gold);
+  background:var(--bg2);padding:6px 2px;letter-spacing:2px;
+  border:1px solid rgba(201,168,76,.3);border-radius:2px;
+}
+.commentary-text{font-size:14px;line-height:2.05;color:var(--ink);text-indent:2em;letter-spacing:.5px}
+
+.note-block{
+  border-left:3px solid var(--gold);
+  background:rgba(201,168,76,.06);
+  padding:12px 18px;border-radius:0 3px 3px 0;
+  margin-bottom:10px;
+}
+.note-label{
+  font-family:'Ma Shan Zheng',serif;font-size:15px;color:var(--gold);
+  letter-spacing:2px;margin-right:10px;
+}
+.note-text{font-size:13.5px;line-height:1.9;color:var(--ink)}
+
+/* 相关条目 */
+.related-grid{display:flex;flex-wrap:wrap;gap:8px}
+.rel-chip{
+  display:flex;align-items:center;gap:7px;
+  padding:7px 12px;border:1px solid var(--line);border-radius:4px;
+  background:rgba(36,28,14,.7);cursor:pointer;
+  transition:all .25s;max-width:240px;
+}
+.rel-chip:hover{transform:translateY(-2px);border-color:var(--gold);background:rgba(201,168,76,.08)}
+.rel-chip .rel-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;box-shadow:0 0 5px currentColor}
+.rel-chip .rel-ic{font-size:18px;flex-shrink:0}
+.rel-chip .rel-name{font-size:13px;color:var(--ink);letter-spacing:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rel-chip .rel-meta{font-size:10.5px;color:var(--ink-dim);letter-spacing:.5px}
+.rel-empty{font-size:13px;color:var(--ink-dim);letter-spacing:1px;font-style:italic}
+
+.modal-traits{display:flex;flex-wrap:wrap;gap:8px}
+.modal-trait{
+  font-size:12px;color:var(--gold);letter-spacing:1px;
+  border:1px solid rgba(201,168,76,.4);border-radius:3px;
+  background:rgba(201,168,76,.07);padding:5px 14px;
+}
+
+/* 页脚典籍章 */
+.codex-footer{
+  margin-top:28px;padding-top:18px;border-top:1px dashed var(--line);
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;
+}
+.codex-stamp{
+  font-family:'Ma Shan Zheng',serif;font-size:14px;color:var(--seal);
+  border:2px solid var(--seal);padding:4px 12px;border-radius:3px;
+  transform:rotate(-2deg);letter-spacing:2px;background:rgba(139,37,0,.05);
+}
+.codex-credit{font-size:11.5px;color:var(--ink-dim);letter-spacing:2px}
+
+/* ===== 响应式 ===== */
+@media(max-width:760px){
+  .modal-head{grid-template-columns:1fr;gap:16px;padding:20px 20px 0}
+  .modal-img{max-width:220px;margin:0 auto}
+  .modal-name{font-size:28px;letter-spacing:3px}
+  .modal-body{padding:18px 20px 22px}
+  .modal-desc{font-size:14px;line-height:1.85}
+  .assess{grid-template-columns:1fr;gap:16px}
+}
+@media(max-width:600px){
+  .page{padding:0 14px 70px}
+  .card-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}
+  .main-title{letter-spacing:3px}
+  .search-box input{width:100%}
+  .search-box{width:100%}
+  .attr-grid{grid-template-columns:1fr}
+  .seal-mark{display:none}
+  .bar-row{grid-template-columns:42px 1fr 46px}
+}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+/* K3任务1：横屏矮屏（844×390）——弹窗拉高占满、图片改横向小图，正文区可滚 */
+@media (max-height:560px) and (orientation:landscape){
+  .modal-overlay{padding:6px}
+  .modal{max-height:96vh;max-height:96dvh}
+  .modal-head{grid-template-columns:minmax(120px,180px) 1fr;gap:14px;padding:14px 18px 0}
+  .modal-img{max-width:180px}
+  .modal-name{font-size:24px;letter-spacing:2px;margin-bottom:6px}
+  .modal-type-line{font-size:12px;line-height:1.6}
+  .tier-quote{margin-top:8px;font-size:12px;line-height:1.5}
+  .modal-body{padding:12px 18px 16px}
+  .modal-desc{font-size:13px;line-height:1.8}
+  .sec-title{font-size:17px;margin:14px 0 8px}
+  .modal-close{top:8px;right:8px;width:30px;height:30px;font-size:16px}
+}
+@media(max-width:480px){
+  .modal-overlay{padding:8px}
+  .modal{max-height:88vh;max-height:88dvh;border-radius:4px}
+  .modal-head{padding:14px 14px 0;gap:10px}
+  .modal-img{max-width:180px}
+  .modal-name{font-size:22px;letter-spacing:2px}
+  .modal-type-line{font-size:12px}
+  .modal-body{padding:14px 14px 18px}
+  .modal-desc{font-size:13px;line-height:1.75}
+  .modal-tier-tag{font-size:11px;padding:2px 8px}
+  .modal-close{top:8px;right:8px;width:30px;height:30px;font-size:16px}
+  .modal-traits{gap:4px}
+  .modal-trait{font-size:11px;padding:3px 8px}
+  .card-grid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}
+  .topbar{flex-wrap:wrap;gap:6px;justify-content:center}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="topbar">
+    <a href="/" class="home-link" id="nav-home">← 归去</a>
+    <span class="player-badge" id="player-badge" hidden></span>
+    <a href="map.html" class="home-link" id="nav-map">🗺 万象地图</a>
+    <div class="seal-mark">万象图鉴</div>
+  </div>
+
+  <header>
+    <h1 class="main-title">斗罗大陆 · 万象图鉴</h1>
+    <div class="title-rule"></div>
+    <p class="sub-title" id="sub-title">收录斗罗大陆世界中已知的武魂</p>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab active" data-codex="spirit">武魂典</button>
+    <button class="tab" data-codex="beast">魂兽录</button>
+    <button class="tab" data-codex="ring">魂环谱</button>
+    <button class="tab" data-codex="npc">人物录</button>
+    <button class="tab" data-codex="bone">魂骨录</button>
+    <button class="tab" data-codex="location">地志</button>
+  </nav>
+
+  <div class="banner" id="banner">
+    <img id="banner-img" src="assets/spirits/蓝银草.jpg" alt="封面" width="1200" height="360" fetchpriority="high"
+      onerror="this.closest('.banner').style.display='none'">
+    <div class="banner-caption" id="banner-caption">武魂典<small>点击卡片，展卷详阅</small></div>
+  </div>
+
+  <div class="stats-bar" id="stats-bar"></div>
+
+  <div class="filter-row">
+    <div class="filter-tags" id="filter-tags"></div>
+    <div class="search-box">
+      <input type="search" id="search" aria-label="搜索图鉴" name="codexSearch" autocomplete="off" placeholder="检索名称 / 类型 / 特性 / 栖地…">
+    </div>
+  </div>
+
+  <main id="content"></main>
+</div>
+
+<div class="modal-overlay" id="modal-overlay" role="dialog" aria-modal="true" aria-label="图鉴详情" aria-hidden="true">
+  <div class="modal" id="modal">
+    <button class="modal-close" id="modal-close" aria-label="关闭图鉴详情">&times;</button>
+    <div id="modal-content"></div>
+  </div>
+</div>
+
+<script>
+const CONFIG = {
+  spirit: {
+    dataUrl:'/data/spirit-codex.json', itemsKey:'spirits',
+    tabName:'武魂典', banner:'assets/spirits/蓝银草.jpg',
+    statFields:['attack','defense','hp','speed'],
+    radarLabels:[{k:'attack',l:'攻'},{k:'defense',l:'防'},{k:'hp',l:'命'},{k:'speed',l:'速'}]
+  },
+  beast: {
+    dataUrl:'/data/beast-codex.json', itemsKey:'beasts',
+    tabName:'魂兽录', banner:'assets/beast_codex_master.jpg',
+    statFields:['attack','defense','hp','speed'],
+    radarLabels:[{k:'attack',l:'攻'},{k:'defense',l:'防'},{k:'hp',l:'命'},{k:'speed',l:'速'}]
+  },
+  ring: {
+    dataUrl:'/data/ring-codex.json', itemsKey:'rings',
+    tabName:'魂环谱', banner:'assets/ring_codex_master.jpg',
+    statFields:[], radarLabels:[{k:'attack',l:'攻加'},{k:'defense',l:'防加'},{k:'hp',l:'命加'}]
+  },
+  npc: {
+    dataUrl:'/data/npc-codex.json', itemsKey:'npcs',
+    tabName:'人物录', banner:'assets/npcs/唐三.jpg',
+    statFields:[], radarLabels:[]
+  },
+  bone: {
+    dataUrl:'/data/bone-codex.json', itemsKey:'bones',
+    tabName:'魂骨录', banner:'assets/bones/魂骨幻影.jpg',
+    statFields:[], radarLabels:[]
+  },
+  location: {
+    dataUrl:'/data/location-codex.json', itemsKey:'locations',
+    tabName:'地志', banner:'assets/map_bg.jpg',
+    statFields:[], radarLabels:[]
+  }
+};
+
+/* 魂兽 ringColor(白/黄/紫/黑/红) ↔ 魂环 tier 映射 */
+const COLOR_TO_RING_TIER = {'白色':'white','黄色':'yellow','紫色':'purple','黑色':'black','红色':'red'};
+const RATING_BANDS = [
+  {min:.80, label:'神品', color:'#c9a84c'},
+  {min:.60, label:'极品', color:'#9b6ec5'},
+  {min:.40, label:'上品', color:'#4a7fb5'},
+  {min:.20, label:'良品', color:'#6a8e5a'},
+  {min:0,   label:'凡品', color:'#8a7d62'}
+];
+
+let currentCodex = 'spirit';
+let currentFilter = 'all';
+let searchTerm = '';
+let modalReturnFocus = null;
+let allData = null;
+const cache = {};
+
+/* ---------- 工具 ---------- */
+function esc(s){
+  return String(s == null ? '' : s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+function formatDropRate(rate){
+  const percent = (Number(rate) || 0) * 100;
+  if(percent === 0) return '0%';
+  if(percent < 0.1) return percent.toFixed(2).replace(/0+$/,'').replace(/\.$/,'') + '%';
+  if(percent < 1)   return percent.toFixed(1).replace(/\.0$/,'') + '%';
+  return Math.round(percent) + '%';
+}
+
+function ringColorHex(name){
+  return {'白色':'#c8c0b0','黄色':'#c8a830','紫色':'#a05eb8','黑色':'#8a8a9a','红色':'#c84040'}[name] || '#c9a84c';
+}
+function riskColor(r){
+  return {'极低':'#6a9a6a','低':'#8a9a5a','中':'#c8a830','高':'#c47a3a','极高':'#b83030'}[r] || '#c9a84c';
+}
+function statColor(key){
+  return {attack:'#c4705a',defense:'#6a9ac4',hp:'#6a9a7a',speed:'#c9a84c'}[key] || '#c9a84c';
+}
+
+/* ---------- 数据加载 ---------- */
+async function loadCodex(type){
+  if(cache[type]) return cache[type];
+  const res = await fetch(CONFIG[type].dataUrl);
+  if(!res.ok) throw new Error('数据加载失败');
+  const json = await res.json();
+  cache[type] = json;
+  return json;
+}
+
+/* 预载全部三卷以便弹窗交叉引用 */
+async function preloadAll(){
+  const types = Object.keys(CONFIG);
+  await Promise.all(types.map(t => loadCodex(t).catch(()=>null)));
+}
+
+async function switchCodex(type){
+  currentCodex = type;
+  currentFilter = 'all';
+  searchTerm = '';
+  document.getElementById('search').value = '';
+  document.querySelectorAll('.tab').forEach(t =>
+    t.classList.toggle('active', t.dataset.codex === type));
+
+  const banner = document.getElementById('banner');
+  banner.style.display = '';
+  document.getElementById('banner-img').src = CONFIG[type].banner;
+  document.getElementById('banner-caption').innerHTML =
+    CONFIG[type].tabName + '<small>点击卡片，展卷详阅</small>';
+
+  const content = document.getElementById('content');
+  content.innerHTML = '<div class="empty-hint">卷轴展开中……</div>';
+
+  try{
+    allData = await loadCodex(type);
+  }catch(e){
+    content.innerHTML = '<div class="empty-hint">图鉴数据加载失败，请确认服务已启动</div>';
+    return;
+  }
+  document.getElementById('sub-title').textContent =
+    (allData.meta && allData.meta.description) || (type === 'npc' ? '收录斗罗大陆世界中的人物' : type === 'bone' ? '收录斗罗大陆世界中已知的魂骨' : type === 'location' ? '收录斗罗大陆世界中的地点' : '');
+  renderFilterTags();
+  renderStatsBar();
+  render();
+}
+
+/* ---------- 筛选 / 统计 ---------- */
+function tiersOf(codex){ 
+  codex = codex || currentCodex; 
+  if(codex === 'npc') return groupByFaction(itemsOf(codex));
+  if(codex === 'bone') return groupByType(itemsOf(codex));
+  if(codex === 'location') return groupByRegion(itemsOf(codex));
+  return (cache[codex] && cache[codex].meta && cache[codex].meta.tiers) || {}; 
+}
+function itemsOf(codex){ codex = codex || currentCodex; const d = cache[codex]; return d ? (d[CONFIG[codex].itemsKey] || []) : []; }
+
+function groupByFaction(npcs){
+  const groups = {};
+  const factionNames = {'shrek_seven':'史莱克七怪','shrek_teachers':'史莱克导师','haotian':'昊天宗','seven_treasure':'七宝琉璃宗','wuhun_empire':'武魂帝国','tian_dou':'天斗帝国','gods':'神界','other':'其他'};
+  npcs.forEach(n => {
+    const f = n.faction || 'other';
+    const fname = factionNames[f] || f;
+    if(!groups[f]) groups[f] = { name: fname, color: factionColor(f), desc: '' };
+    groups[f].items = groups[f].items || [];
+    groups[f].items.push(n);
+  });
+  return groups;
+}
+function groupByType(bones){ const boneTypeNames = {'头部':'头骨','躯干':'躯干骨','左臂':'左臂骨','右臂':'右臂骨','左腿':'左腿骨','右腿':'右腿骨','外附':'外附魂骨','other':'其他'}; const groups = {}; bones.forEach(b => { const t = b.type || 'other'; const tname = boneTypeNames[t] || t; if(!groups[t]) groups[t] = { name: tname, color: boneTypeColor(t), desc: '' }; groups[t].items = groups[t].items || []; groups[t].items.push(b); }); return groups; }
+function groupByRegion(locs){ const groups = {}; locs.forEach(l => { const r = l.region || '大陆'; if(!groups[r]) groups[r] = { name: r, color: '#c9a84c', desc: '' }; groups[r].items = groups[r].items || []; groups[r].items.push(l); }); return groups; }
+function factionColor(f){ return {'史莱克七怪':'#7fc48c','史莱克导师':'#5a8fc4','昊天宗':'#c4705a','七宝琉璃宗':'#c9a84c','武魂帝国':'#a855f7','天斗帝国':'#3b82f6','神界':'#fbbf24'}[f] || '#a89a7c'; }
+function boneTypeColor(t){ return {'头部':'#fbbf24','躯干':'#c9a84c','左臂':'#a855f7','右臂':'#a855f7','左腿':'#3b82f6','右腿':'#3b82f6','外附':'#dc2626'}[t] || '#a89a7c'; }
+
+function renderFilterTags(){
+  const tiers = tiersOf();
+  let html = '<button class="filter-tag active" data-tier="all">全部</button>';
+  for(const [k,v] of Object.entries(tiers))
+    html += `<button class="filter-tag" data-tier="${k}">${esc(v.name)}</button>`;
+  const box = document.getElementById('filter-tags');
+  box.innerHTML = html;
+  box.querySelectorAll('.filter-tag').forEach(btn =>
+    btn.addEventListener('click', () => setFilter(btn.dataset.tier)));
+}
+
+function setFilter(tier){
+  currentFilter = tier;
+  document.querySelectorAll('#filter-tags .filter-tag').forEach(t =>
+    t.classList.toggle('active', t.dataset.tier === tier));
+  document.querySelectorAll('#stats-bar .stat-chip').forEach(c =>
+    c.classList.toggle('active', c.dataset.tier === tier));
+  render();
+}
+
+function renderStatsBar(){
+  const tiers = tiersOf();
+  const items = itemsOf();
+  const counts = {};
+  if(currentCodex === 'npc'){
+    items.forEach(it => { const f = it.faction || 'other'; counts[f] = (counts[f] || 0) + 1; });
+  } else if(currentCodex === 'bone'){
+    items.forEach(it => { const t = it.type || 'other'; counts[t] = (counts[t] || 0) + 1; });
+  } else if(currentCodex === 'beast'){
+    items.forEach(it => { const t = it.type || 'other'; counts[t] = (counts[t] || 0) + 1; });
+  } else if(currentCodex === 'location'){
+    items.forEach(it => { const r = it.region || '大陆'; counts[r] = (counts[r] || 0) + 1; });
+  } else {
+    items.forEach(it => counts[it.tier] = (counts[it.tier] || 0) + 1);
+  }
+  document.getElementById('stats-bar').innerHTML =
+    Object.entries(tiers).map(([k,v]) =>
+      `<span class="stat-chip" data-tier="${k}">
+        <span class="stat-dot" style="background:${v.color};color:${v.color}"></span>
+        ${esc(v.name)} · <span class="stat-count">${counts[k] || 0}</span>
+      </span>`).join('');
+  document.querySelectorAll('#stats-bar .stat-chip').forEach(c =>
+    c.addEventListener('click', () => setFilter(c.dataset.tier)));
+}
+
+function getFiltered(){
+  return itemsOf().filter(it => {
+    // NPC/Bone/Location: filter by faction/type/region
+    if(currentCodex === 'npc'){
+      if(currentFilter !== 'all' && (it.faction || '其他') !== currentFilter) return false;
+    } else if(currentCodex === 'bone'){
+      if(currentFilter !== 'all' && (it.type || '其他') !== currentFilter) return false;
+    } else if(currentCodex === 'beast'){
+      if(currentFilter !== 'all' && (it.type || 'other') !== currentFilter) return false;
+    } else if(currentCodex === 'location'){
+      if(currentFilter !== 'all' && (it.region || '大陆') !== currentFilter) return false;
+    } else {
+      if(currentFilter !== 'all' && it.tier !== currentFilter) return false;
+    }
+    if(searchTerm){
+      const t = searchTerm.toLowerCase();
+      const hay = [
+        it.name, it.type, it.subtype, it.habitat, it.rarity, it.desc,
+        it.specialAbility, it.specialNote, it.ringColor,
+        it.faction, it.title, it.region, it.source, it.personality,
+        (it.traits || []).join(' '),
+        (it.sourceBeasts || []).join(' ')
+      ].filter(Boolean).join(' ').toLowerCase();
+      if(!hay.includes(t)) return false;
+    }
+    return true;
+  });
+}
+
+/* ---------- 渲染列表 ---------- */
+function render(){
+  const tiers = tiersOf();
+  const filtered = getFiltered();
+  const content = document.getElementById('content');
+  if(!filtered.length){
+    content.innerHTML = '<div class="empty-hint">未寻得相关条目</div>';
+    return;
+  }
+  let html = '', idx = 0;
+  for(const [tk, tv] of Object.entries(tiers)){
+    if(currentFilter !== 'all' && tk !== currentFilter) continue;
+    const items = filtered.filter(it => {
+      if(currentCodex === 'npc') return (it.faction || '其他') === tk;
+      if(currentCodex === 'bone') return (it.type || 'other') === tk;
+      if(currentCodex === 'beast') return (it.type || '草食系') === tk;
+      if(currentCodex === 'location') return (it.region || '大陆') === tk;
+      return it.tier === tk;
+    });
+    if(!items.length) continue;
+    html += renderTierSection(tv, items, idx++);
+  }
+  content.innerHTML = html || '<div class="empty-hint">未寻得相关条目</div>';
+  content.querySelectorAll('.card').forEach(card => {
+    card.tabIndex = 0;
+    card.setAttribute('role', 'button');
+    card.setAttribute('aria-label', `查看${card.querySelector('.card-name')?.textContent || '图鉴'}详情`);
+    const open = () => showDetail(card.dataset.id);
+    card.addEventListener('click', open);
+    card.addEventListener('keydown', event => {
+      if(event.key === 'Enter' || event.key === ' '){ event.preventDefault(); open(); }
+    });
+  });
+}
+
+function renderTierSection(tierCfg, items, idx){
+  return `<section class="tier-section" style="animation-delay:${idx * 80}ms">
+    <div class="tier-header" style="border-bottom-color:${tierCfg.color}44">
+      <span class="tier-name" style="color:${tierCfg.color}">${esc(tierCfg.name)}</span>
+      <span class="tier-desc">${esc(tierCfg.desc || '')}</span>
+      <span class="tier-count">共 ${items.length} 条</span>
+    </div>
+    <div class="card-grid">${items.map(it => renderCard(it)).join('')}</div>
+  </section>`;
+}
+
+function boneTierName(tier){
+  const tiers = (cache.bone && cache.bone.meta && cache.bone.meta.tiers) || {};
+  return tiers[tier] || tier || '未知品级';
+}
+
+function metaLine(it){
+  if(currentCodex === 'spirit') return `${esc(it.type)} · ${esc(it.subtype || '')} · ${esc(it.rarity || '')}`;
+  if(currentCodex === 'beast')  return `${esc(it.type)} · ${esc(it.habitat || '')} · ${esc(it.rarity || '')}`;
+  if(currentCodex === 'ring')   return `Lv.${it.minLevel}-${it.maxLevel} · ${esc(it.rarity || '')} · 风险${esc(it.absorptionRisk || '')}`;
+  if(currentCodex === 'npc')    return `${esc(it.title || '')} · ${esc(it.faction || '')}`;
+  if(currentCodex === 'bone')   return `${esc(it.type || '')} · ${esc(it.source || '')} · ${esc(boneTierName(it.tier))}`;
+  if(currentCodex === 'location') return `${esc(it.region || '')}`;
+  return '';
+}
+
+function renderCard(it){
+  if(currentCodex === 'npc') return renderNpcCard(it);
+  if(currentCodex === 'bone') return renderBoneCard(it);
+  if(currentCodex === 'location') return renderLocationCard(it);
+  if(currentCodex === 'beast') return renderBeastCard(it);
+  const tier = tiersOf()[it.tier] || {};
+  const img = it.image
+    ? `<img src="${esc(it.image)}" alt="${esc(it.name)}" loading="lazy"
+        onerror="this.outerHTML='<div class=icon-fallback>${esc(it.icon || '❖')}</div>'">`
+    : `<div class="icon-fallback">${esc(it.icon || '❖')}</div>`;
+  const traits = (it.traits || []).slice(0, 3)
+    .map(t => `<span class="trait-chip">${esc(t)}</span>`).join('');
+  return `<div class="card" data-id="${esc(it.id)}">
+    <div class="card-img">
+      <span class="card-tier-bar" style="background:${tier.color || 'var(--gold)'}"></span>
+      ${img}
+    </div>
+    <div class="card-body">
+      <div class="card-name">${esc(it.name)}</div>
+      <div class="card-meta">${metaLine(it)}</div>
+      <div class="card-traits">${traits}</div>
+    </div>
+  </div>`;
+}
+
+/* 魂兽卡片：按种类显示，含年份变体 */
+function renderBeastCard(it){
+  const tier = tiersOf()[it.type] || {};
+  const color = tier.color || '#c9a84c';
+  const img = it.image
+    ? `<img src="${esc(it.image)}" alt="${esc(it.name)}" loading="lazy"
+        onerror="this.outerHTML='<div class=icon-fallback>${esc(it.icon || '🐾')}</div>'">`
+    : `<div class="icon-fallback">${esc(it.icon || '🐾')}</div>`;
+  const traits = (it.traits || []).slice(0, 3)
+    .map(t => `<span class="trait-chip">${esc(t)}</span>`).join('');
+  // 年份变体标签
+  const yearNames = {'ten':'10年','hundred':'100年','thousand':'1000年','ten_thousand':'1万年','hundred_thousand':'10万年'};
+  const yearColors = {'ten':'#f5f5f5','hundred':'#facc15','thousand':'#a855f7','ten_thousand':'#1f2937','hundred_thousand':'#dc2626'};
+  const varChips = it.variants
+    ? Object.entries(it.variants).map(([k,v]) => 
+        `<span class="trait-chip" style="border-color:${yearColors[k]||'#888'};color:${yearColors[k]||'#888'}">${esc(yearNames[k]||k)}</span>`).join('')
+    : '';
+  return `<div class="card" data-id="${esc(it.id)}">
+    <div class="card-img">
+      <span class="card-tier-bar" style="background:${color}"></span>
+      ${img}
+    </div>
+    <div class="card-body">
+      <div class="card-name">${esc(it.name)}</div>
+      <div class="card-meta">${metaLine(it)}</div>
+      ${varChips ? `<div class="card-traits">${varChips}</div>` : ''}
+      <div class="card-traits" style="margin-top:4px">${traits}</div>
+    </div>
+  </div>`;
+}
+
+function renderNpcCard(it){
+  const color = factionColor(it.faction);
+  const img = it.image
+    ? `<img src="${esc(it.image)}" alt="${esc(it.name)}" loading="lazy"
+        onerror="this.outerHTML='<div class=icon-fallback style=font-size:40px;background:${color}22>${esc(it.name[0])}</div>'">`
+    : `<div class="icon-fallback" style="font-size:40px;background:${color}22">${esc(it.name[0])}</div>`;
+  return `<div class="card" data-id="${esc(it.id)}">
+    <div class="card-img">
+      <span class="card-tier-bar" style="background:${color}"></span>
+      ${img}
+    </div>
+    <div class="card-body">
+      <div class="card-name">${esc(it.name)}</div>
+      <div class="card-meta">${metaLine(it)}</div>
+      <div class="card-traits"><span class="trait-chip" style="color:${color}">${esc(it.personality || '')}</span></div>
+    </div>
+  </div>`;
+}
+
+function renderBoneCard(it){
+  const color = boneTypeColor(it.type);
+  const img = it.image
+    ? `<img src="${esc(it.image)}" alt="${esc(it.name)}" loading="lazy"
+        onerror="this.outerHTML='<div class=icon-fallback style=font-size:36px;background:${color}22>🦴</div>'">`
+    : `<div class="icon-fallback" style="font-size:36px;background:${color}22">🦴</div>`;
+  return `<div class="card" data-id="${esc(it.id)}">
+    <div class="card-img">
+      <span class="card-tier-bar" style="background:${color}"></span>
+      ${img}
+    </div>
+    <div class="card-body">
+      <div class="card-name">${esc(it.name)}</div>
+      <div class="card-meta">${metaLine(it)}</div>
+      <div class="card-traits"><span class="trait-chip" style="color:${color}">${esc(boneTierName(it.tier))}</span></div>
+    </div>
+  </div>`;
+}
+
+function renderLocationCard(it){
+  const img = it.image
+    ? `<img src="${esc(it.image)}" alt="${esc(it.name)}" loading="lazy"
+        onerror="this.outerHTML='<div class=icon-fallback style=font-size:36px;background:rgba(201,168,76,.1)>📍</div>'">`
+    : `<div class="icon-fallback" style="font-size:36px;background:rgba(201,168,76,.1)">📍</div>`;
+  return `<div class="card" data-id="${esc(it.id)}">
+    <div class="card-img">
+      <span class="card-tier-bar" style="background:#c9a84c"></span>
+      ${img}
+    </div>
+    <div class="card-body">
+      <div class="card-name">${esc(it.name)}</div>
+      <div class="card-meta">${metaLine(it)}</div>
+      <div class="card-traits"><span class="trait-chip">${esc((it.famousEvents || '').slice(0,20))}…</span></div>
+    </div>
+  </div>`;
+}
+
+/* ---------- 战力 / 评估 ---------- */
+function statMaxes(codex){
+  const items = itemsOf(codex);
+  if(codex === 'ring'){
+    const m = {attack:0, defense:0, hp:0};
+    items.forEach(it => { const sb = it.statBonus||{}; m.attack=Math.max(m.attack,sb.attack||0); m.defense=Math.max(m.defense,sb.defense||0); m.hp=Math.max(m.hp,sb.hp||0); });
+    return m;
+  }
+  if(codex === 'beast'){
+    const m = {attack:0, defense:0, hp:0, speed:0};
+    items.forEach(it => {
+      if(it.variants){
+        Object.values(it.variants).forEach(v => {
+          m.attack=Math.max(m.attack,v.attack||0);
+          m.defense=Math.max(m.defense,v.defense||0);
+          m.hp=Math.max(m.hp,v.hp||0);
+          m.speed=Math.max(m.speed,v.speed||0);
+        });
+      }
+    });
+    return m;
+  }
+  const m = {attack:0, defense:0, hp:0, speed:0};
+  items.forEach(it => { m.attack=Math.max(m.attack,it.attack||0); m.defense=Math.max(m.defense,it.defense||0); m.hp=Math.max(m.hp,it.hp||0); m.speed=Math.max(m.speed,it.speed||0); });
+  return m;
+}
+
+function powerScore(it, codex){
+  codex = codex || currentCodex;
+  if(codex === 'ring'){
+    const sb = it.statBonus || {};
+    return (sb.attack||0)*1.2 + (sb.defense||0)*1.0 + (sb.hp||0)*0.12 + (1-(it.dropRate||0))*45;
+  }
+  if(codex === 'beast' && it.variants){
+    const v = it.variants.hundred_thousand || it.variants.ten_thousand || it.variants.thousand || {};
+    return (v.attack||0)*1.2 + (v.defense||0)*1.0 + (v.hp||0)*0.15 + (v.speed||0)*1.0;
+  }
+  return (it.attack||0)*1.2 + (it.defense||0)*1.0 + (it.hp||0)*0.15 + (it.speed||0)*1.0;
+}
+
+function maxPowerScore(codex){
+  codex = codex || currentCodex;
+  let mx = 0;
+  itemsOf(codex).forEach(it => { mx = Math.max(mx, powerScore(it, codex)); });
+  return mx || 1;
+}
+
+function ratingOf(score, codex){
+  const mx = maxPowerScore(codex);
+  const ratio = score / mx;
+  for(const b of RATING_BANDS){ if(ratio >= b.min) return b; }
+  return RATING_BANDS[RATING_BANDS.length-1];
+}
+
+/* SVG 雷达图 */
+function radarSVG(stats, color){
+  // stats: [{label, value, max}]
+  const cx=100, cy=100, R=76, n=stats.length;
+  const ang = i => (-90 + i*(360/n)) * Math.PI/180;
+  const pt = (i, r) => [cx + r*Math.cos(ang(i)), cy + r*Math.sin(ang(i))];
+  const dataPts = stats.map((s,i) => pt(i, s.max>0 ? Math.max(0, Math.min(1, s.value/s.max)) * R : 0));
+  const poly = dataPts.map(p=>p.join(',')).join(' ');
+  let grid='';
+  for(let g=1; g<=3; g++){
+    const rr = R*g/3;
+    const gp = stats.map((s,i)=>pt(i, rr).join(',')).join(' ');
+    grid += `<polygon points="${gp}" fill="none" stroke="#3a2f1a" stroke-width="1" opacity="${0.25+g*0.12}"/>`;
+  }
+  const axes = stats.map((s,i)=>`<line x1="${cx}" y1="${cy}" x2="${pt(i,R)[0]}" y2="${pt(i,R)[1]}" stroke="#3a2f1a" stroke-width="1"/>`).join('');
+  const dots = dataPts.map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="3" fill="${color}"/>`).join('');
+  const labels = stats.map((s,i)=>{
+    const [lx,ly] = pt(i, R+16);
+    return `<text x="${lx}" y="${ly+4}" text-anchor="middle" fill="#d4c5a0" font-size="14" font-family="Ma Shan Zheng,serif">${esc(s.label)}</text>`;
+  }).join('');
+  return `<svg viewBox="0 0 200 200" class="radar">
+    ${grid}${axes}
+    <polygon points="${poly}" fill="${color}33" stroke="${color}" stroke-width="2" stroke-linejoin="round"/>
+    ${dots}${labels}
+  </svg>`;
+}
+
+function radarStatsFor(it, codex){
+  const maxes = statMaxes(codex);
+  if(codex === 'ring'){
+    const sb = it.statBonus || {};
+    return [
+      {label:'攻加', value:sb.attack||0, max:maxes.attack},
+      {label:'防加', value:sb.defense||0, max:maxes.defense},
+      {label:'命加', value:sb.hp||0, max:maxes.hp}
+    ];
+  }
+  return [
+    {label:'攻', value:it.attack||0, max:maxes.attack},
+    {label:'防', value:it.defense||0, max:maxes.defense},
+    {label:'命', value:it.hp||0, max:maxes.hp},
+    {label:'速', value:it.speed||0, max:maxes.speed}
+  ];
+}
+
+function barRowsFor(it, codex){
+  const maxes = statMaxes(codex);
+  if(codex === 'ring'){
+    const sb = it.statBonus||{};
+    return [
+      {label:'攻加', value:sb.attack||0, max:maxes.attack, color:statColor('attack')},
+      {label:'防加', value:sb.defense||0, max:maxes.defense, color:statColor('defense')},
+      {label:'命加', value:sb.hp||0, max:maxes.hp, color:statColor('hp')}
+    ];
+  }
+  return [
+    {label:'攻击', value:it.attack||0, max:maxes.attack, color:statColor('attack')},
+    {label:'防御', value:it.defense||0, max:maxes.defense, color:statColor('defense')},
+    {label:'生命', value:it.hp||0, max:maxes.hp, color:statColor('hp')},
+    {label:'速度', value:it.speed||0, max:maxes.speed, color:statColor('speed')}
+  ];
+}
+
+function buildAssessment(it, codex, tierColor){
+  const stats = radarStatsFor(it, codex);
+  const bars = barRowsFor(it, codex);
+  const score = powerScore(it, codex);
+  const rating = ratingOf(score, codex);
+  const barsHtml = bars.map(b => {
+    const pct = b.max>0 ? Math.max(2, Math.min(100, (b.value/b.max)*100)) : (b.value>0?100:0);
+    return `<div class="bar-row">
+      <span class="bar-label">${esc(b.label)}</span>
+      <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${b.color};box-shadow:0 0 8px ${b.color}55"></div></div>
+      <span class="bar-val">${b.value}</span>
+    </div>`;
+  }).join('');
+  return `<div class="assess">
+    <div class="radar-wrap">
+      ${radarSVG(stats, tierColor)}
+      <div class="power-badge">
+        <span class="power-score">综合 <b>${Math.round(score)}</b></span>
+        <span class="power-rating" style="color:${rating.color}">${rating.label}</span>
+      </div>
+    </div>
+    <div class="bars">${barsHtml}</div>
+  </div>`;
+}
+
+/* ---------- 典籍评注（依据字段生成） ---------- */
+function commentaryFor(it, codex, tierCfg, rating){
+  if(codex === 'spirit'){
+    const atkNote = (it.attack||0)===0
+      ? '无攻伐之力，仅堪生存辅助之用'
+      : `攻${it.attack}、防${it.defense}、命${it.hp}、速${it.speed}`;
+    const traitNote = (it.traits&&it.traits.length) ? `其性「${it.traits.map(esc).join('、')}」` : '其性未详';
+    const potNote = (it.maxLevel||0)>=90 ? '潜力深不可测，臻于化境'
+      : (it.maxLevel||0)>=50 ? '潜力不凡，可期大成'
+      : (it.maxLevel||0)>=20 ? '潜力尚可，勉堪一用'
+      : '潜力微薄，难成大器';
+    return `此物归「${esc(tierCfg.name)}」之列，于世间属${esc(it.rarity)}。乃${esc(it.type)}·${esc(it.subtype||'未详')}一类，${atkNote}，修炼至极可及${it.maxLevel}级，${potNote}。${traitNote}。综合而断，可入「<b style="color:${rating.color}">${rating.label}</b>」之品。`;
+  }
+  if(codex === 'beast'){
+    const abilityNote = (it.specialAbility && it.specialAbility!=='无')
+      ? `天赋绝技「${esc(it.specialAbility)}」尤为可怖` : '并无特殊绝技';
+    const ringNote = `陨落后可凝${esc(it.ringColor)}魂环，约属第${it.ringLevel}环之列`;
+    return `此兽归「${esc(tierCfg.name)}」，${esc(it.rarity)}，常栖于${esc(it.habitat||'未详之地')}。乃${esc(it.type)}之属，攻${it.attack}、防${it.defense}、命${it.hp}、速${it.speed}，${abilityNote}。${ringNote}。综合而断，可入「<b style="color:${rating.color}">${rating.label}</b>」之品。`;
+  }
+  const sb = it.statBonus||{};
+  const srcNote = (it.sourceBeasts&&it.sourceBeasts.length)
+    ? `多由${it.sourceBeasts.slice(0,3).map(esc).join('、')}等魂兽陨落凝结` : '其源未详';
+  const noteTail = it.specialNote ? esc(it.specialNote) + '。' : '';
+  return `此环归「${esc(tierCfg.name)}」，${esc(it.rarity)}，可于 Lv.${it.minLevel} 至 Lv.${it.maxLevel} 间吸收。加攻${sb.attack||0}、加防${sb.defense||0}、加命${sb.hp||0}，掉落概率${formatDropRate(it.dropRate)}，吸收风险${esc(it.absorptionRisk)}。${srcNote}。${noteTail}综合而断，可入「<b style="color:${rating.color}">${rating.label}</b>」之品。`;
+}
+
+/* ---------- 交叉引用 ---------- */
+function relChip(it, codex){
+  const tier = tiersOf(codex)[it.tier] || {};
+  const color = it.color || tier.color || '#c9a84c';
+  return `<div class="rel-chip" data-codex="${codex}" data-id="${esc(it.id)}">
+    <span class="rel-ic">${esc(it.icon || '❖')}</span>
+    <span style="display:flex;flex-direction:column;min-width:0">
+      <span class="rel-name">${esc(it.name)}</span>
+      <span class="rel-meta"><span class="rel-dot" style="background:${color};color:${color}"></span> ${esc(tier.name||'')}</span>
+    </span>
+  </div>`;
+}
+
+function relatedSameTier(it, codex, limit){
+  return itemsOf(codex)
+    .filter(x => x.id !== it.id && x.tier === it.tier)
+    .sort((a,b)=>powerScore(b,codex)-powerScore(a,codex))
+    .slice(0, limit||6);
+}
+
+function relatedSameKind(it, codex, limit){
+  // spirit/beast: same `type`; ring: same `rarity`
+  let list;
+  if(codex==='ring') list = itemsOf(codex).filter(x => x.id!==it.id && x.rarity===it.rarity);
+  else list = itemsOf(codex).filter(x => x.id!==it.id && x.type===it.type);
+  return list.sort((a,b)=>powerScore(b,codex)-powerScore(a,codex)).slice(0, limit||6);
+}
+
+function relatedSameHabitat(it, codex, limit){
+  if(codex!=='beast' || !it.habitat) return [];
+  const toks = it.habitat.split(/[、,，\s]+/).filter(Boolean);
+  return itemsOf(codex)
+    .filter(x => x.id!==it.id && x.habitat && toks.some(t => x.habitat.includes(t)))
+    .slice(0, limit||6);
+}
+
+/* 魂兽 → 其所产魂环 */
+function ringFromBeast(beast){
+  const tier = COLOR_TO_RING_TIER[beast.ringColor];
+  if(!tier) return null;
+  return itemsOf('ring').find(r => r.tier === tier) || null;
+}
+/* 魂环 → 产出该环的魂兽 */
+function beastsForRing(ring){
+  let tierKey = ring.tier;
+  // 反查 COLOR_TO_RING_TIER 的 key
+  const colorName = Object.keys(COLOR_TO_RING_TIER).find(k => COLOR_TO_RING_TIER[k]===tierKey);
+  if(!colorName) return [];
+  return itemsOf('beast').filter(b => b.ringColor === colorName).slice(0,8);
+}
+
+/* 相关条目渲染 */
+function renderRelated(title, items, codex){
+  if(!items || !items.length) return '';
+  return `<div class="sec-title">${esc(title)}</div>
+    <div class="related-grid">${items.map(it => relChip(it, codex)).join('')}</div>`;
+}
+
+/* ---------- 详情弹窗 ---------- */
+function attrCell(label, value, opts){
+  opts = opts || {};
+  return `<div class="attr-cell">
+    <span class="attr-label">${esc(label)}</span>
+    <span class="attr-value${opts.small ? ' small' : ''}"
+      ${opts.color ? `style="color:${opts.color}"` : ''}>${value}</span>
+  </div>`;
+}
+
+function buildAttrCells(it){
+  if(currentCodex === 'spirit'){
+    return attrCell('攻击', it.attack, {color:'#c4705a'})
+         + attrCell('防御', it.defense, {color:'#6a9ac4'})
+         + attrCell('生命', it.hp, {color:'#6a9a7a'})
+         + attrCell('速度', it.speed, {color:'#c9a84c'})
+         + attrCell('潜力', `${it.maxLevel} 级`, {color:'#a07ec5'})
+         + attrCell('类型', `${esc(it.type)} · ${esc(it.subtype || '')}`, {small:true});
+  }
+  if(currentCodex === 'beast'){
+    return attrCell('攻击', it.attack, {color:'#c4705a'})
+         + attrCell('防御', it.defense, {color:'#6a9ac4'})
+         + attrCell('生命', it.hp, {color:'#6a9a7a'})
+         + attrCell('速度', it.speed, {color:'#c9a84c'})
+         + attrCell('栖息地', esc(it.habitat || '未知'), {small:true})
+         + attrCell('魂环颜色', `第${it.ringLevel || 1}环 · ${esc(it.ringColor || '')}`,
+             {color: ringColorHex(it.ringColor)});
+  }
+  const sb = it.statBonus || {};
+  return attrCell('攻击加成', `+${sb.attack || 0}`, {color:'#c4705a'})
+       + attrCell('防御加成', `+${sb.defense || 0}`, {color:'#6a9ac4'})
+       + attrCell('生命加成', `+${sb.hp || 0}`, {color:'#6a9a7a'})
+       + attrCell('掉落概率', formatDropRate(it.dropRate), {color:'#c9a84c'})
+       + attrCell('吸收等级', `Lv.${it.minLevel} - ${it.maxLevel}`, {color:'#a07ec5'})
+       + attrCell('吸收风险', esc(it.absorptionRisk || ''), {color: riskColor(it.absorptionRisk)});
+}
+
+function buildExtras(it){
+  let html = '';
+  if(currentCodex === 'beast' && it.specialAbility && it.specialAbility !== '无'){
+    html += `<div class="sec-title">天赋绝技</div>
+      <div class="note-block" style="border-left-color:#c4705a">
+        <span class="note-label" style="color:#c4705a">绝技</span>
+        <span class="note-text">${esc(it.specialAbility)}</span>
+      </div>`;
+  }
+  if(currentCodex === 'ring'){
+    if(it.specialNote){
+      html += `<div class="sec-title">典籍备注</div>
+        <div class="note-block">
+          <span class="note-label">备注</span>
+          <span class="note-text">${esc(it.specialNote)}</span>
+        </div>`;
+    }
+  }
+  return html;
+}
+
+function buildCrossRefs(it){
+  const codex = currentCodex;
+  let html = '';
+  if(codex === 'beast'){
+    const ring = ringFromBeast(it);
+    if(ring){
+      html += renderRelated('凝结魂环', [ring], 'ring');
+    }
+    const sameHab = relatedSameHabitat(it, codex, 6);
+    if(sameHab.length) html += renderRelated('同域魂兽', sameHab, codex);
+    const sameKind = relatedSameKind(it, codex, 6);
+    if(sameKind.length) html += renderRelated('同属魂兽', sameKind, codex);
+  } else if(codex === 'ring'){
+    const beasts = beastsForRing(it);
+    if(beasts.length) html += renderRelated('产出魂兽', beasts, 'beast');
+    const sameKind = relatedSameKind(it, codex, 6);
+    if(sameKind.length) html += renderRelated('同阶魂环', sameKind, codex);
+  } else {
+    const sameKind = relatedSameKind(it, codex, 6);
+    if(sameKind.length) html += renderRelated('同类武魂', sameKind, codex);
+  }
+  const sameTier = relatedSameTier(it, codex, 6);
+  if(sameTier.length) html += renderRelated('同阶条目', sameTier, codex);
+  return html;
+}
+
+/* 魂兽年份变体表格 */
+function buildBeastVariantTable(it){
+  const yearNames = {'ten':'十年','hundred':'百年','thousand':'千年','ten_thousand':'万年','hundred_thousand':'十万年'};
+  const yearOrder = ['ten','hundred','thousand','ten_thousand','hundred_thousand'];
+  const yearColors = {'ten':'#f5f5f5','hundred':'#facc15','thousand':'#a855f7','ten_thousand':'#1f2937','hundred_thousand':'#dc2626'};
+  let rows = '';
+  yearOrder.forEach(yk => {
+    const v = it.variants[yk];
+    if(!v) return;
+    rows += `<tr>
+      <td style="text-align:center;font-weight:700;color:${yearColors[yk]};font-family:'Ma Shan Zheng',serif;font-size:17px;letter-spacing:2px">${yearNames[yk]}</td>
+      <td style="text-align:center">${esc(v.name || it.name)}</td>
+      <td style="text-align:center;color:#c4705a">${v.attack||0}</td>
+      <td style="text-align:center;color:#6a9ac4">${v.defense||0}</td>
+      <td style="text-align:center;color:#6a9a7a">${v.hp||0}</td>
+      <td style="text-align:center;color:#c9a84c">${v.speed||0}</td>
+      <td style="text-align:center"><span style="display:inline-block;width:16px;height:16px;border-radius:50%;background:${v.ringColor||'#888'};border:2px solid ${yearColors[yk]||'#888'}"></span></td>
+      <td style="text-align:center;font-size:12px;color:var(--ink-dim)">${formatDropRate(v.dropRate)}</td>
+    </tr>`;
+  });
+  return `<div class="sec-title">年份变体</div>
+    <div style="overflow-x:auto;margin-bottom:16px">
+    <table style="width:100%;border-collapse:collapse;font-size:13px;color:var(--ink);line-height:2">
+      <thead><tr style="border-bottom:2px solid var(--line)">
+        <th style="padding:6px 10px;text-align:center;color:var(--gold);font-family:'Ma Shan Zheng',serif;letter-spacing:2px">年份</th>
+        <th style="padding:6px 10px;text-align:center;color:var(--gold);font-family:'Ma Shan Zheng',serif;letter-spacing:2px">名称</th>
+        <th style="padding:6px 10px;text-align:center;color:var(--gold);font-family:'Ma Shan Zheng',serif;letter-spacing:2px">攻击</th>
+        <th style="padding:6px 10px;text-align:center;color:var(--gold);font-family:'Ma Shan Zheng',serif;letter-spacing:2px">防御</th>
+        <th style="padding:6px 10px;text-align:center;color:var(--gold);font-family:'Ma Shan Zheng',serif;letter-spacing:2px">生命</th>
+        <th style="padding:6px 10px;text-align:center;color:var(--gold);font-family:'Ma Shan Zheng',serif;letter-spacing:2px">速度</th>
+        <th style="padding:6px 10px;text-align:center;color:var(--gold);font-family:'Ma Shan Zheng',serif;letter-spacing:2px">魂环</th>
+        <th style="padding:6px 10px;text-align:center;color:var(--gold);font-family:'Ma Shan Zheng',serif;letter-spacing:2px">掉率</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    </div>`;
+}
+
+function showDetail(id){
+  const it = itemsOf().find(x => x.id === id);
+  if(!it) return;
+  if(currentCodex === 'npc') return showNpcDetail(it);
+  if(currentCodex === 'bone') return showBoneDetail(it);
+  if(currentCodex === 'location') return showLocationDetail(it);
+  const codex = currentCodex;
+  const tierKey = codex === 'beast' ? (it.type || '草食系') : it.tier;
+  const tierCfg = tiersOf()[tierKey] || {};
+  const tc = tierCfg.color || it.color || '#c9a84c';
+
+  const allItems = itemsOf();
+  const entryIdx = allItems.findIndex(x => x.id === id) + 1;
+  const entryTotal = allItems.length;
+
+  const img = it.image
+    ? `<img src="${esc(it.image)}" alt="${esc(it.name)}"
+        onerror="this.outerHTML='<div class=icon-fallback>${esc(it.icon || '❖')}</div>'">`
+    : `<div class="icon-fallback">${esc(it.icon || '❖')}</div>`;
+
+  const traits = (it.traits && it.traits.length)
+    ? `<div class="sec-title">特性谱</div>
+       <div class="modal-traits">${it.traits.map(t =>
+         `<span class="modal-trait">${esc(t)}</span>`).join('')}</div>`
+    : '';
+
+  const rarity = it.rarity ? `<span class="rarity-badge">${esc(it.rarity)}</span>` : '';
+  const typeLine = codex === 'spirit'
+    ? `<b>${esc(it.type)}</b> · ${esc(it.subtype || '')}${rarity}`
+    : codex === 'beast'
+      ? `<b>${esc(it.type)}</b> · 栖于 ${esc(it.habitat || '未知')}${rarity}`
+      : `<b>Lv.${it.minLevel}-${it.maxLevel}</b> 可吸收${rarity} · 风险 <b style="color:${riskColor(it.absorptionRisk)}">${esc(it.absorptionRisk || '')}</b>`;
+
+  const score = powerScore(it, codex);
+  const rating = ratingOf(score, codex);
+  const assessment = buildAssessment(it, codex, tc);
+  const commentary = commentaryFor(it, codex, tierCfg, rating);
+  const crossRefs = buildCrossRefs(it);
+
+  document.getElementById('modal-content').innerHTML = `
+    <div class="modal-head">
+      <div>
+        <div class="modal-img">
+          <span class="entry-no">No.${String(entryIdx).padStart(3,'0')} / ${entryTotal}</span>
+          ${img}
+          <span class="modal-img-frame" style="box-shadow:inset 0 0 0 1px ${tc}55, inset 0 0 30px rgba(0,0,0,.4)"></span>
+        </div>
+        <div style="text-align:center">
+          <span class="modal-tier-tag" style="color:${tc};border-color:${tc}66;background:${tc}14">
+            ${esc(tierCfg.name || '')}
+          </span>
+        </div>
+      </div>
+      <div class="modal-title-block">
+        <div class="modal-name" style="color:${tc};text-shadow:0 0 18px ${tc}33">${esc(it.name)}</div>
+        <div class="modal-type-line">${typeLine}</div>
+        ${tierCfg.desc ? `<div class="tier-quote">${esc(tierCfg.desc)}</div>` : ''}
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="sec-title">背景渊源</div>
+      <p class="modal-desc">${esc(it.desc || '此条目尚无记载，留待后人补录。')}</p>
+
+      <div class="sec-title">战力评估</div>
+      ${assessment}
+
+      <div class="sec-title">属性一览</div>
+      <div class="attr-grid">${buildAttrCells(it)}</div>
+
+      <div class="sec-title">典籍评注</div>
+      <div class="commentary-block">
+        <p class="commentary-text">${commentary}</p>
+      </div>
+
+      ${buildExtras(it)}
+      ${codex === 'beast' && it.variants ? buildBeastVariantTable(it) : ''}
+      ${traits}
+      ${crossRefs}
+
+      <div class="codex-footer">
+        <span class="codex-stamp">${esc(CONFIG[codex].tabName)} · 第 ${entryIdx} 则</span>
+        <span class="codex-credit">万象图鉴编纂录 · 共录 ${entryTotal} 条</span>
+      </div>
+    </div>`;
+
+  setModalOpen(true);
+  document.getElementById('modal').scrollTop = 0;
+
+  /* 绑定相关条目跳转 */
+  document.querySelectorAll('#modal-content .rel-chip').forEach(chip =>
+    chip.addEventListener('click', () => openItem(chip.dataset.codex, chip.dataset.id)));
+}
+
+/* 跨卷宗打开条目 */
+async function openItem(codex, id){
+  if(codex !== currentCodex){
+    await switchCodex(codex);
+  }
+  showDetail(id);
+}
+
+function setModalOpen(open){
+  const overlay = document.getElementById('modal-overlay');
+  const wasOpen = overlay.classList.contains('show');
+  if(open && !wasOpen) modalReturnFocus = document.activeElement;
+  overlay.classList.toggle('show', open);
+  overlay.setAttribute('aria-hidden', open ? 'false' : 'true');
+  document.body.style.overflow = open ? 'hidden' : '';
+  if(open) requestAnimationFrame(() => document.getElementById('modal-close').focus());
+  else if(wasOpen && modalReturnFocus && typeof modalReturnFocus.focus === 'function') modalReturnFocus.focus();
+}
+function closeModal(){ setModalOpen(false); }
+
+/* ---------- NPC/魂骨/地点 详情弹窗 ---------- */
+function showNpcDetail(it){
+  const color = factionColor(it.faction);
+  const img = it.image
+    ? `<img src="${esc(it.image)}" alt="${esc(it.name)}" style="width:100%;height:200px;object-fit:cover"
+        onerror="this.outerHTML='<div class=icon-fallback style=font-size:80px;height:200px;display:flex;align-items:center;justify-content:center;background:${color}22>${esc(it.name[0])}</div>'">`
+    : `<div class="icon-fallback" style="font-size:80px;height:200px;display:flex;align-items:center;justify-content:center;background:${color}22">${esc(it.name[0])}</div>`;
+  const html = `<div class="modal-grid">
+    <div class="modal-img">${img}</div>
+    <div>
+      <div class="modal-title">${esc(it.name)}</div>
+      <div class="modal-subtitle">${esc(it.title || '')} · ${esc(it.faction || '')}</div>
+      <div class="modal-desc">${esc(it.desc || '')}</div>
+      <div class="sec-title">性格</div><div class="modal-desc">${esc(it.personality || '')}</div>
+      <div class="sec-title">常驻地点</div><div class="modal-desc">${esc(it.location || '')}</div>
+      ${it.skills && it.skills.length ? `<div class="sec-title">技能</div><div class="modal-traits">${it.skills.map(s => `<span class="modal-trait">${esc(s)}</span>`).join('')}</div>` : ''}
+      ${it.relationships && it.relationships.length ? `<div class="sec-title">关系</div><div class="modal-traits">${it.relationships.map(r => `<span class="modal-trait">${esc(r)}</span>`).join('')}</div>` : ''}
+      ${it.storyEvents && it.storyEvents.length ? `<div class="sec-title">相关事件</div><div class="modal-desc">${esc(it.storyEvents.join('、'))}</div>` : ''}
+    </div>
+  </div>`;
+  document.getElementById('modal-content').innerHTML = html;
+  setModalOpen(true);
+}
+
+function showBoneDetail(it){
+  const color = boneTypeColor(it.type);
+  const img = it.image
+    ? `<img src="${esc(it.image)}" alt="${esc(it.name)}" style="width:100%;height:200px;object-fit:cover"
+        onerror="this.outerHTML='<div class=icon-fallback style=font-size:80px;height:200px;display:flex;align-items:center;justify-content:center;background:${color}22>🦴</div>'">`
+    : `<div class="icon-fallback" style="font-size:80px;height:200px;display:flex;align-items:center;justify-content:center;background:${color}22">🦴</div>`;
+  const html = `<div class="modal-grid">
+    <div class="modal-img">${img}</div>
+    <div>
+      <div class="modal-title">${esc(it.name)}</div>
+      <div class="modal-subtitle">${esc(it.type || '')} · ${esc(boneTierName(it.tier))} · 来源：${esc(it.source || '')}</div>
+      <div class="modal-desc">${esc(it.desc || '')}</div>
+      ${it.skills && it.skills.length ? `<div class="sec-title">魂骨技能</div>` + it.skills.map(s => `<div class="modal-desc" style="margin-bottom:4px"><b style="color:#c9a84c">${esc(s.name)}：</b>${esc(s.desc || '')}</div>`).join('') : ''}
+      ${it.dropCondition ? `<div class="sec-title">获取条件</div><div class="modal-desc" style="color:#d06a5a">${esc(it.dropCondition)}</div>` : ''}
+    </div>
+  </div>`;
+  document.getElementById('modal-content').innerHTML = html;
+  setModalOpen(true);
+}
+
+function showLocationDetail(it){
+  const img = it.image
+    ? `<img src="${esc(it.image)}" alt="${esc(it.name)}" style="width:100%;height:200px;object-fit:cover"
+        onerror="this.outerHTML='<div class=icon-fallback style=font-size:80px;height:200px;display:flex;align-items:center;justify-content:center;background:rgba(201,168,76,.1)>📍</div>'">`
+    : `<div class="icon-fallback" style="font-size:80px;height:200px;display:flex;align-items:center;justify-content:center;background:rgba(201,168,76,.1)">📍</div>`;
+  const html = `<div class="modal-grid">
+    <div class="modal-img">${img}</div>
+    <div>
+      <div class="modal-title">${esc(it.name)}</div>
+      <div class="modal-subtitle">${esc(it.region || '')}</div>
+      <div class="modal-desc">${esc(it.history || it.description || '')}</div>
+      ${it.geography ? `<div class="sec-title">地理</div><div class="modal-desc">${esc(it.geography)}</div>` : ''}
+      ${it.culture ? `<div class="sec-title">文化</div><div class="modal-desc">${esc(it.culture)}</div>` : ''}
+      ${it.famousEvents ? `<div class="sec-title">著名事件</div><div class="modal-desc">${esc(it.famousEvents)}</div>` : ''}
+      ${it.famousFigures ? `<div class="sec-title">著名人物</div><div class="modal-desc">${esc(it.famousFigures)}</div>` : ''}
+      ${it.secrets ? `<div class="sec-title" style="color:#d06a5a">秘闻</div><div class="modal-desc" style="color:#d06a5a">${esc(it.secrets)}</div>` : ''}
+      ${it.connectedLocations ? `<div class="sec-title">相连地点</div><div class="modal-desc">${esc(it.connectedLocations)}</div>` : ''}
+    </div>
+  </div>`;
+  document.getElementById('modal-content').innerHTML = html;
+  setModalOpen(true);
+}
+
+/* ---------- 事件绑定 ---------- */
+document.querySelectorAll('.tab').forEach(tab =>
+  tab.addEventListener('click', () => switchCodex(tab.dataset.codex)));
+
+document.getElementById('search').addEventListener('input', e => {
+  searchTerm = e.target.value.trim();
+  render();
+});
+
+document.getElementById('modal-overlay').addEventListener('click', e => {
+  if(e.target === e.currentTarget) closeModal();
+});
+document.getElementById('modal-close').addEventListener('click', closeModal);
+document.addEventListener('keydown', e => {
+  const overlay = document.getElementById('modal-overlay');
+  if(!overlay.classList.contains('show')) return;
+  if(e.key === 'Escape'){ closeModal(); return; }
+  if(e.key !== 'Tab') return;
+  const focusable = [...overlay.querySelectorAll('button:not(:disabled),[href],input:not(:disabled),[tabindex]:not([tabindex="-1"])')].filter(element => element.offsetParent !== null);
+  if(!focusable.length) return;
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+  if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+  else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+});
+
+/* ---------- 启动：预载三卷后展示武魂典 ---------- */
+(async () => {
+  await preloadAll();
+  switchCodex('spirit');
+})();
+
+/* ---------- iframe导航 ---------- */
+(function(){
+  if(window.parent === window) return; // 不在iframe中，保持独立显示
+  // 隐藏自身导航栏（由父窗口SPA容器提供导航）
+  const topbar = document.querySelector('.topbar');
+  if(topbar) topbar.style.display = 'none';
+  // 将导航链接改为向父窗口发送消息
+  const navHome = document.getElementById('nav-home');
+  const navMap = document.getElementById('nav-map');
+  if(navHome) navHome.addEventListener('click', function(e){
+    e.preventDefault();
+    window.parent.postMessage({ type: 'navigate', view: 'game' }, '*');
+  });
+  if(navMap) navMap.addEventListener('click', function(e){
+    e.preventDefault();
+    window.parent.postMessage({ type: 'navigate', view: 'map' }, '*');
+  });
+})();
+// 独立打开：若存在当前角色，则顶栏显示角标并将「归去」改为「继续游戏」
+(function(){
+  if(window.parent !== window) return;
+  try{
+    const raw = localStorage.getItem('dldl_text_rpg_save');
+    if(!raw) return;
+    const data = JSON.parse(raw);
+    if(!data || !data.playerId || data.finished) return;
+    const badge = document.getElementById('player-badge');
+    if(badge){ badge.hidden = false; badge.textContent = `当前角色：${data.name} · Lv.${data.level}`; }
+    const navHome = document.getElementById('nav-home');
+    if(navHome) navHome.textContent = '← 继续游戏';
+  }catch(e){}
+})();
+</script>
+</body>
+</html>

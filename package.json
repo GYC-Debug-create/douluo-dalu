@@ -1,0 +1,27 @@
+{
+  "name": "douluo-game",
+  "version": "1.0.0",
+  "description": "斗罗大陆像素风小游戏 - 武魂觉醒",
+  "main": "server.js",
+  "scripts": {
+    "postinstall": "npm run install:frontend",
+    "install:frontend": "npm ci --prefix frontend --include=dev",
+    "build": "npm run build:frontend",
+    "build:frontend": "npm run build --prefix frontend",
+    "prestart": "npm run build",
+    "start": "node server.js",
+    "dev": "node server.js",
+    "dev:frontend": "npm run dev --prefix frontend",
+    "test:browser": "npm run smoke:browser --prefix frontend",
+    "test:browser:gates": "node scripts/browser-event-gates.mjs",
+    "pretest": "npm run build",
+    "validate:data": "node scripts/validate-data.js",
+    "audit:map": "node scripts/audit-map-exploration.mjs",
+    "audit:assets": "node scripts/audit-event-assets.mjs",
+    "audit:events": "node scripts/audit-events.mjs --write",
+    "test": "node --test tests/*.test.js && npm test --prefix frontend"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}

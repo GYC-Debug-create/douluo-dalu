@@ -1,0 +1,216 @@
+/* 全局样式入口：引入设计 token + 基础重置 + 视觉效果 */
+
+/* 设计 token（色值/间距/字体）—— 从原项目复用 */
+@import './tokens.css';
+
+/* 基础重置 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  font-family: var(--font-body);
+  font-size: 16px;
+  background: var(--bg);
+  color: var(--ink);
+  overflow: hidden;
+  position: relative;
+}
+
+/* 背景纹理：暗角 + 扫描线效果（从原 game.html 迁移） */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse at center, transparent 50%, rgba(0, 0, 0, 0.5) 100%),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.014) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.028) 0 1px, transparent 1px 4px);
+}
+
+#app {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+a {
+  color: var(--gold);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--gold-hi);
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(201, 168, 76, 0.16);
+}
+
+input,
+textarea,
+select {
+  font-size: max(16px, 1em);
+}
+
+:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #171208;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #4a3d22;
+  border-radius: 5px;
+  border: 2px solid #171208;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gold);
+}
+
+/* ============ 页面过渡动画 ============ */
+.page-enter-active,
+.page-leave-active {
+  transition: opacity 0.25s ease-out, transform 0.25s ease-out;
+}
+
+.page-enter-from {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.page-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+/* ============ 通用动画 ============ */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* 属性变化闪烁 */
+@keyframes flashUp {
+  0% { color: var(--gold-hi); transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+@keyframes flashDown {
+  0% { color: var(--danger); transform: scale(0.8); }
+  100% { transform: scale(1); }
+}
+
+.flash-up {
+  animation: flashUp 0.6s ease-out;
+}
+
+.flash-down {
+  animation: flashDown 0.6s ease-out;
+}
+
+/* ============ 响应式适配 ============ */
+@media (max-width: 768px) {
+  body {
+    font-size: 15px;
+  }
+
+  .game-topbar {
+    padding: 8px 12px;
+    gap: 8px;
+  }
+
+  .gt-title {
+    font-size: 15px;
+    letter-spacing: 2px;
+  }
+
+  .top-btns {
+    gap: 2px;
+  }
+
+  .top-group summary {
+    padding: 5px 10px;
+    font-size: 13px;
+  }
+
+  .time-weather-display {
+    font-size: 12px;
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  button,
+  summary,
+  [role='button'] {
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    font-size: 14px;
+  }
+
+  .game-topbar {
+    padding: 6px 8px;
+  }
+
+  .gt-title {
+    display: none;
+  }
+
+  .top-btns {
+    justify-content: flex-start;
+  }
+
+  .time-weather-display {
+    font-size: 11px;
+  }
+}
