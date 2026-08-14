@@ -24,7 +24,7 @@ import { playerFacingBeastName, ringSourceForChoice } from '@/utils/ring-names'
 import { resolveEventAsset } from '@/utils/asset-resolver'
 import { buildTravelArrivalSummary } from '@/utils/travel-arrival'
 import { EVENTS, DYNAMIC_EVENTS, CHAINED_EVENTS, ENDINGS } from '@/data/game-data'
-import { advanceExperience, classifyEventLocation, normalizeLegacyHealthResult, rankTitleForLevel, RING_LEVELS } from '@/engine/rules'
+import { advanceExperience, classifyEventLocation, normalizeLegacyHealthResult, rankTitleForLevel, RING_LEVELS, GLOBAL_LOCATION_PREFIX } from '@/engine/rules'
 import {
   adaptEvent,
   isEventEligible,
@@ -419,9 +419,8 @@ export function useEventEngine() {
   function eventMatchesCurrentLocation(ev) {
     const currentLoc = player._currentLocation || gameStore._currentLocation || ''
     if (!ev.location) return true
-    // 全局事件
-    const globalPattern = /^(?:斗罗大陆|斗罗大陆各地|大陆各地|旅途|未知|任意|修炼中|冥想中|闭关|闭关修炼)/
-    if (globalPattern.test(ev.location)) return true
+    // 全局事件（正则单一来源 engine/rules.js，勿手抄）
+    if (GLOBAL_LOCATION_PREFIX.test(ev.location)) return true
     // 简单匹配：事件地点包含当前地点名或反之
     if (currentLoc && ev.location.includes(currentLoc)) return true
     if (currentLoc && currentLoc.includes(ev.location)) return true

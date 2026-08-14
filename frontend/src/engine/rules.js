@@ -73,6 +73,11 @@ const EVENT_LOCATION_HINTS = [
 ];
 const GLOBAL_EVENT_LOCATIONS = /^(?:斗罗大陆|斗罗大陆各地|大陆各地|旅途|未知|任意|修炼中|冥想中|闭关|闭关修炼|自己选的地方|史莱克学院\/自己宗门|你的宗门|你的神殿|你的府邸|你的住处|你的修炼室)$/;
 
+// 事件地点前缀判定（单一来源）：与 classifyEventLocation 的全局判定不同，
+// 这里是"以全局地点词开头"即视为全局事件（eventMatchesCurrentLocation 语义），
+// event-index.js 与 useEventEngine.js 共用，禁止手抄副本。
+export const GLOBAL_LOCATION_PREFIX = /^(?:斗罗大陆|斗罗大陆各地|大陆各地|旅途|未知|任意|修炼中|冥想中|闭关|闭关修炼)/;
+
 export function classifyEventLocation(value, mapLocations){
   const raw = String(value || '').trim();
   const text = raw.replace(/[·・\s]/g, '');

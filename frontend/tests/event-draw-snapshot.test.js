@@ -7,6 +7,9 @@
  *
  * 若序列需要更新（经 GLM5.3 审查确认属于预期变更），用 SNAPSHOT_SEQUENCE 下方的
  * 说明操作：临时将 expect 改为输出并用新序列替换即可。
+ * 若偶发失败：先单独重跑本文件（npm test --prefix frontend -- --run
+ * tests/event-draw-snapshot.test.js）确认是否环境噪声（模块图缓存竞争），
+ * 连续多次稳定失败才视为真实行为变更。
  */
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'

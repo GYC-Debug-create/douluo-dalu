@@ -15,11 +15,8 @@
  *
  * 纯模块：不依赖 Pinia，可在引擎、测试与审计脚本中复用。
  */
-import { classifyEventLocation } from './rules.js'
+import { classifyEventLocation, GLOBAL_LOCATION_PREFIX } from './rules.js'
 import { adaptEvent } from './event-rules.js'
-
-// 与 useEventEngine.eventMatchesCurrentLocation 保持一致的全局地点前缀判定
-const GLOBAL_LOCATION_PREFIX = /^(?:斗罗大陆|斗罗大陆各地|大陆各地|旅途|未知|任意|修炼中|冥想中|闭关|闭关修炼)/
 
 export function buildEventIndex({ events = [], mapLocations = [], spiritMeta = {} }) {
   const adapted = new Map()
