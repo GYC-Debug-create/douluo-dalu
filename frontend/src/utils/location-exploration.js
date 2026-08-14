@@ -1,5 +1,5 @@
 import { adaptEvent, isEventEligible } from '@/engine/event-rules'
-import { classifyEventLocation } from '@/engine/rules'
+import { classifyEventLocation, phaseForLevel } from '@/engine/rules'
 import { resolveAssetPath } from '@/utils/asset-resolver'
 
 /**
@@ -80,14 +80,6 @@ function uniqueStrings(value) {
 
 function safeInteger(value, fallback = 0) {
   return Math.max(0, Math.floor(Number(value) || fallback))
-}
-
-function phaseForLevel(level) {
-  const value = Math.max(1, Math.floor(Number(level) || 1))
-  if (value <= 6) return 'academy'
-  if (value <= 18) return 'adventure'
-  if (value <= 40) return 'master'
-  return 'god'
 }
 
 export function normalizeLocationExplorationState(value) {

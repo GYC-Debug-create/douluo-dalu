@@ -7,6 +7,7 @@ import {
   normalizeLocationExplorationsByLocation
 } from './location-exploration.js'
 import { appendDiaryEntry } from '../engine/save.js'
+import { rankTitleForLevel } from '../engine/rules.js'
 
 const FRAME_ROUTES = Object.freeze({
   game: '/game',
@@ -127,23 +128,9 @@ function normalizedText(value) {
   return String(value || '').replace(/[·・\s]/g, '')
 }
 
-function soulRankName(level) {
-  if (level < 10) return '魂士'
-  if (level < 20) return '魂师'
-  if (level < 30) return '大魂师'
-  if (level < 40) return '魂尊'
-  if (level < 50) return '魂宗'
-  if (level < 60) return '魂王'
-  if (level < 70) return '魂帝'
-  if (level < 80) return '魂圣'
-  if (level < 90) return '魂斗罗'
-  if (level < 100) return '封号斗罗'
-  return '神级魂师'
-}
-
 function phaseName(level) {
   const book = level <= 6 ? '学院篇' : level <= 18 ? '实战篇' : level <= 40 ? '进阶篇' : '神途篇'
-  return `${book} · ${soulRankName(level)}`
+  return `${book} · ${rankTitleForLevel(level)}`
 }
 
 function addDiaryEntry(eventStore, player, text, type = 'event') {

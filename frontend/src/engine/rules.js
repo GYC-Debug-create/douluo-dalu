@@ -153,6 +153,15 @@ export function rankTitleForLevel(level){
   return '神级魂师';
 }
 
+// 阶段划分（单一来源）：与 rankTitleForLevel 不同，god phase 从 Lv.41 开始，并不等于已经成神。
+export function phaseForLevel(level){
+  const value = Math.max(1, Math.floor(finiteNumber(level, 1)));
+  if(value <= 6) return 'academy';
+  if(value <= 18) return 'adventure';
+  if(value <= 40) return 'master';
+  return 'god';
+}
+
 // 战斗伤害公式（与 game-combat.js 的 damageFormula 保持同一实现，便于纯函数回归测试）。
 // base = attack × (0.88 ~ 1.12 随机) − 有效防御 × 0.48，最低 1，再乘倍率。
 export function calculateDamage(attack, defense, options){

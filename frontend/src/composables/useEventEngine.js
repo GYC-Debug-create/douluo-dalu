@@ -24,7 +24,7 @@ import { playerFacingBeastName, ringSourceForChoice } from '@/utils/ring-names'
 import { resolveEventAsset } from '@/utils/asset-resolver'
 import { buildTravelArrivalSummary } from '@/utils/travel-arrival'
 import { EVENTS, DYNAMIC_EVENTS, CHAINED_EVENTS, ENDINGS } from '@/data/game-data'
-import { advanceExperience, classifyEventLocation, normalizeLegacyHealthResult, rankTitleForLevel } from '@/engine/rules'
+import { advanceExperience, classifyEventLocation, normalizeLegacyHealthResult, rankTitleForLevel, RING_LEVELS } from '@/engine/rules'
 import {
   adaptEvent,
   isEventEligible,
@@ -77,8 +77,6 @@ const SPIRIT_TRAITS = {
   '神兽': ['远古', '威严', '不朽'],
   '特殊': ['神秘', '命运', '独特']
 }
-
-const RING_LEVELS = [10, 20, 30, 40, 50, 60, 70, 80, 90]
 
 // 地图旅行遭遇。抽取结果在 MapPage 离开前就写入 sessionStorage，
 // 这里仅决定遭遇内容，避免玩家通过刷新反复重掷“是否遇险”。

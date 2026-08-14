@@ -7,12 +7,10 @@ import { usePlayerStore } from '@/stores/player'
 import { useEventStore } from '@/stores/event'
 import { useGameStore } from '@/stores/game'
 import { TITLES } from '@/data/game-data'
-import { experienceNeededForLevel, rankTitleForLevel } from '@/engine/rules'
+import { experienceNeededForLevel, rankTitleForLevel, RING_LEVELS, phaseForLevel } from '@/engine/rules'
 
 const TIER_NAMES = { low: '低级武魂', mid: '中级武魂', high: '高级武魂', top: '顶级武魂', god: '神级武魂' }
 const TIER_COLORS = { low: '#94a3b8', mid: '#22c55e', high: '#3b82f6', top: '#a855f7', god: '#fbbf24' }
-
-const RING_LEVELS = [10, 20, 30, 40, 50, 60, 70, 80, 90]
 
 const FORMATIONS = [
   { id: 'none', name: '无阵法', attack: 0, defense: 0, speed: 0, spirit: 0 },
@@ -68,14 +66,6 @@ function npcRelationBonuses() {
     }
   }
   return result
-}
-
-function phaseForLevel(level) {
-  level = Number(level) || 1
-  if (level <= 6) return 'academy'
-  if (level <= 18) return 'adventure'
-  if (level <= 40) return 'master'
-  return 'god'
 }
 
 function phaseName(level) {

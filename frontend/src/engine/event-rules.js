@@ -5,6 +5,8 @@
  * 这里不依赖 Pinia 或浏览器，因此可以在引擎、数据注入和审计脚本中复用。
  */
 
+import { phaseForLevel } from './rules.js'
+
 export const PHASE_RANGES = Object.freeze({
   academy: [1, 6],
   adventure: [7, 18],
@@ -102,14 +104,6 @@ const CHOICE_MIN_LEVELS = Object.freeze({
   adv_town_03: { 2: 20 },
   sp_bs_04: { 0: 30 }
 })
-
-function phaseForLevel(level) {
-  const value = Math.max(1, Math.floor(Number(level) || 1))
-  if (value <= 6) return 'academy'
-  if (value <= 18) return 'adventure'
-  if (value <= 40) return 'master'
-  return 'god'
-}
 
 function prefixRule(eventId) {
   const key = String(eventId || '').split('_').slice(0, 2).join('_')
