@@ -30,6 +30,7 @@ import {
   isEventEligible,
   MAIN_STORY_REQUIREMENTS
 } from '@/engine/event-rules'
+import { getEventIndex } from '@/engine/event-index'
 import { serializeSave, saveToLocal } from '@/stores/serializer'
 import { appendDiaryEntry } from '@/engine/save'
 import {
@@ -141,11 +142,11 @@ export function cooldownSafeEventPool(pool, recentEvents, completedEvents) {
 }
 
 /**
- * 创建 G 代理对象 —— 让事件 effect 函数能直接修改 Pinia store
+ * 构建 G 代理对象 —— 让事件 effect 函数能直接修改 Pinia store
  * effect 函数签名是 (G) => string,其中 G 是原始游戏全局对象
  * 这里用 Proxy 桥接到各 Pinia store
  */
-function createGProxy() {
+function buildGProxy() {
   const player = usePlayerStore()
   const event = useEventStore()
   const game = useGameStore()
@@ -209,6 +210,14 @@ export function useEventEngine() {
     const cap = levelCapForRings(player.rings?.length || 0)
     return player.level >= cap && player.rings?.length < 9
   })
+
+  // M2 性能：cond/effect/结局判定共享同一个 G 代理（原实现每次新建 Proxy）。
+  // 实例级单例：每个引擎实例绑定其创建时的 Pinia，避免跨实例/测试污染。
+  let sharedG = null
+  function createGProxy() {
+    if (!sharedG) sharedG = buildGProxy()
+    return sharedG
+  }
 
   // ==================== 辅助函数 ====================
 
@@ -423,13 +432,32 @@ export function useEventEngine() {
   }
 
   function availableEvents() {
-    return EVENTS
-      .map(event => adaptEvent(event, { spiritMeta: player.spirit || {} }))
-      .filter(event => isEventEligible(event, eventContext({
+    // M2 性能：基于预构建索引取候选（phase 桶 ∪ any 桶 ∪ 全局 ∪ 当前地点桶），
+    // 再交给 isEventEligible 全量判定——结果与原全量遍历逐位一致（桶是超集）。
+    const index = getEventIndex({
+      events: EVENTS,
+      mapLocations: data.value.mapData,
+      spiritMeta: player.spirit || {}
+    })
+    const phase = currentPhase()
+    const currentLoc = player._currentLocation || gameStore._currentLocation || ''
+    const candidates = new Set(index.global)
+    for (const id of index.byPhase.get(phase) || []) candidates.add(id)
+    for (const id of index.byPhase.get('any') || []) candidates.add(id)
+    if (currentLoc && index.byLocation.has(currentLoc)) {
+      for (const id of index.byLocation.get(currentLoc)) candidates.add(id)
+    }
+    const pool = []
+    for (const id of candidates) {
+      const event = index.adapted.get(id)
+      if (!event) continue
+      if (isEventEligible(event, eventContext({
         isMainStory: false,
         isRingHunt: false,
         locationMatches: eventMatchesCurrentLocation(event)
-      })))
+      }))) pool.push(event)
+    }
+    return pool
   }
 
   function eventMatchBonus(ev) {

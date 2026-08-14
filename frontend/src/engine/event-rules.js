@@ -163,10 +163,17 @@ function normalizeChoices(event) {
   })
 }
 
+// M2 性能：adaptEvent 结果缓存。已适配对象再次传入时直接返回原对象——
+// 适配结果只依赖（事件静态数据 + spiritMeta），调用方（引擎/索引）按武魂复用同一
+// 批次适配结果，可避免 isEventEligible 对同一事件重复执行正则与对象展开。
+// 注意：不修改返回对象是契约（showEvent 管线全部为纯函数/展开新对象）。
+const ADAPTED_EVENTS = new WeakSet()
+
 /**
  * 返回事件的中央适配结果。它不会改变原始对象，适合在数据注入和展示前调用。
  */
 export function adaptEvent(event, options = {}) {
+  if (ADAPTED_EVENTS.has(event)) return event
   const source = event || {}
   const explicit = EXPLICIT_RULES[source.id] || {}
   const spirit = options.spiritMeta || {}
@@ -225,6 +232,7 @@ export function adaptEvent(event, options = {}) {
     ...(rules.phase === undefined && (postAscension || legacyGodSpirit) ? { phase: 'god' } : {}),
     choices: normalizeChoices(source)
   }
+  ADAPTED_EVENTS.add(adapted)
   return adapted
 }
 

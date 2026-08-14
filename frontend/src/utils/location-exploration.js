@@ -1,4 +1,5 @@
 import { adaptEvent, isEventEligible } from '@/engine/event-rules'
+import { getEventIndex } from '@/engine/event-index'
 import { classifyEventLocation, phaseForLevel } from '@/engine/rules'
 import { resolveAssetPath } from '@/utils/asset-resolver'
 
@@ -214,7 +215,17 @@ export function eligibleLocationEvents({
   const mode = locationExplorationMode(objectiveType)
   const level = Math.max(1, Number(player.level) || 1)
   const ringCount = Array.isArray(player.rings) ? player.rings.length : Number(player.ringCount) || 0
-  const source = Array.isArray(events) ? events : []
+  // M2 性能：与随机事件池共用同一预构建索引，只遍历当前地点的候选桶。
+  // eventMatchesLocation 只认 classify 命中本地点的事件，故桶 = byLocation[location.id]
+  // 恰为其超集，后续过滤链与原实现逐位一致。
+  const index = getEventIndex({ events, mapLocations, spiritMeta: player.spirit || {} })
+  const source = []
+  if (location?.id && index.byLocation.has(location.id)) {
+    for (const id of index.byLocation.get(location.id)) {
+      const event = index.adapted.get(id)
+      if (event) source.push(event)
+    }
+  }
   return source
     .map(event => adaptEvent(event, { spiritMeta: player.spirit || {} }))
     .filter(event => event?.id && Array.isArray(event.choices) && event.choices.length)
