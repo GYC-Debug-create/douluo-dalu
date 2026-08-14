@@ -4,6 +4,7 @@
 
 const express = require('express');
 const fs = require('fs');
+const fsp = require('fs/promises');
 const path = require('path');
 const crypto = require('crypto');
 
@@ -215,8 +216,14 @@ function archiveCurrentSave(playerId) {
 }
 
 // ============ 健康检查 ============
-app.get('/api/health', rateLimit(RATE_LIMIT_GENERAL, 'health'), (req, res) => {
+app.get('/api/health', rateLimit(RATE_LIMIT_GENERAL, 'health'), async (req, res) => {
   const memUsage = process.memoryUsage();
+  let saveCount = 0;
+  try {
+    saveCount = (await fsp.readdir(DATA_DIR)).filter(f => /^player_.*\.json$/.test(f)).length;
+  } catch (error) {
+    console.warn('健康检查读取存档目录失败:', error.message);
+  }
   res.json({
     status: 'ok',
     uptime: Math.floor(process.uptime()),
@@ -224,7 +231,7 @@ app.get('/api/health', rateLimit(RATE_LIMIT_GENERAL, 'health'), (req, res) => {
       rss: `${Math.round(memUsage.rss / 1024 / 1024)}MB`,
       heap: `${Math.round(memUsage.heapUsed / 1024 / 1024)}/${Math.round(memUsage.heapTotal / 1024 / 1024)}MB`
     },
-    saves: fs.readdirSync(DATA_DIR).filter(f => /^player_.*\.json$/.test(f)).length,
+    saves: saveCount,
     timestamp: new Date().toISOString()
   });
 });
@@ -294,6 +301,7 @@ app.post('/api/player/save', rateLimit(RATE_LIMIT_SAVE, 'save'), requireAuth, (r
     };
 
     fs.writeFileSync(file, JSON.stringify(saveData, null, 2), 'utf8');
+    invalidatePlayerListCache();
     return res.json({
       success: true,
       message: '存档成功',
@@ -324,7 +332,7 @@ app.get('/api/player/load/:playerId', rateLimit(RATE_LIMIT_GENERAL, 'load'), (re
 });
 
 // ============ 存档历史版本接口 ============
-app.get('/api/player/history/:playerId', rateLimit(RATE_LIMIT_GENERAL, 'history'), (req, res) => {
+app.get('/api/player/history/:playerId', rateLimit(RATE_LIMIT_GENERAL, 'history'), async (req, res) => {
   try {
     const playerId = req.params.playerId;
     const archiveDir = getArchiveDir(playerId);
@@ -332,21 +340,21 @@ app.get('/api/player/history/:playerId', rateLimit(RATE_LIMIT_GENERAL, 'history'
       return res.json({ success: true, versions: [] });
     }
 
-    const files = fs.readdirSync(archiveDir)
-      .filter(f => /^v\d+\.json$/.test(f))
-      .map(f => {
-        const version = parseInt(f.match(/\d+/)[0], 10);
-        const filePath = path.resolve(archiveDir, f);
-        const stat = fs.statSync(filePath);
-        let name = '未知', level = 1;
-        try {
-          const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-          name = data.name || name;
-          level = Number(data.level) || level;
-        } catch { /* ignore */ }
-        return { version, name, level, savedAt: stat.mtime.toISOString() };
-      })
-      .sort((a, b) => b.version - a.version);
+    const entries = (await fsp.readdir(archiveDir)).filter(f => /^v\d+\.json$/.test(f));
+    const files = [];
+    for (const f of entries) {
+      const version = parseInt(f.match(/\d+/)[0], 10);
+      const filePath = path.resolve(archiveDir, f);
+      const stat = await fsp.stat(filePath);
+      let name = '未知', level = 1;
+      try {
+        const data = JSON.parse(await fsp.readFile(filePath, 'utf8'));
+        name = data.name || name;
+        level = Number(data.level) || level;
+      } catch { /* ignore */ }
+      files.push({ version, name, level, savedAt: stat.mtime.toISOString() });
+    }
+    files.sort((a, b) => b.version - a.version);
 
     return res.json({ success: true, versions: files });
   } catch (error) {
@@ -387,6 +395,7 @@ app.post('/api/player/restore/:playerId', rateLimit(RATE_LIMIT_SAVE, 'restore'),
     data.lastSave = new Date().toISOString();
     fs.writeFileSync(file, JSON.stringify(data, null, 2), 'utf8');
 
+    invalidatePlayerListCache();
     return res.json({
       success: true,
       message: '版本恢复成功',
@@ -398,17 +407,33 @@ app.post('/api/player/restore/:playerId', rateLimit(RATE_LIMIT_SAVE, 'restore'),
   }
 });
 
-// ============ 存档列表 ============
-app.get('/api/player/list', rateLimit(RATE_LIMIT_GENERAL, 'list'), (req, res) => {
-  try {
-    const files = fs.readdirSync(DATA_DIR).filter(file => /^player_[A-Za-z0-9_-]{3,80}\.json$/.test(file));
+// ============ 存档列表缓存（TTL 45s，写操作主动失效） ============
+const PLAYER_LIST_TTL = 45 * 1000;
+let playerListCache = null;
+let playerListCacheAt = 0;
+let playerListInflight = null;
+
+function invalidatePlayerListCache() {
+  playerListCache = null;
+  playerListCacheAt = 0;
+}
+
+async function loadPlayerList() {
+  if (playerListCache && Date.now() - playerListCacheAt < PLAYER_LIST_TTL) {
+    return { list: playerListCache, cached: true };
+  }
+  if (playerListInflight) {
+    return { list: await playerListInflight, cached: false };
+  }
+  playerListInflight = (async () => {
+    const files = (await fsp.readdir(DATA_DIR)).filter(file => /^player_[A-Za-z0-9_-]{3,80}\.json$/.test(file));
     const list = [];
     for (const fileName of files) {
       try {
         const playerId = fileName.slice(7, -5);
         const file = getPlayerFile(playerId);
         if (!file) continue;
-        const data = JSON.parse(fs.readFileSync(file, 'utf8'));
+        const data = JSON.parse(await fsp.readFile(file, 'utf8'));
         if (data.gameMode !== 'text-rpg' && !(data.spirit && typeof data.spirit === 'object')) continue;
         list.push({
           playerId, name: data.name || '未知', level: Number(data.level) || 1,
@@ -419,7 +444,18 @@ app.get('/api/player/list', rateLimit(RATE_LIMIT_GENERAL, 'list'), (req, res) =>
         console.warn(`跳过损坏存档 ${fileName}:`, error.message);
       }
     }
-    return res.json({ success: true, list });
+    playerListCache = list;
+    playerListCacheAt = Date.now();
+    return list;
+  })().finally(() => { playerListInflight = null; });
+  return { list: await playerListInflight, cached: false };
+}
+
+// ============ 存档列表 ============
+app.get('/api/player/list', rateLimit(RATE_LIMIT_GENERAL, 'list'), async (req, res) => {
+  try {
+    const { list, cached } = await loadPlayerList();
+    return res.json({ success: true, list, cached });
   } catch (error) {
     console.error('获取列表失败:', error);
     return res.status(500).json({ error: '服务器暂时无法读取存档列表' });
@@ -448,6 +484,7 @@ app.delete('/api/player/:playerId', rateLimit(RATE_LIMIT_SAVE, 'delete'), requir
       if (entry.playerId === playerId) tokenStore.delete(token);
     }
 
+    invalidatePlayerListCache();
     return res.json({ success: true });
   } catch (error) {
     console.error('删除失败:', error);
