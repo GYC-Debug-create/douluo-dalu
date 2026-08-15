@@ -158,12 +158,13 @@ export function rankTitleForLevel(level){
   return '神级魂师';
 }
 
-// 阶段划分（单一来源）：与 rankTitleForLevel 不同，god phase 从 Lv.41 开始，并不等于已经成神。
+// 阶段划分（单一来源）：与 rankTitleForLevel 不同，god phase 从 Lv.71 开始，并不等于已经成神。
+// 边界按斗罗 1 正典身份期：觉醒/初级学院 1~10、进阶学院 10~40、历练 40~70、封神 70~100。
 export function phaseForLevel(level){
   const value = Math.max(1, Math.floor(finiteNumber(level, 1)));
-  if(value <= 6) return 'academy';
-  if(value <= 18) return 'adventure';
-  if(value <= 40) return 'master';
+  if(value <= 10) return 'academy';
+  if(value <= 40) return 'adventure';
+  if(value <= 70) return 'master';
   return 'god';
 }
 

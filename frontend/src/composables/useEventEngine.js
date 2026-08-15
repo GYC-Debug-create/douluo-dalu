@@ -48,11 +48,11 @@ import {
 // 主线里程碑 (从 game.js 移植)
 const MAIN_STORY_MILESTONES = [
   { id: 'first_hunt', name: '第一次魂兽实战', minLevel: 5, targetId: 'star_duo_outer' },
-  { id: 'reach_lv10', name: '修炼至 Lv.10', minLevel: 5, requires: ['first_hunt'] },
-  { id: 'soul_master_prelim', name: '魂师大赛·预赛', minLevel: 20, targetId: 'tian_dou_city', requires: MAIN_STORY_REQUIREMENTS.soul_master_prelim },
-  { id: 'spirit_hall_exam', name: '武魂殿考核', minLevel: 25, targetId: 'spirit_hall', requires: MAIN_STORY_REQUIREMENTS.spirit_hall_exam },
-  { id: 'soul_master_final', name: '魂师大赛·决赛', minLevel: 36, targetId: 'tian_dou_city', requires: MAIN_STORY_REQUIREMENTS.soul_master_final },
-  { id: 'god_trial_sea', name: '神位传承·海神九考', minLevel: 75, targetId: 'sea_god_island', requires: MAIN_STORY_REQUIREMENTS.god_trial_sea },
+  { id: 'reach_lv10', name: '修炼至 Lv.10', minLevel: 10, requires: ['first_hunt'] },
+  { id: 'soul_master_prelim', name: '魂师大赛·预赛', minLevel: 30, targetId: 'tian_dou_city', requires: MAIN_STORY_REQUIREMENTS.soul_master_prelim },
+  { id: 'spirit_hall_exam', name: '武魂殿考核', minLevel: 30, targetId: 'spirit_hall', requires: MAIN_STORY_REQUIREMENTS.spirit_hall_exam },
+  { id: 'soul_master_final', name: '魂师大赛·决赛', minLevel: 40, targetId: 'tian_dou_city', requires: MAIN_STORY_REQUIREMENTS.soul_master_final },
+  { id: 'god_trial_sea', name: '神位传承·海神九考', minLevel: 50, targetId: 'sea_god_island', requires: MAIN_STORY_REQUIREMENTS.god_trial_sea },
   { id: 'final_evil', name: '最终决战·讨伐武魂殿', minLevel: 95, targetId: 'wuhun_city', requires: MAIN_STORY_REQUIREMENTS.final_evil }
 ]
 
@@ -854,7 +854,7 @@ export function useEventEngine() {
 
   function addDiaryEntry(text, type) {
     const phase = phaseForLevel(player.level)
-    const phaseName = { academy: '学院篇', adventure: '冒险篇', master: '宗师篇', god: '封神篇' }[phase] || '学院篇'
+    const phaseName = { academy: '初级学院', adventure: '进阶学院', master: '历练期', god: '封神期' }[phase] || '初级学院'
     if (!Array.isArray(eventStore._diary)) eventStore._diary = []
     appendDiaryEntry(eventStore._diary, {
       turn: eventStore._eventCount || 0,

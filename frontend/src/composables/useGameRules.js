@@ -70,7 +70,7 @@ function npcRelationBonuses() {
 
 function phaseName(level) {
   const phase = phaseForLevel(level)
-  return { academy: '学院篇', adventure: '冒险篇', master: '宗师篇', god: '封神篇' }[phase] || '学院篇'
+  return { academy: '初级学院', adventure: '进阶学院', master: '历练期', god: '封神期' }[phase] || '初级学院'
 }
 
 function levelCapForRings(ringCount) {

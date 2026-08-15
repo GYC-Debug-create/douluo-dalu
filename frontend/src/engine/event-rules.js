@@ -66,11 +66,11 @@ const STATIC_SPIRIT_RULES = Object.freeze({
 
 const EXPLICIT_RULES = Object.freeze({
   first_hunt: { mainStoryOnly: true, minLevel: 5, phase: 'academy' },
-  reach_lv10: { mainStoryOnly: true, minLevel: 5, phase: 'adventure' },
-  soul_master_prelim: { mainStoryOnly: true, minLevel: 20, phase: 'master' },
-  spirit_hall_exam: { mainStoryOnly: true, minLevel: 25, phase: 'master' },
-  soul_master_final: { mainStoryOnly: true, minLevel: 36, phase: 'master' },
-  god_trial_sea: { mainStoryOnly: true, minLevel: 75, phase: 'god' },
+  reach_lv10: { mainStoryOnly: true, minLevel: 10, phase: 'academy' },
+  soul_master_prelim: { mainStoryOnly: true, minLevel: 30, phase: 'adventure' },
+  spirit_hall_exam: { mainStoryOnly: true, minLevel: 30, phase: 'adventure' },
+  soul_master_final: { mainStoryOnly: true, minLevel: 40, phase: 'adventure' },
+  god_trial_sea: { mainStoryOnly: true, minLevel: 50, phase: 'master' },
   final_evil: { mainStoryOnly: true, minLevel: 95, phase: 'god' },
 
   // 身份/能力门槛：等级与魂环数量同时满足，避免只靠 god phase 越级。

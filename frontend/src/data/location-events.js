@@ -4,7 +4,7 @@
  */
 export const LOCATION_EVENTS = [
   {
-    id: 'east_port_explore_tide_marks', name: '潮汐刻痕', location: '东海港口·潮线', phase: 'any', minLevel: 20,
+    id: 'east_port_explore_tide_marks', name: '潮汐刻痕', location: '东海港口·潮线', phase: 'adventure', minLevel: 20,
     locationActionType: 'local_exploration', image: 'assets/scenes/border_town.jpg', unique: true, weight: 8,
     text: ['退潮后的石堤留下三道不合常理的刻痕。', '你沿着潮线比对风向，发现刻痕指向一条被船队刻意避开的暗流。'],
     choices: [
@@ -13,7 +13,7 @@ export const LOCATION_EVENTS = [
     ]
   },
   {
-    id: 'east_port_explore_sealed_warehouse', name: '封潮仓的印记', location: '东海港口·封潮仓', phase: 'any', minLevel: 20,
+    id: 'east_port_explore_sealed_warehouse', name: '封潮仓的印记', location: '东海港口·封潮仓', phase: 'adventure', minLevel: 20,
     locationActionType: 'local_exploration', image: 'assets/scenes/border_town.jpg', unique: true, weight: 8,
     text: ['港口最里面的仓门挂着旧式海魂师封印，门缝里传出盐和药草混合的气味。', '你没有贸然破坏封印，而是从货牌、脚印和潮湿程度判断出仓库最近有人进出。'],
     choices: [
@@ -22,7 +22,7 @@ export const LOCATION_EVENTS = [
     ]
   },
   {
-    id: 'east_port_explore_storm_buoy', name: '风暴浮标', location: '东海港口·外锚地', phase: 'any', minLevel: 20,
+    id: 'east_port_explore_storm_buoy', name: '风暴浮标', location: '东海港口·外锚地', phase: 'adventure', minLevel: 20,
     locationActionType: 'local_exploration', image: 'assets/scenes/mountain_path.jpg', unique: true, weight: 7,
     text: ['外锚地的风暴浮标反复偏航，铁链上缠着陌生的黑色海藻。', '你从浮标的损伤方向推断，深海的风暴正在提前逼近港口。'],
     choices: [
@@ -31,7 +31,7 @@ export const LOCATION_EVENTS = [
     ]
   },
   {
-    id: 'east_port_commission_captain_license', name: '船长许可', location: '东海港口·船务厅', phase: 'any', minLevel: 20,
+    id: 'east_port_commission_captain_license', name: '船长许可', location: '东海港口·船务厅', phase: 'adventure', minLevel: 20,
     locationActionType: 'local_commission', image: 'assets/scenes/border_town.jpg', unique: true, weight: 9,
     text: ['东海船长把一枚旧铜牌推到你面前：想去海神岛，先证明你能对自己的航线负责。', '许可委托要求你核对船员、淡水、魂力补给和返航信号。'],
     choices: [
@@ -40,7 +40,7 @@ export const LOCATION_EVENTS = [
     ]
   },
   {
-    id: 'east_port_commission_supply_manifest', name: '船队补给账册', location: '东海港口·补给码头', phase: 'any', minLevel: 20,
+    id: 'east_port_commission_supply_manifest', name: '船队补给账册', location: '东海港口·补给码头', phase: 'adventure', minLevel: 20,
     locationActionType: 'local_commission', image: 'assets/scenes/blacksmith.jpg', unique: true, weight: 8,
     text: ['港口执事委托你核对三艘船的补给账册，其中一船的淡水数量与登记不符。', '缺口不大，却足以让深海航行变成一场赌命。'],
     choices: [
@@ -49,7 +49,7 @@ export const LOCATION_EVENTS = [
     ]
   },
   {
-    id: 'east_port_commission_sea_route', name: '海运委托', location: '东海港口·航线台', phase: 'any', minLevel: 20,
+    id: 'east_port_commission_sea_route', name: '海运委托', location: '东海港口·航线台', phase: 'adventure', minLevel: 20,
     locationActionType: 'local_commission', image: 'assets/scenes/sea_god_island.jpg', unique: true, weight: 8,
     text: ['一支返航商队请你把一枚潮汐信标送到海神岛外海，途中不能让信标受损。', '信标记录着近月海流，是港口安排下一次航行的重要依据。'],
     choices: [
@@ -58,7 +58,7 @@ export const LOCATION_EVENTS = [
     ]
   },
   {
-    id: 'east_port_contact_soul_master_guard', name: '海魂师护航员', location: '东海港口·护航台', phase: 'any', minLevel: 20,
+    id: 'east_port_contact_soul_master_guard', name: '海魂师护航员', location: '东海港口·护航台', phase: 'adventure', minLevel: 20,
     locationActionType: 'local_contact', image: 'assets/scenes/sea_god_island.jpg', unique: true, weight: 8,
     text: ['一名海魂师护航员正在检查自己的鳞甲武魂，他不轻易相信第一次出海的魂师。', '你需要用一场短暂的协作证明自己不是只会在陆地上战斗。'],
     choices: [
@@ -67,7 +67,7 @@ export const LOCATION_EVENTS = [
     ]
   },
   {
-    id: 'east_port_contact_smuggler_conflict', name: '港口暗线', location: '东海港口·旧栈桥', phase: 'any', minLevel: 20,
+    id: 'east_port_contact_smuggler_conflict', name: '港口暗线', location: '东海港口·旧栈桥', phase: 'adventure', minLevel: 20,
     locationActionType: 'local_contact', image: 'assets/scenes/tavern.jpg', unique: true, weight: 7,
     text: ['旧栈桥下有人用三短两长的敲击声传递消息，内容似乎与海神岛航线有关。', '你找到一名愿意合作的走私客，却必须先决定如何处理他手里的假许可。'],
     choices: [

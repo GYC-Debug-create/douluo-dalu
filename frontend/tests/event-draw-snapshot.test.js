@@ -134,13 +134,17 @@ describe('M2 抽取一致性快照', () => {
       // - 2026-08-15 T6b 基线：T7 角色重构（ac_extra_04 弗兰德 minLevel 1→12、phase
       //   academy→adventure；ac_extra_06 同批调整）使 Lv.5 事件池排序变化，
       //   序列第 2 位 ac_extra_04→ac_extra_03 等 4 处偏移——修复生效的证据。
+      // - 2026-08-15 T6 基线：阶段表重划（10/40/70）+ 364 事件全量重标——学院生活类
+      //   事件移入进阶学院期（minLevel 10+），academy 池收窄为入门/武魂/命运内容；
+      //   dy_sect_01 收徒按判例 7 提至 12 级。序列以 sp_wp_01/first_class/spirit_show/
+      //   mentor_1 为主——重标生效的证据（学院日常不再出现在初级学院期）。
       expect(ids).toEqual([
-        'first_class', 'ac_extra_03', 'ac_daily_03', 'ac_gold_02', 'dyn_lucky',
-        'ac_dorm_01', 'ac_sp_02', 'ac_teacher_01', 'sp_wp_01', 'ac_extra_01',
-        'festival', 'mentor_1', 'ac_class_03', 'ac_adv_03', 'sp_wp_01',
-        'mentor_1', 'ac_class_03', 'ac_more_09', 'ac_more_15', 'ac_train_01',
-        'cafeteria_funny', 'ac_fun_03', 'lost_kitten', 'ac_daily_04', 'mystery_merchant',
-        'cafeteria_funny', 'playground_spar', 'ac_gold_03', 'mentor_1', 'ac_dorm_01'
+        'sp_wp_01', 'first_class', 'sp_wp_01', 'first_class', 'dyn_lucky',
+        'sp_wp_01', 'spirit_show', 'first_class', 'sp_wp_01', 'first_class',
+        'sp_wp_01', 'mentor_1', 'sp_wp_01', 'spirit_show', 'sp_wp_01',
+        'mentor_1', 'sp_wp_01', 'first_class', 'first_class', 'sp_wp_01',
+        'sp_wp_01', 'first_class', 'sp_wp_01', 'sp_wp_01', 'sp_wp_01',
+        'sp_wp_01', 'sp_wp_01', 'first_class', 'mentor_1', 'sp_wp_01'
       ])
     } finally {
       random.mockRestore()

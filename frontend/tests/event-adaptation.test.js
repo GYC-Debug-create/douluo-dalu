@@ -45,8 +45,9 @@ describe('事件中央触发规则', () => {
     expect(isEventEligible(firstHunt, ctx({ level: 5, phase: 'academy', isMainStory: true }))).toBe(true)
 
     const levelTen = adaptEvent(byId('reach_lv10'))
-    expect(isEventEligible(levelTen, ctx({ level: 10, phase: 'adventure', isMainStory: true }))).toBe(false)
-    expect(isEventEligible(levelTen, ctx({ level: 10, phase: 'adventure', isMainStory: true, doneEvents: ['first_hunt'] }))).toBe(true)
+    // 2026-08-15 T6 阶段表重划：Lv.10 归属初级学院（academy），reach_lv10 phase 同步
+    expect(isEventEligible(levelTen, ctx({ level: 10, phase: 'academy', isMainStory: true }))).toBe(false)
+    expect(isEventEligible(levelTen, ctx({ level: 10, phase: 'academy', isMainStory: true, doneEvents: ['first_hunt'] }))).toBe(true)
   })
 
   it('高危魂兽和身份事件同时受等级、魂环数与章节控制', () => {
@@ -55,8 +56,9 @@ describe('事件中央触发规则', () => {
     }
 
     const martialBody = adaptEvent(byId('ma_more_04'))
-    expect(isEventEligible(martialBody, ctx({ level: 70, phase: 'god', ringCount: 6 }))).toBe(false)
-    expect(isEventEligible(martialBody, ctx({ level: 70, phase: 'god', ringCount: 7 }))).toBe(true)
+    // 2026-08-15 T6：ma_more_04 归历练期（master），Lv.70 新语义 phase=master
+    expect(isEventEligible(martialBody, ctx({ level: 70, phase: 'master', ringCount: 6 }))).toBe(false)
+    expect(isEventEligible(martialBody, ctx({ level: 70, phase: 'master', ringCount: 7 }))).toBe(true)
 
     const titleChallenge = adaptEvent(byId('ma_extra_01'))
     expect(isEventEligible(titleChallenge, ctx({ level: 89, phase: 'god', ringCount: 8 }))).toBe(false)
@@ -118,7 +120,8 @@ describe('事件中央触发规则', () => {
     }, { spiritMeta: { id: '水壶', type: '器武魂', subtype: '武器', tier: 'low' } })
     expect(resonance.minLevel).toBe(10)
     expect(isEventEligible(resonance, ctx({ level: 5, phase: 'academy', spirit: { id: '水壶', type: '器武魂', subtype: '武器', tier: 'low' } }))).toBe(false)
-    expect(isEventEligible(resonance, ctx({ level: 10, phase: 'adventure', spirit: { id: '水壶', type: '器武魂', subtype: '武器', tier: 'low' } }))).toBe(true)
+    // 2026-08-15 T6 阶段表重划：Lv.10 归属初级学院（academy），共鸣事件 phase 随之
+    expect(isEventEligible(resonance, ctx({ level: 10, phase: 'academy', spirit: { id: '水壶', type: '器武魂', subtype: '武器', tier: 'low' } }))).toBe(true)
 
     const combo = DYNAMIC_EVENTS.find(event => event.id === 'dyn_combo_master')
     const night = DYNAMIC_EVENTS.find(event => event.id === 'dyn_night')

@@ -260,7 +260,7 @@ export const EVENTS = [
   // ---------- 学院篇 ----------
   {
     id: 'first_class', name: '第一堂课', location: '史莱克学院·教室',
-    phase: 'academy', unique: true, npcIds: ['玉小刚'], weight: 5,
+    phase: 'academy', minLevel: 1, unique: true, npcIds: ['玉小刚'], weight: 5,
     text: [
       '叮铃铃——上课铃响了。{name}抱着崭新的课本，找了个靠窗的位置坐下。',
       '讲课的是一位头发花白的老教师，大家都叫他"大师"。他在黑板上写下四个大字：武魂之道。',
@@ -275,7 +275,7 @@ export const EVENTS = [
   },
   {
     id: 'cafeteria_funny', name: '食堂大作战', location: '史莱克学院·食堂',
-    phase: 'academy', weight: 3,
+    phase: 'adventure', minLevel: 10, weight: 3,
     text: [
       '中午的食堂人山人海，红烧肉的香味飘出三条街。{name}端着餐盘左冲右突，终于抢到了最后一份红烧肉！',
       '刚要下筷子，一个胖乎乎的高年级学长笑眯眯地凑了过来："小学弟，这块肉，让给我怎么样？"'
@@ -289,7 +289,7 @@ export const EVENTS = [
   },
   {
     id: 'playground_spar', name: '操场对练', location: '史莱克学院·操场',
-    phase: 'academy', weight: 3,
+    phase: 'adventure', minLevel: 10, weight: 3,
     text: [
       '午后的操场热闹非凡。一个叫唐三的同学正与大家切磋对练，他动作行云流水，看得你眼花缭乱。',
       '"{name}，来试试吧。"唐三笑着把木剑递给你，"别怕，点到为止。"'
@@ -303,7 +303,7 @@ export const EVENTS = [
   },
   {
     id: 'library_night', name: '图书馆的夜灯', location: '史莱克学院·图书馆',
-    phase: 'academy', weight: 2,
+    phase: 'adventure', minLevel: 10, weight: 2,
     text: [
       '夜深了，图书馆里只剩{name}一个人。昏黄的灯光下，一本厚厚的《武魂百科》摊开在桌上。',
       '窗外忽然刮起一阵风，书页哗啦啦地翻动，停在了记载着"武魂进化"的那一页。'
@@ -315,7 +315,7 @@ export const EVENTS = [
   },
   {
     id: 'senior_rumor', name: '学长的小道消息', location: '史莱克学院·宿舍',
-    phase: 'academy', weight: 2,
+    phase: 'adventure', minLevel: 10, weight: 2,
     text: [
       '熄灯后，上铺的学长神秘兮兮地探下头来："喂，{name}，听说了吗？学院后山的山洞里，藏着以前学长留下的宝贝！"',
       '"不过……"他压低声音，"那里晚上好像有蛇出没。"'
@@ -344,7 +344,7 @@ export const EVENTS = [
   },
   {
     id: 'reach_lv10', name: '修炼之途', location: '史莱克学院',
-    phase: 'academy', unique: true, minLevel: 5, weight: 5,
+    phase: 'academy', unique: true, minLevel: 10, weight: 5,
     text: [
       '实战训练结束，大师拍着你的肩膀："干得不错！不过真正的猎环之旅才刚刚开始。"',
       '"魂师每提升一个大阶，就能获取一个魂环。你的第一魂环在 Lv.10 时解锁，到时候我亲自带你去猎杀合适的魂兽。"',
@@ -358,7 +358,7 @@ export const EVENTS = [
   },
   {
     id: 'exam_week', name: '期末大考', location: '史莱克学院·考场',
-    phase: 'academy', weight: 2,
+    phase: 'adventure', minLevel: 10, weight: 2,
     text: [
       '期末考试来了！笔试考《魂兽图鉴》和《魂师守则》，{name}握着笔，手心里全是汗。',
       '第一题：十年魂兽的魂环是什么颜色？这题你会！可是第二题……人面魔蛛有几条腿？！'
@@ -371,7 +371,7 @@ export const EVENTS = [
   },
   {
     id: 'forest_trip', name: '森林边缘的历练', location: '星斗大森林外围',
-    phase: 'academy', weight: 3,
+    phase: 'adventure', minLevel: 10, weight: 3,
     text: [
       '周末，{name}独自来到森林外围历练。阳光透过层层叠叠的树叶，在地上洒下斑驳的光点。',
       '忽然，前方的草丛剧烈晃动起来——一只花蛇吐着信子滑了出来，斑斓的鳞片在阳光下妖艳无比。'
@@ -385,7 +385,7 @@ export const EVENTS = [
   },
   {
     id: 'mystery_merchant', name: '神秘货郎', location: '学院门口·集市',
-    phase: 'academy', weight: 2,
+    phase: 'adventure', minLevel: 10, weight: 2,
     text: [
       '学院门口来了个挑担子的货郎，担子上瓶瓶罐罐叮当乱响。他冲你挤挤眼："小魂师，来点好东西？回魂丹，吃了精神百倍，童叟无欺！"',
       '你摸了摸口袋里的金币，有点心动。'
@@ -399,7 +399,7 @@ export const EVENTS = [
   },
   {
     id: 'training_hill', name: '后山苦修', location: '史莱克学院·后山',
-    phase: 'academy', weight: 3,
+    phase: 'adventure', minLevel: 10, weight: 3,
     text: [
       '天还没亮，{name}就爬上了后山。晨雾缭绕中，你一遍遍运转魂力，汗水浸透了衣衫。',
       '所谓天才，不过是比别人多流一倍的汗水。'
@@ -412,7 +412,7 @@ export const EVENTS = [
   },
   {
     id: 'help_granny', name: '帮老奶奶找猫', location: '学院旁·小镇',
-    phase: 'academy', weight: 2,
+    phase: 'adventure', minLevel: 10, weight: 2,
     text: [
       '下山买文具的路上，一位白发老奶奶拉住了你："小魂师，我的小花猫跑进巷子里不见了，你能帮我找找吗？"',
       '她急得直跺脚，你看了看天色，离熄灯还有一个时辰。'
@@ -425,7 +425,7 @@ export const EVENTS = [
   },
   {
     id: 'rainy_day', name: '雨天的顿悟', location: '史莱克学院·屋檐下',
-    phase: 'academy', weight: 2,
+    phase: 'adventure', minLevel: 10, weight: 2,
     text: [
       '暴雨突至，{name}被困在教学楼里。你坐在屋檐下，看雨点在水洼里打出一个又一个圆圈。',
       '看着看着，你忽然入了定——原来魂力也可以像这雨水一样，绵绵不绝。'
@@ -437,7 +437,7 @@ export const EVENTS = [
   },
   {
     id: 'swim_contest', name: '游泳比赛', location: '学院·清水湖',
-    phase: 'academy', weight: 2,
+    phase: 'adventure', minLevel: 10, weight: 2,
     text: [
       '夏日炎炎，学院组织了一场游泳比赛。同学们摩拳擦掌，奖品是一整盒冰镇灵果！',
       '"预备——跳！"'
@@ -450,7 +450,7 @@ export const EVENTS = [
   },
   {
     id: 'cooking_disaster', name: '厨艺大灾难', location: '学院·小厨房',
-    phase: 'academy', weight: 2,
+    phase: 'adventure', minLevel: 10, weight: 2,
     text: [
       '你想给同学们露一手，做一道家乡的拿手菜。可是……锅里的东西怎么变成黑乎乎的一坨了？！',
       '浓烟滚滚，呛得你直咳嗽。同学们捂着鼻子冲了进来。'
@@ -463,7 +463,7 @@ export const EVENTS = [
   },
   {
     id: 'star_gazing', name: '屋顶看星星', location: '学院·宿舍屋顶',
-    phase: 'academy', weight: 2,
+    phase: 'adventure', minLevel: 10, weight: 2,
     text: [
       '熄灯后，{name}偷偷爬上了屋顶。夏夜的星空璀璨无比，银河像一条发光的丝带横贯天际。',
       '听说，每一颗星星都对应着一位强大的魂师。哪一颗会是你呢？'
@@ -475,7 +475,7 @@ export const EVENTS = [
   },
   {
     id: 'spirit_show', name: '武魂展示会', location: '学院·大礼堂',
-    phase: 'academy', weight: 2,
+    phase: 'academy', minLevel: 3, weight: 2,
     text: [
       '学院举办武魂展示会，每个学员都要上台展示自己的武魂。台下坐满了同学和老师。',
       '"下一位，{name}！"主持人的声音响起。'
@@ -488,7 +488,7 @@ export const EVENTS = [
   },
   {
     id: 'lost_kitten', name: '后山的小猫', location: '学院·后山',
-    phase: 'academy', weight: 2,
+    phase: 'adventure', minLevel: 10, weight: 2,
     text: [
       '你在后山修炼时，听到草丛里传来细弱的叫声——是一只受伤的小花猫，腿上缠着荆棘。',
       '它睁着水汪汪的大眼睛看着你，可怜巴巴地"喵"了一声。'
@@ -500,7 +500,7 @@ export const EVENTS = [
   },
   {
     id: 'old_tree', name: '会发光的古树', location: '星斗大森林外围',
-    phase: 'academy', weight: 2,
+    phase: 'adventure', minLevel: 10, weight: 2,
     text: [
       '森林深处，你发现了一棵会发光的古树。树皮上流淌着淡金色的纹路，周围开满了从未见过的花。',
       '据说，这样的古树下常常埋藏着天地灵物。'
@@ -513,7 +513,7 @@ export const EVENTS = [
   },
   {
     id: 'fake_master', name: '假冒的大师', location: '学院门口',
-    phase: 'academy', weight: 1,
+    phase: 'adventure', minLevel: 10, weight: 1,
     text: [
       '一个自称"隐世高人"的怪老头拦住了你："小家伙，看你骨骼清奇，老夫有一套绝世功法，只要五十金币就卖给你！"',
       '他掏出一本油光发亮的破书，封面上写着《九天十地无敌神功》。'
@@ -526,7 +526,7 @@ export const EVENTS = [
   },
   {
     id: 'night_patrol', name: '夜间巡逻', location: '史莱克学院·校园',
-    phase: 'academy', weight: 2,
+    phase: 'adventure', minLevel: 10, weight: 2,
     text: [
       '今晚你与唐三一组巡逻校园。月光如水，校园里静悄悄的，只有虫鸣声此起彼伏。',
       '忽然，唐三停下脚步，做了个噤声的手势——围墙边有个黑影一闪而过！'
@@ -538,7 +538,7 @@ export const EVENTS = [
   },
   {
     id: 'festival', name: '学院庆典', location: '史莱克学院·广场',
-    phase: 'academy', weight: 2,
+    phase: 'adventure', minLevel: 10, weight: 2,
     text: [
       '一年一度的学院庆典到了！广场上张灯结彩，有舞龙、杂耍、还有各种好吃的摊位。',
       '胖虎学长拉着你："走走走！套圈游戏，赢了我们平分奖品！"'
@@ -555,7 +555,7 @@ export const EVENTS = [
 EVENTS.push(
   {
     id: 'rival_challenge', name: '隔壁学院的挑战书', location: '史莱克学院·门口',
-    phase: 'adventure', weight: 3,
+    phase: 'adventure', minLevel: 12, weight: 3,
     text: [
       '一大早，学院门口贴了一张挑战书，落款是隔壁天斗学院的"小霸王"，指名要和史莱克的学员切磋。',
       '"听说他们嘲讽我们学院没人了！"同学们义愤填膺，纷纷看向最近小有名气的{name}。'
@@ -568,7 +568,7 @@ EVENTS.push(
   },
   {
     id: 'soul_master_prelim', name: '魂师大赛·预赛', location: '天斗城·大赛会场',
-    phase: 'master', unique: true, minLevel: 20, weight: 6,
+    phase: 'adventure', unique: true, minLevel: 30, weight: 6,
     text: [
       '一年一度的少年魂师大赛开始了！巨大的会场座无虚席，锣鼓喧天。',
       '{name}代表史莱克学院出战预赛。站在擂台上，望着黑压压的观众，你的手心微微出汗。',
@@ -581,7 +581,7 @@ EVENTS.push(
   },
   {
     id: 'soul_master_final', name: '魂师大赛·决赛', location: '天斗城·大赛主会场',
-    phase: 'master', unique: true, minLevel: 36, weight: 6,
+    phase: 'adventure', unique: true, minLevel: 40, weight: 6,
     text: [
       '一路过关斩将，{name}杀进了魂师大赛的决赛！',
       '对手是夺冠大热门——来自武魂殿学院的天才少年，据说他的武魂从未在人前展露过。',
@@ -594,7 +594,7 @@ EVENTS.push(
   },
   {
     id: 'spirit_hall_exam', name: '武魂殿考核', location: '武魂殿·分殿',
-    phase: 'master', unique: true, minLevel: 25, weight: 5,
+    phase: 'adventure', unique: true, minLevel: 30, weight: 5,
     text: [
       '武魂殿的执事来到学院，选拔有潜力的年轻魂师。考核分两部分：笔试与实战。',
       '执事面无表情地翻开名册："下一位，{name}。"',
@@ -607,7 +607,7 @@ EVENTS.push(
   },
   {
     id: 'mysterious_elder', name: '遇见神秘老人', location: '星斗大森林深处',
-    phase: 'master', unique: true, minLevel: 28, weight: 5,
+    phase: 'adventure', unique: true, minLevel: 28, weight: 5,
     text: [
       '你在森林深处迷了路，正着急时，看见溪边坐着一位钓鱼的白胡子老爷爷。奇怪的是，他的鱼钩是直的。',
       '"小家伙，过来坐坐。"老人头也不回地招呼你，"老朽的鱼，只钓有缘人。"',
@@ -621,7 +621,7 @@ EVENTS.push(
   },
   {
     id: 'beast_riot', name: '魂兽暴动·保卫村庄', location: '星斗大森林外围·小村庄',
-    phase: 'master', unique: true, minLevel: 32, weight: 6,
+    phase: 'adventure', unique: true, minLevel: 32, weight: 6,
     text: [
       '深夜，急促的钟声划破夜空——森林里的魂兽不知为何躁动起来，成群结队地冲向村庄！',
       '{name}赶到现场时，一头狂暴的岩蟒正在村口横冲直撞，村民们惊恐地四散奔逃。',
@@ -636,7 +636,7 @@ EVENTS.push(
   },
   {
     id: 'meet_partner', name: '遇见伙伴', location: '落日森林·山道',
-    phase: 'adventure', weight: 3,
+    phase: 'adventure', minLevel: 15, weight: 3,
     text: [
       '山道上，一个背着药篓的小姑娘正被一只独眼狼追得团团转，药草撒了一地。',
       '"救命啊——"她带着哭腔大喊。{name}想都没想就冲了上去！'
@@ -648,7 +648,7 @@ EVENTS.push(
   },
   {
     id: 'ancient_ruins', name: '古代遗迹', location: '落日森林·地下遗迹',
-    phase: 'adventure', weight: 2,
+    phase: 'adventure', minLevel: 15, weight: 2,
     text: [
       '你在探险时发现了一处坍塌半埋的古代遗迹，石门上刻满了看不懂的符文。',
       '石门的缝隙里透出幽幽的蓝光，似乎在召唤着你。'
@@ -661,7 +661,7 @@ EVENTS.push(
   },
   {
     id: 'bottleneck', name: '修炼瓶颈', location: '史莱克学院·静室',
-    phase: 'master', unique: true, minLevel: 35, weight: 5,
+    phase: 'adventure', unique: true, minLevel: 35, weight: 5,
     text: [
       '最近{name}的修炼遇到了瓶颈，无论怎么努力，魂力都停滞不前，像被一层看不见的墙挡住了。',
       '大师看出你的焦躁，递给你一杯清茶："突破瓶颈，有时候需要的不是苦练，而是机缘。你想怎么做？"'
@@ -674,7 +674,7 @@ EVENTS.push(
   },
   {
     id: 'treasure_map', name: '藏宝图', location: '天斗城·旧货市场',
-    phase: 'adventure', weight: 2,
+    phase: 'adventure', minLevel: 15, weight: 2,
     text: [
       '你在旧货市场淘到一张泛黄的羊皮卷，摊开后发现竟然是一张藏宝图，标记的宝藏在落日森林深处。',
       '摊主摆摆手："捡来的玩意儿，十个铜板卖你了。"'
@@ -686,7 +686,7 @@ EVENTS.push(
   },
   {
     id: 'arena_streak', name: '竞技场连胜', location: '天斗城·大斗魂场',
-    phase: 'adventure', weight: 3,
+    phase: 'adventure', minLevel: 15, weight: 3,
     text: [
       '大斗魂场人声鼎沸。你已经在这里连胜了四场，再赢一场就能拿到"五连胜"的额外奖金！',
       '第五场的对手走上台来——一个使双刀的精瘦汉子，一看就不好对付。'
@@ -698,7 +698,7 @@ EVENTS.push(
   },
   {
     id: 'wolf_king_den', name: '幽冥谷的狼嚎', location: '星斗大森林外围·幽冥谷',
-    phase: 'master', minLevel: 30, weight: 3,
+    phase: 'adventure', minLevel: 30, weight: 3,
     text: [
       '深夜的幽冥谷传来阵阵狼嚎，凄厉而威严。猎人们说，谷里住着一头千年幽冥狼王。',
       '你握着{spirit}，站在谷口。进，还是不进？'
@@ -711,7 +711,7 @@ EVENTS.push(
   },
   {
     id: 'herb_valley', name: '灵药谷的馈赠', location: '落日森林·灵药谷',
-    phase: 'adventure', weight: 2,
+    phase: 'adventure', minLevel: 15, weight: 2,
     text: [
       '你发现了一处隐秘的山谷，谷中长满了各色灵药，空气中都飘着药香。',
       '谷中央，一株灵草正在月光下舒展叶片，叶片上滚动着晶莹的露珠。'
@@ -723,7 +723,7 @@ EVENTS.push(
   },
   {
     id: 'blacksmith', name: '铁匠铺的委托', location: '天斗城·铁匠铺',
-    phase: 'adventure', weight: 2,
+    phase: 'adventure', minLevel: 15, weight: 2,
     text: [
       '城里的铁匠大叔愁眉苦脸：他定做的一块稀有铁料被山贼抢走了，那可是他准备打一把好剑的材料。',
       '"小魂师，你要是能帮我把铁料夺回来，我免费帮你强化武器！"'
@@ -735,7 +735,7 @@ EVENTS.push(
   },
   {
     id: 'caravan', name: '商队随行', location: '天斗帝国·官道',
-    phase: 'adventure', weight: 2,
+    phase: 'adventure', minLevel: 15, weight: 2,
     text: [
       '一支商队正在招募护卫，报酬丰厚。商队老板是个笑呵呵的胖子："小魂师，有没有兴趣赚点外快？"',
       '这一路要经过黑风山，据说那里山贼出没。'
@@ -747,7 +747,7 @@ EVENTS.push(
   },
   {
     id: 'hot_spring', name: '山中的温泉', location: '落日森林·山坳',
-    phase: 'adventure', weight: 2,
+    phase: 'adventure', minLevel: 15, weight: 2,
     text: [
       '翻山越岭一整天，你意外发现了一处天然温泉，热气腾腾，周围开满了野花。',
       '疲惫的你看着这一池清泉，眼睛都亮了。'
@@ -763,7 +763,7 @@ EVENTS.push(
 EVENTS.push(
   {
     id: 'title_douluo_trial', name: '封号斗罗的考验', location: '武魂殿·试炼场',
-    phase: 'god', unique: true, minLevel: 50, weight: 6,
+    phase: 'master', unique: true, minLevel: 50, weight: 6,
     text: [
       '你的名声传到了一位封号斗罗的耳中。这位前辈放出话来：想见他可以，先通过他的考验。',
       '试炼场上，封号斗罗负手而立，连武魂都懒得亮出来："小家伙，接我三招不倒，就算你过关。"',
@@ -777,7 +777,7 @@ EVENTS.push(
   },
   {
     id: 'spirit_hall_secret', name: '武魂殿的秘密', location: '武魂殿·藏书阁',
-    phase: 'god', unique: true, minLevel: 55, weight: 5,
+    phase: 'master', unique: true, minLevel: 55, weight: 5,
     text: [
       '深夜，你奉命整理武魂殿藏书阁的旧档案，无意间翻到一卷尘封的密档——上面记载着一个惊人的计划：武魂殿正在暗中捕捉高年限魂兽，图谋不轨！',
       '烛火摇曳，{name}的心跳得厉害。这个秘密，该怎么办？'
@@ -805,7 +805,7 @@ EVENTS.push(
   },
   {
     id: 'partner_farewell', name: '伙伴的离别', location: '史莱克学院·大门口',
-    phase: 'god', unique: true, minLevel: 45, weight: 4,
+    phase: 'master', unique: true, minLevel: 45, weight: 4,
     text: [
       '小药要走了。她的家族来信，让她回去继承药堂。学院门口，她背着行囊，眼睛红红的。',
       '"{name}，谢谢你一直照顾我。"她吸了吸鼻子，"这个给你——我炼了三个月的丹药，不许嫌少！"'
@@ -817,7 +817,7 @@ EVENTS.push(
   },
   {
     id: 'evil_spirit_master', name: '邪魂师的踪迹', location: '天斗帝国·边境小镇',
-    phase: 'master', weight: 3,
+    phase: 'master', minLevel: 40, weight: 3,
     text: [
       '边境小镇接连有魂师失踪，传言是邪魂师所为。你奉命前来调查，在废弃的祠堂里发现了诡异的黑色符文。',
       '阴风阵阵，一个黑袍人缓缓从阴影中走出："多管闲事的小鬼，既然来了，就留下吧。"'
@@ -829,7 +829,7 @@ EVENTS.push(
   },
   {
     id: 'sea_trial', name: '海神岛的试炼', location: '海神岛·海滩',
-    phase: 'master', weight: 2,
+    phase: 'master', minLevel: 45, weight: 2,
     text: [
       '你乘船来到传说中的海神岛。刚踏上沙滩，一道水幕冲天而起，化作一位蓝衣使者。',
       '"远方的魂师，想获得海神的祝福吗？那就接受浪之试炼吧——在巨浪中坚持一炷香！"'
@@ -841,7 +841,7 @@ EVENTS.push(
   },
   {
     id: 'bandit_king', name: '山贼王的宝藏', location: '天斗帝国·黑风山',
-    phase: 'master', weight: 2,
+    phase: 'adventure', minLevel: 25, weight: 2,
     text: [
       '你单枪匹马端了黑风山的山贼窝。山贼王跪地求饶，说山寨的密室里藏着二十年搜刮来的财宝。',
       '"大侠饶命！财宝都给您！"'
@@ -866,7 +866,7 @@ EVENTS.push(
   },
   {
     id: 'auction', name: '地下拍卖会', location: '天斗城·地下会场',
-    phase: 'master', weight: 2,
+    phase: 'master', minLevel: 45, weight: 2,
     text: [
       '你混进了一场神秘的地下拍卖会。台上的拍卖师敲响小锤："下一件——千年灵药「还魂草」，起拍价三百金币！"',
       '你摸了摸鼓鼓的钱袋，有点心动。'
@@ -878,7 +878,7 @@ EVENTS.push(
   },
   {
     id: 'master_teaching', name: '大师的私教课', location: '史莱克学院·书房',
-    phase: 'god', unique: true, minLevel: 48, weight: 3,
+    phase: 'master', unique: true, minLevel: 48, weight: 3,
     text: [
       '大师把你叫到书房，桌上摊着你这些年的战斗记录。',
       '"{name}，你已经不是当年的小学员了。"大师推了推眼镜，"今天，我教你最后一课——如何成为一个真正的强者。"'
@@ -893,7 +893,7 @@ EVENTS.push(
 EVENTS.push(
   {
     id: 'god_trial_sea', name: '神位传承·海神九考', location: '海神岛·圣殿',
-    phase: 'god', unique: true, minLevel: 75, weight: 6,
+    phase: 'master', unique: true, minLevel: 50, weight: 6,
     text: [
       '海神圣殿之中，湛蓝的神光自穹顶洒落，照亮了你前行的路。',
       '一个威严而温和的声音在天地间响起："传承者{name}，你历经百战，心怀赤诚。今日，可敢接受神之试炼？"',
@@ -980,7 +980,7 @@ EVENTS.push(
   },
   {
     id: 'world_peace', name: '大陆和平会议', location: '天斗城·皇宫',
-    phase: 'god', weight: 2,
+    phase: 'god', minLevel: 90, weight: 2,
     text: [
       '两大帝国邀请你参加大陆和平会议，商讨如何共同防范魂兽潮与邪魂师。',
       '作为大陆最年轻的顶尖强者，你的意见举足轻重。'
@@ -996,7 +996,7 @@ EVENTS.push(
 EVENTS.push(
   {
     id: 'ring_hunt_10', name: '第一魂环·年限抉择', location: '星斗大森林外围',
-    phase: 'adventure', unique: true, minLevel: 10, ring: 'ten', weight: 0,
+    phase: 'academy', unique: true, minLevel: 10, ring: 'ten', weight: 0,
     text: [
       '你的魂力已经到了十级，可以吸收第一个魂环了！大师亲自带队，陪你来到星斗大森林外围。',
       '"十年魂环最稳妥，但根基出众者也可以尝试百年魂兽。"大师神色严肃，"年限、武魂方向与承受风险，都由你自己决定。"'
@@ -1021,7 +1021,7 @@ EVENTS.push(
   },
   {
     id: 'ring_hunt_20', name: '第二魂环·百年之证', location: '星斗大森林外围·中层',
-    phase: 'master', unique: true, minLevel: 20, ring: 'hundred', weight: 0,
+    phase: 'adventure', unique: true, minLevel: 20, ring: 'hundred', weight: 0,
     text: [
       '二十级！你已经是小有名气的魂师了。这一次，你要猎杀的是百年魂兽——难度提升了十倍不止。',
       '森林中层的光线暗了下来，空气里弥漫着危险的气息。三只百年魂兽的气息，从不同方向传来。'
@@ -1034,7 +1034,7 @@ EVENTS.push(
   },
   {
     id: 'ring_hunt_30', name: '第三魂环·千年之约', location: '星斗大森林深处',
-    phase: 'master', unique: true, minLevel: 30, ring: 'thousand', weight: 0,
+    phase: 'adventure', unique: true, minLevel: 30, ring: 'thousand', weight: 0,
     text: [
       '三十级，魂尊之境。千年魂兽的威压即便隔着老远也令人心悸。',
       '大师的神色前所未有的凝重："千年魂兽已开灵智，切勿大意。选一个，我们为你护法。"'
@@ -1047,7 +1047,7 @@ EVENTS.push(
   },
   {
     id: 'ring_hunt_40', name: '第四魂环·万年之威', location: '星斗大森林深处·核心圈',
-    phase: 'master', unique: true, minLevel: 40, ring: 'ten_thousand', weight: 0,
+    phase: 'adventure', unique: true, minLevel: 40, ring: 'ten_thousand', weight: 0,
     text: [
       '四十级！你站在了无数魂师一生都无法企及的高度。而万年魂兽，是一方霸主级别的存在。',
       '森林核心圈的古木遮天蔽日，两头万年魂兽的领地就在前方。大地的震颤提醒着你：这里，是它们的世界。'
@@ -1059,7 +1059,7 @@ EVENTS.push(
   },
   {
     id: 'ring_hunt_50', name: '第五魂环·万年再临', location: '落日森林·最深处',
-    phase: 'god', unique: true, minLevel: 50, ring: 'ten_thousand', weight: 0,
+    phase: 'master', unique: true, minLevel: 50, ring: 'ten_thousand', weight: 0,
     text: [
       '五十级，魂王之境。你需要第二个万年魂环来稳固修为。',
       '落日森林的深处，夕阳的余晖把一切都染成了金色。两头万年魂兽的气息在山谷中回荡。'
@@ -1071,7 +1071,7 @@ EVENTS.push(
   },
   {
     id: 'ring_hunt_60', name: '第六魂环·天赐之礼', location: '武魂城·圣殿',
-    phase: 'god', unique: true, minLevel: 60, ring: 'special60', weight: 0,
+    phase: 'master', unique: true, minLevel: 60, ring: 'special60', weight: 0,
     text: [
       '六十级这一天，异象突生——一道金光自天而降，落在你的面前。',
       '大师的呼吸都急促起来："这是……传说中的特殊魂环！上天赠予有缘人的礼物！"'
@@ -1083,7 +1083,7 @@ EVENTS.push(
   },
   {
     id: 'ring_hunt_70', name: '第七魂环·武魂真身', location: '星斗大森林深处·核心湖畔',
-    phase: 'god', unique: true, minLevel: 70, ring: 'choice', weight: 0,
+    phase: 'master', unique: true, minLevel: 70, ring: 'choice', weight: 0,
     text: [
       '七十级，魂圣之境，武魂真身觉醒的前夜。你来到了传说中的核心湖畔。',
       '森林霸主的气息自湖畔升起。你可以稳妥寻找万年魂环，也可以冒险追寻只存在于传说中的十万年红环。'

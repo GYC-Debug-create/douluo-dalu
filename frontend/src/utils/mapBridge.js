@@ -129,7 +129,7 @@ function normalizedText(value) {
 }
 
 function phaseName(level) {
-  const book = level <= 6 ? '学院篇' : level <= 18 ? '实战篇' : level <= 40 ? '进阶篇' : '神途篇'
+  const book = level <= 10 ? '初级学院' : level <= 40 ? '进阶学院' : level <= 70 ? '历练期' : '封神期'
   return `${book} · ${rankTitleForLevel(level)}`
 }
 
