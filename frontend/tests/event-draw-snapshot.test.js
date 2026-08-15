@@ -124,16 +124,20 @@ describe('M2 抽取一致性快照', () => {
     const random = vi.spyOn(Math, 'random').mockImplementation(prng)
     try {
       const ids = drawSnapshot(engine, 30)
-      // 基线：2026-08-14 于 M2 优化后的代码上生成（种子 20260814，Lv.5 academy 阶段，
-      // 全量事件池 364 条，含 events-expanded 副作用合并），连续 13 次运行稳定。
-      // 任何重构不得改变此序列——差异即行为变更。
+      // 基线：2026-08-15 于 T4 出身限定修复后重新生成（种子 20260814，Lv.5 academy 阶段，
+      // 全量事件池 364 条，含 events-expanded 副作用合并）。
+      // 变更记录：
+      // - 2026-08-14 M2 基线：首版（重构前后一致性锁定）
+      // - 2026-08-15 T4 基线：or_noble_01 等出身事件按 origin 限定被正确排除
+      //   （star_forest 玩家不再触发 or_noble_01——这本身是 T4 修复生效的证据）。
+      //   本序列于 --no-file-parallelism 下连续 3 次运行稳定。
       expect(ids).toEqual([
-        'first_class', 'ac_extra_07', 'ac_daily_04', 'ac_gold_03', 'dyn_lucky',
-        'ac_dorm_02', 'or_noble_01', 'ac_teacher_02', 'sp_wp_01', 'ac_extra_02',
-        'ac_class_01', 'mentor_1', 'ac_food_01', 'ac_sp_02', 'sp_wp_01',
-        'mentor_1', 'ac_food_01', 'ac_more_11', 'ac_season_02', 'ac_train_02',
-        'cafeteria_funny', 'ac_extra_01', 'fake_master', 'ac_daily_05', 'training_hill',
-        'cafeteria_funny', 'playground_spar', 'ac_gold_04', 'mentor_1', 'ac_dorm_02'
+        'first_class', 'ac_extra_04', 'ac_daily_03', 'ac_gold_02', 'dyn_lucky',
+        'ac_dorm_01', 'ac_sp_02', 'ac_teacher_01', 'sp_wp_01', 'ac_extra_01',
+        'festival', 'mentor_1', 'ac_class_03', 'ac_adv_03', 'sp_wp_01',
+        'mentor_1', 'ac_class_03', 'ac_more_09', 'ac_more_15', 'ac_train_01',
+        'cafeteria_funny', 'ac_fun_04', 'lost_kitten', 'ac_daily_05', 'mystery_merchant',
+        'cafeteria_funny', 'playground_spar', 'ac_gold_03', 'mentor_1', 'ac_dorm_01'
       ])
     } finally {
       random.mockRestore()

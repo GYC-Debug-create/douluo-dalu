@@ -194,13 +194,15 @@ describe('BUG-DIALOG-004 方案B：长介绍分段纯函数 splitSpiritDescripti
     expect(splitSpiritDescription(noBoundary)).toEqual([noBoundary])
   })
 
-  it('创世之书 198 字完整保留并形成 1～2 个可读段落', () => {
-    expect(godBook.desc.length).toBe(198)
+  it('创世之书 201 字完整保留并形成 1～2 个可读段落', () => {
+    // 2026-08-15 T1 解耦后 desc 改写为传说化表述，长度 198→201。
+    // 本测试锁定的是分段函数不丢字，长度断言随文案同步更新。
+    expect(godBook.desc.length).toBe(201)
     const paragraphs = splitSpiritDescription(godBook.desc)
     expect(paragraphs.length).toBeGreaterThanOrEqual(1)
     expect(paragraphs.length).toBeLessThanOrEqual(2)
     expect(paragraphs.join('')).toBe(godBook.desc.trim())
-    expect(paragraphs.join('').length).toBe(198)
+    expect(paragraphs.join('').length).toBe(201)
     for (const p of paragraphs) expect(p.length).toBeGreaterThan(0)
   })
 
