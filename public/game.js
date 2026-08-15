@@ -1830,7 +1830,7 @@ const MAIN_STORY_MILESTONES = [
   { id:'spirit_hall_exam', name:'武魂殿考核', minLevel:25, targetId:'spirit_hall', requires:['soul_master_prelim'] },
   { id:'soul_master_final', name:'魂师大赛·决赛', minLevel:36, targetId:'tian_dou_city', requires:['soul_master_prelim'] },
   { id:'god_trial_sea', name:'神位传承·海神九考', minLevel:75, targetId:'sea_god_island', requires:['soul_master_final'] },
-  { id:'final_evil', name:'最终决战·深渊之主', minLevel:95, targetId:'abyss_rift', requires:['god_trial_sea'] }
+  { id:'final_evil', name:'最终决战·讨伐武魂殿', minLevel:95, targetId:'wuhun_city', requires:['god_trial_sea'] }
 ];
 
 function nextMainStoryMilestone(){
@@ -3005,12 +3005,13 @@ function buildEnemy(key){
     arena_fighter:  () => npcEnemy('竞技场·双刀客', 0.98),
     evil_master:    () => npcEnemy('邪魂师·黑袍人', 1.03, '☠️'),
     god_rival:      () => npcEnemy('神位传承者·宿敌', 1.15, '👑'),
-    abyss_lord:     () => ({
-      id:'abyss_lord', name:'深渊之主', isNpc:false, isBoss:true, icon:'🌑',
-      image:'assets/beasts/深海魔鲸王.jpg',
+    holy_lord:     () => ({
+      id:'holy_lord', name:'武魂殿圣殿大供奉', isNpc:false, isBoss:true, icon:'👁️',
+      image:null,
       attack:Math.round(fs.attack * 0.92), defense:Math.round(fs.defense * 0.88),
       hp:Math.round(fs.maxHp * 2.1), maxHp:Math.round(fs.maxHp * 2.1),
-      speed:Math.round(fs.speed * 0.92), element:'暗', sub:'最终BOSS · 深渊黑暗'
+      speed:Math.round(fs.speed * 0.92), element:'暗', sub:'最终BOSS · 武魂殿巅峰', special:'',
+      exp:500, gold:200
     })
   };
   return (table[key] || (() => npcEnemy('游历魂师', 0.82)))();
@@ -3701,7 +3702,7 @@ const HIDDEN_LOCATIONS = [
     clue:'龙之谷的猎人们偶尔提到谷底深处有巨龙巢穴的残迹，只有 Lv.35 以上的勇士才能抵达。',
     desc:'龙之谷最深处的龙巢，据说沉睡着上古龙族的宝藏' },
   { id:'abyss_rift', name:'深渊裂缝', mapX:19, mapY:44, revealCondition:G => G.level >= 45 && G._bossKilled !== true,
-    clue:'传说大地上有一道不断扩大的裂缝，Lv.45 以上的魂师才能靠近——它似乎与最终的威胁有关。',
+    clue:'传说大地上有一道通往地底深渊的裂缝，深渊魔鲸等恐怖魂兽栖息其中，Lv.45 以上的魂师才能靠近。',
     desc:'大地上裂开的一道深渊裂缝，从中涌出令人不安的气息' },
   { id:'fairy_pool', name:'仙灵之池', mapX:43, mapY:44, revealCondition:G => G.level >= 20 && G._npcRelations && Object.keys(G._npcRelations).length >= 3,
     clue:'山民说，只有与至少三位人物建立羁绊、且达到 Lv.20 的旅人，才能在清晨的雾气中看见那汪仙灵之池。',
@@ -5038,7 +5039,7 @@ function openInventory(){
     '回魂丹': '💊', '聚魂丹': '🔮', '回天丹': '💎', '洗髓丹': '⚗️',
     '金疮药': '🩹', '解毒丹': '🌿', '铁剑': '⚔️', '青钢剑': '🗡️',
     '玄铁剑': '⚔️', '皮甲': '🥋', '铁甲': '🛡️', '玄铁甲': '🛡️',
-    '布靴': '👟', '皮靴': '🥾', '魂导器': '📿', '储物袋': '🎒',
+    '布靴': '👟', '皮靴': '🥾', '储物袋': '🎒',
     '经验丹': '⭐', '命运符': '🎴', '突破丹': '🔥', '感悟心得': '📜',
     '秘籍': '📖', '武魂碎片': '💠', '魂骨': '🦴', '仙草': '🌺'
   };

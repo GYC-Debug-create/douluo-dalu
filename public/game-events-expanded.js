@@ -108,12 +108,12 @@ EVENTS.push(
   image: 'assets/scenes/academy_classroom.jpg',
   text: [
     '你在座位里发现一本泛黄的笔记，扉页上写着"唐三"。里面密密麻麻记满了修炼心得和各种魂兽弱点分析。',
-    '这是唐三学长遗失的！你翻了几页，发现里面有一段正是你最近卡住的修炼难点。'
+    '这是唐三遗失的！你翻了几页，发现里面有一段正是你最近卡住的修炼难点。'
   ],
   choices: [
-    { text: '原封不动还给学长', result: { text: '你在下课后追上唐三把笔记还给他。他有些意外，接过笔记时冲你笑了笑："谢谢你，小师弟。以后有问题可以来问我。"', fate: 2, exp: 20 } },
+    { text: '原封不动还给他', result: { text: '你在下课后追上唐三把笔记还给他。他有些意外，接过笔记时冲你笑了笑："谢谢你，以后有问题可以互相切磋。"', fate: 2, exp: 20 } },
     { text: '偷偷抄一份再还', result: { text: '你连夜把关键内容抄了下来，第二天再把笔记还回去。唐三似乎察觉了什么，但只是笑了笑没说破。你学到了很多。', exp: 40 } },
-    { text: '据为己有', result: { text: '你把笔记藏了起来。可是从那以后每次看到唐三学长，你都心里发虚，修炼也静不下心来。', fate: -2, exp: 10 } }
+    { text: '据为己有', result: { text: '你把笔记藏了起来。可是从那以后每次看到唐三，你都心里发虚，修炼也静不下心来。', fate: -2, exp: 10 } }
   ]
 },
 // ---- 食堂与饮食类 ----
@@ -223,7 +223,7 @@ EVENTS.push(
   image: 'assets/scenes/training_ground.jpg',
   text: [
     '操场上新设了一个木桩阵——一百零八根木桩按奇门遁甲排列，要在一炷香内穿过去而不碰到任何木桩。',
-    '唐三学长演示时如行云流水，看得你目瞪口呆。轮到你了。'
+    '唐三演示时如行云流水，看得你目瞪口呆。轮到你了。'
   ],
   choices: [
     { text: '全力冲刺！', cond: { speed: 11 }, result: { text: '你运起魂力飞速穿过木桩阵，衣袂飘飘，虽然碰倒了三根木桩，但速度让唐三都点了点头。', speed: 2, exp: 30 } },
@@ -462,12 +462,12 @@ EVENTS.push(
     { text:'请老铁匠点评武魂', result:{ text:'老铁匠仔细端详了你的武魂，指出了几个你不曾注意到的细节——武魂的受力点、最佳发力角度、薄弱环节。这些看似简单的指点，却让你对武魂的理解精进了许多。', attack:3, defense:1, exp:80 } },
     { text:'帮老铁匠打铁，换取指点', result:{ text:'你帮老铁匠打了一天的铁，他一边干活一边指点你。晚上他请你喝酒，说"你这个小伙子不错，以后有武器上的问题随时来找我"。', gold:15, attack:2, exp:50 } }
   ]},
-{ id:'sp_wp_03', name:'魂导器实验', location:'魂导器工坊', phase:'adventure', minLevel:18, weight:2, tags:['器武魂','灵巧','实用'],
+{ id:'sp_wp_03', name:'器物亲和测试', location:'天斗城·器物研究所', phase:'adventure', minLevel:18, weight:2, tags:['器武魂','灵巧','实用'],
   image:'assets/scenes/blacksmith.jpg',
-  text:['一个魂导器研究者邀请你参与实验——他想测试器武魂魂师对魂导器的亲和度。作为器武魂拥有者，你对各种器具有着天然的掌控力。'],
+  text:['一位研究上古器物的老学者邀请你参与测试——他想验证器武魂魂师对传世器物的亲和度。作为器武魂拥有者，你对各种器具有着天然的掌控力。'],
   choices:[
-    { text:'配合实验', result:{ text:'实验结果令人惊喜——你的器武魂对魂导器有着超乎寻常的亲和力！研究者给了你丰厚的报酬，还说你的武魂潜力很大。', gold:40, exp:60, fate:1 } },
-    { text:'借机学习魂导器制作', result:{ text:'你不仅配合了实验，还向研究者请教魂导器制作的基础知识。以你的器武魂天赋，学起来事半功倍。', item:{ name:'初级魂导器图纸', desc:'记载了基础魂导器的制作方法', effect:{ attack:1 } }, exp:80 } }
+    { text:'配合实验', result:{ text:'测试结果令人惊喜——你的器武魂与上古器物产生了强烈共鸣！学者给了你丰厚的报酬，还说你的武魂潜力很大。', gold:40, exp:60, fate:1 } },
+    { text:'借机学习器物养护之道', result:{ text:'你不仅配合了测试，还向学者请教器物温养的基础知识。以你的器武魂天赋，学起来事半功倍。', item:{ name:'上古器纹图谱', desc:'记载了基础器物温养之法', effect:{ attack:1 } }, exp:80 } }
   ]},
 // ---- 兽武魂专属 ----
 { id:'sp_bs_01', name:'兽性觉醒', location:'野外·月圆之夜', phase:'academy', minLevel:4, weight:2, tags:['兽武魂','强攻系','狂暴'],
@@ -655,10 +655,10 @@ EVENTS.push(
     { text:'矿洞太危险，不进去', result:{ text:'你放弃了矿洞探险。安全第一。', exp:5 } }
   ]},
 { id:'adv_gold_05', name:'拍卖会捡漏', location:'天斗城·拍卖行', phase:'master', minLevel:20, weight:1, image:'assets/scenes/auction_house.jpg',
-  text:['拍卖会上，一件不起眼的旧铜镜正在被拍卖，没人竞价。但你注意到铜镜背面刻着古老的魂导器铭文——这很可能是一件被埋没的魂导器！'],
+  text:['拍卖会上，一件不起眼的旧铜镜正在被拍卖，没人竞价。但你注意到铜镜背面刻着古老的上古器纹——这很可能是一件被埋没的魂师遗物！'],
   choices:[
-    { text:'出价30金币拍下', result:{ text:'你以30金币拍下了铜镜。回去后你仔细研究，发现它确实是一件低阶魂导器，能略微增强魂力恢复。虽然不值大钱，但绝对物超所值！', gold:-30, item:{ name:'古铜魂导镜', desc:'略微提升魂力恢复速度', effect:{ spiritPowerGain:10 } }, exp:80 } },
-    { text:'不冒险，可能就是废品', result:{ text:'你没有出价。铜镜被一个老者以20金币拍走。后来听说那老者是魂导器大师，铜镜确实是一件失传的魂导器，价值翻了十倍不止。你肠子都悔青了。', exp:5 } }
+    { text:'出价30金币拍下', result:{ text:'你以30金币拍下了铜镜。回去后你仔细研究，发现它确实蕴含着上古魂师的温养之力，能略微增强魂力恢复。虽然不值大钱，但绝对物超所值！', gold:-30, item:{ name:'古铜魂力镜', desc:'略微提升魂力恢复速度', effect:{ spiritPowerGain:10 } }, exp:80 } },
+    { text:'不冒险，可能就是废品', result:{ text:'你没有出价。铜镜被一个老者以20金币拍走。后来听说那老者是鉴宝大家，认出铜镜是千年前一位魂师的随身遗物，价值翻了十倍不止。你肠子都悔青了。', exp:5 } }
   ]},
 // ---- 冒险·属性提升事件 ----
 { id:'adv_stat_01', name:'瀑布修炼', location:'深山瀑布', phase:'adventure', minLevel:15, weight:2, image:'assets/scenes/mountain_path.jpg',
@@ -800,10 +800,10 @@ EVENTS.push(
     { text:'慢慢来，稳扎稳打', result:{ text:'你没有急于求成，而是稳扎稳打地积累。虽然比别人慢了一些，但根基更加扎实。', attack:2, defense:2, exp:150 } }
   ]},
 // ---- 成神·更多事件 ----
-{ id:'god_more_01', name:'位面商人', location:'神界·交易站', phase:'god', minLevel:76, weight:2, image:'assets/scenes/auction_house.jpg',
-  text:['一位来自其他位面的神祇商人来到神界，他带来了各种异世界的奇珍异宝，也愿意收购神界的特产。'],
+{ id:'god_more_01', name:'域外来客', location:'神界·交易站', phase:'god', minLevel:76, weight:2, image:'assets/scenes/auction_house.jpg',
+  text:['一位游历世界之外的神秘商人来到神界，他带来了闻所未闻的奇珍异宝，也愿意收购神界的特产。'],
   choices:[
-    { text:'买！异世界的宝贝不能错过', result:{ text:'你花了300金币买了一颗异世界的"时空结晶"，据说能让人短暂看到未来。虽然不知道真假，但结晶中蕴含的能量确实浩瀚无比。', gold:-300, item:{ name:'时空结晶', desc:'来自异世界的神秘晶体', effect:{ spiritPowerGain:50, attack:5 } }, exp:200 } },
+    { text:'买！奇珍异宝不能错过', result:{ text:'你花了300金币买了一颗异世界的"时空结晶"，据说能让人短暂看到未来。虽然不知道真假，但结晶中蕴含的能量确实浩瀚无比。', gold:-300, item:{ name:'界外结晶', desc:'蕴含世界之外气息的神秘晶体', effect:{ spiritPowerGain:50, attack:5 } }, exp:200 } },
     { text:'卖一些神界特产', result:{ text:'你把神界的一些特产卖给商人，赚了200金币。商人很高兴，说下次还会来。', gold:200, exp:50 } },
     { text:'只是看看，不交易', result:{ text:'你好奇地参观了异世界商人的摊位，大开眼界。虽然没有交易，但增长了见识。', exp:30 } }
   ]},
@@ -846,29 +846,29 @@ EVENTS.push(
     { text:'假装没听见', result:{ text:'你翻了个身继续睡觉，什么都没说。', exp:5 } },
     { text:'在梦里回应他', result:{ text:'你恶作剧地在他耳边低声说："我知道是你偷的，快交出来！"结果他被吓得从床上滚了下去。', exp:15, fate:-1 } }
   ]},
-{ id:'ac_extra_04', name:'弗兰德院长的训话', location:'史莱克学院·操场', phase:'academy', weight:2, image:'assets/scenes/training_ground.jpg',
+{ id:'ac_extra_04', name:'弗兰德院长的训话', location:'史莱克学院·操场', phase:'adventure', minLevel:12, weight:2, image:'assets/scenes/training_ground.jpg',
   text:['弗兰德院长把所有人集合起来训话，讲了一个时辰他当年的英雄事迹。你们站得腿都麻了。'],
   choices:[
     { text:'认真听，虽然啰嗦但可能有用', result:{ text:'你认真听完了院长的训话，虽然大部分是吹牛，但中间确实有几句实战经验让你有所收获。', exp:25, defense:1 } },
     { text:'偷偷开小差', result:{ text:'你在下面偷偷和同学聊天，被院长发现了，罚你绕操场跑十圈。', damage:10, exp:10 } },
     { text:'站着睡着了', result:{ text:'你实在太困，站着睡着了。醒来时发现所有人都走了，只有院长黑着脸看着你。接下来你被罚洗了一个月的厕所。', fate:-1, exp:5 } }
   ]},
-{ id:'ac_extra_05', name:'赵无极的考验', location:'史莱克学院·练功场', phase:'adventure', minLevel:8, weight:2, image:'assets/scenes/training_ground.jpg',
+{ id:'ac_extra_05', name:'赵无极的考验', location:'史莱克学院·练功场', phase:'adventure', minLevel:12, weight:2, image:'assets/scenes/training_ground.jpg',
   text:['赵无极老师说要亲自测试你们的实力，让你们一起上，能在他手下撑过一炷香就算合格。'],
   choices:[
     { text:'正面硬扛', result:{ text:'你选择正面硬扛赵无极老师的攻击，虽然被打得鼻青脸肿，但撑过了一炷香！赵无极哈哈大笑："有种！"', damage:30, exp:80, attack:2, defense:1 } },
     { text:'和同学配合游走', result:{ text:'你和同学们配合游走，不正面硬接，靠配合拖延时间。虽然没撑过一炷香，但赵无极说你们的配合不错。', damage:15, exp:50, fate:1 } }
   ]},
-{ id:'ac_extra_06', name:'小三的暗器演示', location:'史莱克学院', phase:'academy', minLevel:6, weight:1, image:'assets/scenes/academy_classroom.jpg',
-  text:['唐三在学院展示了他的暗器功夫，几根银针在他手中神出鬼没，竟能穿透钢板。同学们都看呆了。'],
+{ id:'ac_extra_06', name:'唐三的独门手法', location:'史莱克学院', phase:'adventure', minLevel:12, weight:1, image:'assets/scenes/academy_classroom.jpg',
+  text:['唐三私下展示了他家乡的独门手法，几根银针在他手中神出鬼没，竟能穿透钢板。同学们都看呆了。'],
   choices:[
-    { text:'向他请教暗器', result:{ text:'你向唐三请教暗器手法，他很慷慨地教了你几招基础。虽然你不是唐门弟子，但这些技巧在实战中很有用。', attack:1, speed:1, exp:40 } },
-    { text:'暗器不是正途，不必学', result:{ text:'你觉得暗器不够光明正大，没有去学。唐三也不勉强，只是笑了笑。', exp:10 } }
+    { text:'向他请教手法', result:{ text:'你向唐三请教这门手法，他很慷慨地教了你几招基础。虽然这手法讲究家传，但这些技巧在实战中很有用。', attack:1, speed:1, exp:40 } },
+    { text:'旁门左道，不必学', result:{ text:'你觉得这类手法不够光明正大，没有去学。唐三也不勉强，只是笑了笑。', exp:10 } }
   ]},
 { id:'ac_extra_07', name:'学院运动会', location:'史莱克学院·操场', phase:'academy', weight:2, image:'assets/scenes/training_ground.jpg',
   text:['学院举办了一年一度的运动会，有赛跑、举重、魂力控制等各种项目。'],
   choices:[
-    { text:'参加赛跑', result:{ text:'你参加了赛跑项目，用魂力辅助速度，获得了第二名！奖励了一块魂导器玉佩。', speed:2, item:{ name:'加速玉佩', desc:'略微提升移动速度', effect:{ speed:2 } }, exp:50 } },
+    { text:'参加赛跑', result:{ text:'你参加了赛跑项目，用魂力辅助速度，获得了第二名！奖励了一块附了魂力祝福的玉佩。', speed:2, item:{ name:'加速玉佩', desc:'略微提升移动速度', effect:{ speed:2 } }, exp:50 } },
     { text:'参加举重', result:{ text:'你参加了举重项目，靠蛮力举到了第三名。虽然不是最好的，但大家都为你鼓掌。', attack:1, exp:30 } },
     { text:'当观众加油', result:{ text:'你在看台上为同学们加油呐喊，嗓子都喊哑了，但大家玩得很开心。', fate:1, exp:10 } }
   ]},
@@ -953,11 +953,11 @@ EVENTS.push(
     { text:'降神迹回应信徒', result:{ text:'你降了一道神迹，赐福于虔诚的信徒。你的信仰之力大增，神力更加浑厚。', spiritPowerGain:20, exp:200, fate:2 } },
     { text:'默默看着，不干涉', result:{ text:'你看着自己的传说在人间流传，心中五味杂陈。你选择了沉默，不干涉凡人的信仰。', exp:50 } }
   ]},
-{ id:'god_extra_03', name:'轮回之眼', location:'神界·轮回池', phase:'god', minLevel:90, weight:1, image:'assets/scenes/abyss_godrealm.jpg',
-  text:['你在神界发现了轮回池，透过池水你可以看到自己的前世今生——原来你已经历了几世轮回，每一世都与武魂有关。'],
+{ id:'god_extra_03', name:'命数之眼', location:'神界·命数池', phase:'god', minLevel:90, weight:1, image:'assets/scenes/abyss_godrealm.jpg',
+  text:['你在神界发现了命数池，透过池水你可以隐约看到命运的丝线——原来你与武魂的缘分早在冥冥中注定。'],
   choices:[
-    { text:'看透轮回，领悟轮回之力', result:{ text:'你在轮回池前参悟了千年，领悟了轮回之力。你能看到因果，甚至能短暂窥见未来。这是至高的法则之力。', spiritPowerGain:50, attack:10, defense:10, exp:800, fate:5 } },
-    { text:'不看也罢，活在当下', result:{ text:'你转身离开了轮回池。前世已矣，来世未知，最重要的是今生。你心境更加圆满。', fate:3, exp:200 } }
+    { text:'看透命数，领悟命运之力', result:{ text:'你在命数池前参悟了千年，领悟了命运之力。你能看到因果，甚至能短暂窥见未来。这是至高的法则之力。', spiritPowerGain:50, attack:10, defense:10, exp:800, fate:5 } },
+    { text:'不看也罢，活在当下', result:{ text:'你转身离开了命数池。天命难测，世事无常，最重要的是今生。你心境更加圆满。', fate:3, exp:200 } }
   ]}
 );
 
@@ -1033,8 +1033,8 @@ EVENTS.push(
 { id:'adv_ruin_06', name:'地下迷宫', location:'远古遗迹·地下', phase:'master', minLevel:33, weight:2, image:'assets/scenes/abyss_godrealm.jpg',
   text:['你发现遗迹地下有一个巨大的迷宫，墙壁上刻满了看不懂的符文。迷宫深处似乎有什么东西在发光。'],
   choices:[
-    { text:'深入探索', result:{ text:'你在迷宫中转了很久，差点迷路，但最终找到了一间密室，里面放着一枚储物戒指和一些古老的魂导器图纸！', gold:100, item:{ name:'古魂导图纸', desc:'记载了一种失传魂导器的制作方法', effect:{ spiritPowerGain:5 } }, exp:200 } },
-    { text:'在入口附近看看就好', result:{ text:'你在入口附近找到了几块魂导器碎片，虽然不是什么珍贵东西，但也能卖些钱。', gold:30, exp:50 } },
+    { text:'深入探索', result:{ text:'你在迷宫中转了很久，差点迷路，但最终找到了一间密室，里面放着一枚储物戒指和一些记载着上古锻造术的器纹拓片！', gold:100, item:{ name:'上古器纹拓片', desc:'记载了一种失传锻造术的拓片', effect:{ spiritPowerGain:5 } }, exp:200 } },
+    { text:'在入口附近看看就好', result:{ text:'你在入口附近找到了几块刻有器纹的残片，虽然不是什么珍贵东西，但也能卖些钱。', gold:30, exp:50 } },
     { text:'迷宫太危险，不进去', result:{ text:'你觉得迷宫太过危险，明智地选择了离开。', exp:10 } }
   ]},
 { id:'adv_ruin_07', name:'冰火两仪眼', location:'绝密山谷', phase:'master', minLevel:38, weight:1, image:'assets/scenes/volcano.jpg',
@@ -1195,16 +1195,16 @@ EVENTS.push(
     { text:'赐福于他们', result:{ text:'你用神力赐福于你的宗门和后人，保护他们平安昌盛。虽然你不能再常伴他们左右，但你的祝福会一直守护着他们。', fate:3, exp:200 } },
     { text:'放下牵挂，专心神位', result:{ text:'你知道神不能有太多凡俗的牵挂。你深吸一口气，转身离开了望乡台，将感情深埋心底。', exp:100 } }
   ]},
-{ id:'god_big_12', name: '时空乱流·神劫', location:'虚空', phase:'god', minLevel:88, weight:2, image:'assets/scenes/abyss_godrealm.jpg',
-  text:['你在穿越位面时遭遇了时空乱流！狂暴的空间之力撕扯着你的神体，你被卷入了一个未知的空间裂缝。'],
+{ id:'god_big_12', name: '空间风暴·神劫', location:'虚空', phase:'god', minLevel:88, weight:2, image:'assets/scenes/abyss_godrealm.jpg',
+  text:['你在巡游世界之时遭遇了罕见的空间风暴！狂暴的空间之力撕扯着你的神体，你被卷入了一个未知的空间裂缝。'],
   choices:[
-    { text:'以神力强行破开乱流', result:{ text:'你凝聚全部神力强行轰击乱流，虽然成功脱困，但神力消耗巨大，还受了不轻的神伤。', damage:100, spiritPowerGain:-50, exp:500 } },
-    { text:'顺流而行，寻找出口', result:{ text:'你放弃抵抗，顺着时空乱流漂流，最终被抛到了一个陌生的位面——这里的灵气浓度远超大罗大陆！', exp:400, fate:1 } }
+    { text:'以神力强行破开乱流', result:{ text:'你凝聚全部神力强行轰击风暴，虽然成功脱困，但神力消耗巨大，还受了不轻的神伤。', damage:100, spiritPowerGain:-50, exp:500 } },
+    { text:'顺流而行，寻找出口', result:{ text:'你放弃抵抗，顺着空间风暴漂流，最终被抛到了大陆之外的一处秘境——这里的灵气浓度远超斗罗大陆任何地方！', exp:400, fate:1 } }
   ]},
-{ id:'god_big_13', name:'邪神入侵', location:'神界·边界', phase:'god', minLevel:90, weight:3, image:'assets/scenes/swamp.jpg',
-  text:['来自其他位面的邪神率领深渊大军入侵神界！神界委员会发出紧急召集令，所有神祇必须参战！'],
+{ id:'god_big_13', name:'邪魂师之乱', location:'神界·边界', phase:'god', minLevel:90, weight:3, image:'assets/scenes/swamp.jpg',
+  text:['堕落的邪魂师之神率领邪魂师大军进犯神界！神界委员会发出紧急召集令，所有神祇必须参战！'],
   choices:[
-    { text:'冲锋在前，斩杀邪神！', result:{ text:'你身先士卒冲入敌阵，与邪神展开惊天动地的大战！你斩杀了三名下位邪神和无数深渊生物，立下赫赫战功！', damage:80, battle:'abyss_lord', exp:1000, attack:5, fate:5 } },
+    { text:'冲锋在前，斩将夺旗！', result:{ text:'你身先士卒冲入敌阵，与邪魂师之神展开惊天动地的大战！你斩杀了三名邪魂师首领和无数爪牙，立下赫赫战功！', damage:80, battle:'god_rival', exp:1000, attack:5, fate:5 } },
     { text:'守护后方，救治伤神', result:{ text:'你选择在后方用神力救治受伤的神祇，你的治愈神力挽救了许多神祇的性命。大家都很感激你。', damage:30, fate:3, exp:600, defense:3 } }
   ]},
 { id:'god_big_14', name:'神位传承', location:'你的神殿', phase:'god', minLevel:92, weight:1, image:'assets/scenes/temple.jpg',
@@ -1214,7 +1214,7 @@ EVENTS.push(
     { text:'还太早，继续守护', result:{ text:'你觉得现在还不是退下来的时候，神界还有很多需要你的地方。你继续坚守神位。', exp:100 } }
   ]},
 { id:'god_big_15', name:'创世的秘密', location:'神界·禁地', phase:'god', minLevel:95, weight:2, image:'assets/scenes/abyss_godrealm.jpg',
-  text:['你在神界禁地中发现了一个惊天秘密——这个世界并非唯一，在更高的维度上存在着无数个位面，而创世之力就隐藏在神界最深处。'],
+  text:['你在神界禁地中发现了一个惊天秘密——在神界最深处，沉睡着开天辟地时残留的创世之力，那是比任何神位都要古老的根源。'],
   choices:[
     { text:'探索创世之力', result:{ text:'你花费千年时间参悟创世之力，最终触摸到了造物的真谛。你成为了神王级别的存在，能够创造属于自己的小世界！', spiritPowerGain:200, attack:20, defense:20, hp:500, exp:2000, fate:10 } },
     { text:'这种力量不该被触碰', result:{ text:'你觉得创世之力太过危险，一旦失控可能毁灭一切。你封锁了禁地，不让任何人再接近。', fate:3, exp:300 } }
@@ -1547,7 +1547,7 @@ EVENTS.push(
   ]}
 );
 
-// ==================== 七、成神篇扩充（神战/位面/终极/超脱） ====================
+// ==================== 七、成神篇扩充（神战/秘境/终极/超脱） ====================
 EVENTS.push(
 { id:'god_more_01_envoy', name:'神界的使者', location:'苍穹之巅', phase:'god', minLevel:80, weight:3, image:'assets/scenes/abyss_godrealm.jpg',
   text:['一道金光从天而降，一个穿着金甲的神人出现在你面前："凡人，你的实力已经触碰到神的门槛。是否愿意接受神位考核？"'],
@@ -1556,19 +1556,19 @@ EVENTS.push(
     { text:'我要靠自己成神', result:{ text:'你拒绝了传承，要靠自己的力量破开虚空。神人笑了："有志气。但你会很难。"', attack:5, exp:300, fate:2 } },
     { text:'我还没准备好', result:{ text:'神人点头："等你准备好，到苍穹之巅喊三声"神考"即可。"说完消失在金光中。', exp:200 } }
   ]},
-{ id:'god_more_02_evil', name:'邪魂师之神', location:'深渊裂隙', phase:'god', minLevel:85, weight:2, image:'assets/scenes/swamp.jpg',
-  text:['深渊中浮现一个巨大的黑影——一位堕落的邪魂师之神！他诱惑你："投入我的门下，我给你无尽的力量，整个大陆都将匍匐在你脚下！"'],
+{ id:'god_more_02_evil', name:'邪魂师之神', location:'杀戮之都', phase:'god', minLevel:85, weight:2, image:'assets/scenes/swamp.jpg',
+  text:['杀戮之都的阴影中浮现一个巨大的黑影——一位堕落的邪魂师之神！他诱惑你："投入我的门下，我给你无尽的力量，整个大陆都将匍匐在你脚下！"'],
   choices:[
     { text:'我绝不与邪恶为伍！', result:{ text:'你毅然拒绝，亮出{spirit}冲向邪神——', battle:'god_rival', exp:600, fate:3 } },
     { text:'虚与委蛇，趁机偷袭', result:{ text:'你假装投降，等他放松警惕时全力一击！虽然没能杀他，但重创了他。', exp:450, speed:3, fate:2 } },
     { text:'接受力量……', result:{ text:'你接受了邪神的力量，瞬间变得无比强大。但你的眼神开始变得冰冷，你感觉自己正在失去什么重要的东西。', attack:10, fate:-5, exp:200 } }
   ]},
-{ id:'god_more_03_rift', name:'时空乱流', location:'虚空之中', phase:'god', minLevel:88, weight:2, image:'assets/scenes/abyss_godrealm.jpg',
-  text:['你在突破时不慎卷入时空乱流，看到了过去和未来的碎片——你看到了小时候的自己，也看到了斗罗大陆千年后的样子。'],
+{ id:'god_more_03_rift', name:'空间裂隙', location:'虚空之中', phase:'god', minLevel:88, weight:2, image:'assets/scenes/abyss_godrealm.jpg',
+  text:['你在突破时不慎坠入空间裂隙，看到了时光的碎片——你看到了小时候的自己，也看到了斗罗大陆千年后的样子。'],
   choices:[
-    { text:'追寻过去的自己', result:{ text:'你想回到过去改变什么，但时空之力把你推了回来。你明白了：过去不可改，未来犹可追。', spiritPowerGain:20, exp:400, fate:2 } },
+    { text:'追寻过去的自己', result:{ text:'你想看清过去的细节，但时光之力把你推了回来。你明白了：过去不可改，未来犹可追。', spiritPowerGain:20, exp:400, fate:2 } },
     { text:'窥探未来', result:{ text:'你看到了未来的一场大劫。虽然看不真切，但你记住了那个画面，开始为此做准备。', fate:3, exp:350 } },
-    { text:'拼命稳住身形逃出去', result:{ text:'你全力运转{spirit}破开时空乱流逃了回来。虽然没看到什么秘密，但你对空间之力有了领悟。', speed:4, exp:300 } }
+    { text:'拼命稳住身形逃出去', result:{ text:'你全力运转{spirit}破开空间裂隙逃了回来。虽然没看到什么秘密，但你对空间之力有了领悟。', speed:4, exp:300 } }
   ]},
 { id:'god_more_04', name:'众神之会', location:'神界·神殿', phase:'god', minLevel:90, weight:2, image:'assets/scenes/temple.jpg',
   text:['你受邀参加众神之会，神界的各位神祇齐聚一堂。海神、修罗神、天使神……每一位都散发着令人窒息的威压。'],
@@ -1578,9 +1578,9 @@ EVENTS.push(
     { text:'默默观察众神', result:{ text:'你安静地观察众神的言行举止，学到了很多关于神位和神力的知识。', exp:300, fate:1 } }
   ]},
 { id:'god_more_05', name:'大陆灾变', location:'斗罗大陆·各地', phase:'god', minLevel:92, weight:5, image:'assets/scenes/abyss_godrealm.jpg',
-  text:['天崩地裂！斗罗大陆各地同时出现空间裂缝，无数深渊生物涌出，生灵涂炭！这就是你之前看到的大劫！'],
+  text:['武魂殿残党勾结邪魂师，在大陆各地同时发难，生灵涂炭！这就是你之前看到的乱世之劫！'],
   choices:[
-    { text:'以神之躯，守护大陆！', result:{ text:'你飞向灾情最严重的地方，以一己之力堵住了最大的空间裂缝！你燃烧神力击杀了无数深渊生物——', battle:'abyss_lord', exp:800, fate:5 } },
+    { text:'以神之躯，守护大陆！', result:{ text:'你飞向灾情最严重的地方，以一己之力击溃了进犯的邪魂师军团！你燃烧神力斩杀了无数邪魂师——', battle:'god_rival', exp:800, fate:5 } },
     { text:'组织众神/魂师联手', result:{ text:'你没有独自蛮干，而是迅速联系了所有能联系的力量，组织起一道防线。在你的指挥下，灾情被控制住了。', fate:4, exp:600 } },
     { text:'先自保再说', result:{ text:'你躲到了安全的地方。大陆损失惨重，但你活了下来。只是每当夜里，你都会想起那些死去的人们。', fate:-5, exp:200 } }
   ]},

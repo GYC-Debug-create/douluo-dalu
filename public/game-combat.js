@@ -640,7 +640,7 @@ const BattleSystem = (() => {
     if(!state.enemy.isNpc && state.options.countKill !== false) G.battleStats.kills++;
     if(state.enemy.isBoss){
       G._bossKills = (G._bossKills || 0) + 1;
-      if(state.options.finalBoss || /abyss_lord|深渊之主/.test(state.enemy.id + state.enemy.name)) G._bossKilled = true;
+      if(state.options.finalBoss || /holy_lord|武魂殿圣殿大供奉/.test(state.enemy.id + state.enemy.name)) G._bossKilled = true;
     }
     const event = state.options.event;
     // 魂环事件只有在吸收成功后才算完成；失败时必须保留待猎状态。
