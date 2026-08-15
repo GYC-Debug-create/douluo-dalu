@@ -820,8 +820,8 @@ watch(step, (newStep) => {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  overflow: hidden;
-  overscroll-behavior: none;
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 .create-box.is-awaken-step .create-step { justify-content: flex-start; }
 

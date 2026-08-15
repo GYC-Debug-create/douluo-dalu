@@ -11,11 +11,11 @@
 *{margin:0;padding:0;box-sizing:border-box}
 /* 主题 token 已全部迁移至 css/tokens.css（K3-1）。
    本页无私有覆盖；新增样式请优先消费 var(--*)，不要再硬编码色值。 */
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;height:100%;overflow:hidden;overscroll-behavior:none;touch-action:manipulation}
 body{
   background:var(--bg);color:var(--ink);
   font-family:var(--font-body);
-  font-size:16px;min-height:100vh;overflow-x:hidden;
+  font-size:16px;height:100vh;height:100dvh;min-height:0;overflow:hidden;overscroll-behavior:none;
 }
 body::before{
   content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
@@ -31,9 +31,9 @@ body::before{
 button{font-family:inherit;cursor:pointer}
 :focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 
-#app{position:relative;z-index:1;min-height:100vh}
+#app{position:relative;z-index:1;height:100%;min-height:0;overflow:hidden}
 .screen{
-  display:none;min-height:100vh;flex-direction:column;
+  display:none;height:100vh;height:100dvh;min-height:0;flex-direction:column;overflow:hidden;
   opacity:0;transform:translateY(10px);
   transition:opacity .25s ease-out,transform .25s ease-out;
 }
@@ -99,7 +99,7 @@ button{font-family:inherit;cursor:pointer}
 /* ============ 创建角色 ============ */
 #screen-create{
   flex-direction:column;align-items:center;justify-content:flex-start;
-  min-height:100vh;padding:40px 20px;
+  height:100%;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:40px 20px;
 }
 .create-box{width:min(860px,96vw);margin:auto 0}
 .step-title{
@@ -315,14 +315,14 @@ button{font-family:inherit;cursor:pointer}
 #screen-game{padding:0}
 .game-layout{
   display:grid;grid-template-columns:290px 1fr;gap:0;
-  min-height:100vh;
+  height:100vh;height:100dvh;min-height:0;overflow:hidden;
 }
 /* 左侧状态面板 */
 .status-panel{
   background:linear-gradient(180deg,#262012,#1c1610);
   border-right:1px solid var(--line);
   padding:18px 16px;display:flex;flex-direction:column;gap:14px;
-  position:sticky;top:0;height:100vh;overflow-y:auto;
+  position:sticky;top:0;height:100%;min-height:0;overflow-y:auto;overscroll-behavior:contain;
 }
 .sp-head{display:flex;gap:12px;align-items:center}
 .sp-spirit-img{
@@ -403,7 +403,7 @@ button{font-family:inherit;cursor:pointer}
 .gold-row b{color:var(--gold-hi);font-size:18px}
 
 /* 中央叙事区 */
-.main-area{display:flex;flex-direction:column;min-height:100vh;position:relative}
+.main-area{display:flex;flex-direction:column;height:100%;min-height:0;position:relative;overflow:hidden}
 .game-topbar{
   display:flex;justify-content:space-between;align-items:center;
   padding:12px 22px;border-bottom:1px solid var(--line);
@@ -424,9 +424,9 @@ button{font-family:inherit;cursor:pointer}
 .top-group-menu{position:absolute;right:0;top:46px;z-index:30;display:grid;grid-template-columns:repeat(2,minmax(92px,1fr));gap:7px;width:max-content;max-width:min(360px,88vw);padding:10px;border:1px solid #705d32;border-radius:6px;background:rgba(27,20,10,.98);box-shadow:0 12px 30px rgba(0,0,0,.65)}
 .top-group-menu .top-btn{width:100%;white-space:nowrap}
 
-.scene-area{flex:1;padding:24px clamp(20px,3vw,40px) 30px;overflow-y:auto;font-size:16px;line-height:2}
+.scene-area{flex:1;min-height:0;padding:24px clamp(20px,3vw,40px) 30px;overflow-y:auto;overscroll-behavior:contain;font-size:16px;line-height:2}
 .scene-idle{
-  min-height:calc(100vh - 110px);display:grid;place-items:center;text-align:center;
+  min-height:calc(100% - 20px);display:grid;place-items:center;text-align:center;
   color:var(--ink-dim);border:1px solid rgba(201,168,76,.2);border-radius:8px;
   background:radial-gradient(circle at center,rgba(201,168,76,.06),transparent 65%);
 }
@@ -502,7 +502,7 @@ button{font-family:inherit;cursor:pointer}
 .enemy-name{font-family:'Ma Shan Zheng',serif;font-size:24px;color:#d08a6a;letter-spacing:2px;margin-bottom:6px}
 .enemy-sub{font-size:13px;color:var(--ink-dim);margin-bottom:8px;letter-spacing:1px}
 .battle-log{
-  flex:1;min-height:220px;max-height:380px;overflow-y:auto;
+  flex:1;min-height:220px;max-height:380px;overflow-y:auto;overscroll-behavior:contain;
   background:rgba(20,16,10,.75);border:1px solid var(--line);border-radius:6px;
   padding:16px 20px;font-size:15.5px;line-height:2;
 }
@@ -665,7 +665,7 @@ button{font-family:inherit;cursor:pointer}
 @media(max-width:900px){
   .compact-status{display:flex}
   .game-layout{grid-template-columns:1fr}
-  .status-panel{position:sticky;top:0;height:auto;max-height:70vh;border-right:none;border-bottom:1px solid var(--line);z-index:25;transition:max-height .25s ease-out,padding .25s ease-out}
+  .status-panel{position:sticky;top:0;height:auto;max-height:70vh;max-height:70dvh;overflow-y:auto;overscroll-behavior:contain;border-right:none;border-bottom:1px solid var(--line);z-index:25;transition:max-height .25s ease-out,padding .25s ease-out}
   .status-toggle{display:block}
   .status-panel.panel-collapsed{max-height:58px;padding:10px 16px;overflow:hidden}
   .status-panel.panel-collapsed>:not(.status-toggle){display:none}
@@ -814,7 +814,7 @@ button{font-family:inherit;cursor:pointer}
 .trial-hp-text{font-size:12px;color:var(--ink-dim);margin-top:4px}
 .trial-vs{font-family:'Ma Shan Zheng',serif;font-size:36px;color:var(--seal);text-shadow:0 0 20px rgba(139,37,0,.6);animation:vsPulse 1.5s ease-in-out infinite}
 @keyframes vsPulse{0%,100%{transform:scale(1);opacity:.7}50%{transform:scale(1.1);opacity:1}}
-.trial-log{max-width:500px;width:90%;max-height:150px;overflow-y:auto;background:rgba(20,16,10,.8);border:1px solid var(--line);border-radius:6px;padding:12px;margin-bottom:20px;font-size:13px;color:var(--ink-dim);line-height:1.8}
+.trial-log{max-width:500px;width:90%;max-height:150px;overflow-y:auto;overscroll-behavior:contain;background:rgba(20,16,10,.8);border:1px solid var(--line);border-radius:6px;padding:12px;margin-bottom:20px;font-size:13px;color:var(--ink-dim);line-height:1.8}
 .trial-log::-webkit-scrollbar{width:4px}
 .trial-log::-webkit-scrollbar-thumb{background:#3a2f1a;border-radius:2px}
 .trial-actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
@@ -1006,7 +1006,7 @@ button{font-family:inherit;cursor:pointer}
 .st-points{font-family:'Ma Shan Zheng',serif;font-size:20px;color:var(--ink);letter-spacing:2px}
 .st-points b{font-size:26px}
 .st-hint{font-size:13px;color:var(--ink-dim);margin-top:4px;letter-spacing:1px}
-.st-tree{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;max-height:60vh;overflow-y:auto;padding:4px}
+.st-tree{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;max-height:60vh;overflow-y:auto;overscroll-behavior:contain;padding:4px}
 .st-branch{border:1px solid var(--line);border-radius:6px;padding:12px;background:rgba(20,16,10,.4)}
 .st-branch-title{font-family:'Ma Shan Zheng',serif;font-size:18px;letter-spacing:2px;margin-bottom:10px;text-align:center}
 .st-nodes{display:flex;flex-direction:column;gap:8px}
@@ -1029,7 +1029,7 @@ button{font-family:inherit;cursor:pointer}
 .st-node-cost{font-size:11px;color:var(--gold);margin-top:3px}
 
 /* 称号系统 */
-.title-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;max-height:60vh;overflow-y:auto;padding:4px}
+.title-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;max-height:60vh;overflow-y:auto;overscroll-behavior:contain;padding:4px}
 .title-card{
   border:1px solid var(--line);border-radius:5px;padding:14px;
   background:rgba(20,16,10,.6);transition:all .25s;
@@ -1113,7 +1113,7 @@ button{font-family:inherit;cursor:pointer}
 .npc-affinity-fill{height:100%;background:linear-gradient(90deg,#8b2500,#c9a84c);transition:width .4s}
 
 /* NPC关系面板 */
-.npc-relation-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;max-height:60vh;overflow-y:auto;padding:4px}
+.npc-relation-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;max-height:60vh;overflow-y:auto;overscroll-behavior:contain;padding:4px}
 .npc-relation-card{
   border:1px solid var(--line);border-radius:8px;padding:12px;cursor:pointer;
   background:rgba(20,16,10,.6);transition:all .25s;
@@ -1157,12 +1157,12 @@ button{font-family:inherit;cursor:pointer}
 .bl-fusion{color:#ff66ff;font-weight:bold;text-shadow:0 0 8px rgba(255,102,255,.3)}
 
 /* 快速旅行 */
-.fast-travel-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;max-height:60vh;overflow-y:auto;padding:4px}
+.fast-travel-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;max-height:60vh;overflow-y:auto;overscroll-behavior:contain;padding:4px}
 
 /* ====== 商店 ====== */
 .shop-header{text-align:center;margin-bottom:12px}
 .shop-gold{font-size:18px;font-family:'Ma Shan Zheng',serif;letter-spacing:2px}
-.shop-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;max-height:60vh;overflow-y:auto;padding:4px}
+.shop-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;max-height:60vh;overflow-y:auto;overscroll-behavior:contain;padding:4px}
 .shop-card{
   background:rgba(20,16,10,.6);border:1px solid var(--line);border-radius:8px;
   padding:12px;transition:all .25s;display:flex;gap:10px;align-items:center;
@@ -1185,7 +1185,7 @@ button{font-family:inherit;cursor:pointer}
 .shop-buy-btn:disabled{opacity:.4;cursor:not-allowed}
 
 /* ====== 背包 ====== */
-.inv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;max-height:60vh;overflow-y:auto;padding:4px}
+.inv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;max-height:60vh;overflow-y:auto;overscroll-behavior:contain;padding:4px}
 .inv-card{
   background:rgba(20,16,10,.6);border:1px solid var(--line);border-radius:6px;
   padding:12px;text-align:center;transition:all .25s;
@@ -1414,7 +1414,7 @@ button{font-family:inherit;cursor:pointer}
 }
 
 /* ====== 冒险日记 ====== */
-.diary-list{max-height:60vh;overflow-y:auto;padding:4px}
+.diary-list{max-height:60vh;overflow-y:auto;overscroll-behavior:contain;padding:4px}
 .diary-entry{
   background:rgba(20,16,10,.6);border-left:3px solid var(--gold);
   border-radius:0 6px 6px 0;padding:10px 14px;margin-bottom:8px;
@@ -1506,7 +1506,7 @@ button{font-family:inherit;cursor:pointer}
 }
 
 /* ====== 统计面板 ====== */
-.stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;max-height:60vh;overflow-y:auto;padding:4px}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;max-height:60vh;overflow-y:auto;overscroll-behavior:contain;padding:4px}
 .stat-card{
   background:rgba(20,16,10,.6);border:1px solid var(--line);border-radius:6px;
   padding:14px 10px;text-align:center;transition:all .25s;
@@ -1585,7 +1585,7 @@ button{font-family:inherit;cursor:pointer}
 .th-desc{font-size:13px;color:var(--ink-dim);line-height:1.7;margin-bottom:8px}
 .th-progress{font-size:15px;color:var(--ink)}
 .th-progress b{color:var(--gold-hi);font-size:18px}
-.tower-list{max-height:55vh;overflow-y:auto;display:flex;flex-direction:column;gap:8px;padding:4px}
+.tower-list{max-height:55vh;overflow-y:auto;overscroll-behavior:contain;display:flex;flex-direction:column;gap:8px;padding:4px}
 .tower-floor{
   display:flex;align-items:center;gap:12px;padding:12px 14px;
   border:1px solid var(--line);border-radius:6px;background:rgba(20,16,10,.6);
@@ -1633,7 +1633,7 @@ button{font-family:inherit;cursor:pointer}
 .fh-info{font-size:15px;color:var(--ink);margin-bottom:6px}
 .fh-info b{color:var(--gold-hi)}
 .fh-desc{font-size:13px;color:var(--ink-dim);line-height:1.6}
-.forge-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px;max-height:55vh;overflow-y:auto;padding:4px}
+.forge-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px;max-height:55vh;overflow-y:auto;overscroll-behavior:contain;padding:4px}
 .forge-recipe{
   border:1px solid var(--line);border-radius:6px;padding:14px;
   background:rgba(20,16,10,.6);transition:all .25s;
@@ -1650,7 +1650,7 @@ button{font-family:inherit;cursor:pointer}
 .quest-header{text-align:center;margin-bottom:16px}
 .qh-progress{font-size:16px;color:var(--ink)}
 .qh-progress b{color:var(--gold-hi);font-size:20px}
-.quest-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:10px;max-height:55vh;overflow-y:auto;padding:4px}
+.quest-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:10px;max-height:55vh;overflow-y:auto;overscroll-behavior:contain;padding:4px}
 .quest-card{
   border:1px solid var(--line);border-radius:6px;padding:14px;
   background:rgba(20,16,10,.6);transition:all .25s;
@@ -1678,7 +1678,7 @@ button{font-family:inherit;cursor:pointer}
 
 /* ====== 修炼系统 ====== */
 .training-header{text-align:center;margin-bottom:16px}
-.training-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px;max-height:55vh;overflow-y:auto;padding:4px}
+.training-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px;max-height:55vh;overflow-y:auto;overscroll-behavior:contain;padding:4px}
 .train-card{
   border:1px solid var(--line);border-radius:6px;padding:14px;
   background:rgba(20,16,10,.6);transition:all .25s;
@@ -1962,7 +1962,7 @@ button{font-family:inherit;cursor:pointer}
   .side-panel{width:100%;max-width:none}
   .main-area{width:100%}
   .game-wrap{flex-direction:column}
-  .modal-box{width:95vw;max-height:82vh}
+  .modal-box{width:95vw;max-height:82vh;max-height:82dvh}
   .modal-body2{padding:16px 16px 20px}
   .modal-body2 .big-lv{font-size:40px}
   .stat-card{min-width:100px}
@@ -1990,7 +1990,7 @@ button{font-family:inherit;cursor:pointer}
   #awaken-info{grid-column:2;grid-row:1}.awaken-left{grid-column:2;grid-row:2;height:34px;overflow:auto}.awaken-actions{grid-column:1 / -1;grid-row:3;display:flex;flex-wrap:nowrap;width:100%;margin-top:2px}.awaken-actions .btn{min-height:34px;padding:3px 9px;font-size:12px;white-space:nowrap}
   .awaken-tier{font-size:12px;padding:2px 12px}.awaken-name{font-size:20px}.awaken-desc{height:38px;max-height:38px;font-size:11px;padding:3px 9px}.awaken-stat{padding:1px 5px;font-size:10px}
   /* 主游戏界面：横屏手机时状态面板更紧凑，正文区完整可见 */
-  .status-panel{max-height:46vh}
+  .status-panel{max-height:46vh;max-height:46dvh}
   .scene-area{padding-top:10px;padding-bottom:10px}
   .notification-rail{padding-top:4px}
   .game-topbar{flex-wrap:wrap;gap:6px}
@@ -2096,7 +2096,8 @@ body.low-effects .awaken-img-wrap,body.low-effects .awaken-img-wrap img{box-shad
 
 /* ====== 内嵌地图/图鉴样式 ====== */
 #screen-map, #screen-codex{
-  height:100vh;
+  height:100%;
+  height:100dvh;
   overflow:hidden;
 }
 .map-iframe-wrap{

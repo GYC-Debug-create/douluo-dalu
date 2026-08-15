@@ -27,10 +27,14 @@ describe('本轮创建页口述问题回归', () => {
     expect(createPageSource).toContain('<Transition name="cshift" mode="out-in">')
   })
 
-  it('觉醒创建内容禁用内部上下滚动，并对已揭示结果启用紧凑首屏布局', () => {
+  it('觉醒创建内容不再撑破首屏（步骤容器内部滚动且不向页面传播），并对已揭示结果启用紧凑首屏布局', () => {
     const createStepBlock = createPageSource.match(/\.create-step\s*\{[^}]*\}/)?.[0] || ''
-    expect(createStepBlock).toMatch(/overflow:\s*hidden/)
-    expect(createStepBlock).not.toMatch(/overflow-y:\s*(auto|scroll)/)
+    // no-scroll 改造：原 overflow:hidden 在小屏溢出时静默裁切内容；
+    // 现改为 overflow-y:auto + overscroll-behavior:contain——页面级滚动仍为 0（根容器
+    // .create-screen 已 overflow:hidden），溢出时由步骤容器内部消化。
+    expect(createStepBlock).toMatch(/overflow-y:\s*auto/)
+    expect(createStepBlock).toMatch(/overscroll-behavior:\s*contain/)
+    expect(createStepBlock).toMatch(/min-height:\s*0/)
     expect(createPageSource).toContain('.awaken-stage.has-result')
   })
 })

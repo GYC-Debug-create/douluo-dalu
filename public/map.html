@@ -20,10 +20,11 @@
 
 :focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 
+html{height:100%;overflow:hidden;overscroll-behavior:none;touch-action:manipulation}
 body{
   background:var(--bg-deep);color:var(--ink);
   font-family:var(--font-body);
-  min-height:100vh;overflow:hidden;
+  height:100vh;height:100dvh;min-height:0;overflow:hidden;overscroll-behavior:none;
   user-select:none;-webkit-user-select:none;
 }
 
@@ -223,7 +224,7 @@ body{
 /* === 详情面板 === */
 .detail-panel{
   position:fixed;right:-420px;top:50%;transform:translateY(-50%);
-  width:380px;max-height:75vh;z-index:20;
+  width:380px;max-height:75vh;max-height:75dvh;z-index:20;
   background:linear-gradient(160deg,#2a2110,#1e1710 60%,#1a1408);
   border:1px solid #8a7a45;border-left:3px solid var(--gold);
   border-radius:8px 0 0 8px;
@@ -260,7 +261,7 @@ body{
 }
 .panel-close:hover{background:var(--seal);color:#fff;}
 
-.panel-body{padding:18px;max-height:calc(75vh - 180px);overflow-y:auto;}
+.panel-body{padding:18px;max-height:calc(75vh - 180px);max-height:calc(75dvh - 180px);overflow-y:auto;overscroll-behavior:contain;}
 .panel-body::-webkit-scrollbar{width:6px}
 .panel-body::-webkit-scrollbar-track{background:transparent}
 .panel-body::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}

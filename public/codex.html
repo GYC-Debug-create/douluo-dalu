@@ -22,15 +22,16 @@
   --line2:#4a3d22;
 }
 
-html{scroll-behavior:smooth}
+html{height:100%;overflow:hidden;overscroll-behavior:none;touch-action:manipulation}
 :focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 
 body{
   background:var(--bg);
   color:var(--ink);
   font-family:'Noto Serif SC',SimSun,宋体,serif;
-  min-height:100vh;
-  overflow-x:hidden;
+  height:100vh;height:100dvh;min-height:0;
+  overflow:hidden;overscroll-behavior:none;
+  display:flex;flex-direction:column;
 }
 
 /* 纸张纹理 + 边缘暗角 */
@@ -48,7 +49,7 @@ body::before{
 ::-webkit-scrollbar-thumb{background:#3a2f1a;border-radius:5px;border:2px solid #120d05}
 ::-webkit-scrollbar-thumb:hover{background:var(--gold)}
 
-.page{position:relative;z-index:1;max-width:1400px;margin:0 auto;padding:0 24px 90px}
+.page{position:relative;z-index:1;flex:1;min-height:0;max-width:1400px;width:100%;margin:0 auto;padding:0 24px 90px;overflow-y:auto;overscroll-behavior:contain}
 
 /* ===== 顶部 ===== */
 .topbar{display:flex;justify-content:space-between;align-items:center;padding:18px 0 6px}

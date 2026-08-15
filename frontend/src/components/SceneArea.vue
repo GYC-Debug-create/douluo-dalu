@@ -263,6 +263,7 @@ function onImgError(e) {
   flex: 1;
   padding: 20px 24px;
   overflow-y: auto;
+  overscroll-behavior: contain;
   min-height: 0;
 }
 
@@ -367,6 +368,7 @@ function onImgError(e) {
 .arrival-summary {
   max-height: 11rem;
   overflow-y: auto;
+  overscroll-behavior: contain;
   margin: 0 0 14px;
   padding: 10px 12px;
   border: 1px solid rgba(201, 168, 76, 0.58);
@@ -541,12 +543,12 @@ function onImgError(e) {
   .scene-area {
     padding: 14px 12px max(18px, env(safe-area-inset-bottom));
     overscroll-behavior: contain;
-    -webkit-overflow-scrolling: touch;
   }
   .event-title { font-size: 20px; margin-bottom: 12px; }
-  .event-text { font-size: 15px; line-height: 1.8; margin-bottom: 18px; }
+  .event-text { font-size: 15px; line-height: 1.8; margin-bottom: 14px; }
   .choice-btn { min-height: 48px; padding: 11px 12px; }
-  .scene-img { max-height: 34dvh; margin-bottom: 12px; }
+  /* 无下滑改造：小屏压缩配图高度，让"正文+选项"更可能整段进入首屏 */
+  .scene-img { max-height: min(22dvh, 180px); margin-bottom: 10px; }
   .scene-idle { min-height: 100%; padding-block: 12px 20px; }
   .scene-idle-rune { font-size: 52px; margin-bottom: 8px; }
   .scene-idle-tip { margin-bottom: 16px; }

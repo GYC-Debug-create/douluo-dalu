@@ -99,6 +99,7 @@ const travelLabel = computed(() => {
   width: min(355px, calc(100% - 36px));
   max-height: calc(100% - 36px);
   overflow-y: auto;
+  overscroll-behavior: contain;
   padding: 18px;
   border: 1px solid rgba(201, 168, 76, .74);
   border-top: 3px solid var(--gold);

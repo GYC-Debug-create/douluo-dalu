@@ -366,6 +366,7 @@ const ringCount = computed(() => player.rings?.length || 0)
 .battle-log {
   max-height: 180px;
   overflow-y: auto;
+  overscroll-behavior: contain;
   padding: 8px 12px;
   background: rgba(10,8,5,0.6);
   border-radius: 6px;

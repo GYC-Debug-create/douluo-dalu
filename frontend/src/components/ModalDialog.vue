@@ -63,6 +63,7 @@ function onMaskClick() {
 .modal-box {
   width: min(520px, 92vw);
   max-height: 85vh;
+  max-height: 85dvh;
   background: var(--bg2);
   border: 1px solid var(--line-strong);
   border-radius: 8px;
@@ -107,7 +108,9 @@ function onMaskClick() {
 .modal-body {
   padding: 20px;
   overflow-y: auto;
+  overscroll-behavior: contain;
   flex: 1;
+  min-height: 0;
   color: var(--ink);
   font-size: 15px;
   line-height: 1.8;

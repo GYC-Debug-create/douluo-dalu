@@ -148,7 +148,7 @@ watch(
 .rumor-head strong { color: var(--gold-hi); letter-spacing: 2px; }
 .rumor-head span { margin-left: 10px; color: var(--ink-dim); font-size: 10px; }
 .rumor-head button { width: 28px; height: 28px; border: 0; background: transparent; color: var(--ink-dim); font-size: 22px; }
-.rumor-list { overflow-y: auto; padding: 9px; }
+.rumor-list { overflow-y: auto; overscroll-behavior: contain; padding: 9px; }
 .rumor-card { margin-bottom: 8px; padding: 9px 10px; border: 1px solid rgba(101,75,34,.72); background: rgba(201,168,76,.035); }
 .rumor-card header { display: flex; justify-content: space-between; gap: 8px; }
 .rumor-card header strong { color: var(--ink); font-size: 12px; }

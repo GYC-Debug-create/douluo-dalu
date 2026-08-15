@@ -184,6 +184,7 @@ defineEmits(['action'])
   .top-group-menu {
     max-height: min(70dvh, 520px);
     overflow-y: auto;
+    overscroll-behavior: contain;
   }
   .top-btn { min-height: 44px; }
 }

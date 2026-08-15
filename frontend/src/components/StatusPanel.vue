@@ -191,6 +191,7 @@ function onImgError(e) {
   height: 100%;
   min-height: 0;
   overflow-y: auto;
+  overscroll-behavior: contain;
 }
 .sp-head {
   display: flex;
