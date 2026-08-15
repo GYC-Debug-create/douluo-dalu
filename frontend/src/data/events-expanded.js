@@ -1188,9 +1188,9 @@ EVENTS.push(
 { id:'god_big_09', name:'神位选择', location:'神界·传承之地', phase: 'god', minLevel: 82, weight:3, image:'assets/scenes/temple.jpg',
   text:['你来到了神位传承之地，这里有多个神位等待传承——善良之神、邪恶之神、修罗神、海神、天使之神、罗刹神……你需要选择自己的道路。'],
   choices:[
-    { text:'选择海神（善良正义）', result:{ text:'你选择了海神之位，浩瀚的海神之力涌入你的身体！你成为了新一代的海神，掌控水之法则。', spiritPowerGain:100, attack:10, defense:10, hp:200, exp:1500, fate:5 } },
-    { text:'选择修罗神（审判杀伐）', result:{ text:'你选择了修罗神之位，血色的修罗之力充满全身！你成为了修罗神，掌审判杀伐之权。', spiritPowerGain:100, attack:15, defense:5, hp:150, exp:1500, fate:3 } },
-    { text:'选择天使之神（光明神圣）', result:{ text:'你选择了天使之神位，神圣的光明之力洗礼全身！你成为了天使之神，掌光明神圣之力。', spiritPowerGain:100, attack:8, defense:12, hp:180, exp:1500, fate:5 } }
+    { text:'选择海神（善良正义）', result:{ text:'你选择了海神之位，浩瀚的海神之力涌入你的身体！你成为了新一代的海神，掌控水之法则。', spiritPowerGain:120, attack:8, defense:12, hp:250, exp:1600, fate:6 } },
+    { text:'选择修罗神（审判杀伐）', result:{ text:'你选择了修罗神之位，血色的修罗之力充满全身！你成为了修罗神，掌审判杀伐之权。', spiritPowerGain:80, attack:18, defense:4, speed:6, hp:120, exp:1700, fate:4 } },
+    { text:'选择天使之神（光明神圣）', result:{ text:'你选择了天使之神位，神圣的光明之力洗礼全身！你成为了天使之神，掌光明神圣之力。', spiritPowerGain:140, attack:6, defense:10, hp:200, exp:1400, fate:5 } }
   ]},
 { id:'god_big_10', name:'神界第一次会议', location:'神界·神殿', phase: 'god', minLevel: 85, weight:2, image:'assets/scenes/temple.jpg',
   text:['你作为新晋神祇参加了神界委员会的会议。其他神祇们看着你这个新面孔，表情各异。'],
@@ -1422,8 +1422,8 @@ EVENTS.push(
 { id:'adv_more_07', name:'天斗城拍卖会', location:'天斗城·拍卖场', phase: 'adventure', minLevel: 20, weight:2, image:'assets/scenes/auction_house.jpg',
   text:['你拿到了一张天斗拍卖会的入场券。会场上珠光宝气，各种奇珍异宝琳琅满目。'],
   choices:[
-    { text:'拍一把魂师长剑（150金币）', cond:{gold:150}, cost:{gold:150}, result:{ text:'你拍下了一把寒光闪闪的魂师长剑，攻击力大增。', attack:3, exp:30 } },
-    { text:'拍一件护甲（200金币）', cond:{gold:200}, cost:{gold:200}, result:{ text:'你拍下了一件轻巧的魂师皮甲，防御力大增。', defense:3, exp:30 } },
+    { text:'拍一把魂师长剑（150金币）', cond:{gold:150}, cost:{gold:150}, result:{ text:'你拍下了一把寒光闪闪的魂师长剑，攻击力大增。', attack:4, exp:20 } },
+    { text:'拍一件护甲（200金币）', cond:{gold:200}, cost:{gold:200}, result:{ text:'你拍下了一件轻巧的魂师皮甲，防御力大增。', defense:4, hp:20, exp:15 } },
     { text:'纯看热闹', result:{ text:'你见识了各种天价宝物和魂师界的大人物，大开眼界。', exp:20 } }
   ]},
 { id:'adv_more_08', name:'铁匠的切磋', location:'天斗城·铁匠铺', phase: 'adventure', minLevel: 20, weight:2, image:'assets/scenes/blacksmith.jpg',
@@ -1909,10 +1909,10 @@ EVENTS.push(
     '但大殿中央刻着一行古字："只可取一，贪则死。"'
   ],
   choices: [
-    { text: '取头部魂骨', result: { text: '你恭敬地向其他石台行礼，取走了头部魂骨。一股暖流涌入头颅，你的精神力大幅增强！', spiritPowerGain: 10, exp: 150, fate: 2 } },
-    { text: '取右臂魂骨', result: { text: '你取走右臂魂骨，右臂瞬间充满了爆炸性的力量！', attack: 6, exp: 150, fate: 1 } },
-    { text: '取左腿魂骨', result: { text: '你取走左腿魂骨，双腿轻盈得像要飘起来！', speed: 6, exp: 150, fate: 1 } },
-    { text: '太贪了，多拿几块', result: { text: '你忍不住拿了两块——大殿剧烈震动，箭矢从四面八方射来！你连滚带爬地逃出去，只带出一块魂骨，还中了两箭。', damage:40, attack: 2, exp: 80, fate: -2 } }
+    { text: '取头部魂骨', result: { text: '你恭敬地向其他石台行礼，取走了头部魂骨。一股暖流涌入头颅，你的精神力大幅增强！', spiritPowerGain: 14, exp: 120, fate: 2 } },
+    { text: '取右臂魂骨', result: { text: '你取走右臂魂骨，右臂瞬间充满了爆炸性的力量！', attack: 7, exp: 100, fate: 1 } },
+    { text: '取左腿魂骨', result: { text: '你取走左腿魂骨，双腿轻盈得像要飘起来！', speed: 7, exp: 100, fate: 1 } },
+    { text: '太贪了，多拿几块', result: { text: '你忍不住拿了两块——大殿剧烈震动，箭矢从四面八方射来！你连滚带爬地逃出去，只带出一块魂骨，还中了两箭。', damage:40, attack: 2, exp: 60, fate: -2 } }
   ]
 },
 {
@@ -2067,13 +2067,13 @@ EVENTS.push(
   phase: 'adventure', minLevel: 10, weight: 2,
   image: 'assets/scenes/academy_classroom.jpg',
   text: [
-    '你因为上课打瞌睡被大师抓了个正着，罚你抄《魂师基础守则》一百遍。',
+    '你因为上课打瞌睡被训导主任赵铁山抓了个正着，罚你抄《魂师基础守则》一百遍。',
     '夜幕降临，教室里只剩你一个人在奋笔疾书。'
   ],
   choices: [
     { text: '认真抄，顺便记住内容', result: { text: '你一边抄一边理解，抄到第五十遍时发现这些基础守则竟然蕴含着很多以前没注意到的道理。抄完一百遍，你对修炼的理解更深了。', exp: 30, spiritPowerGain: 1 } },
     { text: '想办法偷懒，两支笔一起抄', cond: { speed: 10 }, result: { text: '你灵机一动用两支笔同时写，效率翻倍。虽然字丑了点，但总算按时抄完了。', exp: 10, speed: 1 } },
-    { text: '抄到睡着', result: { text: '你抄着抄着趴在桌上睡着了，第二天被大师发现，惩罚加倍——两百遍。你欲哭无泪。', exp: 5, damage:5 } }
+    { text: '抄到睡着', result: { text: '你抄着抄着趴在桌上睡着了，第二天被赵铁山发现，惩罚加倍——两百遍。你欲哭无泪。', exp: 5, damage:5 } }
   ]
 },
 {

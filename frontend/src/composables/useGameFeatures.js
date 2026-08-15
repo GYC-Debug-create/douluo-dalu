@@ -418,6 +418,11 @@ export function useGameFeatures() {
 
   function startTower(floorNumber, hooks = {}) {
     const floor = CHALLENGE_TOWER.floors.find(entry => entry.floor === floorNumber)
+    // T9 判例5：挑战失败后有 5 次行动冷却，杜绝无限重试凹层
+    if (eventStore._towerCooldownUntil && eventStore._eventCount < eventStore._towerCooldownUntil) {
+      ui.notify(`挑战失败后需休整 ${eventStore._towerCooldownUntil - eventStore._eventCount} 次行动再挑战`, 'warning')
+      return false
+    }
     if (!floor || floor.floor !== gameStore._towerFloor + 1 || player.level < floor.minLv || battle.isActive()) return false
     const enemy = { ...floor.enemy, maxHp: floor.enemy.hp, level: floor.minLv, id: `tower_${floor.floor}`, icon: '🏰', isNpc: true, isBoss: floor.floor % 5 === 0 }
     addDiary(`挑战塔第${floor.floor}层「${floor.name}」。`, 'battle')
@@ -441,6 +446,7 @@ export function useGameFeatures() {
         hooks.onVictory?.(floor)
       },
       onDefeat: () => {
+        eventStore._towerCooldownUntil = (eventStore._eventCount || 0) + 5
         try { saveToLocal() } catch (error) { ui.notify(`挑战结果保存失败：${error.message}`, 'error', 5000) }
         hooks.onDefeat?.(floor)
       }

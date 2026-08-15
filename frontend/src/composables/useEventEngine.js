@@ -24,7 +24,7 @@ import { playerFacingBeastName, ringSourceForChoice } from '@/utils/ring-names'
 import { resolveEventAsset } from '@/utils/asset-resolver'
 import { buildTravelArrivalSummary } from '@/utils/travel-arrival'
 import { EVENTS, DYNAMIC_EVENTS, CHAINED_EVENTS, ENDINGS } from '@/data/game-data'
-import { advanceExperience, classifyEventLocation, normalizeLegacyHealthResult, rankTitleForLevel, RING_LEVELS, GLOBAL_LOCATION_PREFIX } from '@/engine/rules'
+import { advanceExperience, calculateRingBacklash, classifyEventLocation, normalizeLegacyHealthResult, rankTitleForLevel, RING_LEVELS, GLOBAL_LOCATION_PREFIX } from '@/engine/rules'
 import {
   adaptEvent,
   isEventEligible,
@@ -739,6 +739,21 @@ export function useEventEngine() {
     const definition = data.value.rings.find(item => item.id === ringId)
     if (!definition) {
       ui.notify('魂环数据未加载，无法完成吸收', 'error', 5000)
+      return null
+    }
+
+    // T9 判例5：吸收反噬判定（calculateRingBacklash 接线）——年限越高反噬风险越大，
+    // 失败=受伤+事件不完成（可休整后重猎），让"年限抉择"有真实风险。
+    const yearValue = Number(choice?.ringYear) > 0
+      ? Number(choice.ringYear)
+      : ({ white_ring: 10, yellow_ring: 100, purple_ring: 1000, black_ring: 10000, red_ring: 100000, million_gold_ring: 1000000 })[definition.id] || 0
+    const absorbChance = { 10: 1, 100: 0.85, 1000: 0.7, 10000: 0.55, 100000: 0.35, 1000000: 0.2 }[yearValue] ?? 1
+    if (yearValue > 0 && absorbChance < 1 && Math.random() > absorbChance) {
+      const backlash = calculateRingBacklash(finalStats().maxHp, player.hp, Math.round((1 - absorbChance) * 100))
+      player.setHp(backlash.remainingHp)
+      eventStore._ringHuntDeferredUntil = (eventStore._eventCount || 0) + 2
+      ui.notify(`魂环吸收失败！反噬造成 ${backlash.damage} 点伤害，需休整后再猎`, 'error', 5000)
+      addDiaryEntry(`猎取第${player.rings.length + 1}魂环失败——吸收反噬，损失${backlash.damage}生命。`, 'event')
       return null
     }
 

@@ -746,6 +746,13 @@ function getFiltered(){
 }
 
 /* ---------- 渲染列表 ---------- */
+/* 已见角标（T16：图鉴与存档联动标记） */
+function seenBadge(cond, label){
+  if(!window.__codexSeen || !window.__codexSeen.hasSummary() || !cond) return '';
+  return `<span class="seen-badge" style="display:inline-block;margin-left:6px;padding:1px 6px;border-radius:3px;font-size:11px;color:#7fc48c;border:1px solid #7fc48c55;background:#7fc48c11">${label}</span>`;
+}
+
+window.__codexRenderCurrent = render;
 function render(){
   const tiers = tiersOf();
   const filtered = getFiltered();
@@ -824,7 +831,7 @@ function renderCard(it){
       ${img}
     </div>
     <div class="card-body">
-      <div class="card-name">${esc(it.name)}</div>
+      <div class="card-name">${esc(it.name)}${seenBadge(window.__codexSeen.isSpiritSeen(it.name), "当前武魂")}</div>
       <div class="card-meta">${metaLine(it)}</div>
       <div class="card-traits">${traits}</div>
     </div>
@@ -854,7 +861,7 @@ function renderBeastCard(it){
       ${img}
     </div>
     <div class="card-body">
-      <div class="card-name">${esc(it.name)}</div>
+      <div class="card-name">${esc(it.name)}${seenBadge(window.__codexSeen.isBeastKnown(it.name), '已见')}</div>
       <div class="card-meta">${metaLine(it)}</div>
       ${varChips ? `<div class="card-traits">${varChips}</div>` : ''}
       <div class="card-traits" style="margin-top:4px">${traits}</div>
@@ -874,7 +881,7 @@ function renderNpcCard(it){
       ${img}
     </div>
     <div class="card-body">
-      <div class="card-name">${esc(it.name)}</div>
+      <div class="card-name">${esc(it.name)}${seenBadge(window.__codexSeen.isNpcMet(it.id), '已结识')}</div>
       <div class="card-meta">${metaLine(it)}</div>
       <div class="card-traits"><span class="trait-chip" style="color:${color}">${esc(it.personality || '')}</span></div>
     </div>
@@ -893,7 +900,7 @@ function renderBoneCard(it){
       ${img}
     </div>
     <div class="card-body">
-      <div class="card-name">${esc(it.name)}</div>
+      <div class="card-name">${esc(it.name)}${seenBadge(window.__codexSeen.isBoneGot && window.__codexSeen.isBoneGot(it.id, it.name), '已获得')}</div>
       <div class="card-meta">${metaLine(it)}</div>
       <div class="card-traits"><span class="trait-chip" style="color:${color}">${esc(boneTierName(it.tier))}</span></div>
     </div>
@@ -1496,6 +1503,30 @@ document.addEventListener('keydown', e => {
     window.parent.postMessage({ type: 'navigate', view: 'map' }, '*');
   });
 })();
+
+/* ---------- T16 判例25：图鉴与存档联动 ---------- */
+// 接收父窗口玩家进度摘要，标记"已见/已收集"并按等级点亮获取条件。
+var __playerSummary = null;
+window.addEventListener('message', function(e){
+  if(e.origin !== window.location.origin) return;
+  var data = e.data || {};
+  if(data.type !== 'player-summary') return;
+  __playerSummary = data;
+  // 通知父窗口已就绪（父窗口会补发摘要）
+  if(window.parent !== window) window.parent.postMessage({ type: 'ready' }, window.location.origin);
+  // 当前页签若已渲染，立即刷新标记
+  if(window.__codexRenderCurrent) { try { window.__codexRenderCurrent(); } catch(err){} }
+});
+// 渲染时调用的"已见"判定工具
+window.__codexSeen = {
+  hasSummary: function(){ return !!__playerSummary; },
+  isSpiritSeen: function(name){ return __playerSummary && name && __playerSummary.spiritName === name; },
+  isNpcMet: function(id){ return __playerSummary && Array.isArray(__playerSummary.metNpcs) && __playerSummary.metNpcs.indexOf(id) >= 0; },
+  isRingGot: function(ringId){ return __playerSummary && Array.isArray(__playerSummary.rings) && __playerSummary.rings.indexOf(ringId) >= 0; },
+  isBeastKnown: function(name){ return __playerSummary && Array.isArray(__playerSummary.knownBeasts) && __playerSummary.knownBeasts.indexOf(name) >= 0; },
+  isBoneGot: function(id, name){ return __playerSummary && Array.isArray(__playerSummary.bones) && (__playerSummary.bones.indexOf(id) >= 0 || __playerSummary.bones.indexOf(name) >= 0); },
+  levelAtLeast: function(lv){ return __playerSummary && Number(__playerSummary.level) >= Number(lv); }
+};
 // 独立打开：若存在当前角色，则顶栏显示角标并将「归去」改为「继续游戏」
 (function(){
   if(window.parent !== window) return;

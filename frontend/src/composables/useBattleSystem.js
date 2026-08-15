@@ -797,6 +797,13 @@ export function useBattleSystem() {
       ringHunt: Boolean(battleState.options.event?.ring),
       eventName: battleState.options.event?.name || ''
     })
+    // T9 判例5：战败轻微代价——损失 5% 金币（四舍五入后至少 0），
+    // 打破"零成本无限重试"，但不构成挫败性惩罚。
+    const goldLoss = Math.floor((player.gold || 0) * 0.05)
+    if (goldLoss > 0) {
+      player.gold = Math.max(0, (player.gold || 0) - goldLoss)
+      addLog(`战斗失利，损失 ${goldLoss} 金币。`, 'damage')
+    }
     const failedEvent = battleState.options.event
     if (failedEvent?.ring) {
       eventStore._ringHuntDeferredUntil = (eventStore._eventCount || 0) + 2
@@ -810,12 +817,12 @@ export function useBattleSystem() {
     if (typeof onDefeat === 'function') {
       const currentState = battleState
       const generation = battleGeneration
-      _callOnEnd('defeat', `你没能战胜${battleState.enemy.name}。同伴将你带到安全处，生命恢复至30%。`)
+      _callOnEnd('defeat', `你没能战胜${battleState.enemy.name}。同伴将你带到安全处，生命恢复至30%${goldLoss > 0 ? `，损失${goldLoss}金币` : ''}。`)
       setTimeout(() => {
         if (isCurrentBattleInstance(currentState, generation)) onDefeat(currentState.enemy)
       }, 80)
     } else {
-      _callOnEnd('defeat', `你没能战胜${battleState.enemy.name}。同伴将你带到安全处，生命恢复至30%。`)
+      _callOnEnd('defeat', `你没能战胜${battleState.enemy.name}。同伴将你带到安全处，生命恢复至30%${goldLoss > 0 ? `，损失${goldLoss}金币` : ''}。`)
     }
   }
 

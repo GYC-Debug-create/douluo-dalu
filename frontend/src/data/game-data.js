@@ -667,9 +667,9 @@ EVENTS.push(
       '大师看出你的焦躁，递给你一杯清茶："突破瓶颈，有时候需要的不是苦练，而是机缘。你想怎么做？"'
     ],
     choices: [
-      { text: '闭关苦修，水滴石穿', result: { text: '你在静室闭关了七天七夜。第七天黎明，体内的魂力终于冲破了那层壁障，如江河奔涌！', attack: 3, defense: 3, exp: 100 } },
-      { text: '外出游历，寻找灵感', result: { text: '你走遍山川湖海，看云卷云舒。某天清晨看日出时忽然顿悟——瓶颈应声而破。', speed: 3, spiritPowerGain: 6, exp: 100, fate: 1 } },
-      { text: '用丹药辅助突破（50金币）', cond: { gold: 50 }, cost: { gold: 50 }, result: { text: '你买来一颗"破障丹"，药力化开的瞬间，瓶颈轰然碎裂！', spiritPowerGain: 8, exp: 100 } }
+      { text: '闭关苦修，水滴石穿', result: { text: '你在静室闭关了七天七夜。第七天黎明，体内的魂力终于冲破了那层壁障，如江河奔涌！', attack: 3, defense: 3, exp: 120 } },
+      { text: '外出游历，寻找灵感', result: { text: '你走遍山川湖海，看云卷云舒。某天清晨看日出时忽然顿悟——瓶颈应声而破。', speed: 3, spiritPowerGain: 8, exp: 80, fate: 1 } },
+      { text: '用丹药辅助突破（50金币）', cond: { gold: 50 }, cost: { gold: 50 }, result: { text: '你买来一颗"破障丹"，药力化开的瞬间，瓶颈轰然碎裂！', spiritPowerGain: 12, exp: 100 } }
     ]
   },
   {
@@ -1558,7 +1558,7 @@ export const SHOP_ITEMS = [
   { id:'buff_atk', name:'狂暴丹', desc:'战斗中攻击力提升20%（3回合）', type:'buffAtk', value:0.2, price:150, icon:'⚔', reqLevel:15 },
   { id:'buff_def', name:'铁骨丹', desc:'战斗中防御力提升20%（3回合）', type:'buffDef', value:0.2, price:150, icon:'🛡', reqLevel:15 },
   { id:'buff_spd', name:'疾风丹', desc:'战斗中速度提升20%（3回合）', type:'buffSpd', value:0.2, price:150, icon:'💨', reqLevel:15 },
-  { id:'exp_pill', name:'经验丹', desc:'立即获得500经验', type:'exp', value:500, price:200, icon:'📚', reqLevel:5 },
+  { id:'exp_pill', name:'经验丹', desc:'立即获得400经验', type:'exp', value:400, price:300, icon:'📚', reqLevel:5 },
   { id:'fate_pill', name:'命运丹', desc:'命运值+1', type:'fate', value:1, price:500, icon:'☆', reqLevel:20 },
   { id:'antidote', name:'解毒丹', desc:'解除中毒状态', type:'cure', value:'poison', price:50, icon:'🌿' },
   { id:'cleanser', name:'净化符', desc:'解除所有负面状态', type:'cureAll', value:0, price:120, icon:'🔱', reqLevel:10 }
@@ -1567,15 +1567,15 @@ export const SHOP_ITEMS = [
 // ==================== 修炼系统 ====================
 export const TRAINING_OPTIONS = [
   { id:'train_basic', name:'基础修炼', desc:'花费少量金币进行基础修炼，获得少量经验',
-    goldCost:50, expGain:30, time:'半天' },
+    goldCost:50, expGain:50, time:'半天' },
   { id:'train_intensive', name:'高强度修炼', desc:'花费较多金币进行高强度修炼，获得大量经验',
-    goldCost:200, expGain:450, time:'一天' },
+    goldCost:200, expGain:250, time:'一天' },
   { id:'train_meditation', name:'冥想感悟', desc:'花费金币冥想感悟，获得经验并恢复魂力',
-    goldCost:150, expGain:80, mpRestore:30, time:'半天' },
+    goldCost:150, expGain:100, mpRestore:40, time:'半天' },
   { id:'train_spar', name:'切磋武艺', desc:'与同学切磋，有概率获得额外属性提升',
-    goldCost:100, expGain:60, statChance:0.3, time:'半天' },
+    goldCost:100, expGain:80, statChance:0.3, time:'半天' },
   { id:'train_secret', name:'秘境修炼', desc:'在特殊秘境中修炼，经验丰厚但有风险',
-    goldCost:500, expGain:400, risk:0.15, time:'一天' }
+    goldCost:500, expGain:350, risk:0.15, time:'一天' }
 ];
 
 // ==================== 动态事件系统 ====================
