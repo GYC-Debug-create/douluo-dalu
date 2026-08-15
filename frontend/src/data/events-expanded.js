@@ -910,7 +910,7 @@ EVENTS.push(
     { text:'不认识的果子不吃', result:{ text:'你谨慎地离开了。虽然错过了美食，但也避免了中毒的风险。', exp:10 } }
   ]},
 { id:'adv_extra_04', name:'迷路', location:'森林深处', phase:'adventure', minLevel:15, weight:2, image:'assets/scenes/forest_deep.jpg',
-  text:['你在森林里迷路了，转了半天都找不到出路，手机——哦不对，这是斗罗大陆，没有手机。'],
+  text:['你在森林里迷路了，转了半天都找不到出路，随身的水囊也快见底了。'],
   choices:[
     { text:'爬上高处辨认方向', result:{ text:'你爬上一棵最高的树，从树冠上看到了远处的山脉，以此辨别方向找到了出路。', exp:40, speed:1 } },
     { text:'沿溪流走', result:{ text:'你记得沿水走总能找到出路，于是顺着溪流往下游走，果然走出了森林。', exp:30 } },
@@ -1868,7 +1868,7 @@ EVENTS.push(
   ],
   choices: [
     { text: '接下委托，争分夺秒！', result: { text: '你跑了三个地方，在太阳落山前的最后一刻把三味药材都送到了。老药师激动得手都在抖，不仅给了你回魂丹，还多给了一瓶解毒散。', item: { name: '回魂丹', type: 'heal', value: 80, count: 3 }, item2: { name: '解毒散', type: 'misc', value: 40, count: 1 }, exp: 70, fate: 2 } },
-    { text: '时间太紧了，算了', result: { text: '你觉得时间不够用，婉拒了。后来听说老药师找了别人帮忙，总算赶在 deadline 前炼成了丹药。你松了口气，但也有点遗憾。', exp: 10 } }
+    { text: '时间太紧了，算了', result: { text: '你觉得时间不够用，婉拒了。后来听说老药师找了别人帮忙，总算赶在约定的时辰前炼成了丹药。你松了口气，但也有点遗憾。', exp: 10 } }
   ]
 },
 {
