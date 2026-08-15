@@ -1,0 +1,343 @@
+{
+  "meta": {
+    "title": "魂兽年份变体数据",
+    "description": "每个魂兽种族在不同年份阶段下的属性变化，年份越高，魂兽越强，魂环品质越高，掉落概率越低",
+    "tiers": {
+      "ten": "十年魂兽",
+      "hundred": "百年魂兽",
+      "thousand": "千年魂兽",
+      "ten_thousand": "万年魂兽",
+      "hundred_thousand": "十万年魂兽"
+    }
+  },
+  "spirit_deer": {
+    "name": "灵鹿",
+    "type": "草食系",
+    "variants": {
+      "ten": { "name": "十年灵鹿", "attack": 5, "defense": 3, "hp": 30, "speed": 12, "ringColor": "白色", "dropRate": 0.7 },
+      "hundred": { "name": "百年灵鹿", "attack": 15, "defense": 10, "hp": 80, "speed": 15, "ringColor": "黄色", "dropRate": 0.35 },
+      "thousand": { "name": "千年灵鹿", "attack": 35, "defense": 25, "hp": 200, "speed": 20, "ringColor": "紫色", "dropRate": 0.12 },
+      "ten_thousand": { "name": "万年灵鹿王", "attack": 80, "defense": 60, "hp": 500, "speed": 28, "ringColor": "黑色", "dropRate": 0.03 },
+      "hundred_thousand": { "name": "十万年灵鹿皇", "attack": 180, "defense": 130, "hp": 1200, "speed": 38, "ringColor": "红色", "dropRate": 0.005 }
+    }
+  },
+  "one_eye_wolf": {
+    "name": "独眼狼",
+    "type": "肉食系",
+    "variants": {
+      "ten": { "name": "十年独眼狼", "attack": 10, "defense": 5, "hp": 50, "speed": 9, "ringColor": "白色", "dropRate": 0.65 },
+      "hundred": { "name": "百年独眼狼", "attack": 22, "defense": 14, "hp": 120, "speed": 13, "ringColor": "黄色", "dropRate": 0.3 },
+      "thousand": { "name": "千年独眼狼王", "attack": 48, "defense": 32, "hp": 280, "speed": 18, "ringColor": "紫色", "dropRate": 0.1 },
+      "ten_thousand": { "name": "万年独眼狼皇", "attack": 100, "defense": 70, "hp": 650, "speed": 25, "ringColor": "黑色", "dropRate": 0.025 },
+      "hundred_thousand": { "name": "十万年独眼狼帝", "attack": 220, "defense": 150, "hp": 1500, "speed": 35, "ringColor": "红色", "dropRate": 0.004 }
+    }
+  },
+  "mandala_snake": {
+    "name": "曼陀罗蛇",
+    "type": "毒系",
+    "variants": {
+      "ten": { "name": "十年曼陀罗蛇", "attack": 8, "defense": 4, "hp": 40, "speed": 15, "ringColor": "白色", "dropRate": 0.65 },
+      "hundred": { "name": "百年曼陀罗蛇", "attack": 20, "defense": 12, "hp": 100, "speed": 20, "ringColor": "黄色", "dropRate": 0.3 },
+      "thousand": { "name": "千年曼陀罗蛇", "attack": 45, "defense": 28, "hp": 250, "speed": 28, "ringColor": "紫色", "dropRate": 0.1 },
+      "ten_thousand": { "name": "万年曼陀罗蛇王", "attack": 95, "defense": 65, "hp": 600, "speed": 36, "ringColor": "黑色", "dropRate": 0.025 },
+      "hundred_thousand": { "name": "十万年曼陀罗蛇皇", "attack": 210, "defense": 140, "hp": 1400, "speed": 45, "ringColor": "红色", "dropRate": 0.004 }
+    }
+  },
+  "nether_wolf": {
+    "name": "幽冥狼",
+    "type": "暗影系",
+    "variants": {
+      "ten": { "name": "十年幽冥狼", "attack": 9, "defense": 4, "hp": 45, "speed": 11, "ringColor": "白色", "dropRate": 0.65 },
+      "hundred": { "name": "百年幽冥狼", "attack": 20, "defense": 12, "hp": 110, "speed": 16, "ringColor": "黄色", "dropRate": 0.3 },
+      "thousand": { "name": "千年幽冥狼", "attack": 44, "defense": 28, "hp": 260, "speed": 22, "ringColor": "紫色", "dropRate": 0.1 },
+      "ten_thousand": { "name": "万年幽冥狼王", "attack": 92, "defense": 62, "hp": 620, "speed": 30, "ringColor": "黑色", "dropRate": 0.025 },
+      "hundred_thousand": { "name": "十万年幽冥狼帝", "attack": 200, "defense": 135, "hp": 1450, "speed": 40, "ringColor": "红色", "dropRate": 0.004 }
+    }
+  },
+  "ghost_vine": {
+    "name": "鬼藤",
+    "type": "植物系",
+    "variants": {
+      "ten": { "name": "十年鬼藤", "attack": 6, "defense": 8, "hp": 55, "speed": 3, "ringColor": "白色", "dropRate": 0.7 },
+      "hundred": { "name": "百年鬼藤", "attack": 16, "defense": 22, "hp": 140, "speed": 5, "ringColor": "黄色", "dropRate": 0.35 },
+      "thousand": { "name": "千年鬼藤", "attack": 38, "defense": 50, "hp": 350, "speed": 8, "ringColor": "紫色", "dropRate": 0.12 },
+      "ten_thousand": { "name": "万年鬼藤王", "attack": 85, "defense": 110, "hp": 850, "speed": 12, "ringColor": "黑色", "dropRate": 0.03 },
+      "hundred_thousand": { "name": "十万年鬼藤皇", "attack": 190, "defense": 240, "hp": 2000, "speed": 18, "ringColor": "红色", "dropRate": 0.005 }
+    }
+  },
+  "pink_lady": {
+    "name": "粉红娘娘",
+    "type": "毒系",
+    "variants": {
+      "ten": { "name": "十年粉红娘娘", "attack": 7, "defense": 5, "hp": 45, "speed": 8, "ringColor": "白色", "dropRate": 0.7 },
+      "hundred": { "name": "百年粉红娘娘", "attack": 18, "defense": 14, "hp": 110, "speed": 12, "ringColor": "黄色", "dropRate": 0.35 },
+      "thousand": { "name": "千年粉红娘娘", "attack": 40, "defense": 32, "hp": 270, "speed": 17, "ringColor": "紫色", "dropRate": 0.12 },
+      "ten_thousand": { "name": "万年粉红女王", "attack": 88, "defense": 70, "hp": 650, "speed": 24, "ringColor": "黑色", "dropRate": 0.03 },
+      "hundred_thousand": { "name": "十万年粉红女皇", "attack": 195, "defense": 155, "hp": 1550, "speed": 33, "ringColor": "红色", "dropRate": 0.005 }
+    }
+  },
+  "cave_spider": {
+    "name": "地穴魔蛛",
+    "type": "毒系",
+    "variants": {
+      "ten": { "name": "十年地穴魔蛛", "attack": 8, "defense": 6, "hp": 48, "speed": 7, "ringColor": "白色", "dropRate": 0.65 },
+      "hundred": { "name": "百年地穴魔蛛", "attack": 20, "defense": 16, "hp": 120, "speed": 10, "ringColor": "黄色", "dropRate": 0.3 },
+      "thousand": { "name": "千年地穴魔蛛", "attack": 46, "defense": 36, "hp": 290, "speed": 14, "ringColor": "紫色", "dropRate": 0.1 },
+      "ten_thousand": { "name": "万年地穴蛛王", "attack": 98, "defense": 80, "hp": 700, "speed": 20, "ringColor": "黑色", "dropRate": 0.025 },
+      "hundred_thousand": { "name": "十万年地穴蛛皇", "attack": 215, "defense": 175, "hp": 1650, "speed": 28, "ringColor": "红色", "dropRate": 0.004 }
+    }
+  },
+  "human_face_spider": {
+    "name": "人面魔蛛",
+    "type": "暗影系",
+    "variants": {
+      "ten": { "name": "十年人面魔蛛", "attack": 11, "defense": 7, "hp": 55, "speed": 10, "ringColor": "白色", "dropRate": 0.6 },
+      "hundred": { "name": "百年人面魔蛛", "attack": 26, "defense": 18, "hp": 140, "speed": 14, "ringColor": "黄色", "dropRate": 0.28 },
+      "thousand": { "name": "千年人面魔蛛", "attack": 58, "defense": 42, "hp": 340, "speed": 20, "ringColor": "紫色", "dropRate": 0.09 },
+      "ten_thousand": { "name": "万年人面蛛皇", "attack": 125, "defense": 95, "hp": 820, "speed": 28, "ringColor": "黑色", "dropRate": 0.022 },
+      "hundred_thousand": { "name": "十万年人面蛛帝", "attack": 280, "defense": 210, "hp": 1950, "speed": 38, "ringColor": "红色", "dropRate": 0.0035 }
+    }
+  },
+  "dark_gold_terrorclaw_bear": {
+    "name": "暗金恐爪熊",
+    "type": "力量系",
+    "variants": {
+      "ten": { "name": "十年暗金恐爪熊", "attack": 12, "defense": 10, "hp": 70, "speed": 5, "ringColor": "白色", "dropRate": 0.55 },
+      "hundred": { "name": "百年暗金恐爪熊", "attack": 30, "defense": 26, "hp": 180, "speed": 8, "ringColor": "黄色", "dropRate": 0.25 },
+      "thousand": { "name": "千年暗金恐爪熊", "attack": 70, "defense": 60, "hp": 450, "speed": 12, "ringColor": "紫色", "dropRate": 0.08 },
+      "ten_thousand": { "name": "万年暗金恐爪熊王", "attack": 155, "defense": 135, "hp": 1050, "speed": 18, "ringColor": "黑色", "dropRate": 0.02 },
+      "hundred_thousand": { "name": "十万年暗金恐爪熊皇", "attack": 340, "defense": 290, "hp": 2500, "speed": 26, "ringColor": "红色", "dropRate": 0.003 }
+    }
+  },
+  "titan_giant_ape": {
+    "name": "泰坦巨猿",
+    "type": "力量系",
+    "variants": {
+      "ten": { "name": "十年泰坦巨猿", "attack": 14, "defense": 12, "hp": 80, "speed": 4, "ringColor": "白色", "dropRate": 0.5 },
+      "hundred": { "name": "百年泰坦巨猿", "attack": 35, "defense": 30, "hp": 200, "speed": 6, "ringColor": "黄色", "dropRate": 0.22 },
+      "thousand": { "name": "千年泰坦巨猿", "attack": 80, "defense": 70, "hp": 500, "speed": 10, "ringColor": "紫色", "dropRate": 0.07 },
+      "ten_thousand": { "name": "万年泰坦巨猿", "attack": 175, "defense": 155, "hp": 1200, "speed": 15, "ringColor": "黑色", "dropRate": 0.018 },
+      "hundred_thousand": { "name": "十万年泰坦巨猿", "attack": 380, "defense": 330, "hp": 2800, "speed": 22, "ringColor": "红色", "dropRate": 0.0025 }
+    }
+  },
+  "sky_blue_bull_python": {
+    "name": "天青牛蟒",
+    "type": "力量系",
+    "variants": {
+      "ten": { "name": "十年天青牛蟒", "attack": 13, "defense": 11, "hp": 75, "speed": 6, "ringColor": "白色", "dropRate": 0.5 },
+      "hundred": { "name": "百年天青牛蟒", "attack": 32, "defense": 28, "hp": 190, "speed": 9, "ringColor": "黄色", "dropRate": 0.22 },
+      "thousand": { "name": "千年天青牛蟒", "attack": 75, "defense": 65, "hp": 480, "speed": 13, "ringColor": "紫色", "dropRate": 0.07 },
+      "ten_thousand": { "name": "万年天青牛蟒", "attack": 170, "defense": 150, "hp": 1150, "speed": 18, "ringColor": "黑色", "dropRate": 0.018 },
+      "hundred_thousand": { "name": "十万年天青牛蟒", "attack": 370, "defense": 320, "hp": 2700, "speed": 25, "ringColor": "红色", "dropRate": 0.0025 }
+    }
+  },
+  "deep_sea_demon_whale": {
+    "name": "深渊魔鲸",
+    "type": "水系",
+    "variants": {
+      "ten": { "name": "十年深渊魔鲸", "attack": 10, "defense": 14, "hp": 90, "speed": 3, "ringColor": "白色", "dropRate": 0.5 },
+      "hundred": { "name": "百年深渊魔鲸", "attack": 25, "defense": 35, "hp": 220, "speed": 5, "ringColor": "黄色", "dropRate": 0.22 },
+      "thousand": { "name": "千年深渊魔鲸", "attack": 60, "defense": 80, "hp": 550, "speed": 8, "ringColor": "紫色", "dropRate": 0.07 },
+      "ten_thousand": { "name": "万年深渊魔鲸王", "attack": 135, "defense": 175, "hp": 1300, "speed": 12, "ringColor": "黑色", "dropRate": 0.018 },
+      "hundred_thousand": { "name": "十万年深渊魔鲸皇", "attack": 300, "defense": 380, "hp": 3000, "speed": 18, "ringColor": "红色", "dropRate": 0.0025 }
+    }
+  },
+  "ice_emperor_scorpion": {
+    "name": "冰碧帝皇蝎",
+    "type": "冰系",
+    "variants": {
+      "ten": { "name": "十年冰碧帝皇蝎", "attack": 10, "defense": 8, "hp": 55, "speed": 10, "ringColor": "白色", "dropRate": 0.55 },
+      "hundred": { "name": "百年冰碧帝皇蝎", "attack": 25, "defense": 20, "hp": 140, "speed": 14, "ringColor": "黄色", "dropRate": 0.25 },
+      "thousand": { "name": "千年冰碧帝皇蝎", "attack": 58, "defense": 48, "hp": 350, "speed": 20, "ringColor": "紫色", "dropRate": 0.08 },
+      "ten_thousand": { "name": "万年冰碧帝皇蝎", "attack": 130, "defense": 110, "hp": 850, "speed": 28, "ringColor": "黑色", "dropRate": 0.02 },
+      "hundred_thousand": { "name": "十万年冰碧帝皇蝎", "attack": 290, "defense": 240, "hp": 2000, "speed": 38, "ringColor": "红色", "dropRate": 0.003 }
+    }
+  },
+  "evil_eye_tyrant": {
+    "name": "邪眼暴君",
+    "type": "精神系",
+    "variants": {
+      "ten": { "name": "十年邪眼暴君", "attack": 9, "defense": 5, "hp": 40, "speed": 8, "ringColor": "白色", "dropRate": 0.6 },
+      "hundred": { "name": "百年邪眼暴君", "attack": 24, "defense": 14, "hp": 100, "speed": 12, "ringColor": "黄色", "dropRate": 0.28 },
+      "thousand": { "name": "千年邪眼暴君", "attack": 55, "defense": 35, "hp": 260, "speed": 18, "ringColor": "紫色", "dropRate": 0.09 },
+      "ten_thousand": { "name": "万年邪眼暴君", "attack": 120, "defense": 80, "hp": 650, "speed": 26, "ringColor": "黑色", "dropRate": 0.022 },
+      "hundred_thousand": { "name": "十万年邪眼暴君", "attack": 270, "defense": 180, "hp": 1550, "speed": 36, "ringColor": "红色", "dropRate": 0.0035 }
+    }
+  },
+  "jade_swan": {
+    "name": "翡翠天鹅",
+    "type": "治愈系",
+    "variants": {
+      "ten": { "name": "十年翡翠天鹅", "attack": 3, "defense": 6, "hp": 55, "speed": 14, "ringColor": "白色", "dropRate": 0.7 },
+      "hundred": { "name": "百年翡翠天鹅", "attack": 10, "defense": 16, "hp": 140, "speed": 18, "ringColor": "黄色", "dropRate": 0.35 },
+      "thousand": { "name": "千年翡翠天鹅", "attack": 25, "defense": 38, "hp": 350, "speed": 24, "ringColor": "紫色", "dropRate": 0.12 },
+      "ten_thousand": { "name": "万年翡翠天鹅王", "attack": 60, "defense": 85, "hp": 850, "speed": 32, "ringColor": "黑色", "dropRate": 0.03 },
+      "hundred_thousand": { "name": "十万年翡翠天鹅皇", "attack": 140, "defense": 190, "hp": 2000, "speed": 42, "ringColor": "红色", "dropRate": 0.005 }
+    }
+  },
+  "demon_eye_tree": {
+    "name": "妖眼魔树",
+    "type": "植物系",
+    "variants": {
+      "ten": { "name": "十年妖眼魔树", "attack": 7, "defense": 9, "hp": 60, "speed": 2, "ringColor": "白色", "dropRate": 0.7 },
+      "hundred": { "name": "百年妖眼魔树", "attack": 18, "defense": 24, "hp": 150, "speed": 4, "ringColor": "黄色", "dropRate": 0.35 },
+      "thousand": { "name": "千年妖眼魔树", "attack": 42, "defense": 55, "hp": 380, "speed": 7, "ringColor": "紫色", "dropRate": 0.12 },
+      "ten_thousand": { "name": "万年妖眼魔树王", "attack": 95, "defense": 120, "hp": 920, "speed": 11, "ringColor": "黑色", "dropRate": 0.03 },
+      "hundred_thousand": { "name": "十万年妖眼魔树皇", "attack": 210, "defense": 260, "hp": 2200, "speed": 16, "ringColor": "红色", "dropRate": 0.005 }
+    }
+  },
+  "flame_lion": {
+    "name": "赤焰狮",
+    "type": "火系",
+    "variants": {
+      "ten": { "name": "十年赤焰狮", "attack": 11, "defense": 6, "hp": 50, "speed": 10, "ringColor": "白色", "dropRate": 0.6 },
+      "hundred": { "name": "百年赤焰狮", "attack": 26, "defense": 16, "hp": 130, "speed": 15, "ringColor": "黄色", "dropRate": 0.28 },
+      "thousand": { "name": "千年赤焰狮", "attack": 60, "defense": 38, "hp": 320, "speed": 21, "ringColor": "紫色", "dropRate": 0.09 },
+      "ten_thousand": { "name": "万年赤焰狮王", "attack": 135, "defense": 85, "hp": 780, "speed": 29, "ringColor": "黑色", "dropRate": 0.022 },
+      "hundred_thousand": { "name": "十万年赤焰狮皇", "attack": 300, "defense": 190, "hp": 1850, "speed": 39, "ringColor": "红色", "dropRate": 0.0035 }
+    }
+  },
+  "frost_giant": {
+    "name": "冰霜巨人",
+    "type": "冰系",
+    "variants": {
+      "ten": { "name": "十年冰霜巨人", "attack": 10, "defense": 10, "hp": 65, "speed": 3, "ringColor": "白色", "dropRate": 0.6 },
+      "hundred": { "name": "百年冰霜巨人", "attack": 25, "defense": 26, "hp": 160, "speed": 5, "ringColor": "黄色", "dropRate": 0.28 },
+      "thousand": { "name": "千年冰霜巨人", "attack": 58, "defense": 60, "hp": 400, "speed": 8, "ringColor": "紫色", "dropRate": 0.09 },
+      "ten_thousand": { "name": "万年冰霜巨人王", "attack": 130, "defense": 135, "hp": 950, "speed": 12, "ringColor": "黑色", "dropRate": 0.022 },
+      "hundred_thousand": { "name": "十万年冰霜巨人皇", "attack": 290, "defense": 290, "hp": 2300, "speed": 18, "ringColor": "红色", "dropRate": 0.0035 }
+    }
+  },
+  "dark_dragon": {
+    "name": "暗黑魔龙",
+    "type": "龙系",
+    "variants": {
+      "ten": { "name": "十年暗黑魔龙", "attack": 12, "defense": 9, "hp": 60, "speed": 8, "ringColor": "白色", "dropRate": 0.5 },
+      "hundred": { "name": "百年暗黑魔龙", "attack": 30, "defense": 24, "hp": 160, "speed": 12, "ringColor": "黄色", "dropRate": 0.22 },
+      "thousand": { "name": "千年暗黑魔龙", "attack": 70, "defense": 55, "hp": 400, "speed": 18, "ringColor": "紫色", "dropRate": 0.07 },
+      "ten_thousand": { "name": "万年暗黑魔龙王", "attack": 160, "defense": 125, "hp": 1000, "speed": 26, "ringColor": "黑色", "dropRate": 0.018 },
+      "hundred_thousand": { "name": "十万年暗黑魔龙皇", "attack": 350, "defense": 280, "hp": 2400, "speed": 36, "ringColor": "红色", "dropRate": 0.0025 }
+    }
+  },
+  "golden_dragon": {
+    "name": "黄金圣龙",
+    "type": "龙系",
+    "variants": {
+      "ten": { "name": "十年黄金圣龙", "attack": 11, "defense": 10, "hp": 65, "speed": 9, "ringColor": "白色", "dropRate": 0.5 },
+      "hundred": { "name": "百年黄金圣龙", "attack": 28, "defense": 26, "hp": 170, "speed": 14, "ringColor": "黄色", "dropRate": 0.22 },
+      "thousand": { "name": "千年黄金圣龙", "attack": 65, "defense": 60, "hp": 420, "speed": 20, "ringColor": "紫色", "dropRate": 0.07 },
+      "ten_thousand": { "name": "万年黄金圣龙", "attack": 150, "defense": 140, "hp": 1050, "speed": 28, "ringColor": "黑色", "dropRate": 0.018 },
+      "hundred_thousand": { "name": "十万年黄金圣龙", "attack": 330, "defense": 310, "hp": 2500, "speed": 38, "ringColor": "红色", "dropRate": 0.0025 }
+    }
+  },
+  "thousand_ant_emperor": {
+    "name": "千钧蚁皇",
+    "type": "力量系",
+    "variants": {
+      "ten": { "name": "十年千钧蚁皇", "attack": 8, "defense": 8, "hp": 50, "speed": 5, "ringColor": "白色", "dropRate": 0.65 },
+      "hundred": { "name": "百年千钧蚁皇", "attack": 20, "defense": 22, "hp": 130, "speed": 8, "ringColor": "黄色", "dropRate": 0.3 },
+      "thousand": { "name": "千年千钧蚁皇", "attack": 48, "defense": 50, "hp": 320, "speed": 12, "ringColor": "紫色", "dropRate": 0.1 },
+      "ten_thousand": { "name": "万年千钧蚁皇", "attack": 108, "defense": 115, "hp": 780, "speed": 18, "ringColor": "黑色", "dropRate": 0.025 },
+      "hundred_thousand": { "name": "十万年千钧蚁皇", "attack": 240, "defense": 250, "hp": 1850, "speed": 26, "ringColor": "红色", "dropRate": 0.004 }
+    }
+  },
+  "mystic_turtle": {
+    "name": "玄水龟",
+    "type": "水系",
+    "variants": {
+      "ten": { "name": "十年玄水龟", "attack": 4, "defense": 12, "hp": 70, "speed": 3, "ringColor": "白色", "dropRate": 0.7 },
+      "hundred": { "name": "百年玄水龟", "attack": 12, "defense": 30, "hp": 180, "speed": 5, "ringColor": "黄色", "dropRate": 0.35 },
+      "thousand": { "name": "千年玄水龟", "attack": 30, "defense": 70, "hp": 450, "speed": 8, "ringColor": "紫色", "dropRate": 0.12 },
+      "ten_thousand": { "name": "万年玄水龟王", "attack": 70, "defense": 155, "hp": 1100, "speed": 12, "ringColor": "黑色", "dropRate": 0.03 },
+      "hundred_thousand": { "name": "十万年玄水龟皇", "attack": 160, "defense": 340, "hp": 2600, "speed": 18, "ringColor": "红色", "dropRate": 0.005 }
+    }
+  },
+  "storm_wing": {
+    "name": "风暴之翼",
+    "type": "风系",
+    "variants": {
+      "ten": { "name": "十年风暴之翼", "attack": 7, "defense": 4, "hp": 40, "speed": 18, "ringColor": "白色", "dropRate": 0.65 },
+      "hundred": { "name": "百年风暴之翼", "attack": 18, "defense": 12, "hp": 100, "speed": 24, "ringColor": "黄色", "dropRate": 0.3 },
+      "thousand": { "name": "千年风暴之翼", "attack": 42, "defense": 28, "hp": 250, "speed": 32, "ringColor": "紫色", "dropRate": 0.1 },
+      "ten_thousand": { "name": "万年风暴之翼王", "attack": 95, "defense": 65, "hp": 620, "speed": 42, "ringColor": "黑色", "dropRate": 0.025 },
+      "hundred_thousand": { "name": "十万年风暴之翼皇", "attack": 210, "defense": 145, "hp": 1500, "speed": 52, "ringColor": "红色", "dropRate": 0.004 }
+    }
+  },
+  "soul_spider_emperor": {
+    "name": "噬魂蛛皇",
+    "type": "暗影系",
+    "variants": {
+      "ten": { "name": "十年噬魂蛛皇", "attack": 10, "defense": 6, "hp": 50, "speed": 9, "ringColor": "白色", "dropRate": 0.6 },
+      "hundred": { "name": "百年噬魂蛛皇", "attack": 24, "defense": 16, "hp": 125, "speed": 13, "ringColor": "黄色", "dropRate": 0.28 },
+      "thousand": { "name": "千年噬魂蛛皇", "attack": 55, "defense": 38, "hp": 300, "speed": 19, "ringColor": "紫色", "dropRate": 0.09 },
+      "ten_thousand": { "name": "万年噬魂蛛皇", "attack": 120, "defense": 85, "hp": 720, "speed": 27, "ringColor": "黑色", "dropRate": 0.022 },
+      "hundred_thousand": { "name": "十万年噬魂蛛皇", "attack": 270, "defense": 190, "hp": 1700, "speed": 37, "ringColor": "红色", "dropRate": 0.0035 }
+    }
+  },
+  "earth_king": {
+    "name": "大地之王",
+    "type": "土系",
+    "variants": {
+      "ten": { "name": "十年大地之王", "attack": 9, "defense": 10, "hp": 60, "speed": 4, "ringColor": "白色", "dropRate": 0.65 },
+      "hundred": { "name": "百年大地之王", "attack": 22, "defense": 26, "hp": 150, "speed": 6, "ringColor": "黄色", "dropRate": 0.3 },
+      "thousand": { "name": "千年大地之王", "attack": 50, "defense": 60, "hp": 380, "speed": 10, "ringColor": "紫色", "dropRate": 0.1 },
+      "ten_thousand": { "name": "万年大地之王", "attack": 115, "defense": 135, "hp": 900, "speed": 15, "ringColor": "黑色", "dropRate": 0.025 },
+      "hundred_thousand": { "name": "十万年大地之皇", "attack": 255, "defense": 290, "hp": 2200, "speed": 22, "ringColor": "红色", "dropRate": 0.004 }
+    }
+  },
+  "thunder_eagle": {
+    "name": "雷鹰",
+    "type": "雷系",
+    "variants": {
+      "ten": { "name": "十年雷鹰", "attack": 10, "defense": 5, "hp": 45, "speed": 16, "ringColor": "白色", "dropRate": 0.6 },
+      "hundred": { "name": "百年雷鹰", "attack": 24, "defense": 14, "hp": 115, "speed": 22, "ringColor": "黄色", "dropRate": 0.28 },
+      "thousand": { "name": "千年雷鹰", "attack": 55, "defense": 33, "hp": 280, "speed": 30, "ringColor": "紫色", "dropRate": 0.09 },
+      "ten_thousand": { "name": "万年雷鹰王", "attack": 125, "defense": 75, "hp": 680, "speed": 40, "ringColor": "黑色", "dropRate": 0.022 },
+      "hundred_thousand": { "name": "十万年雷鹰皇", "attack": 280, "defense": 170, "hp": 1600, "speed": 50, "ringColor": "红色", "dropRate": 0.0035 }
+    }
+  },
+  "shadow_cat": {
+    "name": "影猫",
+    "type": "暗影系",
+    "variants": {
+      "ten": { "name": "十年影猫", "attack": 8, "defense": 3, "hp": 35, "speed": 17, "ringColor": "白色", "dropRate": 0.65 },
+      "hundred": { "name": "百年影猫", "attack": 20, "defense": 10, "hp": 90, "speed": 23, "ringColor": "黄色", "dropRate": 0.3 },
+      "thousand": { "name": "千年影猫", "attack": 48, "defense": 25, "hp": 230, "speed": 31, "ringColor": "紫色", "dropRate": 0.1 },
+      "ten_thousand": { "name": "万年影猫王", "attack": 105, "defense": 58, "hp": 560, "speed": 41, "ringColor": "黑色", "dropRate": 0.025 },
+      "hundred_thousand": { "name": "十万年影猫皇", "attack": 235, "defense": 130, "hp": 1350, "speed": 52, "ringColor": "红色", "dropRate": 0.004 }
+    }
+  },
+  "blaze_lion_king": {
+    "name": "烈焰狮王",
+    "type": "火系",
+    "variants": {
+      "ten": { "name": "十年烈焰狮王", "attack": 12, "defense": 7, "hp": 55, "speed": 11, "ringColor": "白色", "dropRate": 0.55 },
+      "hundred": { "name": "百年烈焰狮王", "attack": 28, "defense": 18, "hp": 140, "speed": 16, "ringColor": "黄色", "dropRate": 0.25 },
+      "thousand": { "name": "千年烈焰狮王", "attack": 65, "defense": 42, "hp": 350, "speed": 23, "ringColor": "紫色", "dropRate": 0.08 },
+      "ten_thousand": { "name": "万年烈焰狮王", "attack": 145, "defense": 95, "hp": 850, "speed": 32, "ringColor": "黑色", "dropRate": 0.02 },
+      "hundred_thousand": { "name": "十万年烈焰狮皇", "attack": 320, "defense": 210, "hp": 2000, "speed": 43, "ringColor": "红色", "dropRate": 0.003 }
+    }
+  },
+  "ice_phoenix": {
+    "name": "冰晶凤凰",
+    "type": "冰系",
+    "variants": {
+      "ten": { "name": "十年冰晶凤凰", "attack": 9, "defense": 7, "hp": 50, "speed": 15, "ringColor": "白色", "dropRate": 0.55 },
+      "hundred": { "name": "百年冰晶凤凰", "attack": 24, "defense": 18, "hp": 130, "speed": 21, "ringColor": "黄色", "dropRate": 0.25 },
+      "thousand": { "name": "千年冰晶凤凰", "attack": 56, "defense": 42, "hp": 320, "speed": 29, "ringColor": "紫色", "dropRate": 0.08 },
+      "ten_thousand": { "name": "万年冰晶凤凰", "attack": 125, "defense": 95, "hp": 780, "speed": 39, "ringColor": "黑色", "dropRate": 0.02 },
+      "hundred_thousand": { "name": "十万年冰晶凤凰", "attack": 280, "defense": 210, "hp": 1850, "speed": 50, "ringColor": "红色", "dropRate": 0.003 }
+    }
+  },
+  "diamond_baboon": {
+    "name": "金刚狒狒",
+    "type": "力量系",
+    "variants": {
+      "ten": { "name": "十年金刚狒狒", "attack": 10, "defense": 8, "hp": 55, "speed": 7, "ringColor": "白色", "dropRate": 0.6 },
+      "hundred": { "name": "百年金刚狒狒", "attack": 24, "defense": 20, "hp": 140, "speed": 10, "ringColor": "黄色", "dropRate": 0.28 },
+      "thousand": { "name": "千年金刚狒狒", "attack": 55, "defense": 48, "hp": 340, "speed": 15, "ringColor": "紫色", "dropRate": 0.09 },
+      "ten_thousand": { "name": "万年金刚狒狒王", "attack": 125, "defense": 108, "hp": 820, "speed": 22, "ringColor": "黑色", "dropRate": 0.022 },
+      "hundred_thousand": { "name": "十万年金刚狒狒皇", "attack": 280, "defense": 240, "hp": 1950, "speed": 30, "ringColor": "红色", "dropRate": 0.0035 }
+    }
+  }
+}

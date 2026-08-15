@@ -1,0 +1,287 @@
+{
+  "meta": {
+    "description": "武魂专属事件稳定键映射；运行时禁止依赖数组下标"
+  },
+  "mappings": [
+    {
+      "eventKey": "water_pot",
+      "spiritId": "水壶"
+    },
+    {
+      "eventKey": "teapot",
+      "spiritId": "茶壶"
+    },
+    {
+      "eventKey": "water_basin",
+      "spiritId": "水盆"
+    },
+    {
+      "eventKey": "broom",
+      "spiritId": "扫帚"
+    },
+    {
+      "eventKey": "lantern",
+      "spiritId": "灯笼"
+    },
+    {
+      "eventKey": "basket",
+      "spiritId": "箩筐"
+    },
+    {
+      "eventKey": "wooden_bowl",
+      "spiritId": "木碗"
+    },
+    {
+      "eventKey": "grass_rope",
+      "spiritId": "草绳"
+    },
+    {
+      "eventKey": "fan",
+      "spiritId": "蒲扇"
+    },
+    {
+      "eventKey": "copper_bell",
+      "spiritId": "铜铃"
+    },
+    {
+      "eventKey": "stone_mill",
+      "spiritId": "石磨"
+    },
+    {
+      "eventKey": "copper_mirror",
+      "spiritId": "铜镜"
+    },
+    {
+      "eventKey": "bamboo_flute",
+      "spiritId": "竹笛"
+    },
+    {
+      "eventKey": "wooden_sword",
+      "spiritId": "木剑"
+    },
+    {
+      "eventKey": "cleaver",
+      "spiritId": "柴刀"
+    },
+    {
+      "eventKey": "iron_hammer_mid",
+      "spiritId": "铁锤"
+    },
+    {
+      "eventKey": "sickle",
+      "spiritId": "镰刀"
+    },
+    {
+      "eventKey": "long_staff",
+      "spiritId": "长棍"
+    },
+    {
+      "eventKey": "iron_pan",
+      "spiritId": "铁锅"
+    },
+    {
+      "eventKey": "stone_axe",
+      "spiritId": "石斧"
+    },
+    {
+      "eventKey": "hunting_bow",
+      "spiritId": "猎弓"
+    },
+    {
+      "eventKey": "iron_shovel",
+      "spiritId": "铁铲"
+    },
+    {
+      "eventKey": "chain_flail",
+      "spiritId": "链枷"
+    },
+    {
+      "eventKey": "iron_whip",
+      "spiritId": "铁鞭"
+    },
+    {
+      "eventKey": "meteor_hammer",
+      "spiritId": "流星锤"
+    },
+    {
+      "eventKey": "flying_dart",
+      "spiritId": "飞镖"
+    },
+    {
+      "eventKey": "blue_silver_grass",
+      "spiritId": "蓝银草"
+    },
+    {
+      "eventKey": "black_tortoise",
+      "spiritId": "玄龟"
+    },
+    {
+      "eventKey": "fire_phoenix",
+      "spiritId": "火凤"
+    },
+    {
+      "eventKey": "shadow_wolf",
+      "spiritId": "暗影狼"
+    },
+    {
+      "eventKey": "thunder_eagle",
+      "spiritId": "雷鹰"
+    },
+    {
+      "eventKey": "ice_snake",
+      "spiritId": "冰蛇"
+    },
+    {
+      "eventKey": "flame_horse",
+      "spiritId": "烈焰马"
+    },
+    {
+      "eventKey": "rock_bear",
+      "spiritId": "岩甲熊"
+    },
+    {
+      "eventKey": "wind_bird",
+      "spiritId": "风灵鸟"
+    },
+    {
+      "eventKey": "poison_vine",
+      "spiritId": "毒藤"
+    },
+    {
+      "eventKey": "ice_bow",
+      "spiritId": "寒冰弓"
+    },
+    {
+      "eventKey": "flame_whip",
+      "spiritId": "烈火鞭"
+    },
+    {
+      "eventKey": "thunder_leopard",
+      "spiritId": "雷电豹"
+    },
+    {
+      "eventKey": "crystal_snake",
+      "spiritId": "水晶蛇"
+    },
+    {
+      "eventKey": "flame_butterfly",
+      "spiritId": "火焰蝶"
+    },
+    {
+      "eventKey": "frost_bear",
+      "spiritId": "冰霜熊"
+    },
+    {
+      "eventKey": "haotian_hammer",
+      "spiritId": "昊天锤"
+    },
+    {
+      "eventKey": "qisha_sword",
+      "spiritId": "七杀剑"
+    },
+    {
+      "eventKey": "blue_dragon",
+      "spiritId": "蓝电霸王龙"
+    },
+    {
+      "eventKey": "jiubao_pagoda",
+      "spiritId": "七宝琉璃塔"
+    },
+    {
+      "eventKey": "youming_cat",
+      "spiritId": "幽冥灵猫"
+    },
+    {
+      "eventKey": "evil_phoenix",
+      "spiritId": "邪火凤凰"
+    },
+    {
+      "eventKey": "white_tiger",
+      "spiritId": "白虎"
+    },
+    {
+      "eventKey": "nine_tail_fox",
+      "spiritId": "九尾狐"
+    },
+    {
+      "eventKey": "tyrant_dragon",
+      "spiritId": "霸王龙"
+    },
+    {
+      "eventKey": "azure_dragon",
+      "spiritId": "青龙"
+    },
+    {
+      "eventKey": "vermillion_bird",
+      "spiritId": "朱雀"
+    },
+    {
+      "eventKey": "black_tortoise_god",
+      "spiritId": "玄武"
+    },
+    {
+      "eventKey": "evil_eye_white_tiger",
+      "spiritId": "邪眸白虎"
+    },
+    {
+      "eventKey": "fire_phoenix_top",
+      "spiritId": "火凤凰"
+    },
+    {
+      "eventKey": "ice_phoenix",
+      "spiritId": "冰凤凰"
+    },
+    {
+      "eventKey": "earth_splitting_dragon",
+      "spiritId": "裂地龙"
+    },
+    {
+      "eventKey": "sea_trident",
+      "spiritId": "海神三叉戟"
+    },
+    {
+      "eventKey": "angel_sword",
+      "spiritId": "天使神剑"
+    },
+    {
+      "eventKey": "asura_sword",
+      "spiritId": "修罗神剑"
+    },
+    {
+      "eventKey": "nine_treasure_pagoda",
+      "spiritId": "九宝琉璃塔"
+    },
+    {
+      "eventKey": "blue_silver_emperor",
+      "spiritId": "蓝银皇"
+    },
+    {
+      "eventKey": "golden_dragon",
+      "spiritId": "黄金龙"
+    },
+    {
+      "eventKey": "void_eye",
+      "spiritId": "虚空之眼"
+    },
+    {
+      "eventKey": "fate_wheel",
+      "spiritId": "命运之轮"
+    },
+    {
+      "eventKey": "rakshasa_sword",
+      "spiritId": "罗刹神剑"
+    },
+    {
+      "eventKey": "destruction_hammer",
+      "spiritId": "毁灭神锤"
+    },
+    {
+      "eventKey": "genesis_book",
+      "spiritId": "创世之书"
+    },
+    {
+      "eventKey": "star_bow",
+      "spiritId": "星辰之弓"
+    }
+  ]
+}

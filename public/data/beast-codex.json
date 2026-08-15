@@ -1,0 +1,2125 @@
+{
+  "meta": {
+    "title": "斗罗大陆·魂兽图鉴",
+    "description": "收录斗罗大陆世界中已知的魂兽种族，按种类分组。每个种族均包含十年至十万年的完整年份变体",
+    "tiers": {
+      "草食系": {
+        "name": "草食系",
+        "color": "#22c55e",
+        "desc": "共5种魂兽"
+      },
+      "肉食系": {
+        "name": "肉食系",
+        "color": "#ef4444",
+        "desc": "共10种魂兽"
+      },
+      "两栖系": {
+        "name": "两栖系",
+        "color": "#94a3b8",
+        "desc": "共1种魂兽"
+      },
+      "昆虫系": {
+        "name": "昆虫系",
+        "color": "#94a3b8",
+        "desc": "共3种魂兽"
+      },
+      "杂食系": {
+        "name": "杂食系",
+        "color": "#94a3b8",
+        "desc": "共2种魂兽"
+      },
+      "飞禽系": {
+        "name": "飞禽系",
+        "color": "#94a3b8",
+        "desc": "共2种魂兽"
+      },
+      "龙血系": {
+        "name": "龙血系",
+        "color": "#94a3b8",
+        "desc": "共2种魂兽"
+      },
+      "灵长系": {
+        "name": "灵长系",
+        "color": "#94a3b8",
+        "desc": "共2种魂兽"
+      },
+      "海兽系": {
+        "name": "海兽系",
+        "color": "#94a3b8",
+        "desc": "共3种魂兽"
+      }
+    }
+  },
+  "beasts": [
+    {
+      "id": "灵鹿",
+      "name": "灵鹿",
+      "type": "草食系",
+      "habitat": "星斗大森林外围",
+      "rarity": "极常见",
+      "icon": "🦌",
+      "desc": "灵鹿是斗罗大陆最常见的草食魂兽之一，通体覆盖淡金色的短毛，额头上生有分叉的短角，能在阳光下折射出淡淡光晕。它们性格温顺怯懦，遇到危险时第一反应是逃跑而非抵抗，常以群居方式活动于星斗大森林外围的草甸与林缘。虽攻击力微弱，但灵鹿的血液含有微弱的灵力，是炼制低阶恢复药剂的基础材料，因此常被初级魂师作为狩猎对象。在民间传说中，灵鹿被视为森林之神的使者，伤害白化的灵鹿会招来厄运。",
+      "traits": [
+        "被动",
+        "温顺",
+        "速度较快"
+      ],
+      "specialAbility": "无",
+      "image": "assets/beasts/灵鹿.jpg",
+      "variants": {
+        "ten": {
+          "name": "十年灵鹿",
+          "attack": 5,
+          "defense": 3,
+          "hp": 30,
+          "speed": 12,
+          "ringColor": "白色",
+          "dropRate": 0.7
+        },
+        "hundred": {
+          "name": "百年灵鹿",
+          "attack": 15,
+          "defense": 10,
+          "hp": 80,
+          "speed": 15,
+          "ringColor": "黄色",
+          "dropRate": 0.35
+        },
+        "thousand": {
+          "name": "千年灵鹿",
+          "attack": 35,
+          "defense": 25,
+          "hp": 200,
+          "speed": 20,
+          "ringColor": "紫色",
+          "dropRate": 0.12
+        },
+        "ten_thousand": {
+          "name": "万年灵鹿王",
+          "attack": 80,
+          "defense": 60,
+          "hp": 500,
+          "speed": 28,
+          "ringColor": "黑色",
+          "dropRate": 0.03
+        },
+        "hundred_thousand": {
+          "name": "十万年灵鹿皇",
+          "attack": 180,
+          "defense": 130,
+          "hp": 1200,
+          "speed": 38,
+          "ringColor": "红色",
+          "dropRate": 0.005
+        }
+      },
+      "attack": 15,
+      "defense": 10,
+      "hp": 80,
+      "speed": 15,
+      "ringLevel": 2,
+      "ringColor": "黄色"
+    },
+    {
+      "id": "独眼狼",
+      "name": "独眼狼",
+      "type": "肉食系",
+      "habitat": "星斗大森林外围、落日森林",
+      "rarity": "常见",
+      "icon": "🐺",
+      "desc": "独眼狼是十年魂兽中较为凶悍的肉食系魂兽，通体灰黑，仅额头中央生有一只散发着幽绿荧光的独眼，能在黑夜中洞察百步之内的猎物。它们通常以三五只组成的小群体狩猎，懂得配合围堵，对落单的低级魂师威胁不小。独眼狼的独眼在死后会逐渐失去光泽，但完整的晶状体可被炼制成低阶夜视饰品，价值不菲。据老猎人讲，独眼狼的祖先曾是某只千年魂兽的眷属，因血脉稀释才退化为如今模样，但仍保留着群体协作的本能。",
+      "traits": [
+        "主动攻击",
+        "群体行动",
+        "夜视"
+      ],
+      "specialAbility": "夜视之眼",
+      "image": "assets/beasts/独眼狼.jpg",
+      "variants": {
+        "ten": {
+          "name": "十年独眼狼",
+          "attack": 10,
+          "defense": 5,
+          "hp": 50,
+          "speed": 9,
+          "ringColor": "白色",
+          "dropRate": 0.65
+        },
+        "hundred": {
+          "name": "百年独眼狼",
+          "attack": 22,
+          "defense": 14,
+          "hp": 120,
+          "speed": 13,
+          "ringColor": "黄色",
+          "dropRate": 0.3
+        },
+        "thousand": {
+          "name": "千年独眼狼王",
+          "attack": 48,
+          "defense": 32,
+          "hp": 280,
+          "speed": 18,
+          "ringColor": "紫色",
+          "dropRate": 0.1
+        },
+        "ten_thousand": {
+          "name": "万年独眼狼皇",
+          "attack": 100,
+          "defense": 70,
+          "hp": 650,
+          "speed": 25,
+          "ringColor": "黑色",
+          "dropRate": 0.025
+        },
+        "hundred_thousand": {
+          "name": "十万年独眼狼帝",
+          "attack": 220,
+          "defense": 150,
+          "hp": 1500,
+          "speed": 35,
+          "ringColor": "红色",
+          "dropRate": 0.004
+        }
+      },
+      "attack": 22,
+      "defense": 14,
+      "hp": 120,
+      "speed": 13,
+      "ringLevel": 2,
+      "ringColor": "黄色"
+    },
+    {
+      "id": "野兔",
+      "name": "野兔",
+      "type": "草食系",
+      "habitat": "星斗大森林外围、平原草甸",
+      "rarity": "极常见",
+      "icon": "🐰",
+      "desc": "野兔是斗罗大陆数量最为庞大的魂兽之一，毛色多为土黄与灰褐相间，长耳能够灵敏感知四周细微的震动。它们几乎没有攻击力，但凭借惊人的爆发速度和敏锐的警觉，能在危险降临时瞬间窜出数十米。野兔肉质鲜美且富含微弱灵气，是行商走卒与初出茅庐的魂师最常捕猎的对象，也是许多高级魂兽的天然食粮。在星斗大森林的生态链中，野兔处于最底层，却以其惊人的繁殖能力维持着整个森林的生生不息。",
+      "traits": [
+        "被动",
+        "警觉",
+        "速度极快"
+      ],
+      "specialAbility": "无",
+      "image": "assets/beasts/野兔.jpg",
+      "variants": {
+        "ten": {
+          "name": "十年野兔",
+          "attack": 4,
+          "defense": 2,
+          "hp": 23,
+          "speed": 11,
+          "ringColor": "白色",
+          "dropRate": 0.7
+        },
+        "hundred": {
+          "name": "百年野兔",
+          "attack": 12,
+          "defense": 8,
+          "hp": 60,
+          "speed": 14,
+          "ringColor": "黄色",
+          "dropRate": 0.35
+        },
+        "thousand": {
+          "name": "千年野兔",
+          "attack": 32,
+          "defense": 20,
+          "hp": 150,
+          "speed": 17,
+          "ringColor": "紫色",
+          "dropRate": 0.12
+        },
+        "ten_thousand": {
+          "name": "万年野兔",
+          "attack": 80,
+          "defense": 51,
+          "hp": 369,
+          "speed": 21,
+          "ringColor": "黑色",
+          "dropRate": 0.04
+        },
+        "hundred_thousand": {
+          "name": "十万年野兔",
+          "attack": 200,
+          "defense": 128,
+          "hp": 923,
+          "speed": 23,
+          "ringColor": "红色",
+          "dropRate": 0.008
+        }
+      },
+      "attack": 12,
+      "defense": 8,
+      "hp": 60,
+      "speed": 14,
+      "ringLevel": 2,
+      "ringColor": "黄色"
+    },
+    {
+      "id": "花蛇",
+      "name": "花蛇",
+      "type": "肉食系",
+      "habitat": "星斗大森林外围、沼泽湿地",
+      "rarity": "常见",
+      "icon": "🐍",
+      "desc": "花蛇是一种体型纤细、鳞片斑斓的十年魂兽，通体覆盖红黄绿三色相间的环纹，鲜艳得近乎妖冶。它们栖息于潮湿的林下与沼泽边缘，以小型鼠类和蛙类为食，毒性虽弱但足以令普通人瘫痪数个时辰。花蛇的毒囊是炼制解毒剂的重要原料，许多游方药师会专门收购。传说花蛇的斑斓色彩源于其吞食了某种含灵力的花蜜，因此也被称为花间使者，民间认为它们出没之处必有珍稀灵草。",
+      "traits": [
+        "伏击",
+        "微毒",
+        "色彩艳丽"
+      ],
+      "specialAbility": "麻痹毒液",
+      "image": "assets/beasts/花蛇.jpg",
+      "variants": {
+        "ten": {
+          "name": "十年花蛇",
+          "attack": 6,
+          "defense": 3,
+          "hp": 30,
+          "speed": 13,
+          "ringColor": "白色",
+          "dropRate": 0.7
+        },
+        "hundred": {
+          "name": "百年花蛇",
+          "attack": 20,
+          "defense": 10,
+          "hp": 80,
+          "speed": 16,
+          "ringColor": "黄色",
+          "dropRate": 0.35
+        },
+        "thousand": {
+          "name": "千年花蛇",
+          "attack": 53,
+          "defense": 25,
+          "hp": 200,
+          "speed": 20,
+          "ringColor": "紫色",
+          "dropRate": 0.12
+        },
+        "ten_thousand": {
+          "name": "万年花蛇",
+          "attack": 133,
+          "defense": 64,
+          "hp": 492,
+          "speed": 24,
+          "ringColor": "黑色",
+          "dropRate": 0.04
+        },
+        "hundred_thousand": {
+          "name": "十万年花蛇",
+          "attack": 333,
+          "defense": 160,
+          "hp": 1230,
+          "speed": 26,
+          "ringColor": "红色",
+          "dropRate": 0.008
+        }
+      },
+      "attack": 20,
+      "defense": 10,
+      "hp": 80,
+      "speed": 16,
+      "ringLevel": 2,
+      "ringColor": "黄色"
+    },
+    {
+      "id": "蓝蛙",
+      "name": "蓝蛙",
+      "type": "两栖系",
+      "habitat": "星斗大森林沼泽、清水河畔",
+      "rarity": "常见",
+      "icon": "🐸",
+      "desc": "蓝蛙是栖息于星斗大森林沼泽地带的两栖魂兽，通体碧蓝如琉璃，皮肤上分泌的黏液带有微弱的麻痹效果。它们以舌猎食飞虫与小鱼，跳跃距离可达自身身长的十倍以上，是十年魂兽中身手最为敏捷的之一。蓝蛙的鸣叫声悦耳动听，每逢雨夜此起彼伏，被林中居民称为雨夜琴师。其皮肤黏液可入药，用于制作麻痹药剂或镇痛膏，是初级炼药师常备材料之一。",
+      "traits": [
+        "两栖",
+        "跳跃敏捷",
+        "黏液麻痹"
+      ],
+      "specialAbility": "麻痹黏液",
+      "image": "assets/beasts/蓝蛙.jpg",
+      "variants": {
+        "ten": {
+          "name": "十年蓝蛙",
+          "attack": 3,
+          "defense": 4,
+          "hp": 26,
+          "speed": 10,
+          "ringColor": "白色",
+          "dropRate": 0.7
+        },
+        "hundred": {
+          "name": "百年蓝蛙",
+          "attack": 10,
+          "defense": 11,
+          "hp": 70,
+          "speed": 12,
+          "ringColor": "黄色",
+          "dropRate": 0.35
+        },
+        "thousand": {
+          "name": "千年蓝蛙",
+          "attack": 26,
+          "defense": 30,
+          "hp": 175,
+          "speed": 15,
+          "ringColor": "紫色",
+          "dropRate": 0.12
+        },
+        "ten_thousand": {
+          "name": "万年蓝蛙",
+          "attack": 66,
+          "defense": 77,
+          "hp": 430,
+          "speed": 18,
+          "ringColor": "黑色",
+          "dropRate": 0.04
+        },
+        "hundred_thousand": {
+          "name": "十万年蓝蛙",
+          "attack": 166,
+          "defense": 192,
+          "hp": 1076,
+          "speed": 20,
+          "ringColor": "红色",
+          "dropRate": 0.008
+        }
+      },
+      "attack": 10,
+      "defense": 11,
+      "hp": 70,
+      "speed": 12,
+      "ringLevel": 2,
+      "ringColor": "黄色"
+    },
+    {
+      "id": "铁角羊",
+      "name": "铁角羊",
+      "type": "草食系",
+      "habitat": "星斗大森林外围山地、北原草甸",
+      "rarity": "常见",
+      "icon": "🐏",
+      "desc": "铁角羊是体型壮硕的草食魂兽，通体覆盖厚实的灰白卷毛，头顶双角乌黑发亮，硬度堪比凡铁。它们性情虽不暴烈，但在受到威胁时会低头猛冲，那对铁角足以将一名成年魂师撞飞数米。铁角羊的羊毛是织造灵力护体衣物的常用材料，而其双角磨粉后可用于炼制强身健体的丹药。在北方草原部落中，铁角羊是牧民世代驯养的家畜，被视为财富与地位的象征。",
+      "traits": [
+        "被动",
+        "冲撞",
+        "角如铁"
+      ],
+      "specialAbility": "铁角冲撞",
+      "image": "assets/beasts/铁角羊.jpg",
+      "variants": {
+        "ten": {
+          "name": "十年铁角羊",
+          "attack": 4,
+          "defense": 2,
+          "hp": 23,
+          "speed": 11,
+          "ringColor": "白色",
+          "dropRate": 0.7
+        },
+        "hundred": {
+          "name": "百年铁角羊",
+          "attack": 12,
+          "defense": 8,
+          "hp": 60,
+          "speed": 14,
+          "ringColor": "黄色",
+          "dropRate": 0.35
+        },
+        "thousand": {
+          "name": "千年铁角羊",
+          "attack": 32,
+          "defense": 20,
+          "hp": 150,
+          "speed": 17,
+          "ringColor": "紫色",
+          "dropRate": 0.12
+        },
+        "ten_thousand": {
+          "name": "万年铁角羊",
+          "attack": 80,
+          "defense": 51,
+          "hp": 369,
+          "speed": 21,
+          "ringColor": "黑色",
+          "dropRate": 0.04
+        },
+        "hundred_thousand": {
+          "name": "十万年铁角羊",
+          "attack": 200,
+          "defense": 128,
+          "hp": 923,
+          "speed": 23,
+          "ringColor": "红色",
+          "dropRate": 0.008
+        }
+      },
+      "attack": 12,
+      "defense": 8,
+      "hp": 60,
+      "speed": 14,
+      "ringLevel": 2,
+      "ringColor": "黄色"
+    },
+    {
+      "id": "风蝶",
+      "name": "风蝶",
+      "type": "昆虫系",
+      "habitat": "星斗大森林花海、灵药谷地",
+      "rarity": "少见",
+      "icon": "🦋",
+      "desc": "风蝶是十年魂兽中最为美丽的存在，双翅展开足有成人手掌大小，翅面布满流光溢彩的鳞粉，振翅时能带起微风。它们以灵花花蜜为食，常成群结队地盘旋于星斗大森林的花海之上，被称作花海的精灵。风蝶的鳞粉具有安神助眠的功效，是炼制静心丹不可或缺的材料，因此价值远超其战力。老一辈魂师相信，风蝶聚集之处必有高年份灵药生长，是寻药者的天然向导。",
+      "traits": [
+        "飞行",
+        "群居",
+        "鳞粉安神"
+      ],
+      "specialAbility": "安神鳞粉",
+      "image": "assets/beasts/风蝶.jpg",
+      "variants": {
+        "ten": {
+          "name": "十年风蝶",
+          "attack": 2,
+          "defense": 5,
+          "hp": 19,
+          "speed": 8,
+          "ringColor": "白色",
+          "dropRate": 0.7
+        },
+        "hundred": {
+          "name": "百年风蝶",
+          "attack": 8,
+          "defense": 14,
+          "hp": 50,
+          "speed": 10,
+          "ringColor": "黄色",
+          "dropRate": 0.35
+        },
+        "thousand": {
+          "name": "千年风蝶",
+          "attack": 21,
+          "defense": 35,
+          "hp": 125,
+          "speed": 12,
+          "ringColor": "紫色",
+          "dropRate": 0.12
+        },
+        "ten_thousand": {
+          "name": "万年风蝶",
+          "attack": 53,
+          "defense": 90,
+          "hp": 307,
+          "speed": 15,
+          "ringColor": "黑色",
+          "dropRate": 0.04
+        },
+        "hundred_thousand": {
+          "name": "十万年风蝶",
+          "attack": 133,
+          "defense": 225,
+          "hp": 769,
+          "speed": 16,
+          "ringColor": "红色",
+          "dropRate": 0.008
+        }
+      },
+      "attack": 8,
+      "defense": 14,
+      "hp": 50,
+      "speed": 10,
+      "ringLevel": 2,
+      "ringColor": "黄色"
+    },
+    {
+      "id": "土拨鼠",
+      "name": "土拨鼠",
+      "type": "草食系",
+      "habitat": "星斗大森林外围地下、草原洞窟",
+      "rarity": "常见",
+      "icon": "🐭",
+      "desc": "土拨鼠是体型圆润、四肢短粗的穴居魂兽，毛色土褐，善于挖掘复杂的地下通道网络，往往一窝土拨鼠便能让一片草地布满陷阱。它们以草根与块茎为食，性情胆小怯懦，一有风吹草动便会缩回洞中发出尖锐的鸣叫示警。土拨鼠的挖掘能力出奇地强，其前爪指甲坚硬如石，可用于炼制低阶挖矿工具。地下猎人有时会驯养土拨鼠作为探洞的帮手，借助它们寻找埋藏在地下的灵矿与药根。",
+      "traits": [
+        "穴居",
+        "警觉",
+        "善挖洞"
+      ],
+      "specialAbility": "地下穿行",
+      "image": "assets/beasts/土拨鼠.jpg",
+      "variants": {
+        "ten": {
+          "name": "十年土拨鼠",
+          "attack": 4,
+          "defense": 2,
+          "hp": 23,
+          "speed": 11,
+          "ringColor": "白色",
+          "dropRate": 0.7
+        },
+        "hundred": {
+          "name": "百年土拨鼠",
+          "attack": 12,
+          "defense": 8,
+          "hp": 60,
+          "speed": 14,
+          "ringColor": "黄色",
+          "dropRate": 0.35
+        },
+        "thousand": {
+          "name": "千年土拨鼠",
+          "attack": 32,
+          "defense": 20,
+          "hp": 150,
+          "speed": 17,
+          "ringColor": "紫色",
+          "dropRate": 0.12
+        },
+        "ten_thousand": {
+          "name": "万年土拨鼠",
+          "attack": 80,
+          "defense": 51,
+          "hp": 369,
+          "speed": 21,
+          "ringColor": "黑色",
+          "dropRate": 0.04
+        },
+        "hundred_thousand": {
+          "name": "十万年土拨鼠",
+          "attack": 200,
+          "defense": 128,
+          "hp": 923,
+          "speed": 23,
+          "ringColor": "红色",
+          "dropRate": 0.008
+        }
+      },
+      "attack": 12,
+      "defense": 8,
+      "hp": 60,
+      "speed": 14,
+      "ringLevel": 2,
+      "ringColor": "黄色"
+    },
+    {
+      "id": "烈焰虎",
+      "name": "烈焰虎",
+      "type": "肉食系",
+      "habitat": "落日森林火山区、炎阳山脉",
+      "rarity": "少见",
+      "icon": "🐅",
+      "desc": "烈焰虎是百年魂兽中赫赫有名的存在，通体火红如熔岩流淌，皮毛下涌动着灼热的魂力，怒吼时周身会腾起淡红的火雾。它们栖息于火山与炎热岩地，以捕食中低级魂兽为生，性情孤傲暴烈，一旦锁定猎物便穷追不舍。烈焰虎的虎骨与虎血均蕴含火属性魂力，是炼制火系功法丹药的上品材料，其黄色魂环可为火属性魂师提供灼烧类魂技。在斗罗大陆南方的火山部落中，烈焰虎被奉为火神的坐骑，猎杀者会被尊为火之勇士。",
+      "traits": [
+        "主动攻击",
+        "火属性",
+        "孤傲"
+      ],
+      "specialAbility": "烈焰吐息",
+      "image": "assets/beasts/烈焰虎.jpg",
+      "variants": {
+        "ten": {
+          "name": "十年烈焰虎",
+          "attack": 6,
+          "defense": 3,
+          "hp": 30,
+          "speed": 13,
+          "ringColor": "白色",
+          "dropRate": 0.7
+        },
+        "hundred": {
+          "name": "百年烈焰虎",
+          "attack": 20,
+          "defense": 10,
+          "hp": 80,
+          "speed": 16,
+          "ringColor": "黄色",
+          "dropRate": 0.35
+        },
+        "thousand": {
+          "name": "千年烈焰虎",
+          "attack": 53,
+          "defense": 25,
+          "hp": 200,
+          "speed": 20,
+          "ringColor": "紫色",
+          "dropRate": 0.12
+        },
+        "ten_thousand": {
+          "name": "万年烈焰虎",
+          "attack": 133,
+          "defense": 64,
+          "hp": 492,
+          "speed": 24,
+          "ringColor": "黑色",
+          "dropRate": 0.04
+        },
+        "hundred_thousand": {
+          "name": "十万年烈焰虎",
+          "attack": 333,
+          "defense": 160,
+          "hp": 1230,
+          "speed": 26,
+          "ringColor": "红色",
+          "dropRate": 0.008
+        }
+      },
+      "attack": 20,
+      "defense": 10,
+      "hp": 80,
+      "speed": 16,
+      "ringLevel": 2,
+      "ringColor": "黄色"
+    },
+    {
+      "id": "铁甲熊",
+      "name": "铁甲熊",
+      "type": "杂食系",
+      "habitat": "星斗大森林深处、北境雪山",
+      "rarity": "少见",
+      "icon": "🐻",
+      "desc": "铁甲熊是百年魂兽中防御力最为惊人的存在，身躯庞大如小山，皮糙肉厚，外层毛皮下覆盖着一层如铁甲般的硬质角质层。它们性情沉稳但一旦被激怒便会陷入狂暴，一掌能将百年古树拦腰拍断。铁甲熊的熊胆与熊掌皆是珍贵的灵材，可用于炼制强筋健骨的丹药，其皮毛更是制作高级防御护甲的上好材料。在猎人行会中，铁甲熊被称为百年魂兽中的铁壁，单挑它往往需要数名中级魂师联手才能成功。",
+      "traits": [
+        "主动攻击",
+        "高防御",
+        "狂暴"
+      ],
+      "specialAbility": "铁甲护体",
+      "image": "assets/beasts/铁甲熊.jpg",
+      "variants": {
+        "ten": {
+          "name": "十年铁甲熊",
+          "attack": 5,
+          "defense": 4,
+          "hp": 34,
+          "speed": 9,
+          "ringColor": "白色",
+          "dropRate": 0.7
+        },
+        "hundred": {
+          "name": "百年铁甲熊",
+          "attack": 15,
+          "defense": 11,
+          "hp": 90,
+          "speed": 11,
+          "ringColor": "黄色",
+          "dropRate": 0.35
+        },
+        "thousand": {
+          "name": "千年铁甲熊",
+          "attack": 40,
+          "defense": 30,
+          "hp": 225,
+          "speed": 13,
+          "ringColor": "紫色",
+          "dropRate": 0.12
+        },
+        "ten_thousand": {
+          "name": "万年铁甲熊",
+          "attack": 100,
+          "defense": 77,
+          "hp": 553,
+          "speed": 16,
+          "ringColor": "黑色",
+          "dropRate": 0.04
+        },
+        "hundred_thousand": {
+          "name": "十万年铁甲熊",
+          "attack": 250,
+          "defense": 192,
+          "hp": 1384,
+          "speed": 18,
+          "ringColor": "红色",
+          "dropRate": 0.008
+        }
+      },
+      "attack": 15,
+      "defense": 11,
+      "hp": 90,
+      "speed": 11,
+      "ringLevel": 2,
+      "ringColor": "黄色"
+    },
+    {
+      "id": "毒蛛",
+      "name": "毒蛛",
+      "type": "肉食系",
+      "habitat": "星斗大森林阴暗林下、毒雾沼泽",
+      "rarity": "少见",
+      "icon": "🕷️",
+      "desc": "毒蛛是百年魂兽中令人闻风丧胆的暗杀者，通体漆黑，腹部生有紫红色的毒纹，八条长足末端带有倒钩。它们常结网于阴暗林下，丝线坚韧且含有剧毒，触之者轻则瘫痪重则丧命。毒蛛的毒液是炼制剧毒暗器的顶级原料，蛛丝可织成坚韧的毒丝软甲，两者皆是黑市上的抢手货。据传某些千年毒蛛甚至能吐出含魂力的丝线，结成的网能困住高级魂师，令斗罗大陆南方的密林成为禁地。",
+      "traits": [
+        "伏击",
+        "剧毒",
+        "结网"
+      ],
+      "specialAbility": "毒丝缠缚",
+      "image": "assets/beasts/毒蛛.jpg",
+      "variants": {
+        "ten": {
+          "name": "十年毒蛛",
+          "attack": 6,
+          "defense": 3,
+          "hp": 30,
+          "speed": 13,
+          "ringColor": "白色",
+          "dropRate": 0.7
+        },
+        "hundred": {
+          "name": "百年毒蛛",
+          "attack": 20,
+          "defense": 10,
+          "hp": 80,
+          "speed": 16,
+          "ringColor": "黄色",
+          "dropRate": 0.35
+        },
+        "thousand": {
+          "name": "千年毒蛛",
+          "attack": 53,
+          "defense": 25,
+          "hp": 200,
+          "speed": 20,
+          "ringColor": "紫色",
+          "dropRate": 0.12
+        },
+        "ten_thousand": {
+          "name": "万年毒蛛",
+          "attack": 133,
+          "defense": 64,
+          "hp": 492,
+          "speed": 24,
+          "ringColor": "黑色",
+          "dropRate": 0.04
+        },
+        "hundred_thousand": {
+          "name": "十万年毒蛛",
+          "attack": 333,
+          "defense": 160,
+          "hp": 1230,
+          "speed": 26,
+          "ringColor": "红色",
+          "dropRate": 0.008
+        }
+      },
+      "attack": 20,
+      "defense": 10,
+      "hp": 80,
+      "speed": 16,
+      "ringLevel": 2,
+      "ringColor": "黄色"
+    },
+    {
+      "id": "冰狼",
+      "name": "冰狼",
+      "type": "肉食系",
+      "habitat": "北境冰原、极寒山脉",
+      "rarity": "少见",
+      "icon": "🐺",
+      "desc": "冰狼是栖息于北境冰原的百年魂兽，通体雪白如霜雪凝结，双眸透着冰蓝色的寒光，呼出的气息能瞬间凝霜成冰。它们以群体狩猎闻名，数只冰狼联手能围杀体型数倍于己的猎物，是冰原上最令人胆寒的猎手之一。冰狼的狼牙与狼骨蕴含冰属性魂力，是炼制冰系魂器与冰魄丹的珍贵材料，其毛皮制成的寒衣能让佩戴者在酷暑中感到凉意。北方冰原的游牧部落将其视为冰原之灵，禁止随意猎杀，传说白化的冰狼是雪神的化身。",
+      "traits": [
+        "主动攻击",
+        "冰属性",
+        "群体行动"
+      ],
+      "specialAbility": "寒冰吐息",
+      "image": "assets/beasts/冰狼.jpg",
+      "variants": {
+        "ten": {
+          "name": "十年冰狼",
+          "attack": 6,
+          "defense": 3,
+          "hp": 30,
+          "speed": 13,
+          "ringColor": "白色",
+          "dropRate": 0.7
+        },
+        "hundred": {
+          "name": "百年冰狼",
+          "attack": 20,
+          "defense": 10,
+          "hp": 80,
+          "speed": 16,
+          "ringColor": "黄色",
+          "dropRate": 0.35
+        },
+        "thousand": {
+          "name": "千年冰狼",
+          "attack": 53,
+          "defense": 25,
+          "hp": 200,
+          "speed": 20,
+          "ringColor": "紫色",
+          "dropRate": 0.12
+        },
+        "ten_thousand": {
+          "name": "万年冰狼",
+          "attack": 133,
+          "defense": 64,
+          "hp": 492,
+          "speed": 24,
+          "ringColor": "黑色",
+          "dropRate": 0.04
+        },
+        "hundred_thousand": {
+          "name": "十万年冰狼",
+          "attack": 333,
+          "defense": 160,
+          "hp": 1230,
+          "speed": 26,
+          "ringColor": "红色",
+          "dropRate": 0.008
+        }
+      },
+      "attack": 20,
+      "defense": 10,
+      "hp": 80,
+      "speed": 16,
+      "ringLevel": 2,
+      "ringColor": "黄色"
+    },
+    {
+      "id": "岩蟒",
+      "name": "岩蟒",
+      "type": "肉食系",
+      "habitat": "星斗大森林山地、岩壁洞穴",
+      "rarity": "少见",
+      "icon": "🐍",
+      "desc": "岩蟒是体型粗壮如石柱的百年魂兽，通体覆盖灰褐色的岩石般鳞片，能完美融入山岩之中潜伏数日不动。它们以伏击方式捕食，缠绕之力足以将百年魂兽勒得骨断筋折，猎物往往在察觉之前便已命丧蟒口。岩蟒的鳞片是炼制岩甲符与防御型魂器的上等材料，蟒皮坚韧可制革，其胆汁则是炼制强筋健骨丹的辅料。在岩蟒盘踞的山洞中常能发现被它吞食后遗留的宝物，因此也是冒险者探洞的目标之一。",
+      "traits": [
+        "伏击",
+        "缠绕",
+        "伪装"
+      ],
+      "specialAbility": "岩石伪装",
+      "image": "assets/beasts/岩蟒.jpg",
+      "variants": {
+        "ten": {
+          "name": "十年岩蟒",
+          "attack": 6,
+          "defense": 3,
+          "hp": 30,
+          "speed": 13,
+          "ringColor": "白色",
+          "dropRate": 0.7
+        },
+        "hundred": {
+          "name": "百年岩蟒",
+          "attack": 20,
+          "defense": 10,
+          "hp": 80,
+          "speed": 16,
+          "ringColor": "黄色",
+          "dropRate": 0.35
+        },
+        "thousand": {
+          "name": "千年岩蟒",
+          "attack": 53,
+          "defense": 25,
+          "hp": 200,
+          "speed": 20,
+          "ringColor": "紫色",
+          "dropRate": 0.12
+        },
+        "ten_thousand": {
+          "name": "万年岩蟒",
+          "attack": 133,
+          "defense": 64,
+          "hp": 492,
+          "speed": 24,
+          "ringColor": "黑色",
+          "dropRate": 0.04
+        },
+        "hundred_thousand": {
+          "name": "十万年岩蟒",
+          "attack": 333,
+          "defense": 160,
+          "hp": 1230,
+          "speed": 26,
+          "ringColor": "红色",
+          "dropRate": 0.008
+        }
+      },
+      "attack": 20,
+      "defense": 10,
+      "hp": 80,
+      "speed": 16,
+      "ringLevel": 2,
+      "ringColor": "黄色"
+    },
+    {
+      "id": "雷鸟",
+      "name": "雷鸟",
+      "type": "飞禽系",
+      "habitat": "雷暴山脉、云霄峰顶",
+      "rarity": "少见",
+      "icon": "🦅",
+      "desc": "雷鸟是百年魂兽中速度最快的存在之一，双翼展开足有三米，羽毛呈金紫色，振翅时能引动雷电在云层间游走。它们栖息于雷暴频发的山脉之巅，以雷电淬炼自身，鸣叫声如惊雷炸响，能震晕方圆数十米内的生物。雷鸟的羽毛蕴含雷属性魂力，是炼制雷系魂器与雷云符的顶级材料，其心脏更是炼制惊雷丹的主药。传说雷鸟是雷神的信使，在斗罗大陆的雷雨天偶能见到它们在云中翱翔的身影，被视为吉兆。",
+      "traits": [
+        "飞行",
+        "雷属性",
+        "极速"
+      ],
+      "specialAbility": "雷霆之击",
+      "image": "assets/beasts/雷鸟.jpg",
+      "variants": {
+        "ten": {
+          "name": "十年雷鸟",
+          "attack": 4,
+          "defense": 2,
+          "hp": 21,
+          "speed": 18,
+          "ringColor": "白色",
+          "dropRate": 0.7
+        },
+        "hundred": {
+          "name": "百年雷鸟",
+          "attack": 14,
+          "defense": 8,
+          "hp": 55,
+          "speed": 22,
+          "ringColor": "黄色",
+          "dropRate": 0.35
+        },
+        "thousand": {
+          "name": "千年雷鸟",
+          "attack": 37,
+          "defense": 20,
+          "hp": 137,
+          "speed": 27,
+          "ringColor": "紫色",
+          "dropRate": 0.12
+        },
+        "ten_thousand": {
+          "name": "万年雷鸟",
+          "attack": 93,
+          "defense": 51,
+          "hp": 338,
+          "speed": 33,
+          "ringColor": "黑色",
+          "dropRate": 0.04
+        },
+        "hundred_thousand": {
+          "name": "十万年雷鸟",
+          "attack": 233,
+          "defense": 128,
+          "hp": 846,
+          "speed": 36,
+          "ringColor": "红色",
+          "dropRate": 0.008
+        }
+      },
+      "attack": 14,
+      "defense": 8,
+      "hp": 55,
+      "speed": 22,
+      "ringLevel": 2,
+      "ringColor": "黄色"
+    },
+    {
+      "id": "暗影狐",
+      "name": "暗影狐",
+      "type": "肉食系",
+      "habitat": "星斗大森林深处、暗影林地",
+      "rarity": "少见",
+      "icon": "🦊",
+      "desc": "暗影狐是百年魂兽中最为狡黠诡谲的存在，通体覆盖漆黑如夜的皮毛，仅在尾尖与耳尖处有一抹银白，双眸泛着幽幽紫光。它们擅长操纵暗影，能融入黑暗中潜伏偷袭，是夜行猎手中最令魂师头疼的对象。暗影狐的狐尾是炼制隐身符与暗影斗篷的核心材料，其内丹更是修炼暗系功法的至宝。民间传说暗影狐通晓人性，能听懂人言，不少刺客世家将其幼崽驯养为暗杀助手，使其成为斗罗大陆黑暗中的影子。",
+      "traits": [
+        "夜行",
+        "暗属性",
+        "狡黠"
+      ],
+      "specialAbility": "暗影潜行",
+      "image": "assets/beasts/暗影狐.jpg",
+      "variants": {
+        "ten": {
+          "name": "十年暗影狐",
+          "attack": 6,
+          "defense": 3,
+          "hp": 30,
+          "speed": 13,
+          "ringColor": "白色",
+          "dropRate": 0.7
+        },
+        "hundred": {
+          "name": "百年暗影狐",
+          "attack": 20,
+          "defense": 10,
+          "hp": 80,
+          "speed": 16,
+          "ringColor": "黄色",
+          "dropRate": 0.35
+        },
+        "thousand": {
+          "name": "千年暗影狐",
+          "attack": 53,
+          "defense": 25,
+          "hp": 200,
+          "speed": 20,
+          "ringColor": "紫色",
+          "dropRate": 0.12
+        },
+        "ten_thousand": {
+          "name": "万年暗影狐",
+          "attack": 133,
+          "defense": 64,
+          "hp": 492,
+          "speed": 24,
+          "ringColor": "黑色",
+          "dropRate": 0.04
+        },
+        "hundred_thousand": {
+          "name": "十万年暗影狐",
+          "attack": 333,
+          "defense": 160,
+          "hp": 1230,
+          "speed": 26,
+          "ringColor": "红色",
+          "dropRate": 0.008
+        }
+      },
+      "attack": 20,
+      "defense": 10,
+      "hp": 80,
+      "speed": 16,
+      "ringLevel": 2,
+      "ringColor": "黄色"
+    },
+    {
+      "id": "黑水蛟龙",
+      "name": "黑水蛟龙",
+      "type": "龙血系",
+      "habitat": "星斗大森林黑水河、深渊潭底",
+      "rarity": "罕见",
+      "icon": "🐲",
+      "desc": "黑水蛟龙是千年魂兽中的王者，身躯长达十余米，覆满墨蓝色的龙鳞，鳞片下涌动着深邃的水属性魂力。它们栖息于星斗大森林深处的黑水河底，以水族魂兽为食，性情孤傲凶悍，一怒能搅动整条河水倒灌。黑水蛟龙拥有龙族稀薄血脉，其龙鳞、龙角、龙筋皆是炼制顶级水系魂器的核心材料，紫色千年魂环可为魂师提供强大的水系魂技。传说黑水蛟龙修炼至万年便可化形为蛟，再进一步便能褪去蛟身化为真龙，是斗罗大陆水域中名副其实的霸主。",
+      "traits": [
+        "主动攻击",
+        "水属性",
+        "龙血"
+      ],
+      "specialAbility": "黑水洪流",
+      "image": "assets/beasts/黑水蛟龙.jpg",
+      "variants": {
+        "ten": {
+          "name": "十年黑水蛟龙",
+          "attack": 10,
+          "defense": 8,
+          "hp": 57,
+          "speed": 12,
+          "ringColor": "白色",
+          "dropRate": 0.7
+        },
+        "hundred": {
+          "name": "百年黑水蛟龙",
+          "attack": 30,
+          "defense": 25,
+          "hp": 150,
+          "speed": 15,
+          "ringColor": "黄色",
+          "dropRate": 0.35
+        },
+        "thousand": {
+          "name": "千年黑水蛟龙",
+          "attack": 80,
+          "defense": 62,
+          "hp": 375,
+          "speed": 18,
+          "ringColor": "紫色",
+          "dropRate": 0.12
+        },
+        "ten_thousand": {
+          "name": "万年黑水蛟龙",
+          "attack": 200,
+          "defense": 160,
+          "hp": 923,
+          "speed": 22,
+          "ringColor": "黑色",
+          "dropRate": 0.04
+        },
+        "hundred_thousand": {
+          "name": "十万年黑水蛟龙",
+          "attack": 500,
+          "defense": 401,
+          "hp": 2307,
+          "speed": 25,
+          "ringColor": "红色",
+          "dropRate": 0.008
+        }
+      },
+      "attack": 30,
+      "defense": 25,
+      "hp": 150,
+      "speed": 15,
+      "ringLevel": 2,
+      "ringColor": "黄色"
+    },
+    {
+      "id": "人面魔蛛",
+      "name": "人面魔蛛",
+      "type": "肉食系",
+      "habitat": "星斗大森林深处、邪魔林",
+      "rarity": "罕见",
+      "icon": "🕷️",
+      "desc": "人面魔蛛是千年魂兽中最为恐怖的猎食者之一，体型足有磨盘大小，背甲上生有一张狰狞的人面花纹，仿佛在无声嘲笑猎物。它们结出的蛛网坚韧如钢，且带有强烈的腐蚀与麻痹之毒，触之者片刻便动弹不得，只能眼睁睁看着自己被吸食殆尽。人面魔蛛的毒液与蛛丝皆是炼制剧毒魂器与暗器的顶级材料，其人面背甲更是炼制精神类魂器的特殊素材。在斗罗大陆的猎人行会中，人面魔蛛被列为最危险的三种千年魂兽之一，单人狩猎几乎等同于自杀。",
+      "traits": [
+        "伏击",
+        "剧毒",
+        "精神威压"
+      ],
+      "specialAbility": "人面蛛网",
+      "image": "assets/beasts/人面魔蛛.jpg",
+      "variants": {
+        "ten": {
+          "name": "十年人面魔蛛",
+          "attack": 6,
+          "defense": 3,
+          "hp": 30,
+          "speed": 13,
+          "ringColor": "白色",
+          "dropRate": 0.7
+        },
+        "hundred": {
+          "name": "百年人面魔蛛",
+          "attack": 20,
+          "defense": 10,
+          "hp": 80,
+          "speed": 16,
+          "ringColor": "黄色",
+          "dropRate": 0.35
+        },
+        "thousand": {
+          "name": "千年人面魔蛛",
+          "attack": 53,
+          "defense": 25,
+          "hp": 200,
+          "speed": 20,
+          "ringColor": "紫色",
+          "dropRate": 0.12
+        },
+        "ten_thousand": {
+          "name": "万年人面魔蛛",
+          "attack": 133,
+          "defense": 64,
+          "hp": 492,
+          "speed": 24,
+          "ringColor": "黑色",
+          "dropRate": 0.04
+        },
+        "hundred_thousand": {
+          "name": "十万年人面魔蛛",
+          "attack": 333,
+          "defense": 160,
+          "hp": 1230,
+          "speed": 26,
+          "ringColor": "红色",
+          "dropRate": 0.008
+        }
+      },
+      "attack": 20,
+      "defense": 10,
+      "hp": 80,
+      "speed": 16,
+      "ringLevel": 2,
+      "ringColor": "黄色"
+    },
+    {
+      "id": "大地之熊",
+      "name": "大地之熊",
+      "type": "杂食系",
+      "habitat": "星斗大森林深处、大地山脉",
+      "rarity": "罕见",
+      "icon": "🐻",
+      "desc": "大地之熊是千年魂兽中防御与力量并重的霸主，身躯庞大如小丘，皮毛呈深褐色，皮下涌动着大地属性魂力，一掌能将大地拍裂成渊。它们性情沉稳护短，平日多蛰伏于大地山脉的洞穴中沉睡，一旦领地被侵扰便会陷入暴怒，引动大地之力震动方圆数里。大地之熊的熊胆、熊骨、熊掌皆是炼制顶级强身丹药的至宝，其皮毛更是制作重甲防御魂器的顶级材料。在古老传说中，大地之熊是大地的儿子，能感知地脉的流动，其栖息之地往往埋藏着珍贵的灵矿。",
+      "traits": [
+        "主动攻击",
+        "土属性",
+        "高防御"
+      ],
+      "specialAbility": "大地震荡",
+      "image": "assets/beasts/大地之熊.jpg",
+      "variants": {
+        "ten": {
+          "name": "十年大地之熊",
+          "attack": 5,
+          "defense": 4,
+          "hp": 34,
+          "speed": 9,
+          "ringColor": "白色",
+          "dropRate": 0.7
+        },
+        "hundred": {
+          "name": "百年大地之熊",
+          "attack": 15,
+          "defense": 11,
+          "hp": 90,
+          "speed": 11,
+          "ringColor": "黄色",
+          "dropRate": 0.35
+        },
+        "thousand": {
+          "name": "千年大地之熊",
+          "attack": 40,
+          "defense": 30,
+          "hp": 225,
+          "speed": 13,
+          "ringColor": "紫色",
+          "dropRate": 0.12
+        },
+        "ten_thousand": {
+          "name": "万年大地之熊",
+          "attack": 100,
+          "defense": 77,
+          "hp": 553,
+          "speed": 16,
+          "ringColor": "黑色",
+          "dropRate": 0.04
+        },
+        "hundred_thousand": {
+          "name": "十万年大地之熊",
+          "attack": 250,
+          "defense": 192,
+          "hp": 1384,
+          "speed": 18,
+          "ringColor": "红色",
+          "dropRate": 0.008
+        }
+      },
+      "attack": 15,
+      "defense": 11,
+      "hp": 90,
+      "speed": 11,
+      "ringLevel": 2,
+      "ringColor": "黄色"
+    },
+    {
+      "id": "风灵燕",
+      "name": "风灵燕",
+      "type": "飞禽系",
+      "habitat": "九霄云海、风灵峰顶",
+      "rarity": "罕见",
+      "icon": "🐦",
+      "desc": "风灵燕是千年魂兽中速度最快的存在，体型娇小如拳，羽毛呈翠绿与银白相间，振翅时能在空中留下一道流光般的残影。它们栖息于万丈高空的云海之上，以风属性魂力淬炼自身，能操纵气流形成风刃切割敌人。风灵燕的羽毛是炼制风系魂器与疾风靴的顶级材料，其内丹更是修炼风系功法的至宝。传说风灵燕是风之精灵的化身，能预知风暴的来临，渔民常以其飞行轨迹判断天气，是航海者最信赖的吉鸟。",
+      "traits": [
+        "飞行",
+        "风属性",
+        "极速"
+      ],
+      "specialAbility": "风刃之舞",
+      "image": "assets/beasts/风灵燕.jpg",
+      "variants": {
+        "ten": {
+          "name": "十年风灵燕",
+          "attack": 4,
+          "defense": 2,
+          "hp": 21,
+          "speed": 18,
+          "ringColor": "白色",
+          "dropRate": 0.7
+        },
+        "hundred": {
+          "name": "百年风灵燕",
+          "attack": 14,
+          "defense": 8,
+          "hp": 55,
+          "speed": 22,
+          "ringColor": "黄色",
+          "dropRate": 0.35
+        },
+        "thousand": {
+          "name": "千年风灵燕",
+          "attack": 37,
+          "defense": 20,
+          "hp": 137,
+          "speed": 27,
+          "ringColor": "紫色",
+          "dropRate": 0.12
+        },
+        "ten_thousand": {
+          "name": "万年风灵燕",
+          "attack": 93,
+          "defense": 51,
+          "hp": 338,
+          "speed": 33,
+          "ringColor": "黑色",
+          "dropRate": 0.04
+        },
+        "hundred_thousand": {
+          "name": "十万年风灵燕",
+          "attack": 233,
+          "defense": 128,
+          "hp": 846,
+          "speed": 36,
+          "ringColor": "红色",
+          "dropRate": 0.008
+        }
+      },
+      "attack": 14,
+      "defense": 8,
+      "hp": 55,
+      "speed": 22,
+      "ringLevel": 2,
+      "ringColor": "黄色"
+    },
+    {
+      "id": "千眼蜈蚣",
+      "name": "千眼蜈蚣",
+      "type": "昆虫系",
+      "habitat": "星斗大森林阴暗地下、古墓废墟",
+      "rarity": "罕见",
+      "icon": "🐛",
+      "desc": "千眼蜈蚣是千年魂兽中最为阴森的存在，身躯长达三丈，通体漆黑如墨，背甲上密密麻麻生有数百只散发着幽光的复眼，能三百六十度无死角地监视四周。它们栖息于阴暗的地下与古墓废墟之中，以腐肉与毒虫为食，毒颚能咬穿铁甲，被咬者会陷入可怕的幻觉中难以脱身。千眼蜈蚣的复眼是炼制精神类魂器的珍贵材料，其毒液则可用于炼制致幻毒药。在斗罗大陆的盗墓者中，千眼蜈蚣被视为古墓的守墓者，遇见它往往意味着即将触及古墓的核心。",
+      "traits": [
+        "夜行",
+        "剧毒",
+        "精神威压"
+      ],
+      "specialAbility": "千眼凝视",
+      "image": "assets/beasts/千眼蜈蚣.jpg",
+      "variants": {
+        "ten": {
+          "name": "十年千眼蜈蚣",
+          "attack": 2,
+          "defense": 5,
+          "hp": 19,
+          "speed": 8,
+          "ringColor": "白色",
+          "dropRate": 0.7
+        },
+        "hundred": {
+          "name": "百年千眼蜈蚣",
+          "attack": 8,
+          "defense": 14,
+          "hp": 50,
+          "speed": 10,
+          "ringColor": "黄色",
+          "dropRate": 0.35
+        },
+        "thousand": {
+          "name": "千年千眼蜈蚣",
+          "attack": 21,
+          "defense": 35,
+          "hp": 125,
+          "speed": 12,
+          "ringColor": "紫色",
+          "dropRate": 0.12
+        },
+        "ten_thousand": {
+          "name": "万年千眼蜈蚣",
+          "attack": 53,
+          "defense": 90,
+          "hp": 307,
+          "speed": 15,
+          "ringColor": "黑色",
+          "dropRate": 0.04
+        },
+        "hundred_thousand": {
+          "name": "十万年千眼蜈蚣",
+          "attack": 133,
+          "defense": 225,
+          "hp": 769,
+          "speed": 16,
+          "ringColor": "红色",
+          "dropRate": 0.008
+        }
+      },
+      "attack": 8,
+      "defense": 14,
+      "hp": 50,
+      "speed": 10,
+      "ringLevel": 2,
+      "ringColor": "黄色"
+    },
+    {
+      "id": "幽冥狼王",
+      "name": "幽冥狼王",
+      "type": "肉食系",
+      "habitat": "星斗大森林深处、幽冥谷",
+      "rarity": "罕见",
+      "icon": "🐺",
+      "desc": "幽冥狼王是千年魂兽中统御群狼的王者，体型较寻常野狼大上一倍，通体覆盖墨黑如夜的皮毛，双眸透着幽冥般的绿火，能在黑夜中照亮数丈之地。它们统领着数十只百年野狼，懂得以兵法布阵围猎，是斗罗大陆森林中令高级魂师都要忌惮的存在。幽冥狼王的狼牙与狼骨蕴含幽冥魂力，是炼制暗系与召唤类魂器的顶级材料，其内丹更是修炼幽冥功法的至宝。传说幽冥狼王能与亡灵沟通，其嚎叫能召唤阴间的孤魂为其助战，是黑暗中真正的王。",
+      "traits": [
+        "主动攻击",
+        "暗属性",
+        "统御群狼"
+      ],
+      "specialAbility": "幽冥狼嚎",
+      "image": "assets/beasts/幽冥狼王.jpg",
+      "variants": {
+        "ten": {
+          "name": "十年幽冥狼王",
+          "attack": 6,
+          "defense": 3,
+          "hp": 30,
+          "speed": 13,
+          "ringColor": "白色",
+          "dropRate": 0.7
+        },
+        "hundred": {
+          "name": "百年幽冥狼王",
+          "attack": 20,
+          "defense": 10,
+          "hp": 80,
+          "speed": 16,
+          "ringColor": "黄色",
+          "dropRate": 0.35
+        },
+        "thousand": {
+          "name": "千年幽冥狼王",
+          "attack": 53,
+          "defense": 25,
+          "hp": 200,
+          "speed": 20,
+          "ringColor": "紫色",
+          "dropRate": 0.12
+        },
+        "ten_thousand": {
+          "name": "万年幽冥狼王",
+          "attack": 133,
+          "defense": 64,
+          "hp": 492,
+          "speed": 24,
+          "ringColor": "黑色",
+          "dropRate": 0.04
+        },
+        "hundred_thousand": {
+          "name": "十万年幽冥狼王",
+          "attack": 333,
+          "defense": 160,
+          "hp": 1230,
+          "speed": 26,
+          "ringColor": "红色",
+          "dropRate": 0.008
+        }
+      },
+      "attack": 20,
+      "defense": 10,
+      "hp": 80,
+      "speed": 16,
+      "ringLevel": 2,
+      "ringColor": "黄色"
+    },
+    {
+      "id": "暗金恐爪熊",
+      "name": "暗金恐爪熊",
+      "type": "肉食系",
+      "habitat": "星斗大森林核心、暗金山脉",
+      "rarity": "极罕见",
+      "icon": "🐻",
+      "desc": "暗金恐爪熊是万年魂兽中赫赫有名的森林霸主，身躯庞大如山丘，皮毛呈暗金色，前肢生有长达数尺的恐怖利爪，挥动时能撕裂空间发出金鸣。它们领地意识极强，方圆百里内的魂兽皆要俯首称臣，任何胆敢踏足其领地的生物都会遭到无情的猎杀，连封号斗罗都不敢轻易招惹。暗金恐爪熊的利爪是炼制顶级攻击魂器的核心材料，其骨骼与心脏更是炼制万年黑环丹的至宝。在斗罗大陆的传说中，暗金恐爪熊是大地与黄金之子，其栖息之地埋藏着无数黄金与灵矿，是寻宝者梦寐以求又闻之色变的存在。",
+      "traits": [
+        "主动攻击",
+        "金属性",
+        "领地意识极强"
+      ],
+      "specialAbility": "暗金裂空爪",
+      "image": "assets/beasts/暗金恐爪熊.jpg",
+      "variants": {
+        "ten": {
+          "name": "十年暗金恐爪熊",
+          "attack": 12,
+          "defense": 10,
+          "hp": 70,
+          "speed": 5,
+          "ringColor": "白色",
+          "dropRate": 0.55
+        },
+        "hundred": {
+          "name": "百年暗金恐爪熊",
+          "attack": 30,
+          "defense": 26,
+          "hp": 180,
+          "speed": 8,
+          "ringColor": "黄色",
+          "dropRate": 0.25
+        },
+        "thousand": {
+          "name": "千年暗金恐爪熊",
+          "attack": 70,
+          "defense": 60,
+          "hp": 450,
+          "speed": 12,
+          "ringColor": "紫色",
+          "dropRate": 0.08
+        },
+        "ten_thousand": {
+          "name": "万年暗金恐爪熊王",
+          "attack": 155,
+          "defense": 135,
+          "hp": 1050,
+          "speed": 18,
+          "ringColor": "黑色",
+          "dropRate": 0.02
+        },
+        "hundred_thousand": {
+          "name": "十万年暗金恐爪熊皇",
+          "attack": 340,
+          "defense": 290,
+          "hp": 2500,
+          "speed": 26,
+          "ringColor": "红色",
+          "dropRate": 0.003
+        }
+      },
+      "attack": 30,
+      "defense": 26,
+      "hp": 180,
+      "speed": 8,
+      "ringLevel": 2,
+      "ringColor": "黄色"
+    },
+    {
+      "id": "泰坦巨猿",
+      "name": "泰坦巨猿",
+      "type": "灵长系",
+      "habitat": "星斗大森林核心、泰坦山脉",
+      "rarity": "极罕见",
+      "icon": "🦍",
+      "desc": "泰坦巨猿是万年魂兽中体型最为庞大的存在，成年个体身高可达三十丈，浑身覆盖岩石般坚硬的灰色皮毛，双臂如擎天石柱。它们领地意识极强，盘踞于泰坦山脉的核心，一声怒吼能震碎方圆数里的山石，是星斗大森林真正的霸主之一。泰坦巨猿的皮毛与骨骼是炼制顶级防御魂器的至宝，其心脏蕴含的万年魂力可助魂师突破瓶颈。传说泰坦巨猿拥有远古泰坦神族的血脉，能通晓人言，是少数能与封号斗罗平等对话的魂兽，被视为森林的长者。",
+      "traits": [
+        "主动攻击",
+        "力量型",
+        "领地意识极强"
+      ],
+      "specialAbility": "泰坦之怒",
+      "image": "assets/beasts/泰坦巨猿.jpg",
+      "variants": {
+        "ten": {
+          "name": "十年泰坦巨猿",
+          "attack": 14,
+          "defense": 12,
+          "hp": 80,
+          "speed": 4,
+          "ringColor": "白色",
+          "dropRate": 0.5
+        },
+        "hundred": {
+          "name": "百年泰坦巨猿",
+          "attack": 35,
+          "defense": 30,
+          "hp": 200,
+          "speed": 6,
+          "ringColor": "黄色",
+          "dropRate": 0.22
+        },
+        "thousand": {
+          "name": "千年泰坦巨猿",
+          "attack": 80,
+          "defense": 70,
+          "hp": 500,
+          "speed": 10,
+          "ringColor": "紫色",
+          "dropRate": 0.07
+        },
+        "ten_thousand": {
+          "name": "万年泰坦巨猿",
+          "attack": 175,
+          "defense": 155,
+          "hp": 1200,
+          "speed": 15,
+          "ringColor": "黑色",
+          "dropRate": 0.018
+        },
+        "hundred_thousand": {
+          "name": "十万年泰坦巨猿",
+          "attack": 380,
+          "defense": 330,
+          "hp": 2800,
+          "speed": 22,
+          "ringColor": "红色",
+          "dropRate": 0.0025
+        }
+      },
+      "attack": 35,
+      "defense": 30,
+      "hp": 200,
+      "speed": 6,
+      "ringLevel": 2,
+      "ringColor": "黄色"
+    },
+    {
+      "id": "深海魔鲸",
+      "name": "深海魔鲸",
+      "type": "海兽系",
+      "habitat": "无尽深海、魔鲸海域",
+      "rarity": "极罕见",
+      "icon": "🐋",
+      "desc": "深海魔鲸是万年魂兽中体型最为巨大的海洋霸主，身长可达百丈，通体覆盖着如铁甲般的深蓝鳞甲，一尾之击能掀起滔天巨浪。它们领地意识极强，盘踞于无尽深海的魔鲸海域，方圆千里内的海兽皆要臣服，是连海神殿都要忌惮的存在。深海魔鲸的鲸油是炼制顶级水系魂器与海魂丹的核心材料，其骨骼更是锻造万年魂器的至宝。在斗罗大陆的航海传说中，深海魔鲸是海神的守门人，凡见过其真容者非疯即死，是无尽深海最令人恐惧的梦魇。",
+      "traits": [
+        "主动攻击",
+        "水属性",
+        "领地意识极强"
+      ],
+      "specialAbility": "深渊鲸波",
+      "image": "assets/beasts/深海魔鲸.jpg",
+      "variants": {
+        "ten": {
+          "name": "十年深渊魔鲸",
+          "attack": 10,
+          "defense": 14,
+          "hp": 90,
+          "speed": 3,
+          "ringColor": "白色",
+          "dropRate": 0.5
+        },
+        "hundred": {
+          "name": "百年深渊魔鲸",
+          "attack": 25,
+          "defense": 35,
+          "hp": 220,
+          "speed": 5,
+          "ringColor": "黄色",
+          "dropRate": 0.22
+        },
+        "thousand": {
+          "name": "千年深渊魔鲸",
+          "attack": 60,
+          "defense": 80,
+          "hp": 550,
+          "speed": 8,
+          "ringColor": "紫色",
+          "dropRate": 0.07
+        },
+        "ten_thousand": {
+          "name": "万年深渊魔鲸王",
+          "attack": 135,
+          "defense": 175,
+          "hp": 1300,
+          "speed": 12,
+          "ringColor": "黑色",
+          "dropRate": 0.018
+        },
+        "hundred_thousand": {
+          "name": "十万年深渊魔鲸皇",
+          "attack": 300,
+          "defense": 380,
+          "hp": 3000,
+          "speed": 18,
+          "ringColor": "红色",
+          "dropRate": 0.0025
+        }
+      },
+      "attack": 25,
+      "defense": 35,
+      "hp": 220,
+      "speed": 5,
+      "ringLevel": 2,
+      "ringColor": "黄色"
+    },
+    {
+      "id": "邪魔虎鲨",
+      "name": "邪魔虎鲨",
+      "type": "海兽系",
+      "habitat": "无尽深海、虎鲨群岛",
+      "rarity": "极罕见",
+      "icon": "🦈",
+      "desc": "邪魔虎鲨是万年魂兽中速度与杀戮并存的海洋猎手，身躯流线如刀，背部覆盖深青色鳞甲，腹部生有虎纹，满口利齿能咬碎钢铁。它们领地意识极强，以虎鲨群的形式统治着虎鲨群岛海域，所到之处寸草不生，是海上航行者的噩梦。邪魔虎鲨的利齿是炼制顶级攻击魂器的核心材料，其背鳍更是制作疾风魂器的至宝。传说邪魔虎鲨嗜血成性，能闻到千里之外的血腥味，凡其出没之海域必有无尽的杀戮，是斗罗大陆航海者最忌讳提及的名字。",
+      "traits": [
+        "主动攻击",
+        "嗜血",
+        "领地意识极强"
+      ],
+      "specialAbility": "血腥狂鲨",
+      "image": "assets/beasts/邪魔虎鲨.jpg",
+      "variants": {
+        "ten": {
+          "name": "十年邪魔虎鲨",
+          "attack": 8,
+          "defense": 7,
+          "hp": 76,
+          "speed": 8,
+          "ringColor": "白色",
+          "dropRate": 0.7
+        },
+        "hundred": {
+          "name": "百年邪魔虎鲨",
+          "attack": 25,
+          "defense": 20,
+          "hp": 200,
+          "speed": 10,
+          "ringColor": "黄色",
+          "dropRate": 0.35
+        },
+        "thousand": {
+          "name": "千年邪魔虎鲨",
+          "attack": 66,
+          "defense": 50,
+          "hp": 500,
+          "speed": 12,
+          "ringColor": "紫色",
+          "dropRate": 0.12
+        },
+        "ten_thousand": {
+          "name": "万年邪魔虎鲨",
+          "attack": 166,
+          "defense": 128,
+          "hp": 1230,
+          "speed": 15,
+          "ringColor": "黑色",
+          "dropRate": 0.04
+        },
+        "hundred_thousand": {
+          "name": "十万年邪魔虎鲨",
+          "attack": 416,
+          "defense": 321,
+          "hp": 3076,
+          "speed": 16,
+          "ringColor": "红色",
+          "dropRate": 0.008
+        }
+      },
+      "attack": 25,
+      "defense": 20,
+      "hp": 200,
+      "speed": 10,
+      "ringLevel": 2,
+      "ringColor": "黄色"
+    },
+    {
+      "id": "冰帝蝎",
+      "name": "冰帝蝎",
+      "type": "昆虫系",
+      "habitat": "极北冰原深处、冰帝雪谷",
+      "rarity": "极罕见",
+      "icon": "🦂",
+      "desc": "冰帝蝎是万年魂兽中冰属性的极致代表，身躯通体透明如冰晶，尾端的毒钩散发着幽蓝的寒光，能在瞬间将万物冻结成冰。它们领地意识极强，盘踞于极北冰原的冰帝雪谷，方圆百里内的温度常年低于冰点，是连封号斗罗都难以踏入的禁地。冰帝蝎的毒液是炼制顶级冰系毒药的至宝，其冰晶甲壳更是制作寒冰魂器的核心材料。在极北冰原的传说中，冰帝蝎是冰神的化身，其每一次蜕壳都会引发一场席卷大陆的寒潮，是冰原居民最敬畏的存在。",
+      "traits": [
+        "主动攻击",
+        "冰属性",
+        "领地意识极强"
+      ],
+      "specialAbility": "冰帝之毒",
+      "image": "assets/beasts/冰帝蝎.jpg",
+      "variants": {
+        "ten": {
+          "name": "十年冰碧帝皇蝎",
+          "attack": 10,
+          "defense": 8,
+          "hp": 55,
+          "speed": 10,
+          "ringColor": "白色",
+          "dropRate": 0.55
+        },
+        "hundred": {
+          "name": "百年冰碧帝皇蝎",
+          "attack": 25,
+          "defense": 20,
+          "hp": 140,
+          "speed": 14,
+          "ringColor": "黄色",
+          "dropRate": 0.25
+        },
+        "thousand": {
+          "name": "千年冰碧帝皇蝎",
+          "attack": 58,
+          "defense": 48,
+          "hp": 350,
+          "speed": 20,
+          "ringColor": "紫色",
+          "dropRate": 0.08
+        },
+        "ten_thousand": {
+          "name": "万年冰碧帝皇蝎",
+          "attack": 130,
+          "defense": 110,
+          "hp": 850,
+          "speed": 28,
+          "ringColor": "黑色",
+          "dropRate": 0.02
+        },
+        "hundred_thousand": {
+          "name": "十万年冰碧帝皇蝎",
+          "attack": 290,
+          "defense": 240,
+          "hp": 2000,
+          "speed": 38,
+          "ringColor": "红色",
+          "dropRate": 0.003
+        }
+      },
+      "attack": 25,
+      "defense": 20,
+      "hp": 140,
+      "speed": 14,
+      "ringLevel": 2,
+      "ringColor": "黄色"
+    },
+    {
+      "id": "天青牛蟒",
+      "name": "天青牛蟒",
+      "type": "龙血系",
+      "habitat": "星斗大森林核心、天青神潭",
+      "rarity": "传说",
+      "icon": "🐉",
+      "desc": "天青牛蟒是十万年魂兽中赫赫有名的存在，身躯长达百丈，通体覆盖天青色龙鳞，头生双角如龙，是拥有龙族稀薄血脉的巨蟒。它们栖息于星斗大森林核心的天青神潭，是森林真正的守护者，能操纵天青神雷，一击能将一座山峰夷为平地。天青牛蟒拥有十万年魂兽特有的化形能力，可化为人形行走人间，化形后将拥有红色与金色两个魂环，实力远超寻常封号斗罗。在斗罗大陆的传说中，天青牛蟒与泰坦巨猿王是兄弟，共同守护着星斗大森林的安宁，是森林真正的王。",
+      "traits": [
+        "主动攻击",
+        "雷属性",
+        "可化形"
+      ],
+      "specialAbility": "天青神雷",
+      "image": "assets/beasts/天青牛蟒.jpg",
+      "variants": {
+        "ten": {
+          "name": "十年天青牛蟒",
+          "attack": 13,
+          "defense": 11,
+          "hp": 75,
+          "speed": 6,
+          "ringColor": "白色",
+          "dropRate": 0.5
+        },
+        "hundred": {
+          "name": "百年天青牛蟒",
+          "attack": 32,
+          "defense": 28,
+          "hp": 190,
+          "speed": 9,
+          "ringColor": "黄色",
+          "dropRate": 0.22
+        },
+        "thousand": {
+          "name": "千年天青牛蟒",
+          "attack": 75,
+          "defense": 65,
+          "hp": 480,
+          "speed": 13,
+          "ringColor": "紫色",
+          "dropRate": 0.07
+        },
+        "ten_thousand": {
+          "name": "万年天青牛蟒",
+          "attack": 170,
+          "defense": 150,
+          "hp": 1150,
+          "speed": 18,
+          "ringColor": "黑色",
+          "dropRate": 0.018
+        },
+        "hundred_thousand": {
+          "name": "十万年天青牛蟒",
+          "attack": 370,
+          "defense": 320,
+          "hp": 2700,
+          "speed": 25,
+          "ringColor": "红色",
+          "dropRate": 0.0025
+        }
+      },
+      "attack": 32,
+      "defense": 28,
+      "hp": 190,
+      "speed": 9,
+      "ringLevel": 2,
+      "ringColor": "黄色"
+    },
+    {
+      "id": "泰坦巨猿王",
+      "name": "泰坦巨猿王",
+      "type": "灵长系",
+      "habitat": "星斗大森林核心、泰坦神峰",
+      "rarity": "传说",
+      "icon": "🦍",
+      "desc": "泰坦巨猿王是十万年魂兽中力量最为恐怖的存在，身高百丈，浑身覆盖岩石与金属般的暗金皮毛，双臂能擎起整座山峰。它们盘踞于星斗大森林核心的泰坦神峰，是森林真正的霸主，一拳能将大地砸出深渊，连封号斗罗都不敢正面接其全力一击。泰坦巨猿王拥有十万年魂兽特有的化形能力，可化为人形行走人间，化形后将拥有红色与金色两个魂环，是少数能与神级强者抗衡的存在。传说泰坦巨猿王是远古泰坦神族的后裔，与天青牛蟒是兄弟，共同守护着星斗大森林的安宁，是斗罗大陆最令人敬畏的存在之一。",
+      "traits": [
+        "主动攻击",
+        "力量型",
+        "可化形"
+      ],
+      "specialAbility": "泰坦神拳",
+      "image": "assets/beasts/泰坦巨猿王.jpg",
+      "variants": {
+        "ten": {
+          "name": "十年泰坦巨猿王",
+          "attack": 7,
+          "defense": 5,
+          "hp": 46,
+          "speed": 15,
+          "ringColor": "白色",
+          "dropRate": 0.7
+        },
+        "hundred": {
+          "name": "百年泰坦巨猿王",
+          "attack": 22,
+          "defense": 15,
+          "hp": 120,
+          "speed": 18,
+          "ringColor": "黄色",
+          "dropRate": 0.35
+        },
+        "thousand": {
+          "name": "千年泰坦巨猿王",
+          "attack": 58,
+          "defense": 37,
+          "hp": 300,
+          "speed": 22,
+          "ringColor": "紫色",
+          "dropRate": 0.12
+        },
+        "ten_thousand": {
+          "name": "万年泰坦巨猿王",
+          "attack": 146,
+          "defense": 96,
+          "hp": 738,
+          "speed": 27,
+          "ringColor": "黑色",
+          "dropRate": 0.04
+        },
+        "hundred_thousand": {
+          "name": "十万年泰坦巨猿王",
+          "attack": 366,
+          "defense": 241,
+          "hp": 1846,
+          "speed": 30,
+          "ringColor": "红色",
+          "dropRate": 0.008
+        }
+      },
+      "attack": 22,
+      "defense": 15,
+      "hp": 120,
+      "speed": 18,
+      "ringLevel": 2,
+      "ringColor": "黄色"
+    },
+    {
+      "id": "柔骨兔",
+      "name": "柔骨兔",
+      "type": "草食系",
+      "habitat": "星斗大森林核心、柔骨灵地",
+      "rarity": "传说",
+      "icon": "🐰",
+      "desc": "柔骨兔是十万年魂兽中最为特别的存在，外貌看似普通的白色长耳兔，却拥有柔若无骨的身躯，能以惊人的速度躲避任何攻击。它们栖息于星斗大森林核心的柔骨灵地，性情温和却警觉异常，是十万年魂兽中最为低调的存在。柔骨兔拥有十万年魂兽特有的化形能力，可化为人形行走人间，化形后将拥有红色与金色两个魂环，其柔骨之力能令任何物理攻击失效。在斗罗大陆的传说中，柔骨兔化形后常以少女之姿行走人间，是少数能与人类和平共处的十万年魂兽，其肉更是传说中能令人脱胎换骨的至宝。",
+      "traits": [
+        "被动",
+        "速度极快",
+        "可化形"
+      ],
+      "specialAbility": "柔骨无相",
+      "image": "assets/beasts/柔骨兔.jpg",
+      "variants": {
+        "ten": {
+          "name": "十年柔骨兔",
+          "attack": 4,
+          "defense": 2,
+          "hp": 23,
+          "speed": 11,
+          "ringColor": "白色",
+          "dropRate": 0.7
+        },
+        "hundred": {
+          "name": "百年柔骨兔",
+          "attack": 12,
+          "defense": 8,
+          "hp": 60,
+          "speed": 14,
+          "ringColor": "黄色",
+          "dropRate": 0.35
+        },
+        "thousand": {
+          "name": "千年柔骨兔",
+          "attack": 32,
+          "defense": 20,
+          "hp": 150,
+          "speed": 17,
+          "ringColor": "紫色",
+          "dropRate": 0.12
+        },
+        "ten_thousand": {
+          "name": "万年柔骨兔",
+          "attack": 80,
+          "defense": 51,
+          "hp": 369,
+          "speed": 21,
+          "ringColor": "黑色",
+          "dropRate": 0.04
+        },
+        "hundred_thousand": {
+          "name": "十万年柔骨兔",
+          "attack": 200,
+          "defense": 128,
+          "hp": 923,
+          "speed": 23,
+          "ringColor": "红色",
+          "dropRate": 0.008
+        }
+      },
+      "attack": 12,
+      "defense": 8,
+      "hp": 60,
+      "speed": 14,
+      "ringLevel": 2,
+      "ringColor": "黄色"
+    },
+    {
+      "id": "深海魔鲸王",
+      "name": "深海魔鲸王",
+      "type": "海兽系",
+      "habitat": "无尽深海核心、魔鲸神域",
+      "rarity": "传说",
+      "icon": "🐋",
+      "desc": "深海魔鲸王是十万年魂兽中最为恐怖的海洋霸主，身长千丈，通体覆盖着如神铁般的深蓝鳞甲，一尾之击能掀起吞没大陆的海啸。它们盘踞于无尽深海核心的魔鲸神域，是无尽深海真正的王者，连海神殿的强者都要对其礼让三分。深海魔鲸王拥有十万年魂兽特有的化形能力，可化为人形行走人间，化形后将拥有红色与金色两个魂环，实力直逼神级。在斗罗大陆的传说中，深海魔鲸王是海神的对手，曾与海神激战三日三夜不分胜负，是斗罗大陆最接近神的存在之一，凡见其真容者必死无疑。",
+      "traits": [
+        "主动攻击",
+        "水属性",
+        "可化形"
+      ],
+      "specialAbility": "深渊神波",
+      "image": "assets/beasts/深海魔鲸王.jpg",
+      "variants": {
+        "ten": {
+          "name": "十年深海魔鲸王",
+          "attack": 8,
+          "defense": 7,
+          "hp": 76,
+          "speed": 8,
+          "ringColor": "白色",
+          "dropRate": 0.7
+        },
+        "hundred": {
+          "name": "百年深海魔鲸王",
+          "attack": 25,
+          "defense": 20,
+          "hp": 200,
+          "speed": 10,
+          "ringColor": "黄色",
+          "dropRate": 0.35
+        },
+        "thousand": {
+          "name": "千年深海魔鲸王",
+          "attack": 66,
+          "defense": 50,
+          "hp": 500,
+          "speed": 12,
+          "ringColor": "紫色",
+          "dropRate": 0.12
+        },
+        "ten_thousand": {
+          "name": "万年深海魔鲸王",
+          "attack": 166,
+          "defense": 128,
+          "hp": 1230,
+          "speed": 15,
+          "ringColor": "黑色",
+          "dropRate": 0.04
+        },
+        "hundred_thousand": {
+          "name": "十万年深海魔鲸王",
+          "attack": 416,
+          "defense": 321,
+          "hp": 3076,
+          "speed": 16,
+          "ringColor": "红色",
+          "dropRate": 0.008
+        }
+      },
+      "attack": 25,
+      "defense": 20,
+      "hp": 200,
+      "speed": 10,
+      "ringLevel": 2,
+      "ringColor": "黄色"
+    }
+  ]
+}

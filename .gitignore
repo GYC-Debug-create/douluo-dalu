@@ -3,8 +3,8 @@ node_modules/
 frontend/node_modules/
 frontend/dist/
 
-# 运行时数据（存档含玩家隐私）
-data/
+# 运行时数据（存档含玩家隐私，仅根目录存档目录）
+/data/
 
 # 审查截图证据（122MB，不入库）
 docs/local/

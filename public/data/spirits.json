@@ -1,0 +1,132 @@
+{
+  "spirits": [
+    {
+      "id": "blue_silver_grass",
+      "name": "蓝银草",
+      "type": "控制系",
+      "description": "看似平凡的草,却蕴含无限可能。唐三的武魂,可缠绕敌人,随着魂环增加威力倍增。",
+      "color": "#4ade80",
+      "icon": "assets/spirits/blue_silver_grass.jpg",
+      "baseAttack": 8,
+      "baseDefense": 5,
+      "baseSpeed": 6,
+      "baseHp": 100,
+      "skill": {
+        "name": "缠绕",
+        "description": "射出蓝银草缠绕敌人,造成伤害并减速",
+        "type": "projectile",
+        "range": 200,
+        "cooldown": 1500,
+        "damage": 15
+      },
+      "passive": "韧性生长: 每升一级 HP +20"
+    },
+    {
+      "id": "haotian_hammer",
+      "name": "昊天锤",
+      "type": "强攻系",
+      "description": "天下第一器武魂,一锤震天,拥有毁灭性的攻击力。",
+      "color": "#a16207",
+      "icon": "assets/spirits/haotian_hammer.jpg",
+      "baseAttack": 20,
+      "baseDefense": 12,
+      "baseSpeed": 3,
+      "baseHp": 140,
+      "skill": {
+        "name": "乱披风锤法",
+        "description": "挥舞巨锤造成大范围伤害",
+        "type": "aoe",
+        "range": 120,
+        "cooldown": 2000,
+        "damage": 35
+      },
+      "passive": "重击: 暴击率 +15%"
+    },
+    {
+      "id": "qisha_sword",
+      "name": "七杀剑",
+      "type": "敏攻系",
+      "description": "剑气纵横,七杀出鞘。攻击速度极快,剑剑致命。",
+      "color": "#06b6d4",
+      "icon": "assets/spirits/qisha_sword.jpg",
+      "baseAttack": 15,
+      "baseDefense": 7,
+      "baseSpeed": 10,
+      "baseHp": 110,
+      "skill": {
+        "name": "七杀剑气",
+        "description": "向前方释放剑气,穿透敌人",
+        "type": "beam",
+        "range": 250,
+        "cooldown": 1000,
+        "damage": 22
+      },
+      "passive": "锋锐: 攻击速度 +20%"
+    },
+    {
+      "id": "youming_cat",
+      "name": "幽冥灵猫",
+      "type": "敏攻系",
+      "description": "身形如电,来去无踪。速度极快,擅长突袭。",
+      "color": "#6366f1",
+      "icon": "assets/spirits/youming_cat.jpg",
+      "baseAttack": 13,
+      "baseDefense": 6,
+      "baseSpeed": 14,
+      "baseHp": 100,
+      "skill": {
+        "name": "幽冥突袭",
+        "description": "瞬间突进到敌人身后造成暴击",
+        "type": "dash",
+        "range": 300,
+        "cooldown": 1800,
+        "damage": 28
+      },
+      "passive": "敏捷: 闪避率 +20%"
+    },
+    {
+      "id": "jiubao_pagoda",
+      "name": "七宝琉璃塔",
+      "type": "辅助系",
+      "description": "辅助系顶级武魂,可增幅全属性,持续战斗能力强。初始为七层,进化后可达九层。",
+      "color": "#3b82f6",
+      "icon": "assets/spirits/jiubao_pagoda.jpg",
+      "baseAttack": 7,
+      "baseDefense": 10,
+      "baseSpeed": 7,
+      "baseHp": 130,
+      "skill": {
+        "name": "七宝神光",
+        "description": "恢复生命并短暂提升全属性",
+        "type": "buff",
+        "range": 0,
+        "cooldown": 5000,
+        "damage": 0,
+        "heal": 40,
+        "buff": 1.3
+      },
+      "passive": "增幅: 经验获取 +25%"
+    },
+    {
+      "id": "tyrant_dragon",
+      "name": "霸王龙",
+      "type": "强攻系",
+      "description": "远古霸主之魂,拥有毁灭性的力量与坚不可摧的防御。龙啸震天,万物臣服。",
+      "color": "#dc2626",
+      "icon": "assets/spirits/tyrant_dragon.jpg",
+      "baseAttack": 25,
+      "baseDefense": 18,
+      "baseSpeed": 4,
+      "baseHp": 180,
+      "skill": {
+        "name": "霸王咆哮",
+        "description": "发出震天龙啸,对周围敌人造成巨额伤害并击退",
+        "type": "aoe",
+        "range": 200,
+        "cooldown": 3000,
+        "damage": 50
+      },
+      "passive": "龙威: 攻击力 +15%, 受到伤害 -10%"
+    }
+  ]
+}
