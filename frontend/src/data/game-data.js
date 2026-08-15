@@ -275,7 +275,7 @@ export const EVENTS = [
   },
   {
     id: 'cafeteria_funny', name: '食堂大作战', location: '史莱克学院·食堂',
-    phase: 'adventure', minLevel: 10, weight: 3,
+    phase: 'adventure', timeOfDay:'day', minLevel: 10, weight: 3,
     text: [
       '中午的食堂人山人海，红烧肉的香味飘出三条街。{name}端着餐盘左冲右突，终于抢到了最后一份红烧肉！',
       '刚要下筷子，一个胖乎乎的高年级学长笑眯眯地凑了过来："小学弟，这块肉，让给我怎么样？"'
@@ -437,7 +437,7 @@ export const EVENTS = [
   },
   {
     id: 'swim_contest', name: '游泳比赛', location: '学院·清水湖',
-    phase: 'adventure', minLevel: 10, weight: 2,
+    phase: 'adventure', season:'summer', minLevel: 10, weight: 2,
     text: [
       '夏日炎炎，学院组织了一场游泳比赛。同学们摩拳擦掌，奖品是一整盒冰镇灵果！',
       '"预备——跳！"'
@@ -463,7 +463,7 @@ export const EVENTS = [
   },
   {
     id: 'star_gazing', name: '屋顶看星星', location: '学院·宿舍屋顶',
-    phase: 'adventure', minLevel: 10, weight: 2,
+    phase: 'adventure', season:'summer', minLevel: 10, weight: 2,
     text: [
       '熄灯后，{name}偷偷爬上了屋顶。夏夜的星空璀璨无比，银河像一条发光的丝带横贯天际。',
       '听说，每一颗星星都对应着一位强大的魂师。哪一颗会是你呢？'
@@ -798,7 +798,7 @@ EVENTS.push(
     ],
     image: 'assets/beasts/sky_blue_bull_python.jpg',
     choices: [
-      { text: '友善地坐下来和她们聊天', result: { text: '你们聊了很久很久。分别时，小舞摘下一朵湖边的花别在你耳边："大明天青说，你的心很干净。这个送你，危急时刻能保你一命哦。"', fate: 4, item: { name: '十万年祝福', type: 'heal', value: 999, count: 1 }, exp: 260 } },
+      { text: '友善地坐下来和她们聊天', result: { text: '你们聊了很久很久。分别时，小舞摘下一朵湖边的花别在你耳边："大明天青说，你的心很干净。这个送你，危急时刻能保你一命哦。"你郑重收下这份来自十万年魂兽的善意——它不只是一件信物，更是一段无法复制的际遇。', fate: 5, exp: 260, spiritPowerGain: 10 } },
       { text: '保持警惕，礼貌告辞', result: { text: '你拱手告辞。走出很远后回头望去，湖面上升起淡淡的雾气，少女和巨蟒的身影都已消失不见，仿佛一场梦。', exp: 150, fate: 1 } },
       { text: '偷偷记下位置，报告武魂殿', result: { text: '你把消息卖给了武魂殿，换来一袋沉甸甸的金币。只是从那以后，每次路过湖畔，你都会莫名地心虚。', gold: 800, fate: -4, exp: 100 } }
     ]
@@ -1013,7 +1013,7 @@ EVENTS.push(
         result: { text: '百年疾风兔远比预想中难缠。你在高速追逐中抓住唯一破绽，黄色魂环融入体内，双腿与反应得到明显强化。', battle: 'wind_rabbit_hundred', damage: 5, speed: 2, exp: 90, fate: 1 }
       },
       {
-        text: '百年毒蛛 · 强攻控制路线', ringTier: 'hundred', ringYear: 100, beastId: '毒蛛', beastName: '毒蛛',
+        text: '百年毒蛛 · 越级挑战路线', ringTier: 'hundred', ringYear: 100, beastId: '毒蛛', beastName: '毒蛛',
         strategy: { year: '百年黄环', risk: '高风险', reward: '更高属性 · 攻击与毒性', fit: '适合强攻、控制与持续压制', recommendedInnate: 90 },
         result: { text: '百年毒蛛的毒丝数次逼近要害，你带伤完成猎杀。黄色魂环在经脉中掀起冲击，熬过刺痛后，武魂多了一股危险的压制力。', battle: 'poison_spider_hundred', damage: 15, attack: 2, exp: 110, fate: 2 }
       }
@@ -1029,7 +1029,7 @@ EVENTS.push(
     choices: [
       { text: '猎杀百年独眼狼——凶悍肉食系，考验战力', result: { text: '独眼狼的独眼中闪烁着狡黠的光芒，它绕着你不停游走，寻找破绽。你沉着应对，以武魂之力正面硬撼，最终将利刃刺入它的要害。百年黄色魂环升起，你的攻击力得到了显著提升。', battle: '独眼狼', attack: 2, exp: 100, fate: 1 } },
       { text: '猎杀百年烈焰虎——火属性猛兽，炽热对决', result: { text: '烈焰虎周身燃烧着炽热的火焰，周围的草木都被热浪烤得焦黄。你与它缠斗了数十回合，每一拳都带着融金化铁的温度。虎啸声中，你终于找到破绽一击制胜，吸收魂环后体内仿佛燃起了一团不灭的火焰。', battle: '烈焰虎', heal: 15, exp: 120, fate: 1 } },
-      { text: '猎杀百年风灵燕——速度如电，考验身法', result: { text: '风灵燕在空中划出一道道残影，快得几乎让人看不清它的轨迹。你屏息凝神，以静制动，在它俯冲的瞬间侧身闪避，反手一击将其击落。淡黄色魂环融入体内，你感觉双腿轻盈了许多，速度更上一层楼。', battle: '风灵燕', speed: 2, exp: 80, fate: 1 } }
+      { text: '猎杀百年灵鹿——林间精灵，迅捷如风', result: { text: '灵鹿在林间腾跃如飞，快得几乎让人看不清它的轨迹。你屏息凝神，以静制动，在它跃过溪涧的瞬间侧身闪避，反手一击将其击倒。淡黄色魂环融入体内，你感觉双腿轻盈了许多，速度更上一层楼。', battle: '灵鹿', speed: 2, exp: 80, fate: 1 } }
     ]
   },
   {
@@ -1042,31 +1042,31 @@ EVENTS.push(
     choices: [
       { text: '猎杀千年人面魔蛛——剧毒蛛王，极度危险', result: { text: '人面魔蛛那酷似人脸的背甲让人不寒而栗，八条蛛腿如长矛般刺来。你险之又险地避开毒液喷吐，趁它转身的刹那突入近身，武魂全力爆发！蛛网漫天飞舞，但最终倒下的是它。千年紫色魂环带着磅礴的力量涌入体内，你的攻击力暴涨。', battle: '人面魔蛛', attack: 4, exp: 200, fate: 1 } },
       { text: '猎杀千年岩蟒——岩石般坚韧，皮糙肉厚', result: { text: '千年岩蟒盘踞在巨石之上，鳞片泛起金属般的光泽，寻常攻击难以伤其分毫。你耐心游走，不断攻击它的七寸要害，终于在数百次交锋后将其击溃。紫色魂环融入体内，你感觉皮肤仿佛也变得坚韧如石，防御力大幅提升。', battle: '岩蟒', defense: 3, heal: 20, exp: 150, fate: 1 } },
-      { text: '猎杀千年雷鸟——雷霆之翼，快若闪电', result: { text: '雷鸟振翅间电光四溅，每一次俯冲都带着雷霆万钧之势。你在雷光中穿梭，身上被电弧擦出道道焦痕，但你的眼神始终锁定着它的飞行轨迹。终于，在它转向的瞬间你一跃而起，武魂击中它的翅膀！千年魂环化作紫光融入体内，你的速度与反应得到了质的飞跃。', battle: '雷鸟', speed: 4, exp: 180, fate: 1 } }
+      { text: '猎杀千年暗影狐——暗夜魅影，幽林杀手', result: { text: '暗影狐在林间悄无声息地游走，每一次扑击都从阴影中突然出现。你在黑暗中以魂力感知锁定它的轨迹，终于在它露面的瞬间武魂全开，一击命中！千年紫色魂环融入体内，你的速度与反应得到了质的飞跃。', battle: '暗影狐', speed: 4, exp: 180, fate: 1 } }
     ]
   },
   {
-    id: 'ring_hunt_40', name: '第四魂环·万年之威', location: '星斗大森林深处·核心圈',
-    phase: 'adventure', unique: true, minLevel: 40, ring: 'ten_thousand', weight: 0,
+    id: 'ring_hunt_40', name: '第四魂环·千年之威', location: '星斗大森林深处·核心圈',
+    phase: 'adventure', unique: true, minLevel: 40, ring: 'thousand', weight: 0,
     text: [
-      '四十级！你站在了无数魂师一生都无法企及的高度。而万年魂兽，是一方霸主级别的存在。',
-      '森林核心圈的古木遮天蔽日，两头万年魂兽的领地就在前方。大地的震颤提醒着你：这里，是它们的世界。'
+      '四十级！你站在了无数魂师一生都无法企及的高度。而千年魂兽，已经是一方霸主级别的存在。',
+      '森林核心圈的古木遮天蔽日，两头千年魂兽的领地就在前方。大地的震颤提醒着你：这里，是它们的世界。'
     ],
     choices: [
-      { text: '猎杀万年大地之熊——大地震怒，万钧之力', result: { text: '万年大地之熊人立而起，双掌拍下，大地裂开数道深沟！你稳住身形，迎着崩裂的碎石逆势而上。这场战斗持续了整整一个时辰，方圆百丈的森林化为焦土。当最后一丝魂力耗尽时，你终于将武魂轰入它的胸膛。万年黑色魂环带着大地的厚重之力融入体内，你的攻击力达到了全新的高度。', battle: '大地之熊', attack: 6, damage:30, exp: 350, fate: 2 } },
-      { text: '猎杀万年幽冥狼王——暗夜猎手，魅影重重', result: { text: '万年幽冥狼王在月光下化为一道道残影，它的每一次攻击都从你最意想不到的角度袭来。你闭上眼睛，以魂力感知取代视觉，在黑暗中与它展开了一场无声的较量。当你的武魂精准地击中它咽喉的瞬间，狼王发出一声不甘的嚎叫，黑色魂环缓缓升起。吸收魂环后，你的速度已经快到令人难以捕捉的境界。', battle: '幽冥狼王', speed: 5, damage:20, exp: 280, fate: 2 } }
+      { text: '猎杀千年大地之熊——大地震怒，万钧之力', result: { text: '千年大地之熊人立而起，双掌拍下，大地裂开数道深沟！你稳住身形，迎着崩裂的碎石逆势而上。这场战斗持续了整整一个时辰，方圆百丈的森林化为焦土。当最后一丝魂力耗尽时，你终于将武魂轰入它的胸膛。千年紫色魂环带着大地的厚重之力融入体内，你的攻击力达到了全新的高度。', battle: '大地之熊', attack: 6, damage:30, exp: 350, fate: 2 } },
+      { text: '猎杀千年幽冥狼王——暗夜猎手，魅影重重', result: { text: '千年幽冥狼王在月光下化为一道道残影，它的每一次攻击都从你最意想不到的角度袭来。你闭上眼睛，以魂力感知取代视觉，在黑暗中与它展开了一场无声的较量。当你的武魂精准地击中它咽喉的瞬间，狼王发出一声不甘的嚎叫，紫色魂环缓缓升起。吸收魂环后，你的速度已经快到令人难以捕捉的境界。', battle: '幽冥狼王', speed: 5, damage:20, exp: 280, fate: 2 } }
     ]
   },
   {
-    id: 'ring_hunt_50', name: '第五魂环·万年再临', location: '落日森林·最深处',
+    id: 'ring_hunt_50', name: '第五魂环·万年再临', location: '星斗大森林·核心圈',
     phase: 'master', unique: true, minLevel: 50, ring: 'ten_thousand', weight: 0,
     text: [
       '五十级，魂王之境。你需要第二个万年魂环来稳固修为。',
-      '落日森林的深处，夕阳的余晖把一切都染成了金色。两头万年魂兽的气息在山谷中回荡。'
+      '星斗大森林核心圈的古木遮天蔽日，两头万年魂兽的气息在林间回荡。'
     ],
     choices: [
-      { text: '猎杀万年暗金恐爪熊——撕裂一切，绝对力量', result: { text: '暗金恐爪熊的利爪泛着暗金色的寒光，每一爪挥下都带着撕裂空间的力量。你全神贯注，在它狂暴的连击中寻找那一闪而逝的破绽。战斗的余波将周围的山壁都削平了一层，当你的武魂最终贯穿它的防御时，这头森林霸主轰然倒下。第二个万年魂环融入体内，你的攻击力达到了魂王境界的巅峰。', battle: '暗金恐爪熊', attack: 8, damage:40, exp: 350, fate: 2 } },
-      { text: '猎杀万年冰帝蝎——极寒霸主，冰封千里', result: { text: '冰帝蝎的出现让整个山谷的气温骤降，空气中凝结出细密的冰晶。它的蝎尾每一次刺出都带着足以冻结魂力的极寒之气。你咬紧牙关，以武魂之力对抗寒气侵蚀，终于在它释放出最强一击后的虚弱间隙，给予致命一击！万年冰帝蝎的魂环带着极寒之力融入体内，你的防御力得到了冰属性的锤炼，变得坚不可摧。', battle: '冰帝蝎', defense: 6, damage:30, exp: 300, fate: 2 } }
+      { text: '猎杀万年暗金恐爪熊——撕裂一切，绝对力量', result: { text: '暗金恐爪熊的利爪泛着暗金色的寒光，每一爪挥下都带着撕裂空间的力量。你全神贯注，在它狂暴的连击中寻找那一闪而逝的破绽。战斗的余波将周围的古木都削平了一层，当你的武魂最终贯穿它的防御时，这头森林霸主轰然倒下。第二个万年魂环融入体内，你的攻击力达到了魂王境界的巅峰。', battle: '暗金恐爪熊', attack: 8, damage:40, exp: 350, fate: 2 } },
+      { text: '猎杀万年人面魔蛛——剧毒蛛王，阴毒绝伦', result: { text: '万年人面魔蛛那酷似人脸的背甲在幽暗中泛着寒光，八条蛛腿如长矛般刺来。它的毒液连空气都能腐蚀，你以武魂之力护住周身，在蛛网密布的林地间与它周旋。当你的武魂贯穿它最脆弱的后腹时，这头毒王轰然倒地。万年魂环带着阴毒的腐蚀之力融入体内，你的防御力得到了锤炼。', battle: '人面魔蛛', defense: 6, damage:30, exp: 300, fate: 2 } }
     ]
   },
   {
@@ -1089,8 +1089,8 @@ EVENTS.push(
       '森林霸主的气息自湖畔升起。你可以稳妥寻找万年魂环，也可以冒险追寻只存在于传说中的十万年红环。'
     ],
     choices: [
-      { text: '挑战泰坦巨猿——森林之王，力量巅峰', result: { text: '泰坦巨猿双拳捶胸，发出的咆哮让整个星斗大森林外围都在颤抖。森林之王的力量足以开山裂石，你每接它一拳都感觉五脏六腑在翻腾。但你燃烧全部魂力，在极限中突破自我，最终以最强一击贯穿了它的防御。{ringLabel}融入体内的瞬间，你的力量越过了新的界线。', battle: '泰坦巨猿', attack: 10, damage:50, exp: 1000, fate: 3 } },
-      { text: '挑战天青牛蟒——上古异种，生生不息', result: { text: '天青牛蟒那庞大的身躯从湖中探出，青色的鳞片在月光下反射出幽暗的光芒。它的生命力仿佛无穷无尽，每次你以为快要击败它，它又恢复如初。你改变策略，以绵绵不绝的攻击消耗它的恢复力。当晨曦初露时，你终于击溃它的防御。{ringLabel}融入体内，你感受到了前所未有的生命力与防御力。', battle: '天青牛蟒', defense: 8, heal: 40, exp: 800, fate: 3 } }
+      { text: '挑战泰坦巨猿——森林之王，力量巅峰', cond: { fate: 5 }, result: { text: '泰坦巨猿双拳捶胸，发出的咆哮让整个星斗大森林外围都在颤抖。森林之王的力量足以开山裂石，你每接它一拳都感觉五脏六腑在翻腾。但你燃烧全部魂力，在极限中突破自我，最终以最强一击贯穿了它的防御。{ringLabel}融入体内的瞬间，你的力量越过了新的界线。', battle: '泰坦巨猿', attack: 10, damage:50, exp: 1000, fate: 3 } },
+      { text: '挑战天青牛蟒——上古异种，生生不息', cond: { fate: 5 }, result: { text: '天青牛蟒那庞大的身躯从湖中探出，青色的鳞片在月光下反射出幽暗的光芒。它的生命力仿佛无穷无尽，每次你以为快要击败它，它又恢复如初。你改变策略，以绵绵不绝的攻击消耗它的恢复力。当晨曦初露时，你终于击溃它的防御。{ringLabel}融入体内，你感受到了前所未有的生命力与防御力。', battle: '天青牛蟒', defense: 8, heal: 40, exp: 800, fate: 3 } }
     ]
   },
   {
@@ -1113,7 +1113,7 @@ EVENTS.push(
       '传说中的百万年金色魂环与神赐魂环，同时出现在你面前——只能选择一个。'
     ],
     choices: [
-      { text: '吸收百万年金色魂环——传说之力，逆转乾坤', result: { text: '你伸出手，那枚百万年金色魂环缓缓飘落，带着远古洪荒的气息。它比任何魂环都要沉重，仿佛承载着整个世界的重量。你咬紧牙关，以全部魂力接纳这股力量，刹那间你看到了宇宙的诞生与毁灭，看到了无数位面在时间长河中起落。金色魂环最终融入体内，你的武魂绽放出前所未有的光芒！你的命运从此与这片大陆紧紧相连，成为了永恒的传说。', exp: 2000, attack: 10, defense: 10, heal: 50, fate: 5 } },
+      { text: '吸收百万年金色魂环——传说之力，逆转乾坤', cond: { fate: 10 }, result: { text: '你伸出手，那枚百万年金色魂环缓缓飘落，带着远古洪荒的气息。它比任何魂环都要沉重，仿佛承载着整个世界的重量。你咬紧牙关，以全部魂力接纳这股力量，刹那间你看到了宇宙的诞生与毁灭。金色魂环最终融入体内，你的武魂绽放出前所未有的光芒！你的命运从此与这片大陆紧紧相连，成为了永恒的传说。', exp: 2000, attack: 10, defense: 10, heal: 50, fate: 5 } },
       { text: '选择神赐魂环——稳扎稳打，厚积薄发', result: { text: '你放弃了百万年魂环的诱惑，转而选择了更为稳妥的神赐魂环。神界之门中飘落的神赐魂环虽然没有百万年魂环那般惊天动地，但它与你的武魂完美契合，毫无排斥地融入了你的身体。你感受着体内魂力安稳而扎实的增长，知道这条路虽然不够惊艳，但每一步都走得无比坚实。你的命运，将由你自己一步步书写，而非依赖传说。', exp: 1500, attack: 6, defense: 6, speed: 6, heal: 30, fate: 4 } }
     ]
   }
@@ -1466,11 +1466,11 @@ export const CHALLENGE_TOWER = {
     { floor:12, name:'血色战场',  minLv:55, enemy:{name:'血魔将军',hp:1350,attack:175,defense:45,speed:22,element:'血'}, reward:{gold:2500,exp:1800} },
     { floor:13, name:'灵魂试炼',  minLv:60, enemy:{name:'噬魂者',hp:1600,attack:200,defense:40,speed:30,element:'暗'}, reward:{gold:3200,exp:2300} },
     { floor:14, name:'混沌之门',  minLv:65, enemy:{name:'混沌巨兽',hp:1900,attack:230,defense:60,speed:18,element:'混沌'}, reward:{gold:4000,exp:3000} },
-    { floor:15, name:'封号台',    minLv:70, enemy:{name:'封号斗罗之影',hp:2300,attack:270,defense:70,speed:28,element:'无'}, reward:{gold:5000,exp:4000} },
+    { floor:15, name:'封号台',    minLv:70, enemy:{name:'魂圣之影',hp:2300,attack:270,defense:70,speed:28,element:'无'}, reward:{gold:5000,exp:4000} },
     { floor:16, name:'神兽殿',    minLv:75, enemy:{name:'远古神兽',hp:2800,attack:320,defense:80,speed:25,element:'神'}, reward:{gold:6500,exp:5200} },
-    { floor:17, name:'极限试炼',  minLv:80, enemy:{name:'极限斗罗',hp:3400,attack:380,defense:90,speed:32,element:'无'}, reward:{gold:8000,exp:6800} },
-    { floor:18, name:'半神之境',  minLv:85, enemy:{name:'半神守护者',hp:4200,attack:450,defense:100,speed:30,element:'神'}, reward:{gold:10000,exp:9000} },
-    { floor:19, name:'神之走廊',  minLv:90, enemy:{name:'神将分身',hp:5200,attack:540,defense:120,speed:35,element:'光'}, reward:{gold:13000,exp:12000} },
+    { floor:17, name:'极限试炼',  minLv:80, enemy:{name:'魂斗罗之影',hp:3400,attack:380,defense:90,speed:32,element:'无'}, reward:{gold:8000,exp:6800} },
+    { floor:18, name:'半神之境',  minLv:85, enemy:{name:'准封号之影',hp:4200,attack:450,defense:100,speed:30,element:'神'}, reward:{gold:10000,exp:9000} },
+    { floor:19, name:'神之走廊',  minLv:90, enemy:{name:'封号斗罗之影',hp:5200,attack:540,defense:120,speed:35,element:'光'}, reward:{gold:13000,exp:12000} },
     { floor:20, name:'塔顶·神座', minLv:95, enemy:{name:'二十层之主',hp:6500,attack:650,defense:150,speed:40,element:'混沌'}, reward:{gold:18000,exp:18000,title:'tower_conqueror'} }
   ]
 };
@@ -1503,7 +1503,7 @@ export const FORGE_RECIPES = [
   { id:'forge_all_2', name:'均衡之骨', desc:'融合三块中级魂骨，铸造全属性骨',
     materials:[{type:'any',count:3,minTier:2}], result:{name:'均衡之骨',type:'balanced',attack:8,defense:8,hp:40,speed:4,tier:3}, goldCost:800 },
   { id:'forge_supreme', name:'至尊之骨', desc:'需要五块高级魂骨，有概率锻造出至尊魂骨',
-    materials:[{type:'any',count:5,minTier:3}], result:{name:'至尊魂骨',type:'supreme',attack:25,defense:20,hp:100,speed:10,tier:4}, goldCost:2000, successRate:0.7 }
+    materials:[{type:'any',count:5,minTier:3}], result:{name:'至尊魂骨',type:'supreme',attack:25,defense:20,hp:100,speed:10,tier:4}, goldCost:2000, successRate:0.5 }
 ];
 
 // ==================== 支线任务 ====================

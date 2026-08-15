@@ -319,6 +319,8 @@ export function useEventEngine() {
     const level = Number(player.level) || 1
     const gameTime = Number(gameStore._gameTime) || 0
     const timeOfDay = ['dawn', 'day', 'day', 'day', 'dusk', 'night', 'night', 'night'][gameTime % 8]
+    // 季节随游戏时间循环（T17）：春夏秋冬四季，事件可按 season 标注限定
+    const season = ['spring', 'summer', 'autumn', 'winter'][gameTime % 4]
     return {
       level,
       origin: player.origin || '',
@@ -330,6 +332,7 @@ export function useEventEngine() {
       ascended: eventStore._dynamicFlags?._ascended === true,
       combo: Number(battleSystem.combo?.value) || Number(combatStore._maxCombo) || 0,
       timeOfDay,
+      season,
       ...overrides
     }
   }

@@ -384,7 +384,7 @@ EVENTS.push(
 // ---- 学院日常/随机类 ----
 {
   id: 'ac_daily_01', name: '清晨的钟声', location: '史莱克学院·钟楼',
-  phase: 'adventure', minLevel: 10, weight: 2,
+  phase: 'adventure', timeOfDay:'dawn', minLevel: 10, weight: 2,
   image: 'assets/scenes/academy_classroom.jpg',
   text: [
     '天还没亮，学院的钟声就响了——今天是月度考核的日子！',
@@ -1297,7 +1297,7 @@ EVENTS.push(
     { text:'加入他们一起玩', result:{ text:'你和大家一起放风筝，跑了一下午，笑得肚子都疼了。这是难得的放松时光。', hp:20, fate:1, exp:10 } },
     { text:'在旁边看书', result:{ text:'你坐在草坪边看书，偶尔抬头看看风筝。虽然没加入他们，但春风拂面的感觉也很好。', spiritPowerGain:1, exp:15 } }
   ]},
-{ id:'ac_more_05', name:'蚊子袭击', location:'史莱克学院·宿舍', phase: 'adventure', minLevel: 10, weight:2, image:'assets/scenes/dormitory.jpg',
+{ id:'ac_more_05', name:'蚊子袭击', location:'史莱克学院·宿舍', phase: 'adventure', season:'summer', minLevel: 10, weight:2, image:'assets/scenes/dormitory.jpg',
   text:['夏天的晚上，宿舍里蚊子成群，你被咬得翻来覆去睡不着。'],
   choices:[
     { text:'用魂力震开蚊子', result:{ text:'你运转魂力在周身形成一层微弱的屏障，蚊子果然近不了身。不过魂力消耗不小，第二天起来有点困。', mp:-15, defense:1, exp:15 } },
@@ -1993,7 +1993,7 @@ EVENTS.push(
 // ---- 学院·季节与天气类 ----
 {
   id: 'ac_season_01', name: '初雪', location: '史莱克学院·校园',
-  phase: 'adventure', minLevel: 10, weight: 1,
+  phase: 'adventure', season:'winter', minLevel: 10, weight: 1,
   image: 'assets/scenes/snow_mountain.jpg',
   text: [
     '今年的第一场雪悄然而至。清晨推开窗，整个学院银装素裹，美得不似人间。',
@@ -2007,7 +2007,7 @@ EVENTS.push(
 },
 {
   id: 'ac_season_02', name: '春游', location: '史莱克学院·郊外',
-  phase: 'adventure', minLevel: 10, weight: 1,
+  phase: 'adventure', season:'spring', minLevel: 10, weight: 1,
   image: 'assets/scenes/forest_outer.jpg',
   text: [
     '春暖花开，学院组织春游。大家背着干粮来到郊外的草地上，野花遍地，蝴蝶飞舞。',
@@ -2021,7 +2021,7 @@ EVENTS.push(
 },
 {
   id: 'ac_season_03', name: '盛夏纳凉', location: '学院·清水湖',
-  phase: 'adventure', minLevel: 10, weight: 1,
+  phase: 'adventure', season:'summer', minLevel: 10, weight: 1,
   image: 'assets/scenes/sea_god_island.jpg',
   text: [
     '盛夏的夜晚酷热难耐，你和几个同学偷偷溜到学院后面的清水湖乘凉。',
@@ -2035,7 +2035,7 @@ EVENTS.push(
 },
 {
   id: 'ac_season_04', name: '秋日落叶', location: '史莱克学院·银杏道',
-  phase: 'adventure', minLevel: 10, weight: 1,
+  phase: 'adventure', season:'autumn', minLevel: 10, weight: 1,
   image: 'assets/scenes/mountain_path.jpg',
   text: [
     '秋天来了，学院那条种满银杏树的小路变成了金色的海洋。风吹过，落叶如雨。',

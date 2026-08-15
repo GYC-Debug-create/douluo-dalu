@@ -762,8 +762,9 @@ export function useBattleSystem() {
       eventName: battleState.options.event?.name || ''
     })
     if (huntingRecord.gain > 0) gains.push(`猎魂历练+${huntingRecord.gain}`)
-    // 魂骨掉落
-    if (!battleState.enemy.isNpc && Math.random() < (battleState.enemy.isBoss ? 0.45 : 0.12)) {
+    // 魂骨碎片掉落（T15，判例 21）：普通魂兽 3%、Boss 15%——魂骨为原著至宝，
+    // 碎片不应成为日常产出；挑战塔碎片另按首通发放。
+    if (!battleState.enemy.isNpc && Math.random() < (battleState.enemy.isBoss ? 0.15 : 0.03)) {
       if (!player._forgeBones) player._forgeBones = []
       player._forgeBones.push({ source: battleState.enemy.name, tier: battleState.enemy.isBoss ? 3 : 1, obtainedAt: Date.now() })
       gains.push('魂骨碎片×1')

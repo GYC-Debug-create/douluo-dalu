@@ -76,6 +76,17 @@ export function useGameFeatures() {
   }
 
   function awardExp(amount) {
+    // 满级后所有经验来源统一转化为金币（T14，判例 16）：事件路径同款逻辑，
+    // 避免训练/塔/签到/经验丹在满级后静默清零让玩家白亏。
+    if (player.level >= 100) {
+      const converted = Math.max(0, Math.round(Number(amount) || 0))
+      if (converted > 0) {
+        player.gold += converted
+        gameStore._totalGoldEarned += converted
+        ui.notify(`已满级，${converted} 点经验转化为金币`, 'info')
+      }
+      return converted
+    }
     const beforeLevel = player.level
     const next = advanceExperience({
       level: player.level,
@@ -414,12 +425,18 @@ export function useGameFeatures() {
       allowFlee: false,
       countKill: false,
       onVictory: () => {
+        const isFirstClear = gameStore._towerFloor < floor.floor
         gameStore._towerFloor = floor.floor
         addGold(floor.reward.gold || 0)
         awardExp(floor.reward.exp || 0)
-        const tier = floor.floor >= 15 ? 3 : floor.floor >= 8 ? 2 : 1
-        player._forgeBones.push({ source: `挑战塔第${floor.floor}层`, tier, obtainedAt: Date.now() })
-        addDiary(`通过挑战塔第${floor.floor}层，获得金币、经验和${tier}阶魂骨碎片。`, 'battle')
+        // 魂骨碎片仅首通发放（T15，判例 21）：避免每层反复通关白嫖碎片
+        if (isFirstClear) {
+          const tier = floor.floor >= 15 ? 3 : floor.floor >= 8 ? 2 : 1
+          player._forgeBones.push({ source: `挑战塔第${floor.floor}层·首通`, tier, obtainedAt: Date.now() })
+          addDiary(`首通挑战塔第${floor.floor}层，获得${tier}阶魂骨碎片。`, 'battle')
+        } else {
+          addDiary(`再次通关挑战塔第${floor.floor}层，获得金币与经验。`, 'battle')
+        }
         persist(`挑战塔第${floor.floor}层通关`)
         hooks.onVictory?.(floor)
       },

@@ -273,6 +273,10 @@ export function isEventEligible(event, ctx = {}) {
   if (current.unique && done.includes(current.id)) return false
   if (ctx.recentEvents?.includes(current.id) && ctx.excludeRecent) return false
   if (ctx.locationMatches === false) return false
+  // 季节/时段门控（T17，V2-5）：事件标注 season/timeOfDay 时，当前时间不符即不触发，
+  // 避免"夏天抽到初雪""深夜抽到中午的食堂"穿帮。
+  if (current.season && ctx.season && current.season !== ctx.season) return false
+  if (current.timeOfDay && ctx.timeOfDay && current.timeOfDay !== ctx.timeOfDay) return false
   return true
 }
 
