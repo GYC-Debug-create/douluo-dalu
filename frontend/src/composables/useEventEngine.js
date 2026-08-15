@@ -53,7 +53,7 @@ const MAIN_STORY_MILESTONES = [
   { id: 'spirit_hall_exam', name: '武魂殿考核', minLevel: 25, targetId: 'spirit_hall', requires: MAIN_STORY_REQUIREMENTS.spirit_hall_exam },
   { id: 'soul_master_final', name: '魂师大赛·决赛', minLevel: 36, targetId: 'tian_dou_city', requires: MAIN_STORY_REQUIREMENTS.soul_master_final },
   { id: 'god_trial_sea', name: '神位传承·海神九考', minLevel: 75, targetId: 'sea_god_island', requires: MAIN_STORY_REQUIREMENTS.god_trial_sea },
-  { id: 'final_evil', name: '最终决战·深渊之主', minLevel: 95, targetId: 'abyss_rift', requires: MAIN_STORY_REQUIREMENTS.final_evil }
+  { id: 'final_evil', name: '最终决战·讨伐武魂殿', minLevel: 95, targetId: 'wuhun_city', requires: MAIN_STORY_REQUIREMENTS.final_evil }
 ]
 
 // 出身标签映射

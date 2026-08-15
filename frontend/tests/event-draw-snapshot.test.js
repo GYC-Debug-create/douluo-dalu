@@ -131,12 +131,15 @@ describe('M2 抽取一致性快照', () => {
       // - 2026-08-15 T4 基线：or_noble_01 等出身事件按 origin 限定被正确排除
       //   （star_forest 玩家不再触发 or_noble_01——这本身是 T4 修复生效的证据）。
       //   本序列于 --no-file-parallelism 下连续 3 次运行稳定。
+      // - 2026-08-15 T6b 基线：T7 角色重构（ac_extra_04 弗兰德 minLevel 1→12、phase
+      //   academy→adventure；ac_extra_06 同批调整）使 Lv.5 事件池排序变化，
+      //   序列第 2 位 ac_extra_04→ac_extra_03 等 4 处偏移——修复生效的证据。
       expect(ids).toEqual([
-        'first_class', 'ac_extra_04', 'ac_daily_03', 'ac_gold_02', 'dyn_lucky',
+        'first_class', 'ac_extra_03', 'ac_daily_03', 'ac_gold_02', 'dyn_lucky',
         'ac_dorm_01', 'ac_sp_02', 'ac_teacher_01', 'sp_wp_01', 'ac_extra_01',
         'festival', 'mentor_1', 'ac_class_03', 'ac_adv_03', 'sp_wp_01',
         'mentor_1', 'ac_class_03', 'ac_more_09', 'ac_more_15', 'ac_train_01',
-        'cafeteria_funny', 'ac_fun_04', 'lost_kitten', 'ac_daily_05', 'mystery_merchant',
+        'cafeteria_funny', 'ac_fun_03', 'lost_kitten', 'ac_daily_04', 'mystery_merchant',
         'cafeteria_funny', 'playground_spar', 'ac_gold_03', 'mentor_1', 'ac_dorm_01'
       ])
     } finally {

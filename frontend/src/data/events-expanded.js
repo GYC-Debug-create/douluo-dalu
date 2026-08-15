@@ -1210,10 +1210,10 @@ EVENTS.push(
     { text:'以神力强行破开乱流', result:{ text:'你凝聚全部神力强行轰击风暴，虽然成功脱困，但神力消耗巨大，还受了不轻的神伤。', damage:100, spiritPowerGain:-50, exp:500 } },
     { text:'顺流而行，寻找出口', result:{ text:'你放弃抵抗，顺着空间风暴漂流，最终被抛到了大陆之外的一处秘境——这里的灵气浓度远超斗罗大陆任何地方！', exp:400, fate:1 } }
   ]},
-{ id:'god_big_13', name:'邪神入侵', location:'神界·边界', phase:'god', minLevel:90, weight:3, image:'assets/scenes/swamp.jpg',
-  text:['自深渊而出的邪神率领魔物大军进犯神界！神界委员会发出紧急召集令，所有神祇必须参战！'],
+{ id:'god_big_13', name:'邪魂师之乱', location:'神界·边界', phase:'god', minLevel:90, weight:3, image:'assets/scenes/swamp.jpg',
+  text:['堕落的邪魂师之神率领邪魂师大军进犯神界！神界委员会发出紧急召集令，所有神祇必须参战！'],
   choices:[
-    { text:'冲锋在前，斩杀邪神！', result:{ text:'你身先士卒冲入敌阵，与邪神展开惊天动地的大战！你斩杀了三名下位邪神和无数深渊生物，立下赫赫战功！', damage:80, battle:'abyss_lord', exp:1000, attack:5, fate:5 } },
+    { text:'冲锋在前，斩将夺旗！', result:{ text:'你身先士卒冲入敌阵，与邪魂师之神展开惊天动地的大战！你斩杀了三名邪魂师首领和无数爪牙，立下赫赫战功！', damage:80, battle:'god_rival', exp:1000, attack:5, fate:5 } },
     { text:'守护后方，救治伤神', result:{ text:'你选择在后方用神力救治受伤的神祇，你的治愈神力挽救了许多神祇的性命。大家都很感激你。', damage:30, fate:3, exp:600, defense:3 } }
   ]},
 { id:'god_big_14', name:'神位传承', location:'你的神殿', phase:'god', minLevel:92, weight:1, image:'assets/scenes/temple.jpg',
@@ -1565,8 +1565,8 @@ EVENTS.push(
     { text:'我要靠自己成神', result:{ text:'你拒绝了传承，要靠自己的力量破开虚空。神人笑了："有志气。但你会很难。"', attack:5, exp:300, fate:2 } },
     { text:'我还没准备好', result:{ text:'神人点头："等你准备好，到苍穹之巅喊三声"神考"即可。"说完消失在金光中。', exp:200 } }
   ]},
-{ id:'god_more_02_evil', name:'邪魂师之神', location:'深渊裂隙', phase:'god', minLevel:85, weight:2, image:'assets/scenes/swamp.jpg',
-  text:['深渊中浮现一个巨大的黑影——一位堕落的邪魂师之神！他诱惑你："投入我的门下，我给你无尽的力量，整个大陆都将匍匐在你脚下！"'],
+{ id:'god_more_02_evil', name:'邪魂师之神', location:'杀戮之都', phase:'god', minLevel:85, weight:2, image:'assets/scenes/swamp.jpg',
+  text:['杀戮之都的阴影中浮现一个巨大的黑影——一位堕落的邪魂师之神！他诱惑你："投入我的门下，我给你无尽的力量，整个大陆都将匍匐在你脚下！"'],
   choices:[
     { text:'我绝不与邪恶为伍！', result:{ text:'你毅然拒绝，亮出{spirit}冲向邪神——', battle:'god_rival', exp:600, fate:3 } },
     { text:'虚与委蛇，趁机偷袭', result:{ text:'你假装投降，等他放松警惕时全力一击！虽然没能杀他，但重创了他。', exp:450, speed:3, fate:2 } },
@@ -1587,9 +1587,9 @@ EVENTS.push(
     { text:'默默观察众神', result:{ text:'你安静地观察众神的言行举止，学到了很多关于神位和神力的知识。', exp:300, fate:1 } }
   ]},
 { id:'god_more_05', name:'大陆灾变', location:'斗罗大陆·各地', phase:'god', minLevel:92, weight:5, image:'assets/scenes/abyss_godrealm.jpg',
-  text:['天崩地裂！斗罗大陆各地同时出现空间裂缝，无数深渊生物涌出，生灵涂炭！这就是你之前看到的大劫！'],
+  text:['武魂殿残党勾结邪魂师，在大陆各地同时发难，生灵涂炭！这就是你之前看到的乱世之劫！'],
   choices:[
-    { text:'以神之躯，守护大陆！', result:{ text:'你飞向灾情最严重的地方，以一己之力堵住了最大的空间裂缝！你燃烧神力击杀了无数深渊生物——', battle:'abyss_lord', exp:800, fate:5 } },
+    { text:'以神之躯，守护大陆！', result:{ text:'你飞向灾情最严重的地方，以一己之力击溃了进犯的邪魂师军团！你燃烧神力斩杀了无数邪魂师——', battle:'god_rival', exp:800, fate:5 } },
     { text:'组织众神/魂师联手', result:{ text:'你没有独自蛮干，而是迅速联系了所有能联系的力量，组织起一道防线。在你的指挥下，灾情被控制住了。', fate:4, exp:600 } },
     { text:'先自保再说', result:{ text:'你躲到了安全的地方。大陆损失惨重，但你活了下来。只是每当夜里，你都会想起那些死去的人们。', fate:-5, exp:200 } }
   ]},
