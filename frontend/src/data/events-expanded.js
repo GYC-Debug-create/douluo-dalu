@@ -117,12 +117,12 @@ EVENTS.push(
   image: 'assets/scenes/academy_classroom.jpg',
   text: [
     '你在座位里发现一本泛黄的笔记，扉页上写着"唐三"。里面密密麻麻记满了修炼心得和各种魂兽弱点分析。',
-    '这是唐三学长遗失的！你翻了几页，发现里面有一段正是你最近卡住的修炼难点。'
+    '这是唐三遗失的！你翻了几页，发现里面有一段正是你最近卡住的修炼难点。'
   ],
   choices: [
-    { text: '原封不动还给学长', result: { text: '你在下课后追上唐三把笔记还给他。他有些意外，接过笔记时冲你笑了笑："谢谢你，小师弟。以后有问题可以来问我。"', fate: 2, exp: 20 } },
+    { text: '原封不动还给他', result: { text: '你在下课后追上唐三把笔记还给他。他有些意外，接过笔记时冲你笑了笑："谢谢你，以后有问题可以互相切磋。"', fate: 2, exp: 20 } },
     { text: '偷偷抄一份再还', result: { text: '你连夜把关键内容抄了下来，第二天再把笔记还回去。唐三似乎察觉了什么，但只是笑了笑没说破。你学到了很多。', exp: 40 } },
-    { text: '据为己有', result: { text: '你把笔记藏了起来。可是从那以后每次看到唐三学长，你都心里发虚，修炼也静不下心来。', fate: -2, exp: 10 } }
+    { text: '据为己有', result: { text: '你把笔记藏了起来。可是从那以后每次看到唐三，你都心里发虚，修炼也静不下心来。', fate: -2, exp: 10 } }
   ]
 },
 // ---- 食堂与饮食类 ----
@@ -232,7 +232,7 @@ EVENTS.push(
   image: 'assets/scenes/training_ground.jpg',
   text: [
     '操场上新设了一个木桩阵——一百零八根木桩按奇门遁甲排列，要在一炷香内穿过去而不碰到任何木桩。',
-    '唐三学长演示时如行云流水，看得你目瞪口呆。轮到你了。'
+    '唐三演示时如行云流水，看得你目瞪口呆。轮到你了。'
   ],
   choices: [
     { text: '全力冲刺！', cond: { speed: 11 }, result: { text: '你运起魂力飞速穿过木桩阵，衣袂飘飘，虽然碰倒了三根木桩，但速度让唐三都点了点头。', speed: 2, exp: 30 } },
@@ -855,24 +855,24 @@ EVENTS.push(
     { text:'假装没听见', result:{ text:'你翻了个身继续睡觉，什么都没说。', exp:5 } },
     { text:'在梦里回应他', result:{ text:'你恶作剧地在他耳边低声说："我知道是你偷的，快交出来！"结果他被吓得从床上滚了下去。', exp:15, fate:-1 } }
   ]},
-{ id:'ac_extra_04', name:'弗兰德院长的训话', location:'史莱克学院·操场', phase:'academy', weight:2, image:'assets/scenes/training_ground.jpg',
+{ id:'ac_extra_04', name:'弗兰德院长的训话', location:'史莱克学院·操场', phase:'adventure', minLevel:12, weight:2, image:'assets/scenes/training_ground.jpg',
   text:['弗兰德院长把所有人集合起来训话，讲了一个时辰他当年的英雄事迹。你们站得腿都麻了。'],
   choices:[
     { text:'认真听，虽然啰嗦但可能有用', result:{ text:'你认真听完了院长的训话，虽然大部分是吹牛，但中间确实有几句实战经验让你有所收获。', exp:25, defense:1 } },
     { text:'偷偷开小差', result:{ text:'你在下面偷偷和同学聊天，被院长发现了，罚你绕操场跑十圈。', damage:10, exp:10 } },
     { text:'站着睡着了', result:{ text:'你实在太困，站着睡着了。醒来时发现所有人都走了，只有院长黑着脸看着你。接下来你被罚洗了一个月的厕所。', fate:-1, exp:5 } }
   ]},
-{ id:'ac_extra_05', name:'赵无极的考验', location:'史莱克学院·练功场', phase:'adventure', minLevel:8, weight:2, image:'assets/scenes/training_ground.jpg',
+{ id:'ac_extra_05', name:'赵无极的考验', location:'史莱克学院·练功场', phase:'adventure', minLevel:12, weight:2, image:'assets/scenes/training_ground.jpg',
   text:['赵无极老师说要亲自测试你们的实力，让你们一起上，能在他手下撑过一炷香就算合格。'],
   choices:[
     { text:'正面硬扛', result:{ text:'你选择正面硬扛赵无极老师的攻击，虽然被打得鼻青脸肿，但撑过了一炷香！赵无极哈哈大笑："有种！"', damage:30, exp:80, attack:2, defense:1 } },
     { text:'和同学配合游走', result:{ text:'你和同学们配合游走，不正面硬接，靠配合拖延时间。虽然没撑过一炷香，但赵无极说你们的配合不错。', damage:15, exp:50, fate:1 } }
   ]},
-{ id:'ac_extra_06', name:'小三的暗器演示', location:'史莱克学院', phase:'academy', minLevel:6, weight:1, image:'assets/scenes/academy_classroom.jpg',
-  text:['唐三在学院展示了他的暗器功夫，几根银针在他手中神出鬼没，竟能穿透钢板。同学们都看呆了。'],
+{ id:'ac_extra_06', name:'唐三的独门手法', location:'史莱克学院', phase:'adventure', minLevel:12, weight:1, image:'assets/scenes/academy_classroom.jpg',
+  text:['唐三私下展示了他家乡的独门手法，几根银针在他手中神出鬼没，竟能穿透钢板。同学们都看呆了。'],
   choices:[
-    { text:'向他请教暗器', result:{ text:'你向唐三请教暗器手法，他很慷慨地教了你几招基础。虽然你不是唐门弟子，但这些技巧在实战中很有用。', attack:1, speed:1, exp:40 } },
-    { text:'暗器不是正途，不必学', result:{ text:'你觉得暗器不够光明正大，没有去学。唐三也不勉强，只是笑了笑。', exp:10 } }
+    { text:'向他请教手法', result:{ text:'你向唐三请教这门手法，他很慷慨地教了你几招基础。虽然这手法讲究家传，但这些技巧在实战中很有用。', attack:1, speed:1, exp:40 } },
+    { text:'旁门左道，不必学', result:{ text:'你觉得这类手法不够光明正大，没有去学。唐三也不勉强，只是笑了笑。', exp:10 } }
   ]},
 { id:'ac_extra_07', name:'学院运动会', location:'史莱克学院·操场', phase:'academy', weight:2, image:'assets/scenes/training_ground.jpg',
   text:['学院举办了一年一度的运动会，有赛跑、举重、魂力控制等各种项目。'],
