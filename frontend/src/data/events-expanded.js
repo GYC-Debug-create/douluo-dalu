@@ -2370,21 +2370,21 @@ EVENTS.push(
 // ==================== 十八、出身专属事件 ====================
 EVENTS.push(
 // ---- 星斗小村 ----
-{ id:'or_village_01', name:'故乡的味道', location:'星斗小村', phase:'academy', minLevel:1, weight:3, tags:['wild','survive','nature'],
+{ id:'or_village_01', name:'故乡的味道', location:'星斗小村', origin: 'star_forest', phase:'academy', minLevel:1, weight:3, tags:['wild','survive','nature'],
   image:'assets/scenes/border_town.jpg',
   text:['你回到了出生的星斗小村。村口的老槐树还在，河里的小鱼还在游，隔壁的王婶一看到你就喊："小{name}回来啦！快来尝尝婶子刚蒸的馒头！"'],
   choices:[
     { text:'在村里住几天，帮乡亲们干活', result:{ text:'你帮村里人干各种活——修屋顶、劈柴、挑水。乡亲们都说你变强了，但没变的是那颗热心肠。离开时，大家给你塞了好多吃的。', hp:30, gold:15, fate:2, exp:30 } },
     { text:'去小时候常去的森林转转', result:{ text:'你来到小时候常玩耍的森林，凭着记忆找到了当年藏宝的树洞——里面居然还有你小时候放的弹弓和弹珠。你还在森林里找到了一些草药。', item:{ name:'药草包', desc:'星斗森林的野生草药', effect:{ hp:15 } }, exp:25 } }
   ]},
-{ id:'or_village_02', name:'猎人的传承', location:'星斗小村·猎户家', phase:'adventure', minLevel:10, weight:2, tags:['wild','hunt','survive'],
+{ id:'or_village_02', name:'猎人的传承', location:'星斗小村·猎户家', origin: 'star_forest', phase:'adventure', minLevel:10, weight:2, tags:['wild','hunt','survive'],
   image:'assets/scenes/forest_outer.jpg',
   text:['村里的老猎人刘伯找到你，说他的腿不行了，想把祖传的狩猎技巧传给你。他一生猎过上百只魂兽，有着丰富的野外生存经验。'],
   choices:[
     { text:'认真学习狩猎技巧', result:{ text:'刘伯教你如何追踪魂兽的足迹、判断魂兽的强弱、以及如何在森林中生存。这些技巧是书本上学不到的宝贵经验。', speed:2, attack:1, exp:70 } },
     { text:'和刘伯一起进山打猎', result:{ text:'你和刘伯一起进山，在他的指导下成功猎到了一只百年魂兽。虽然不是什么厉害的猎物，但这次经历让你对实战有了更深的理解。', attack:2, gold:20, exp:80 } }
   ]},
-{ id:'or_village_03', name:'村子的危机', location:'星斗小村', phase:'master', minLevel:20, weight:2, tags:['wild','fight','protect','justice'],
+{ id:'or_village_03', name:'村子的危机', location:'星斗小村', origin: 'star_forest', phase:'master', minLevel:20, weight:2, tags:['wild','fight','protect','justice'],
   image:'assets/scenes/border_town.jpg',
   text:['你回到村子时，发现村民们都躲在家里不敢出来——原来最近有一只魂兽经常在村外徘徊，吓得大家不敢出门干活。村长看到你回来了，眼中燃起了希望。'],
   choices:[
@@ -2392,21 +2392,21 @@ EVENTS.push(
     { text:'设陷阱驱赶魂兽', result:{ text:'你利用刘伯教的狩猎技巧，在村外设置了陷阱和驱兽装置。虽然没能彻底解决魂兽，但它被吓跑了，村民们终于可以安心生活了。', defense:2, speed:1, exp:60 } }
   ]},
 // ---- 武魂城世家 ----
-{ id:'or_noble_01', name:'家族来信', location:'史莱克学院', phase:'academy', minLevel:1, weight:3, tags:['social','sect','noble'],
+{ id:'or_noble_01', name:'家族来信', location:'史莱克学院', origin: 'spirit_city', phase:'academy', minLevel:1, weight:3, tags:['social','sect','noble'],
   image:'assets/scenes/academy_classroom.jpg',
   text:['你收到了家族的家书。父亲在信中说族中长辈们都在关注你的修炼进展，还随信寄来了一个包裹——"这是家族对你的一点心意，好好修炼，莫要辱没了家族的名声。"'],
   choices:[
     { text:'打开包裹', result:{ text:'包裹里是一瓶珍贵的灵药汁和几卷家族收藏的修炼心得。你心里暖暖的，虽然平时父亲很少夸你，但这份关心是实实在在的。', item:{ name:'灵药精华', desc:'武魂城世家特制的灵药', effect:{ hp:20, spiritPowerGain:5 } }, exp:20 } },
     { text:'先修炼再收礼物', result:{ text:'你决定先修炼一番再收礼物，证明自己配得上家族的支持。你加倍努力修炼，一周后打开包裹时，觉得自己确实进步了。', attack:1, spiritPowerGain:2, exp:40 } }
   ]},
-{ id:'or_noble_02', name:'家族聚会', location:'武魂城·家族大厅', phase:'adventure', minLevel:15, weight:2, tags:['social','sect','noble','trade'],
+{ id:'or_noble_02', name:'家族聚会', location:'武魂城·家族大厅', origin: 'spirit_city', phase:'adventure', minLevel:15, weight:2, tags:['social','sect','noble','trade'],
   image:'assets/scenes/temple.jpg',
   text:['家族一年一度的聚会到了，所有在外修炼的族中子弟都回来了。大厅里摆满了美味佳肴，长辈们笑呵呵地询问每个人的修炼进展。轮到你汇报时，所有人的目光都集中在你身上。'],
   choices:[
     { text:'展示修炼成果，让长辈们刮目相看', result:{ text:'你亮出{spirit}，展示了一番。长辈们纷纷点头，族长更是说："这孩子有出息，不愧是咱们家的种！"你获得了家族更多的资源支持。', gold:30, attack:2, fate:2, exp:80 } },
     { text:'虚心请教各位长辈', result:{ text:'你没有炫耀，而是虚心向各位长辈请教修炼中的困惑。长辈们非常高兴，纷纷倾囊相授。你从中学到了很多家族秘传的修炼技巧。', spiritPowerGain:8, defense:1, exp:70 } }
   ]},
-{ id:'or_noble_03', name:'家族危机', location:'武魂城·家族', phase:'master', minLevel:25, weight:2, tags:['social','sect','fight','justice'],
+{ id:'or_noble_03', name:'家族危机', location:'武魂城·家族', origin: 'spirit_city', phase:'master', minLevel:25, weight:2, tags:['social','sect','fight','justice'],
   image:'assets/scenes/temple.jpg',
   text:['家族传来急报——对头家族联合了几个小势力对家族生意进行打压，族中长辈焦头烂额。父亲虽然没让你回来，但你知道，现在是你回报家族的时候了。'],
   choices:[
@@ -2414,21 +2414,21 @@ EVENTS.push(
     { text:'用你在学院的人脉帮家族', result:{ text:'你联系了在学院认识的朋友和老师，利用他们的资源帮助家族度过了难关。虽然没有亲自出手，但让大家看到了你的智慧和影响力。', fate:2, gold:30, exp:80 } }
   ]},
 // ---- 边境小城 ----
-{ id:'or_border_01', name:'守城', location:'边境小城', phase:'academy', minLevel:1, weight:3, tags:['fight','guard','military'],
+{ id:'or_border_01', name:'守城', location:'边境小城', origin: 'border_town', phase:'academy', minLevel:1, weight:3, tags:['fight','guard','military'],
   image:'assets/scenes/border_town.jpg',
   text:['你回到老家边境小城，正赶上守城军换防。守城的叔叔一看到你就乐了："小{name}！回来啦？来来来，正好缺人手，帮叔叔守两天城！"'],
   choices:[
     { text:'认真地守城', result:{ text:'你穿上军装，认真地站岗放哨。虽然只是简单的守城，但你学到了很多军事知识——哨位布置、烽火信号、紧急集合。这些知识在以后的冒险中意外地有用。', defense:2, exp:30, fate:1 } },
     { text:'和守城士兵切磋武艺', result:{ text:'守城士兵们听说你是魂师，都想和你过两招。你和他们切磋了一整天，虽然他们都是普通人，但实战经验丰富，你学到了很多实用的格斗技巧。', attack:2, speed:1, exp:40 } }
   ]},
-{ id:'or_border_02', name:'边境冲突', location:'边境小城', phase:'adventure', minLevel:12, weight:2, tags:['fight','guard','military','weapon'],
+{ id:'or_border_02', name:'边境冲突', location:'边境小城', origin: 'border_town', phase:'adventure', minLevel:12, weight:2, tags:['fight','guard','military','weapon'],
   image:'assets/scenes/border_town.jpg',
   text:['边境发生了小规模的冲突——一伙流窜的贼寇趁着夜色想洗劫边城。守城军力不足，叔叔急得团团转。看到你回来，他眼睛一亮："好小子，来得正是时候！"'],
   choices:[
     { text:'正面迎击贼寇', result:{ text:'你展开{spirit}，一马当先冲向贼寇。贼寇们看到魂师，吓得魂飞魄散，你三下五除二就解决了领头的几个，剩下的作鸟兽散。守城士兵们把你当英雄，叔叔骄傲地拍着你的肩膀。', attack:4, defense:1, gold:30, fate:2, exp:100 } },
     { text:'智取——设伏击圈', result:{ text:'你没有硬拼，而是利用地形设了一个伏击圈。贼寇一到，四面喊杀声起，吓得他们丢盔弃甲。你不仅保住了边城，还缴获了一批物资。', defense:2, speed:1, gold:40, exp:80 } }
   ]},
-{ id:'or_border_03', name:'铁匠的礼物', location:'边境小城·铁匠铺', phase:'adventure', minLevel:18, weight:2, tags:['weapon','fight','trade'],
+{ id:'or_border_03', name:'铁匠的礼物', location:'边境小城·铁匠铺', origin: 'border_town', phase:'adventure', minLevel:18, weight:2, tags:['weapon','fight','trade'],
   image:'assets/scenes/blacksmith.jpg',
   text:['城里的老铁匠是你小时候的邻居，他听说你成了魂师，高兴得不得了。他花了三个月时间，专门为你打造了一件装备——"小子，这是我老铁匠这辈子打得最好的一件东西，送你了！"'],
   choices:[
@@ -2436,21 +2436,21 @@ EVENTS.push(
     { text:'婉拒，但给他留了一笔钱', result:{ text:'你不好意思收这么贵重的礼物，但给老铁匠留了一笔钱。老铁匠死活不收，你偷偷塞在他枕头下。', gold:-20, fate:2, exp:30 } }
   ]},
 // ---- 海神岛渔村 ----
-{ id:'or_sea_01', name:'海的味道', location:'海神岛渔村', phase:'academy', minLevel:1, weight:3, tags:['sea','water','nature'],
+{ id:'or_sea_01', name:'海的味道', location:'海神岛渔村', origin: 'sea_island', phase:'academy', minLevel:1, weight:3, tags:['sea','water','nature'],
   image:'assets/scenes/sea_god_island.jpg',
   text:['你回到了海边的渔村，咸咸的海风、沙滩上的贝壳、远处渔船的帆影——一切都是那么熟悉。村里的小伙伴们围着你，叽叽喳喳地让你讲学院的故事。'],
   choices:[
     { text:'下海游泳，重温童年', result:{ text:'你脱掉外衣跳进海里，像小时候一样自由自在地游着。海水似乎对你的{spirit}有着天然的亲和力，你感觉武魂在水中更加活跃了。', speed:2, hp:10, exp:25 } },
     { text:'跟渔民出海打鱼', result:{ text:'你跟着村里的渔民出海，虽然风浪不小，但你一点都不晕船。渔民们说你是"海的儿子"，你把打到的鱼分给了村里的老人。', gold:10, fate:1, exp:30 } }
   ]},
-{ id:'or_sea_02', name:'深海奇遇', location:'海神岛·近海', phase:'adventure', minLevel:14, weight:2, tags:['sea','water','explore','secret'],
+{ id:'or_sea_02', name:'深海奇遇', location:'海神岛·近海', origin: 'sea_island', phase:'adventure', minLevel:14, weight:2, tags:['sea','water','explore','secret'],
   image:'assets/scenes/sea_god_island.jpg',
   text:['你独自潜入深海，在海底发现了一个被珊瑚覆盖的洞穴。洞穴中散发着微弱的蓝光，似乎有什么东西在召唤你。'],
   choices:[
     { text:'深入洞穴探索', result:{ text:'你游进洞穴深处，发现了一颗散发着蓝色光芒的珍珠——这是一颗千年海魂珠！珠中蕴含的海洋之力与你的魂力产生了共鸣。', item:{ name:'海魂珠', desc:'蕴含海洋之力的千年珍珠', effect:{ hp:25, speed:3 } }, fate:2, exp:80 } },
     { text:'在洞口修炼', result:{ text:'你没有冒险深入，而是在洞口修炼。海底充沛的水属性魂力让你的修炼事半功倍。', spiritPowerGain:8, speed:1, exp:60 } }
   ]},
-{ id:'or_sea_03', name:'海兽来袭', location:'海神岛渔村', phase:'master', minLevel:22, weight:2, tags:['sea','fight','protect','justice'],
+{ id:'or_sea_03', name:'海兽来袭', location:'海神岛渔村', origin: 'sea_island', phase:'master', minLevel:22, weight:2, tags:['sea','fight','protect','justice'],
   image:'assets/scenes/sea_god_island.jpg',
   text:['一只巨大的海兽袭击了渔村！渔船被掀翻，码头被毁坏，村民们惊慌失措地往高处跑。你从小在这片海长大，决不允许任何东西伤害你的家乡！'],
   choices:[

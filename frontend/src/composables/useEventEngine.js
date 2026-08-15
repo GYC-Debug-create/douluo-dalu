@@ -321,6 +321,7 @@ export function useEventEngine() {
     const timeOfDay = ['dawn', 'day', 'day', 'day', 'dusk', 'night', 'night', 'night'][gameTime % 8]
     return {
       level,
+      origin: player.origin || '',
       phase: currentPhase(),
       ringCount: player.rings?.length || 0,
       spirit: player.spirit || {},

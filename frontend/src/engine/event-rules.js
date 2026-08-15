@@ -216,6 +216,7 @@ export function adaptEvent(event, options = {}) {
       spiritTiers: mergeUnique(source.spiritTiers, sourceSpiritRule?.spiritTiers, jsonSpiritRule.spiritTiers)
     } : {}),
     ...(source.spiritId ? { requiredSpiritId: source.spiritId } : {}),
+    ...(source.origin ? { requiredOrigin: source.origin } : {}),
     ...(ringCount !== null ? { ringOnly: true, requiredRingCount: ringCount } : {}),
     ...(explicit.minRingCount !== undefined || automatic.minRingCount !== undefined
       ? { minRingCount: Math.max(Number(explicit.minRingCount) || 0, Number(automatic.minRingCount) || 0) }
@@ -267,6 +268,7 @@ export function isEventEligible(event, ctx = {}) {
   if (current.minRingCount !== undefined && ringCount < current.minRingCount) return false
   if (current.maxRingCount !== undefined && ringCount > current.maxRingCount) return false
   if (current.requiredSpiritId && ctx.spirit?.id !== current.requiredSpiritId) return false
+  if (current.requiredOrigin && ctx.origin !== current.requiredOrigin) return false
   if (!sameValue(ctx.spirit?.type, current.spiritTypes) || !sameValue(ctx.spirit?.subtype, current.spiritSubtypes) || !sameValue(ctx.spirit?.tier, current.spiritTiers)) return false
   if (current.unique && done.includes(current.id)) return false
   if (ctx.recentEvents?.includes(current.id) && ctx.excludeRecent) return false
