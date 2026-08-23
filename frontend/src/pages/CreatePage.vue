@@ -45,7 +45,7 @@
             >
               <span v-if="origin.qualityBoost" class="origin-tag">新手推荐</span>
               <div class="oc-banner">
-                <img v-if="origin.image" :src="origin.image" :alt="origin.name" />
+                <img v-if="origin.image" :src="origin.image" :alt="origin.name" loading="lazy" decoding="async" />
               </div>
               <div class="oc-body">
                 <div class="oc-name">{{ origin.name }}</div>
@@ -88,6 +88,8 @@
                     alt=""
                     :data-spirit-id="slot.id"
                     :data-tier="slot.tier"
+                    loading="lazy"
+                    decoding="async"
                     @error="onImgError"
                   />
                 </Transition>
@@ -142,6 +144,7 @@
                   v-if="awakenedSpirit?.image"
                   :src="awakenedSpirit.image"
                   :alt="awakenedSpirit.name"
+                  decoding="async"
                   @error="onImgError"
                 />
                 <div v-else class="awaken-q-reveal" :style="{ color: tierColor }">
@@ -763,11 +766,13 @@ function confirmSpirit() {
   clearDraft(storage)
   removeLegacyKey(storage)
 
-  // 异步保存到云端（不阻塞跳转）
+  // 异步保存到云端（不阻塞跳转；未登录时仅保留本地）
   const api = useApi()
   saveToCloud(api).then(result => {
     if (result.success) {
       console.log('云端存档成功，版本:', result.version)
+    } else if (result.needLogin) {
+      console.log('未登录账号，角色仅保存在本地')
     } else if (result.conflict) {
       console.warn('云端版本冲突，已使用本地存档')
     } else {

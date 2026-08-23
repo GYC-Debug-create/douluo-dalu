@@ -154,12 +154,14 @@ describe('事件与成长闭环', () => {
     expect(cooldownSafeEventPool(pool, ['a', 'b', 'c', 'a'], ['a', 'b', 'c'])).toEqual([{ id: 'b' }])
   })
 
-  it('新经验曲线控制长线事件量并保持后期单级可达', () => {
-    expect(experienceNeededForLevel(17)).toBe(284)
-    expect(experienceNeededForLevel(99)).toBe(1268)
+  it('幂经验曲线与 legacy 层一致：40*lv^1.15，1→100 累计 367228', () => {
+    expect(experienceNeededForLevel(1)).toBe(40)
+    expect(experienceNeededForLevel(10)).toBe(565)
+    expect(experienceNeededForLevel(17)).toBe(1040)
+    expect(experienceNeededForLevel(99)).toBe(7889)
     const total = Array.from({ length: 99 }, (_, index) => experienceNeededForLevel(index + 1))
       .reduce((sum, value) => sum + value, 0)
-    expect(total).toBe(67320)
+    expect(total).toBe(367228)
   })
 
   it('主线与猎环事件要求玩家真实抵达目标地点', () => {

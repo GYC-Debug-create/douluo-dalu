@@ -24,6 +24,67 @@
       <button class="btn btn-big" @click="openSaveList">继续冒险</button>
       <button class="btn btn-big" @click="goCodex">万象图鉴</button>
     </div>
+
+    <!-- 账号登录 / 注册 -->
+    <div class="login-bar">
+      <template v-if="isLoggedIn">
+        <span class="login-hello">👤 {{ authUser }}</span>
+        <button class="btn login-btn" @click="togglePasswordForm">修改密码</button>
+        <button class="btn login-btn" @click="doLogout">退出登录</button>
+        <div v-if="showPasswordForm" class="password-form">
+          <input
+            v-model="oldPassword"
+            class="login-input"
+            type="password"
+            placeholder="当前密码"
+            maxlength="128"
+            autocomplete="current-password"
+          />
+          <input
+            v-model="newPassword"
+            class="login-input"
+            type="password"
+            placeholder="新密码（至少 4 位）"
+            maxlength="128"
+            autocomplete="new-password"
+          />
+          <input
+            v-model="newPasswordConfirm"
+            class="login-input"
+            type="password"
+            placeholder="再输入一次新密码"
+            maxlength="128"
+            autocomplete="new-password"
+          />
+          <button class="btn login-btn" :disabled="passwordBusy" @click="submitPasswordChange">确认修改</button>
+          <button class="btn login-btn" :disabled="passwordBusy" @click="showPasswordForm = false">取消</button>
+        </div>
+      </template>
+      <template v-else>
+        <input
+          v-model="loginUsername"
+          class="login-input"
+          type="text"
+          placeholder="账号（2-20 位）"
+          maxlength="20"
+          autocomplete="username"
+          @keyup.enter="doLogin"
+        />
+        <input
+          v-model="loginPassword"
+          class="login-input"
+          type="password"
+          placeholder="密码（至少 4 位）"
+          maxlength="128"
+          autocomplete="current-password"
+          @keyup.enter="doLogin"
+        />
+        <button class="btn login-btn" :disabled="authBusy" @click="doLogin">登录</button>
+        <button class="btn login-btn" :disabled="authBusy" @click="doRegister">注册</button>
+      </template>
+      <span v-if="authMessage" class="login-message">{{ authMessage }}</span>
+    </div>
+
     <div class="title-tip">一场属于你的魂师传奇，即将展开……</div>
     <div class="title-meta">新手入门约 2 分钟 · 出身可重选 · 觉醒可无限次</div>
 
@@ -104,6 +165,56 @@ const loadingSaves = ref(false)
 const cloudSaves = ref([])
 const localSave = ref(null)
 
+// ---- 账号登录 / 注册 ----
+const loginUsername = ref('')
+const loginPassword = ref('')
+const authBusy = ref(false)
+const authMessage = ref('')
+const isLoggedIn = computed(() => api.isAuthenticated())
+const authUser = computed(() => api.username())
+
+// ---- 修改密码 ----
+const showPasswordForm = ref(false)
+const oldPassword = ref('')
+const newPassword = ref('')
+const newPasswordConfirm = ref('')
+const passwordBusy = ref(false)
+
+function togglePasswordForm() {
+  showPasswordForm.value = !showPasswordForm.value
+  oldPassword.value = ''
+  newPassword.value = ''
+  newPasswordConfirm.value = ''
+  authMessage.value = ''
+}
+
+async function submitPasswordChange() {
+  if (passwordBusy.value) return
+  if (!oldPassword.value || !newPassword.value) {
+    authMessage.value = '请填写当前密码和新密码'
+    return
+  }
+  if (newPassword.value.length < 4) {
+    authMessage.value = '新密码至少 4 位'
+    return
+  }
+  if (newPassword.value !== newPasswordConfirm.value) {
+    authMessage.value = '两次输入的新密码不一致'
+    return
+  }
+  passwordBusy.value = true
+  authMessage.value = ''
+  try {
+    await api.changePassword(oldPassword.value, newPassword.value)
+    showPasswordForm.value = false
+    authMessage.value = '密码修改成功，请牢记新密码'
+  } catch (error) {
+    authMessage.value = error.message || '修改失败'
+  } finally {
+    passwordBusy.value = false
+  }
+}
+
 const hasAnySave = computed(() => hasLocalSave.value || hasCloudSave.value)
 
 const allSaves = computed(() => {
@@ -151,15 +262,70 @@ onMounted(async () => {
     hasLocalSave.value = true
   }
 
-  // 检查云端存档
+  // 检查云端存档（需已登录；未登录时静默跳过）
+  if (api.isAuthenticated()) {
+    await refreshCloudSaves()
+  }
+})
+
+async function refreshCloudSaves() {
   try {
     const result = await api.listSaves()
     cloudSaves.value = result.list || []
     hasCloudSave.value = cloudSaves.value.length > 0
-  } catch {
-    // 后端未启动时静默忽略
+  } catch (error) {
+    // 未登录（401）或后端未启动时静默降级
+    cloudSaves.value = []
+    hasCloudSave.value = false
   }
-})
+}
+
+async function doLogin() {
+  if (authBusy.value) return
+  const name = loginUsername.value.trim()
+  if (!name || !loginPassword.value) {
+    authMessage.value = '请输入账号和密码'
+    return
+  }
+  authBusy.value = true
+  authMessage.value = ''
+  try {
+    await api.login(name, loginPassword.value)
+    loginPassword.value = ''
+    await refreshCloudSaves()
+  } catch (error) {
+    authMessage.value = error.message || '登录失败'
+  } finally {
+    authBusy.value = false
+  }
+}
+
+async function doRegister() {
+  if (authBusy.value) return
+  const name = loginUsername.value.trim()
+  if (!name || !loginPassword.value) {
+    authMessage.value = '请输入账号和密码'
+    return
+  }
+  authBusy.value = true
+  authMessage.value = ''
+  try {
+    await api.register(name, loginPassword.value)
+    loginPassword.value = ''
+    await refreshCloudSaves()
+  } catch (error) {
+    authMessage.value = error.message || '注册失败'
+  } finally {
+    authBusy.value = false
+  }
+}
+
+function doLogout() {
+  api.logout()
+  cloudSaves.value = []
+  hasCloudSave.value = false
+  authMessage.value = ''
+}
 
 function startNew() {
   // “新的旅程”视为明确开始新角色：建立全新创建草稿（四个出身保底全部清零），
@@ -180,14 +346,8 @@ async function openSaveList() {
   showSaveList.value = true
   loadingSaves.value = true
 
-  // 重新拉取最新云端存档列表
-  try {
-    const result = await api.listSaves()
-    cloudSaves.value = result.list || []
-    hasCloudSave.value = cloudSaves.value.length > 0
-  } catch {
-    // 忽略
-  }
+  // 重新拉取最新云端存档列表（未登录时只展示本地）
+  await refreshCloudSaves()
 
   // 重新检查本地
   localSave.value = loadFromLocal()
@@ -207,12 +367,20 @@ async function selectSave(save) {
     return
   }
 
-  // 云端存档：认证 -> 加载 -> 进入游戏
+  // 云端存档：需先登录账号，再读取（只允许读本人名下存档）
+  if (!api.isAuthenticated()) {
+    authMessage.value = '请先登录账号，再读取云端存档'
+    return
+  }
+
   try {
-    await api.authenticate(save.playerId, save.name)
     const result = await loadFromCloud(api, save.playerId)
     if (result.success) {
       router.push('/game')
+      return
+    }
+    if (result.needLogin) {
+      authMessage.value = result.error || '请先登录账号'
       return
     }
     // 云端加载失败，如果有本地存档则回退
@@ -221,7 +389,7 @@ async function selectSave(save) {
       return
     }
   } catch {
-    // 认证/加载失败，回退本地
+    // 加载失败，回退本地
     if (hasLocalSave.value) {
       router.push('/game')
       return
@@ -379,6 +547,68 @@ function formatTime(timeStr) {
 .title-menu .btn-gold {
   border-color: var(--gold);
   color: var(--gold-hi);
+}
+
+/* ============ 账号登录栏 ============ */
+.login-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 18px;
+  width: min(420px, 85vw);
+}
+.login-hello {
+  color: var(--gold-hi);
+  font-size: 15px;
+  letter-spacing: 2px;
+}
+.login-input {
+  flex: 1;
+  min-width: 120px;
+  max-width: 160px;
+  padding: 9px 12px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.35);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 14px;
+  letter-spacing: 1px;
+  transition: border-color 0.2s;
+}
+.login-input:focus {
+  outline: none;
+  border-color: var(--gold);
+}
+.login-input::placeholder {
+  color: #6b5e42;
+}
+.login-btn {
+  padding: 8px 18px;
+  font-size: 14px;
+  letter-spacing: 2px;
+  background: rgba(201, 168, 76, 0.08);
+}
+.login-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.login-message {
+  width: 100%;
+  text-align: center;
+  color: #ffb86b;
+  font-size: 12.5px;
+  letter-spacing: 1px;
+  min-height: 16px;
+}
+.password-form {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
 }
 
 .title-tip {

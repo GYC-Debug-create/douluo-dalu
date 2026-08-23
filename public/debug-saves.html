@@ -16,6 +16,10 @@ pre{background:#0d0a06;border:1px solid #3a2f1a;border-radius:4px;padding:12px;o
 .success{color:#66bb6a}
 .error{color:#ff6b6b}
 .warn{color:#facc15}
+.login-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.login-row input{background:#14100a;border:1px solid #3a2f1a;color:#e8dcc8;padding:8px 12px;border-radius:4px;font-size:13px}
+.login-row input:focus{outline:none;border-color:#c9a84c}
+#login-status{display:inline-block;margin-top:8px;font-size:13px}
 </style>
 </head>
 <body>
@@ -26,6 +30,17 @@ pre{background:#0d0a06;border:1px solid #3a2f1a;border-radius:4px;padding:12px;o
 <button onclick="checkStorage()">刷新扫描</button>
 <button onclick="checkBackup()">检查备份存档</button>
 <div id="storage-result"></div>
+</div>
+
+<div class="section">
+<h2>账号登录（新账号体系）</h2>
+<div class="login-row">
+  <input id="login-user" placeholder="账号（2-20 位）" maxlength="20">
+  <input id="login-pass" type="password" placeholder="密码（至少 4 位）" maxlength="128">
+  <button onclick="doLogin()">登录</button>
+  <button onclick="doRegister()">注册</button>
+</div>
+<span id="login-status"></span>
 </div>
 
 <div class="section">
@@ -42,8 +57,44 @@ pre{background:#0d0a06;border:1px solid #3a2f1a;border-radius:4px;padding:12px;o
 
 <script>
 const LS_KEY = 'dldl_text_rpg_save';
+let AUTH_TOKEN = sessionStorage.getItem('dldl_auth_token') || '';
 
 function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+
+function setLoginStatus(text, ok){
+  const el = document.getElementById('login-status');
+  el.textContent = text;
+  el.className = ok ? 'success' : 'error';
+}
+
+async function postAuth(endpoint){
+  const username = document.getElementById('login-user').value.trim();
+  const password = document.getElementById('login-pass').value;
+  if(!username || !password){ setLoginStatus('请输入账号和密码', false); return; }
+  setLoginStatus('请求中…', true);
+  try{
+    const resp = await fetch(endpoint, {
+      method:'POST', headers:{ 'Content-Type':'application/json' },
+      body: JSON.stringify({ username, password })
+    });
+    const data = await resp.json().catch(() => ({}));
+    if(!resp.ok){
+      setLoginStatus((data.error || '请求失败') + '（状态码 ' + resp.status + '）', false);
+      return;
+    }
+    AUTH_TOKEN = data.token;
+    sessionStorage.setItem('dldl_auth_token', data.token);
+    sessionStorage.setItem('dldl_auth_user', data.username);
+    document.getElementById('login-pass').value = '';
+    setLoginStatus('已登录：' + data.username, true);
+    loadServerSaves();
+  }catch(e){
+    setLoginStatus('请求失败: ' + e.message, false);
+  }
+}
+
+function doLogin(){ postAuth('/api/auth/login'); }
+function doRegister(){ postAuth('/api/auth/register'); }
 
 function checkStorage(){
   const result = document.getElementById('storage-result');
@@ -130,11 +181,23 @@ function checkBackup(){
 
 async function loadServerSaves(){
   const result = document.getElementById('server-result');
+  if(!AUTH_TOKEN){
+    result.innerHTML = '<div class="warn">请先在上方登录账号（新账号体系要求登录后查看存档列表，且只显示本人账号的存档）</div>';
+    return;
+  }
   try{
-    const resp = await fetch('/api/player/list');
+    const resp = await fetch('/api/player/list', { headers: { 'x-auth-token': AUTH_TOKEN } });
+    if(resp.status === 401){
+      AUTH_TOKEN = '';
+      sessionStorage.removeItem('dldl_auth_token');
+      result.innerHTML = '<div class="error">登录已过期，请重新登录</div>';
+      setLoginStatus('登录已过期', false);
+      return;
+    }
     const data = await resp.json();
     if(!data.success){result.innerHTML='<div class="error">加载失败</div>';return;}
-    let html = `<div class="save-info">共 ${data.list.length} 个服务器存档：</div>`;
+    if(!data.list.length){result.innerHTML='<div class="save-info warn">当前账号暂无服务器存档</div>';return;}
+    let html = `<div class="save-info">共 ${data.list.length} 个服务器存档（账号名下）：</div>`;
     data.list.forEach(s => {
       const isHigh = s.level >= 50;
       html += `<div class="save-info ${isHigh?'high-lv':''}">
@@ -169,6 +232,13 @@ function restorePrompt(){
 // 自动扫描
 checkStorage();
 loadServerSaves();
+(function initLoginStatus(){
+  const user = sessionStorage.getItem('dldl_auth_user');
+  if(AUTH_TOKEN && user){
+    setLoginStatus('已登录：' + user, true);
+    document.getElementById('login-user').value = user;
+  }
+})();
 </script>
 </body>
 </html>

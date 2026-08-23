@@ -14,7 +14,16 @@ COPY server.js ./
 # 这里不整目录复制以免把约 122MB 图片重复放入镜像）。
 COPY public/data/spirits.json ./public/data/spirits.json
 COPY public/data/beasts.json ./public/data/beasts.json
+# 双轨保留：game.html 及其脚本已从 frontend/dist 剔除（vite 构建期去污，约省 1.1MB），
+# 这里精确复制到 /app/public，由 server 的静态回退路径继续提供旧版入口。
+COPY public/game.html public/debug-saves.html ./public/
+COPY public/game.js public/game-data.js public/game-events-expanded.js \
+     public/game-visual.js public/save-utils.js public/game-rules.js public/game-combat.js \
+     ./public/
 COPY frontend/dist ./frontend/dist
+# 运维工具：账号管理 + 旧存档归属迁移（纯 Node 无外部依赖，供 docker exec 使用）
+COPY scripts/account-admin.js ./scripts/account-admin.js
+COPY scripts/migrate-legacy-saves.js ./scripts/migrate-legacy-saves.js
 
 RUN mkdir -p /app/public /app/data \
     && chown -R node:node /app

@@ -4,7 +4,9 @@ frontend/src
 frontend/tests
 tests
 docs
-scripts
+scripts/*
+!scripts/account-admin.js
+!scripts/migrate-legacy-saves.js
 tools
 data
 # Dockerfile only needs the two API JSON files; frontend/dist carries the
@@ -14,6 +16,16 @@ public/*
 !public/data/
 !public/data/spirits.json
 !public/data/beasts.json
+# legacy 双轨入口：不再进 dist，但容器仍按 Dockerfile 精确 COPY 提供旧版页
+!public/game.html
+!public/debug-saves.html
+!public/game.js
+!public/game-data.js
+!public/game-events-expanded.js
+!public/game-visual.js
+!public/save-utils.js
+!public/game-rules.js
+!public/game-combat.js
 .git
 .trae
 *.log

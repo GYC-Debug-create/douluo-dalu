@@ -44,6 +44,23 @@ npm run dev:frontend
 
 然后访问 <http://localhost:5173>。生产验收仍应使用 `npm start` 和 3000 端口，以验证实际构建与 Express 静态资源链路。
 
+## 账号与存档归属
+
+- 标题页可自由注册/登录（账号 2-20 位字母/数字/中文，密码 4-128 位）；登录后可**修改密码**（`POST /api/auth/password`，验证原密码）。
+- 每个账号拥有独立存档：`/api/player/*` 读写接口都要求登录（`x-auth-token` 头），且只能操作本人名下的存档。
+- 密码以 scrypt 哈希存储在 `data/accounts.json`；Token 为无状态 HMAC（30 天有效），密钥持久化在 `data/.token-secret`，服务器重启不掉线（可用 `TOKEN_SECRET` 环境变量覆盖，需 ≥16 字符）。
+- 管理员可用脚本建号/重置密码：
+  ```bash
+  node scripts/account-admin.js create <用户名> <密码>
+  node scripts/account-admin.js set-password <用户名> <新密码>
+  ```
+- 账号体系上线前的旧存档可用迁移工具归属/归档：
+  ```bash
+  node scripts/migrate-legacy-saves.js list                        # 查看全部存档及归属
+  node scripts/migrate-legacy-saves.js assign <用户名> <playerId...> # 归属给账号
+  node scripts/migrate-legacy-saves.js remove <playerId...>         # 归档到 data/removed/
+  ```
+
 ## 常用命令
 
 ```bash

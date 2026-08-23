@@ -1,0 +1,4773 @@
+{
+  "generatedAt": "2026-08-22T08:53:25.033Z",
+  "curve": "round(40*lv^1.15)",
+  "totalNeed1100": 367228,
+  "targets": {
+    "academy": 1000,
+    "adventure": 2000,
+    "master": 4000,
+    "god": 8000
+  },
+  "defaults": {
+    "academy": 3,
+    "adventure": 15,
+    "master": 52,
+    "god": 85
+  },
+  "poolBefore": 60784,
+  "poolAfter": 1148380,
+  "events": {
+    "first_class": {
+      "phase": "academy",
+      "refLevel": 1,
+      "old": [
+        30,
+        30,
+        30,
+        40
+      ],
+      "new": [
+        170,
+        170,
+        170,
+        230
+      ]
+    },
+    "cafeteria_funny": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        25,
+        20,
+        25,
+        35
+      ],
+      "new": [
+        890,
+        710,
+        890,
+        1250
+      ]
+    },
+    "playground_spar": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        40,
+        45,
+        35,
+        15
+      ],
+      "new": [
+        1110,
+        1250,
+        970,
+        420
+      ]
+    },
+    "library_night": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        45,
+        25
+      ],
+      "new": [
+        1250,
+        690
+      ]
+    },
+    "senior_rumor": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        30,
+        15,
+        20
+      ],
+      "new": [
+        1250,
+        630,
+        830
+      ]
+    },
+    "first_hunt": {
+      "phase": "academy",
+      "refLevel": 5,
+      "old": [
+        60,
+        55,
+        40
+      ],
+      "new": [
+        1430,
+        1310,
+        950
+      ]
+    },
+    "reach_lv10": {
+      "phase": "academy",
+      "refLevel": 10,
+      "old": [
+        40,
+        50,
+        30
+      ],
+      "new": [
+        2540,
+        3180,
+        1910
+      ]
+    },
+    "exam_week": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        50,
+        10,
+        25
+      ],
+      "new": [
+        1250,
+        250,
+        630
+      ]
+    },
+    "forest_trip": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        45,
+        30,
+        40
+      ],
+      "new": [
+        1250,
+        830,
+        1110
+      ]
+    },
+    "mystery_merchant": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        null,
+        null,
+        15,
+        5
+      ],
+      "new": [
+        null,
+        null,
+        1250,
+        420
+      ]
+    },
+    "training_hill": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        25,
+        25,
+        20
+      ],
+      "new": [
+        1250,
+        1250,
+        1000
+      ]
+    },
+    "help_granny": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        20,
+        25,
+        5
+      ],
+      "new": [
+        1000,
+        1250,
+        250
+      ]
+    },
+    "rainy_day": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        30,
+        15
+      ],
+      "new": [
+        1250,
+        630
+      ]
+    },
+    "swim_contest": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        30,
+        20,
+        15
+      ],
+      "new": [
+        1250,
+        830,
+        630
+      ]
+    },
+    "cooking_disaster": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        20,
+        15,
+        30
+      ],
+      "new": [
+        830,
+        630,
+        1250
+      ]
+    },
+    "star_gazing": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        20,
+        15
+      ],
+      "new": [
+        1250,
+        940
+      ]
+    },
+    "spirit_show": {
+      "phase": "academy",
+      "refLevel": 3,
+      "old": [
+        35,
+        30,
+        20
+      ],
+      "new": [
+        790,
+        680,
+        450
+      ]
+    },
+    "lost_kitten": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        25,
+        15
+      ],
+      "new": [
+        1250,
+        750
+      ]
+    },
+    "old_tree": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        35,
+        25,
+        null
+      ],
+      "new": [
+        1250,
+        890,
+        null
+      ]
+    },
+    "fake_master": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        10,
+        15,
+        20
+      ],
+      "new": [
+        630,
+        940,
+        1250
+      ]
+    },
+    "night_patrol": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        25,
+        20
+      ],
+      "new": [
+        1250,
+        1000
+      ]
+    },
+    "festival": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        25,
+        25,
+        20
+      ],
+      "new": [
+        1250,
+        1250,
+        1000
+      ]
+    },
+    "rival_challenge": {
+      "phase": "adventure",
+      "refLevel": 12,
+      "old": [
+        80,
+        65,
+        30
+      ],
+      "new": [
+        1380,
+        1120,
+        520
+      ]
+    },
+    "soul_master_prelim": {
+      "phase": "adventure",
+      "refLevel": 30,
+      "old": [
+        120,
+        100
+      ],
+      "new": [
+        3950,
+        3290
+      ]
+    },
+    "soul_master_final": {
+      "phase": "adventure",
+      "refLevel": 40,
+      "old": [
+        200,
+        180
+      ],
+      "new": [
+        5500,
+        4950
+      ]
+    },
+    "spirit_hall_exam": {
+      "phase": "adventure",
+      "refLevel": 30,
+      "old": [
+        110,
+        70
+      ],
+      "new": [
+        3950,
+        2510
+      ]
+    },
+    "mysterious_elder": {
+      "phase": "adventure",
+      "refLevel": 28,
+      "old": [
+        100,
+        80,
+        30
+      ],
+      "new": [
+        3650,
+        2920,
+        1100
+      ]
+    },
+    "beast_riot": {
+      "phase": "adventure",
+      "refLevel": 32,
+      "old": [
+        150,
+        130,
+        140
+      ],
+      "new": [
+        4260,
+        3690,
+        3980
+      ]
+    },
+    "meet_partner": {
+      "phase": "adventure",
+      "refLevel": 15,
+      "old": [
+        70,
+        50
+      ],
+      "new": [
+        1780,
+        1270
+      ]
+    },
+    "ancient_ruins": {
+      "phase": "adventure",
+      "refLevel": 15,
+      "old": [
+        90,
+        60,
+        60
+      ],
+      "new": [
+        1780,
+        1190,
+        1190
+      ]
+    },
+    "bottleneck": {
+      "phase": "adventure",
+      "refLevel": 35,
+      "old": [
+        120,
+        80,
+        100
+      ],
+      "new": [
+        4720,
+        3150,
+        3930
+      ]
+    },
+    "treasure_map": {
+      "phase": "adventure",
+      "refLevel": 15,
+      "old": [
+        60,
+        20
+      ],
+      "new": [
+        1780,
+        590
+      ]
+    },
+    "arena_streak": {
+      "phase": "adventure",
+      "refLevel": 15,
+      "old": [
+        110,
+        40
+      ],
+      "new": [
+        1780,
+        650
+      ]
+    },
+    "wolf_king_den": {
+      "phase": "adventure",
+      "refLevel": 30,
+      "old": [
+        150,
+        50
+      ],
+      "new": [
+        3950,
+        1320
+      ]
+    },
+    "herb_valley": {
+      "phase": "adventure",
+      "refLevel": 15,
+      "old": [
+        50,
+        80
+      ],
+      "new": [
+        1110,
+        1780
+      ]
+    },
+    "blacksmith": {
+      "phase": "adventure",
+      "refLevel": 15,
+      "old": [
+        70,
+        50
+      ],
+      "new": [
+        1780,
+        1270
+      ]
+    },
+    "caravan": {
+      "phase": "adventure",
+      "refLevel": 15,
+      "old": [
+        80,
+        15
+      ],
+      "new": [
+        1780,
+        330
+      ]
+    },
+    "hot_spring": {
+      "phase": "adventure",
+      "refLevel": 15,
+      "old": [
+        30,
+        45
+      ],
+      "new": [
+        1190,
+        1780
+      ]
+    },
+    "title_douluo_trial": {
+      "phase": "master",
+      "refLevel": 50,
+      "old": [
+        300,
+        280,
+        200
+      ],
+      "new": [
+        3800,
+        3550,
+        2530
+      ]
+    },
+    "spirit_hall_secret": {
+      "phase": "master",
+      "refLevel": 55,
+      "old": [
+        250,
+        220,
+        150
+      ],
+      "new": [
+        4240,
+        3730,
+        2540
+      ]
+    },
+    "shapeshift_beast": {
+      "phase": "god",
+      "refLevel": 75,
+      "old": [
+        260,
+        150,
+        100
+      ],
+      "new": [
+        6990,
+        4030,
+        2690
+      ]
+    },
+    "partner_farewell": {
+      "phase": "master",
+      "refLevel": 45,
+      "old": [
+        120,
+        130
+      ],
+      "new": [
+        3110,
+        3370
+      ]
+    },
+    "evil_spirit_master": {
+      "phase": "master",
+      "refLevel": 41,
+      "old": [
+        220,
+        240
+      ],
+      "new": [
+        2770,
+        3020
+      ]
+    },
+    "sea_trial": {
+      "phase": "master",
+      "refLevel": 45,
+      "old": [
+        200,
+        90
+      ],
+      "new": [
+        3370,
+        1520
+      ]
+    },
+    "bandit_king": {
+      "phase": "adventure",
+      "refLevel": 25,
+      "old": [
+        180,
+        120
+      ],
+      "new": [
+        3210,
+        2140
+      ]
+    },
+    "titan_encounter": {
+      "phase": "god",
+      "refLevel": 75,
+      "old": [
+        300,
+        100
+      ],
+      "new": [
+        6990,
+        2330
+      ]
+    },
+    "auction": {
+      "phase": "master",
+      "refLevel": 45,
+      "old": [
+        60,
+        40
+      ],
+      "new": [
+        3370,
+        2250
+      ]
+    },
+    "master_teaching": {
+      "phase": "master",
+      "refLevel": 48,
+      "old": [
+        180
+      ],
+      "new": [
+        3630
+      ]
+    },
+    "god_trial_sea": {
+      "phase": "master",
+      "refLevel": 50,
+      "old": [
+        400,
+        200
+      ],
+      "new": [
+        3800,
+        1900
+      ]
+    },
+    "angel_vs_sea": {
+      "phase": "god",
+      "refLevel": 90,
+      "old": [
+        500,
+        300
+      ],
+      "new": [
+        8610,
+        5170
+      ]
+    },
+    "final_evil": {
+      "phase": "god",
+      "refLevel": 95,
+      "old": [
+        999
+      ],
+      "new": [
+        9170
+      ]
+    },
+    "hermit_life": {
+      "phase": "god",
+      "refLevel": 90,
+      "old": [
+        150,
+        100
+      ],
+      "new": [
+        8610,
+        5740
+      ]
+    },
+    "whale_king_sea": {
+      "phase": "god",
+      "refLevel": 80,
+      "old": [
+        600,
+        150
+      ],
+      "new": [
+        7520,
+        1880
+      ]
+    },
+    "mortal_world": {
+      "phase": "god",
+      "refLevel": 90,
+      "old": [
+        250,
+        200
+      ],
+      "new": [
+        8610,
+        6890
+      ]
+    },
+    "thunder_tribulation": {
+      "phase": "god",
+      "refLevel": 92,
+      "old": [
+        500,
+        400
+      ],
+      "new": [
+        8840,
+        7070
+      ]
+    },
+    "world_peace": {
+      "phase": "god",
+      "refLevel": 90,
+      "old": [
+        200,
+        120
+      ],
+      "new": [
+        8610,
+        5170
+      ]
+    },
+    "ring_hunt_10": {
+      "phase": "academy",
+      "refLevel": 10,
+      "old": [
+        50,
+        90,
+        110
+      ],
+      "new": [
+        1450,
+        2600,
+        3180
+      ]
+    },
+    "ring_hunt_20": {
+      "phase": "adventure",
+      "refLevel": 20,
+      "old": [
+        100,
+        120,
+        80
+      ],
+      "new": [
+        2070,
+        2480,
+        1650
+      ]
+    },
+    "ring_hunt_30": {
+      "phase": "adventure",
+      "refLevel": 30,
+      "old": [
+        200,
+        150,
+        180
+      ],
+      "new": [
+        3950,
+        2960,
+        3560
+      ]
+    },
+    "ring_hunt_40": {
+      "phase": "adventure",
+      "refLevel": 40,
+      "old": [
+        350,
+        280
+      ],
+      "new": [
+        5500,
+        4400
+      ]
+    },
+    "ring_hunt_50": {
+      "phase": "master",
+      "refLevel": 50,
+      "old": [
+        350,
+        300
+      ],
+      "new": [
+        3800,
+        3260
+      ]
+    },
+    "ring_hunt_60": {
+      "phase": "master",
+      "refLevel": 60,
+      "old": [
+        600,
+        400
+      ],
+      "new": [
+        4680,
+        3120
+      ]
+    },
+    "ring_hunt_70": {
+      "phase": "master",
+      "refLevel": 70,
+      "old": [
+        1000,
+        800
+      ],
+      "new": [
+        5590,
+        4470
+      ]
+    },
+    "ring_hunt_80": {
+      "phase": "god",
+      "refLevel": 80,
+      "old": [
+        1000,
+        800
+      ],
+      "new": [
+        7520,
+        6020
+      ]
+    },
+    "ring_hunt_90": {
+      "phase": "god",
+      "refLevel": 90,
+      "old": [
+        2000,
+        1500
+      ],
+      "new": [
+        8610,
+        6460
+      ]
+    },
+    "ac_class_01": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        35,
+        10,
+        25
+      ],
+      "new": [
+        1250,
+        360,
+        890
+      ]
+    },
+    "ac_class_02": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        30,
+        20,
+        40
+      ],
+      "new": [
+        940,
+        630,
+        1250
+      ]
+    },
+    "ac_class_03": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        20,
+        40,
+        10
+      ],
+      "new": [
+        630,
+        1250,
+        310
+      ]
+    },
+    "ac_food_01": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        20,
+        10,
+        20
+      ],
+      "new": [
+        1250,
+        630,
+        1250
+      ]
+    },
+    "ac_food_02": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        20,
+        10,
+        15
+      ],
+      "new": [
+        1250,
+        630,
+        940
+      ]
+    },
+    "ac_food_03": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        25,
+        30,
+        15
+      ],
+      "new": [
+        1040,
+        1250,
+        630
+      ]
+    },
+    "ac_dorm_01": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        15,
+        10,
+        10
+      ],
+      "new": [
+        1250,
+        830,
+        830
+      ]
+    },
+    "ac_dorm_02": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        20,
+        15,
+        5
+      ],
+      "new": [
+        1250,
+        940,
+        310
+      ]
+    },
+    "ac_dorm_03": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        25,
+        20,
+        15
+      ],
+      "new": [
+        1250,
+        1000,
+        750
+      ]
+    },
+    "ac_train_01": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        35,
+        25,
+        10
+      ],
+      "new": [
+        1250,
+        890,
+        360
+      ]
+    },
+    "ac_train_02": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        30,
+        25,
+        15
+      ],
+      "new": [
+        1250,
+        1040,
+        630
+      ]
+    },
+    "ac_train_03": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        30,
+        10
+      ],
+      "new": [
+        1250,
+        420
+      ]
+    },
+    "ac_train_04": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        30,
+        35,
+        5
+      ],
+      "new": [
+        1070,
+        1250,
+        180
+      ]
+    },
+    "ac_lib_01": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        20,
+        25,
+        15
+      ],
+      "new": [
+        1000,
+        1250,
+        750
+      ]
+    },
+    "ac_lib_02": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        35,
+        20,
+        15
+      ],
+      "new": [
+        1250,
+        710,
+        540
+      ]
+    },
+    "ac_lib_03": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        20,
+        30,
+        25
+      ],
+      "new": [
+        830,
+        1250,
+        1040
+      ]
+    },
+    "ac_forest_01": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        25,
+        40,
+        20
+      ],
+      "new": [
+        780,
+        1250,
+        630
+      ]
+    },
+    "ac_forest_02": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        20,
+        25,
+        10
+      ],
+      "new": [
+        1000,
+        1250,
+        500
+      ]
+    },
+    "ac_forest_03": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        30,
+        10,
+        35
+      ],
+      "new": [
+        1070,
+        360,
+        1250
+      ]
+    },
+    "ac_forest_04": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        20,
+        15,
+        10
+      ],
+      "new": [
+        1250,
+        940,
+        630
+      ]
+    },
+    "ac_forest_05": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        15,
+        35,
+        20
+      ],
+      "new": [
+        540,
+        1250,
+        710
+      ]
+    },
+    "ac_daily_01": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        25,
+        30,
+        10
+      ],
+      "new": [
+        1040,
+        1250,
+        420
+      ]
+    },
+    "ac_daily_02": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        50,
+        25,
+        5
+      ],
+      "new": [
+        1250,
+        630,
+        130
+      ]
+    },
+    "ac_daily_03": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        15,
+        10,
+        15
+      ],
+      "new": [
+        1250,
+        830,
+        1250
+      ]
+    },
+    "ac_daily_04": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        25,
+        20,
+        5
+      ],
+      "new": [
+        1250,
+        1000,
+        250
+      ]
+    },
+    "ac_daily_05": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        20,
+        10,
+        5
+      ],
+      "new": [
+        1250,
+        630,
+        310
+      ]
+    },
+    "sp_wp_01": {
+      "phase": "academy",
+      "refLevel": 3,
+      "old": [
+        60,
+        40
+      ],
+      "new": [
+        790,
+        530
+      ]
+    },
+    "sp_wp_02": {
+      "phase": "adventure",
+      "refLevel": 12,
+      "old": [
+        80,
+        50
+      ],
+      "new": [
+        1380,
+        860
+      ]
+    },
+    "sp_wp_03": {
+      "phase": "adventure",
+      "refLevel": 18,
+      "old": [
+        60,
+        80
+      ],
+      "new": [
+        1650,
+        2200
+      ]
+    },
+    "sp_bs_01": {
+      "phase": "academy",
+      "refLevel": 4,
+      "old": [
+        50,
+        15,
+        60
+      ],
+      "new": [
+        930,
+        280,
+        1110
+      ]
+    },
+    "sp_bs_02": {
+      "phase": "adventure",
+      "refLevel": 15,
+      "old": [
+        100,
+        50,
+        20
+      ],
+      "new": [
+        1780,
+        890,
+        360
+      ]
+    },
+    "sp_bs_03": {
+      "phase": "adventure",
+      "refLevel": 25,
+      "old": [
+        200,
+        80
+      ],
+      "new": [
+        3210,
+        1280
+      ]
+    },
+    "sp_tl_01": {
+      "phase": "academy",
+      "refLevel": 2,
+      "old": [
+        40,
+        25
+      ],
+      "new": [
+        500,
+        310
+      ]
+    },
+    "sp_tl_02": {
+      "phase": "adventure",
+      "refLevel": 12,
+      "old": [
+        50,
+        40
+      ],
+      "new": [
+        1380,
+        1100
+      ]
+    },
+    "sp_pl_01": {
+      "phase": "academy",
+      "refLevel": 3,
+      "old": [
+        60,
+        40
+      ],
+      "new": [
+        790,
+        530
+      ]
+    },
+    "sp_pl_02": {
+      "phase": "adventure",
+      "refLevel": 14,
+      "old": [
+        60,
+        80
+      ],
+      "new": [
+        1240,
+        1650
+      ]
+    },
+    "sp_gd_01": {
+      "phase": "academy",
+      "refLevel": 5,
+      "old": [
+        100,
+        80
+      ],
+      "new": [
+        1430,
+        1140
+      ]
+    },
+    "sp_gd_02": {
+      "phase": "god",
+      "refLevel": 90,
+      "old": [
+        150,
+        40
+      ],
+      "new": [
+        8610,
+        2300
+      ]
+    },
+    "sp_df_01": {
+      "phase": "academy",
+      "refLevel": 3,
+      "old": [
+        50,
+        60
+      ],
+      "new": [
+        660,
+        790
+      ]
+    },
+    "sp_sp_01": {
+      "phase": "academy",
+      "refLevel": 3,
+      "old": [
+        60,
+        40
+      ],
+      "new": [
+        790,
+        530
+      ]
+    },
+    "sp_ct_01": {
+      "phase": "academy",
+      "refLevel": 4,
+      "old": [
+        70,
+        60
+      ],
+      "new": [
+        1110,
+        950
+      ]
+    },
+    "sp_aux_01": {
+      "phase": "academy",
+      "refLevel": 3,
+      "old": [
+        60,
+        40
+      ],
+      "new": [
+        790,
+        530
+      ]
+    },
+    "ac_gold_01": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        10,
+        5
+      ],
+      "new": [
+        1250,
+        630
+      ]
+    },
+    "ac_gold_02": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        20,
+        15
+      ],
+      "new": [
+        1250,
+        940
+      ]
+    },
+    "ac_gold_03": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        15,
+        null,
+        10
+      ],
+      "new": [
+        1250,
+        null,
+        830
+      ]
+    },
+    "ac_gold_04": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        30,
+        20
+      ],
+      "new": [
+        1250,
+        830
+      ]
+    },
+    "ac_fun_01": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        15,
+        20
+      ],
+      "new": [
+        940,
+        1250
+      ]
+    },
+    "ac_fun_02": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        5,
+        15,
+        10
+      ],
+      "new": [
+        420,
+        1250,
+        830
+      ]
+    },
+    "ac_fun_03": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        40,
+        10
+      ],
+      "new": [
+        1250,
+        310
+      ]
+    },
+    "ac_fun_04": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        50,
+        10
+      ],
+      "new": [
+        1250,
+        250
+      ]
+    },
+    "adv_gold_01": {
+      "phase": "adventure",
+      "refLevel": 12,
+      "old": [
+        80,
+        5
+      ],
+      "new": [
+        1380,
+        90
+      ]
+    },
+    "adv_gold_02": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        30,
+        20,
+        5
+      ],
+      "new": [
+        1250,
+        830,
+        210
+      ]
+    },
+    "adv_gold_03": {
+      "phase": "adventure",
+      "refLevel": 15,
+      "old": [
+        10,
+        5,
+        5
+      ],
+      "new": [
+        1780,
+        890,
+        890
+      ]
+    },
+    "adv_gold_04": {
+      "phase": "adventure",
+      "refLevel": 18,
+      "old": [
+        60,
+        20,
+        5
+      ],
+      "new": [
+        2200,
+        730,
+        180
+      ]
+    },
+    "adv_gold_05": {
+      "phase": "adventure",
+      "refLevel": 20,
+      "old": [
+        80,
+        5
+      ],
+      "new": [
+        2480,
+        160
+      ]
+    },
+    "adv_stat_01": {
+      "phase": "adventure",
+      "refLevel": 15,
+      "old": [
+        80,
+        30
+      ],
+      "new": [
+        1780,
+        670
+      ]
+    },
+    "adv_stat_02": {
+      "phase": "adventure",
+      "refLevel": 15,
+      "old": [
+        15,
+        20
+      ],
+      "new": [
+        1340,
+        1780
+      ]
+    },
+    "adv_stat_03": {
+      "phase": "adventure",
+      "refLevel": 22,
+      "old": [
+        100,
+        40
+      ],
+      "new": [
+        2770,
+        1110
+      ]
+    },
+    "adv_stat_04": {
+      "phase": "adventure",
+      "refLevel": 12,
+      "old": [
+        40,
+        15
+      ],
+      "new": [
+        1380,
+        520
+      ]
+    },
+    "ma_gold_01": {
+      "phase": "master",
+      "refLevel": 42,
+      "old": [
+        30,
+        50
+      ],
+      "new": [
+        1870,
+        3110
+      ]
+    },
+    "ma_gold_02": {
+      "phase": "master",
+      "refLevel": 45,
+      "old": [
+        100,
+        80
+      ],
+      "new": [
+        3370,
+        2700
+      ]
+    },
+    "ma_gold_03": {
+      "phase": "god",
+      "refLevel": 90,
+      "old": [
+        200,
+        50
+      ],
+      "new": [
+        8610,
+        2150
+      ]
+    },
+    "god_stat_01": {
+      "phase": "god",
+      "refLevel": 72,
+      "old": [
+        300,
+        100
+      ],
+      "new": [
+        6670,
+        2220
+      ]
+    },
+    "god_stat_02": {
+      "phase": "god",
+      "refLevel": 75,
+      "old": [
+        500,
+        150
+      ],
+      "new": [
+        6990,
+        2100
+      ]
+    },
+    "god_gold_01": {
+      "phase": "god",
+      "refLevel": 73,
+      "old": [
+        50,
+        80
+      ],
+      "new": [
+        4230,
+        6770
+      ]
+    },
+    "adv_more_01": {
+      "phase": "adventure",
+      "refLevel": 15,
+      "old": [
+        20,
+        30,
+        10
+      ],
+      "new": [
+        1190,
+        1780,
+        590
+      ]
+    },
+    "adv_more_02": {
+      "phase": "adventure",
+      "refLevel": 18,
+      "old": [
+        100,
+        20,
+        50
+      ],
+      "new": [
+        2200,
+        440,
+        1100
+      ]
+    },
+    "adv_more_03": {
+      "phase": "adventure",
+      "refLevel": 15,
+      "old": [
+        5,
+        10,
+        15
+      ],
+      "new": [
+        590,
+        1190,
+        1780
+      ]
+    },
+    "adv_more_04": {
+      "phase": "adventure",
+      "refLevel": 15,
+      "old": [
+        15,
+        5,
+        25
+      ],
+      "new": [
+        1070,
+        360,
+        1780
+      ]
+    },
+    "adv_more_05": {
+      "phase": "adventure",
+      "refLevel": 20,
+      "old": [
+        80,
+        60,
+        40
+      ],
+      "new": [
+        2480,
+        1860,
+        1240
+      ]
+    },
+    "adv_more_06": {
+      "phase": "adventure",
+      "refLevel": 25,
+      "old": [
+        150,
+        50,
+        20
+      ],
+      "new": [
+        3210,
+        1070,
+        430
+      ]
+    },
+    "ma_more_01": {
+      "phase": "master",
+      "refLevel": 50,
+      "old": [
+        200,
+        30
+      ],
+      "new": [
+        3800,
+        570
+      ]
+    },
+    "ma_more_02": {
+      "phase": "master",
+      "refLevel": 55,
+      "old": [
+        150,
+        50
+      ],
+      "new": [
+        4240,
+        1410
+      ]
+    },
+    "ma_more_03": {
+      "phase": "master",
+      "refLevel": 52,
+      "old": [
+        250,
+        30
+      ],
+      "new": [
+        3970,
+        480
+      ]
+    },
+    "ma_more_04": {
+      "phase": "master",
+      "refLevel": 70,
+      "old": [
+        500,
+        150
+      ],
+      "new": [
+        5590,
+        1680
+      ]
+    },
+    "god_more_01": {
+      "phase": "god",
+      "refLevel": 76,
+      "old": [
+        200,
+        50,
+        30
+      ],
+      "new": [
+        7090,
+        1770,
+        1060
+      ]
+    },
+    "god_more_02": {
+      "phase": "god",
+      "refLevel": 80,
+      "old": [
+        300,
+        50
+      ],
+      "new": [
+        7520,
+        1250
+      ]
+    },
+    "god_more_03": {
+      "phase": "god",
+      "refLevel": 85,
+      "old": [
+        500,
+        200,
+        50
+      ],
+      "new": [
+        8070,
+        3230,
+        810
+      ]
+    },
+    "ac_extra_01": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        30,
+        5,
+        20
+      ],
+      "new": [
+        1250,
+        210,
+        830
+      ]
+    },
+    "ac_extra_02": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        10,
+        5,
+        5
+      ],
+      "new": [
+        1250,
+        630,
+        630
+      ]
+    },
+    "ac_extra_03": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        10,
+        5,
+        15
+      ],
+      "new": [
+        830,
+        420,
+        1250
+      ]
+    },
+    "ac_extra_04": {
+      "phase": "adventure",
+      "refLevel": 12,
+      "old": [
+        25,
+        10,
+        5
+      ],
+      "new": [
+        1380,
+        550,
+        280
+      ]
+    },
+    "ac_extra_05": {
+      "phase": "adventure",
+      "refLevel": 12,
+      "old": [
+        80,
+        50
+      ],
+      "new": [
+        1380,
+        860
+      ]
+    },
+    "ac_extra_06": {
+      "phase": "adventure",
+      "refLevel": 12,
+      "old": [
+        40,
+        10
+      ],
+      "new": [
+        1380,
+        350
+      ]
+    },
+    "ac_extra_07": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        50,
+        30,
+        10
+      ],
+      "new": [
+        1250,
+        750,
+        250
+      ]
+    },
+    "ac_extra_08": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        60,
+        30
+      ],
+      "new": [
+        1250,
+        630
+      ]
+    },
+    "adv_extra_01": {
+      "phase": "adventure",
+      "refLevel": 15,
+      "old": [
+        20,
+        25,
+        15
+      ],
+      "new": [
+        1420,
+        1780,
+        1070
+      ]
+    },
+    "adv_extra_02": {
+      "phase": "adventure",
+      "refLevel": 15,
+      "old": [
+        15,
+        10,
+        10
+      ],
+      "new": [
+        1780,
+        1190,
+        1190
+      ]
+    },
+    "adv_extra_03": {
+      "phase": "adventure",
+      "refLevel": 15,
+      "old": [
+        15,
+        20,
+        10
+      ],
+      "new": [
+        1340,
+        1780,
+        890
+      ]
+    },
+    "adv_extra_04": {
+      "phase": "adventure",
+      "refLevel": 15,
+      "old": [
+        40,
+        30,
+        10
+      ],
+      "new": [
+        1780,
+        1340,
+        450
+      ]
+    },
+    "adv_extra_05": {
+      "phase": "adventure",
+      "refLevel": 15,
+      "old": [
+        30,
+        5,
+        null
+      ],
+      "new": [
+        1780,
+        300,
+        null
+      ]
+    },
+    "adv_extra_06": {
+      "phase": "adventure",
+      "refLevel": 25,
+      "old": [
+        300,
+        80,
+        10
+      ],
+      "new": [
+        3210,
+        860,
+        110
+      ]
+    },
+    "ma_extra_01": {
+      "phase": "god",
+      "refLevel": 90,
+      "old": [
+        300,
+        50
+      ],
+      "new": [
+        8610,
+        1440
+      ]
+    },
+    "ma_extra_02": {
+      "phase": "master",
+      "refLevel": 60,
+      "old": [
+        500,
+        50
+      ],
+      "new": [
+        4680,
+        470
+      ]
+    },
+    "ma_extra_03": {
+      "phase": "master",
+      "refLevel": 45,
+      "old": [
+        50,
+        10
+      ],
+      "new": [
+        3370,
+        670
+      ]
+    },
+    "god_extra_01": {
+      "phase": "god",
+      "refLevel": 84,
+      "old": [
+        300,
+        200
+      ],
+      "new": [
+        7960,
+        5310
+      ]
+    },
+    "god_extra_02": {
+      "phase": "god",
+      "refLevel": 86,
+      "old": [
+        200,
+        50
+      ],
+      "new": [
+        8180,
+        2050
+      ]
+    },
+    "god_extra_03": {
+      "phase": "god",
+      "refLevel": 90,
+      "old": [
+        800,
+        200
+      ],
+      "new": [
+        8610,
+        2150
+      ]
+    },
+    "adv_beast_16": {
+      "phase": "adventure",
+      "refLevel": 22,
+      "old": [
+        50,
+        20,
+        40
+      ],
+      "new": [
+        2770,
+        1110,
+        2220
+      ]
+    },
+    "adv_beast_17": {
+      "phase": "adventure",
+      "refLevel": 35,
+      "old": [
+        200,
+        80,
+        20
+      ],
+      "new": [
+        4720,
+        1890,
+        470
+      ]
+    },
+    "adv_beast_18": {
+      "phase": "adventure",
+      "refLevel": 28,
+      "old": [
+        180,
+        20
+      ],
+      "new": [
+        3650,
+        410
+      ]
+    },
+    "adv_beast_19": {
+      "phase": "adventure",
+      "refLevel": 20,
+      "old": [
+        120,
+        20
+      ],
+      "new": [
+        2480,
+        410
+      ]
+    },
+    "adv_beast_20": {
+      "phase": "adventure",
+      "refLevel": 25,
+      "old": [
+        100,
+        60
+      ],
+      "new": [
+        3210,
+        1930
+      ]
+    },
+    "adv_town_16": {
+      "phase": "adventure",
+      "refLevel": 20,
+      "old": [
+        30,
+        15,
+        null
+      ],
+      "new": [
+        2480,
+        1240,
+        null
+      ]
+    },
+    "adv_town_17": {
+      "phase": "adventure",
+      "refLevel": 20,
+      "old": [
+        20,
+        5
+      ],
+      "new": [
+        2480,
+        620
+      ]
+    },
+    "adv_town_18": {
+      "phase": "adventure",
+      "refLevel": 20,
+      "old": [
+        40,
+        20,
+        null
+      ],
+      "new": [
+        2480,
+        1240,
+        null
+      ]
+    },
+    "adv_town_19": {
+      "phase": "adventure",
+      "refLevel": 20,
+      "old": [
+        50,
+        10
+      ],
+      "new": [
+        2480,
+        500
+      ]
+    },
+    "adv_town_20": {
+      "phase": "adventure",
+      "refLevel": 20,
+      "old": [
+        80,
+        30
+      ],
+      "new": [
+        2480,
+        930
+      ]
+    },
+    "adv_ruin_06": {
+      "phase": "adventure",
+      "refLevel": 33,
+      "old": [
+        200,
+        50,
+        10
+      ],
+      "new": [
+        4410,
+        1100,
+        220
+      ]
+    },
+    "adv_ruin_07": {
+      "phase": "adventure",
+      "refLevel": 38,
+      "old": [
+        300,
+        250,
+        50
+      ],
+      "new": [
+        5190,
+        4330,
+        870
+      ]
+    },
+    "adv_ruin_08": {
+      "phase": "master",
+      "refLevel": 41,
+      "old": [
+        250,
+        150
+      ],
+      "new": [
+        3020,
+        1810
+      ]
+    },
+    "adv_sp_11": {
+      "phase": "adventure",
+      "refLevel": 15,
+      "old": [
+        80,
+        null,
+        40
+      ],
+      "new": [
+        1780,
+        null,
+        890
+      ]
+    },
+    "adv_sp_12": {
+      "phase": "adventure",
+      "refLevel": 15,
+      "old": [
+        100,
+        null
+      ],
+      "new": [
+        1780,
+        null
+      ]
+    },
+    "adv_sp_13": {
+      "phase": "adventure",
+      "refLevel": 15,
+      "old": [
+        150,
+        30
+      ],
+      "new": [
+        1780,
+        360
+      ]
+    },
+    "adv_sp_14": {
+      "phase": "adventure",
+      "refLevel": 18,
+      "old": [
+        120,
+        10
+      ],
+      "new": [
+        2200,
+        180
+      ]
+    },
+    "adv_sp_15": {
+      "phase": "adventure",
+      "refLevel": 30,
+      "old": [
+        50,
+        30
+      ],
+      "new": [
+        3950,
+        2370
+      ]
+    },
+    "ma_big_11": {
+      "phase": "master",
+      "refLevel": 50,
+      "old": [
+        300,
+        150
+      ],
+      "new": [
+        3800,
+        1900
+      ]
+    },
+    "ma_big_12": {
+      "phase": "master",
+      "refLevel": 55,
+      "old": [
+        500,
+        50
+      ],
+      "new": [
+        4240,
+        420
+      ]
+    },
+    "ma_big_13": {
+      "phase": "god",
+      "refLevel": 75,
+      "old": [
+        300,
+        200
+      ],
+      "new": [
+        6990,
+        4660
+      ]
+    },
+    "ma_big_14": {
+      "phase": "god",
+      "refLevel": 90,
+      "old": [
+        400,
+        150
+      ],
+      "new": [
+        8610,
+        3230
+      ]
+    },
+    "ma_big_15": {
+      "phase": "master",
+      "refLevel": 58,
+      "old": [
+        250,
+        50
+      ],
+      "new": [
+        4510,
+        900
+      ]
+    },
+    "ma_big_16": {
+      "phase": "god",
+      "refLevel": 99,
+      "old": [
+        400,
+        100
+      ],
+      "new": [
+        9610,
+        2400
+      ]
+    },
+    "ma_daily_01": {
+      "phase": "master",
+      "refLevel": 50,
+      "old": [
+        80,
+        20
+      ],
+      "new": [
+        3800,
+        950
+      ]
+    },
+    "ma_daily_02": {
+      "phase": "master",
+      "refLevel": 45,
+      "old": [
+        30,
+        60
+      ],
+      "new": [
+        1690,
+        3370
+      ]
+    },
+    "ma_daily_03": {
+      "phase": "master",
+      "refLevel": 52,
+      "old": [
+        200,
+        50,
+        50
+      ],
+      "new": [
+        3970,
+        990,
+        990
+      ]
+    },
+    "ma_daily_04": {
+      "phase": "master",
+      "refLevel": 55,
+      "old": [
+        150,
+        250,
+        100
+      ],
+      "new": [
+        2540,
+        4240,
+        1700
+      ]
+    },
+    "ma_daily_05": {
+      "phase": "master",
+      "refLevel": 52,
+      "old": [
+        300,
+        null
+      ],
+      "new": [
+        3970,
+        null
+      ]
+    },
+    "ma_daily_06": {
+      "phase": "master",
+      "refLevel": 62,
+      "old": [
+        400,
+        50
+      ],
+      "new": [
+        4870,
+        610
+      ]
+    },
+    "ma_daily_07": {
+      "phase": "master",
+      "refLevel": 60,
+      "old": [
+        200,
+        50
+      ],
+      "new": [
+        4680,
+        1170
+      ]
+    },
+    "ma_daily_08": {
+      "phase": "god",
+      "refLevel": 99,
+      "old": [
+        1000,
+        100
+      ],
+      "new": [
+        9610,
+        960
+      ]
+    },
+    "god_big_09": {
+      "phase": "god",
+      "refLevel": 82,
+      "old": [
+        1600,
+        1700,
+        1400
+      ],
+      "new": [
+        7280,
+        7740,
+        6370
+      ]
+    },
+    "god_big_10": {
+      "phase": "god",
+      "refLevel": 85,
+      "old": [
+        200,
+        300
+      ],
+      "new": [
+        5380,
+        8070
+      ]
+    },
+    "god_big_11": {
+      "phase": "god",
+      "refLevel": 85,
+      "old": [
+        200,
+        100
+      ],
+      "new": [
+        8070,
+        4040
+      ]
+    },
+    "god_big_12": {
+      "phase": "god",
+      "refLevel": 88,
+      "old": [
+        500,
+        400
+      ],
+      "new": [
+        8400,
+        6720
+      ]
+    },
+    "god_big_13": {
+      "phase": "god",
+      "refLevel": 90,
+      "old": [
+        1000,
+        600
+      ],
+      "new": [
+        8610,
+        5170
+      ]
+    },
+    "god_big_14": {
+      "phase": "god",
+      "refLevel": 92,
+      "old": [
+        800,
+        100
+      ],
+      "new": [
+        8840,
+        1110
+      ]
+    },
+    "god_big_15": {
+      "phase": "god",
+      "refLevel": 95,
+      "old": [
+        2000,
+        300
+      ],
+      "new": [
+        9170,
+        1380
+      ]
+    },
+    "god_daily_01": {
+      "phase": "god",
+      "refLevel": 83,
+      "old": [
+        200,
+        50,
+        80
+      ],
+      "new": [
+        7850,
+        1960,
+        3140
+      ]
+    },
+    "god_daily_02": {
+      "phase": "god",
+      "refLevel": 85,
+      "old": [
+        300,
+        150
+      ],
+      "new": [
+        8070,
+        4040
+      ]
+    },
+    "god_daily_03": {
+      "phase": "god",
+      "refLevel": 85,
+      "old": [
+        100,
+        20
+      ],
+      "new": [
+        8070,
+        1610
+      ]
+    },
+    "god_daily_04": {
+      "phase": "god",
+      "refLevel": 88,
+      "old": [
+        500,
+        50
+      ],
+      "new": [
+        8400,
+        840
+      ]
+    },
+    "god_daily_05": {
+      "phase": "god",
+      "refLevel": 93,
+      "old": [
+        300,
+        50,
+        400
+      ],
+      "new": [
+        6710,
+        1120,
+        8950
+      ]
+    },
+    "god_daily_06": {
+      "phase": "god",
+      "refLevel": 98,
+      "old": [
+        5000,
+        500
+      ],
+      "new": [
+        9500,
+        950
+      ]
+    },
+    "ac_more_01": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        20,
+        10,
+        25
+      ],
+      "new": [
+        1000,
+        500,
+        1250
+      ]
+    },
+    "ac_more_02": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        30,
+        25,
+        20
+      ],
+      "new": [
+        1250,
+        1040,
+        830
+      ]
+    },
+    "ac_more_03": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        20,
+        15,
+        5
+      ],
+      "new": [
+        1250,
+        940,
+        310
+      ]
+    },
+    "ac_more_04": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        10,
+        15
+      ],
+      "new": [
+        830,
+        1250
+      ]
+    },
+    "ac_more_05": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        15,
+        5,
+        10
+      ],
+      "new": [
+        1250,
+        420,
+        830
+      ]
+    },
+    "ac_more_06": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        20,
+        15,
+        5
+      ],
+      "new": [
+        1250,
+        940,
+        310
+      ]
+    },
+    "ac_more_07": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        20,
+        5,
+        25
+      ],
+      "new": [
+        1000,
+        250,
+        1250
+      ]
+    },
+    "ac_more_08": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        15,
+        10,
+        20
+      ],
+      "new": [
+        940,
+        630,
+        1250
+      ]
+    },
+    "ac_more_09": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        20,
+        10,
+        25
+      ],
+      "new": [
+        1000,
+        500,
+        1250
+      ]
+    },
+    "ac_more_10": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        30,
+        20,
+        15
+      ],
+      "new": [
+        1250,
+        830,
+        630
+      ]
+    },
+    "ac_more_11": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        10,
+        15,
+        15
+      ],
+      "new": [
+        830,
+        1250,
+        1250
+      ]
+    },
+    "ac_more_12": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        30,
+        15,
+        5
+      ],
+      "new": [
+        1250,
+        630,
+        210
+      ]
+    },
+    "ac_more_13": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        20,
+        25,
+        5
+      ],
+      "new": [
+        1000,
+        1250,
+        250
+      ]
+    },
+    "ac_more_14": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        20,
+        15,
+        5
+      ],
+      "new": [
+        1250,
+        940,
+        310
+      ]
+    },
+    "ac_more_15": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        20,
+        15,
+        5
+      ],
+      "new": [
+        1250,
+        940,
+        310
+      ]
+    },
+    "adv_more_01_beast": {
+      "phase": "adventure",
+      "refLevel": 25,
+      "old": [
+        160,
+        40,
+        60
+      ],
+      "new": [
+        3210,
+        800,
+        1200
+      ]
+    },
+    "adv_more_02_birds": {
+      "phase": "adventure",
+      "refLevel": 18,
+      "old": [
+        80,
+        50,
+        25
+      ],
+      "new": [
+        2200,
+        1380,
+        690
+      ]
+    },
+    "adv_more_03_bear": {
+      "phase": "god",
+      "refLevel": 75,
+      "old": [
+        300,
+        100,
+        60
+      ],
+      "new": [
+        6990,
+        2330,
+        1400
+      ]
+    },
+    "adv_more_04_scorpion": {
+      "phase": "god",
+      "refLevel": 75,
+      "old": [
+        280,
+        50
+      ],
+      "new": [
+        6990,
+        1250
+      ]
+    },
+    "adv_more_05_sheep": {
+      "phase": "adventure",
+      "refLevel": 12,
+      "old": [
+        50,
+        35,
+        25
+      ],
+      "new": [
+        1380,
+        970,
+        690
+      ]
+    },
+    "adv_more_06_titan": {
+      "phase": "god",
+      "refLevel": 75,
+      "old": [
+        200,
+        100,
+        80
+      ],
+      "new": [
+        6990,
+        3500,
+        2800
+      ]
+    },
+    "adv_more_07": {
+      "phase": "adventure",
+      "refLevel": 20,
+      "old": [
+        20,
+        15,
+        20
+      ],
+      "new": [
+        2480,
+        1860,
+        2480
+      ]
+    },
+    "adv_more_08": {
+      "phase": "adventure",
+      "refLevel": 20,
+      "old": [
+        50,
+        30,
+        5
+      ],
+      "new": [
+        2480,
+        1490,
+        250
+      ]
+    },
+    "adv_more_09": {
+      "phase": "adventure",
+      "refLevel": 25,
+      "old": [
+        130,
+        40
+      ],
+      "new": [
+        3210,
+        990
+      ]
+    },
+    "adv_more_10": {
+      "phase": "adventure",
+      "refLevel": 30,
+      "old": [
+        60,
+        50
+      ],
+      "new": [
+        3950,
+        3290
+      ]
+    },
+    "adv_more_11": {
+      "phase": "adventure",
+      "refLevel": 20,
+      "old": [
+        80,
+        20,
+        90
+      ],
+      "new": [
+        2200,
+        550,
+        2480
+      ]
+    },
+    "adv_more_12": {
+      "phase": "adventure",
+      "refLevel": 32,
+      "old": [
+        80,
+        30,
+        15
+      ],
+      "new": [
+        4260,
+        1600,
+        800
+      ]
+    },
+    "adv_more_13": {
+      "phase": "adventure",
+      "refLevel": 28,
+      "old": [
+        100,
+        20,
+        15
+      ],
+      "new": [
+        3650,
+        730,
+        550
+      ]
+    },
+    "adv_more_14": {
+      "phase": "adventure",
+      "refLevel": 20,
+      "old": [
+        80,
+        50,
+        40
+      ],
+      "new": [
+        2480,
+        1550,
+        1240
+      ]
+    },
+    "adv_more_15": {
+      "phase": "adventure",
+      "refLevel": 28,
+      "old": [
+        30,
+        40,
+        20
+      ],
+      "new": [
+        2740,
+        3650,
+        1830
+      ]
+    },
+    "ma_more_01_sect": {
+      "phase": "master",
+      "refLevel": 50,
+      "old": [
+        300,
+        200,
+        50
+      ],
+      "new": [
+        3800,
+        2530,
+        630
+      ]
+    },
+    "ma_more_02_evil": {
+      "phase": "master",
+      "refLevel": 52,
+      "old": [
+        350,
+        200,
+        150
+      ],
+      "new": [
+        3970,
+        2270,
+        1700
+      ]
+    },
+    "ma_more_03_snow": {
+      "phase": "master",
+      "refLevel": 65,
+      "old": [
+        400,
+        250,
+        100
+      ],
+      "new": [
+        5140,
+        3210,
+        1290
+      ]
+    },
+    "ma_more_04_mentor": {
+      "phase": "master",
+      "refLevel": 50,
+      "old": [
+        150,
+        120,
+        50
+      ],
+      "new": [
+        3800,
+        3040,
+        1270
+      ]
+    },
+    "ma_more_05": {
+      "phase": "master",
+      "refLevel": 45,
+      "old": [
+        100,
+        120,
+        30
+      ],
+      "new": [
+        2810,
+        3370,
+        840
+      ]
+    },
+    "ma_more_06": {
+      "phase": "master",
+      "refLevel": 55,
+      "old": [
+        250,
+        150,
+        50
+      ],
+      "new": [
+        4240,
+        2540,
+        850
+      ]
+    },
+    "ma_more_07": {
+      "phase": "master",
+      "refLevel": 60,
+      "old": [
+        280,
+        350,
+        80
+      ],
+      "new": [
+        3740,
+        4680,
+        1070
+      ]
+    },
+    "ma_more_08": {
+      "phase": "master",
+      "refLevel": 55,
+      "old": [
+        400,
+        150,
+        200
+      ],
+      "new": [
+        4240,
+        1590,
+        2120
+      ]
+    },
+    "ma_more_09": {
+      "phase": "master",
+      "refLevel": 55,
+      "old": [
+        250,
+        100,
+        50
+      ],
+      "new": [
+        4240,
+        1700,
+        850
+      ]
+    },
+    "ma_more_10": {
+      "phase": "master",
+      "refLevel": 55,
+      "old": [
+        200,
+        120,
+        50
+      ],
+      "new": [
+        4240,
+        2540,
+        1060
+      ]
+    },
+    "god_more_01_envoy": {
+      "phase": "god",
+      "refLevel": 80,
+      "old": [
+        500,
+        300,
+        200
+      ],
+      "new": [
+        7520,
+        4510,
+        3010
+      ]
+    },
+    "god_more_02_evil": {
+      "phase": "god",
+      "refLevel": 85,
+      "old": [
+        600,
+        450,
+        200
+      ],
+      "new": [
+        8070,
+        6050,
+        2690
+      ]
+    },
+    "god_more_03_rift": {
+      "phase": "god",
+      "refLevel": 88,
+      "old": [
+        400,
+        350,
+        300
+      ],
+      "new": [
+        8400,
+        7350,
+        6300
+      ]
+    },
+    "god_more_04": {
+      "phase": "god",
+      "refLevel": 90,
+      "old": [
+        400,
+        400,
+        300
+      ],
+      "new": [
+        8610,
+        8610,
+        6460
+      ]
+    },
+    "god_more_05": {
+      "phase": "god",
+      "refLevel": 92,
+      "old": [
+        800,
+        600,
+        200
+      ],
+      "new": [
+        8840,
+        6630,
+        2210
+      ]
+    },
+    "god_more_06": {
+      "phase": "god",
+      "refLevel": 85,
+      "old": [
+        300,
+        200,
+        100
+      ],
+      "new": [
+        8070,
+        5380,
+        2690
+      ]
+    },
+    "god_more_07": {
+      "phase": "god",
+      "refLevel": 80,
+      "old": [
+        200,
+        300,
+        150
+      ],
+      "new": [
+        5010,
+        7520,
+        3760
+      ]
+    },
+    "god_more_08": {
+      "phase": "god",
+      "refLevel": 95,
+      "old": [
+        1000,
+        800,
+        900
+      ],
+      "new": [
+        9170,
+        7340,
+        8250
+      ]
+    },
+    "adv_beast_01": {
+      "phase": "adventure",
+      "refLevel": 15,
+      "old": [
+        30,
+        80,
+        20
+      ],
+      "new": [
+        670,
+        1780,
+        450
+      ]
+    },
+    "adv_beast_02": {
+      "phase": "adventure",
+      "refLevel": 18,
+      "old": [
+        70,
+        50,
+        25
+      ],
+      "new": [
+        2200,
+        1570,
+        790
+      ]
+    },
+    "adv_beast_03": {
+      "phase": "adventure",
+      "refLevel": 20,
+      "old": [
+        100,
+        40,
+        35
+      ],
+      "new": [
+        2480,
+        990,
+        870
+      ]
+    },
+    "adv_beast_04": {
+      "phase": "adventure",
+      "refLevel": 22,
+      "old": [
+        120,
+        60,
+        50
+      ],
+      "new": [
+        2770,
+        1390,
+        1150
+      ]
+    },
+    "adv_beast_05": {
+      "phase": "adventure",
+      "refLevel": 25,
+      "old": [
+        130,
+        70,
+        40
+      ],
+      "new": [
+        3210,
+        1730,
+        990
+      ]
+    },
+    "adv_beast_06": {
+      "phase": "adventure",
+      "refLevel": 30,
+      "old": [
+        60,
+        50,
+        30
+      ],
+      "new": [
+        3950,
+        3290,
+        1980
+      ]
+    },
+    "adv_beast_07": {
+      "phase": "adventure",
+      "refLevel": 28,
+      "old": [
+        60,
+        140,
+        50
+      ],
+      "new": [
+        1560,
+        3650,
+        1300
+      ]
+    },
+    "adv_beast_08": {
+      "phase": "adventure",
+      "refLevel": 16,
+      "old": [
+        60,
+        30,
+        25
+      ],
+      "new": [
+        1920,
+        960,
+        800
+      ]
+    },
+    "adv_beast_09": {
+      "phase": "adventure",
+      "refLevel": 24,
+      "old": [
+        110,
+        80,
+        40
+      ],
+      "new": [
+        3060,
+        2230,
+        1110
+      ]
+    },
+    "adv_beast_10": {
+      "phase": "adventure",
+      "refLevel": 26,
+      "old": [
+        150,
+        130,
+        40
+      ],
+      "new": [
+        3350,
+        2900,
+        890
+      ]
+    },
+    "adv_beast_11": {
+      "phase": "adventure",
+      "refLevel": 15,
+      "old": [
+        35,
+        25,
+        15
+      ],
+      "new": [
+        1780,
+        1270,
+        760
+      ]
+    },
+    "adv_beast_12": {
+      "phase": "adventure",
+      "refLevel": 14,
+      "old": [
+        70,
+        40,
+        20
+      ],
+      "new": [
+        1650,
+        940,
+        470
+      ]
+    },
+    "adv_beast_13": {
+      "phase": "adventure",
+      "refLevel": 35,
+      "old": [
+        200,
+        50,
+        100
+      ],
+      "new": [
+        4720,
+        1180,
+        2360
+      ]
+    },
+    "adv_beast_14": {
+      "phase": "master",
+      "refLevel": 41,
+      "old": [
+        80,
+        40,
+        30
+      ],
+      "new": [
+        3020,
+        1510,
+        1130
+      ]
+    },
+    "adv_town_01": {
+      "phase": "adventure",
+      "refLevel": 20,
+      "old": [
+        15,
+        30,
+        20
+      ],
+      "new": [
+        1240,
+        2480,
+        1650
+      ]
+    },
+    "adv_town_02": {
+      "phase": "adventure",
+      "refLevel": 20,
+      "old": [
+        60,
+        25,
+        10
+      ],
+      "new": [
+        2480,
+        1030,
+        410
+      ]
+    },
+    "adv_town_03": {
+      "phase": "adventure",
+      "refLevel": 20,
+      "old": [
+        30,
+        80,
+        120
+      ],
+      "new": [
+        620,
+        1650,
+        2480
+      ]
+    },
+    "adv_town_04": {
+      "phase": "adventure",
+      "refLevel": 20,
+      "old": [
+        70,
+        10
+      ],
+      "new": [
+        2480,
+        350
+      ]
+    },
+    "adv_town_05": {
+      "phase": "adventure",
+      "refLevel": 20,
+      "old": [
+        20,
+        50,
+        15
+      ],
+      "new": [
+        990,
+        2480,
+        740
+      ]
+    },
+    "adv_ruin_01": {
+      "phase": "adventure",
+      "refLevel": 22,
+      "old": [
+        90,
+        70,
+        30
+      ],
+      "new": [
+        2770,
+        2150,
+        920
+      ]
+    },
+    "adv_ruin_02": {
+      "phase": "adventure",
+      "refLevel": 30,
+      "old": [
+        120,
+        100,
+        100,
+        60
+      ],
+      "new": [
+        3950,
+        3290,
+        3290,
+        1980
+      ]
+    },
+    "adv_ruin_03": {
+      "phase": "adventure",
+      "refLevel": 20,
+      "old": [
+        50,
+        60,
+        70
+      ],
+      "new": [
+        1770,
+        2130,
+        2480
+      ]
+    },
+    "adv_enc_01": {
+      "phase": "adventure",
+      "refLevel": 15,
+      "old": [
+        60,
+        10,
+        40
+      ],
+      "new": [
+        1780,
+        300,
+        1190
+      ]
+    },
+    "adv_enc_02": {
+      "phase": "adventure",
+      "refLevel": 15,
+      "old": [
+        60,
+        25,
+        70
+      ],
+      "new": [
+        1530,
+        640,
+        1780
+      ]
+    },
+    "adv_enc_03": {
+      "phase": "adventure",
+      "refLevel": 15,
+      "old": [
+        30,
+        10,
+        40
+      ],
+      "new": [
+        1340,
+        450,
+        1780
+      ]
+    },
+    "adv_enc_04": {
+      "phase": "adventure",
+      "refLevel": 15,
+      "old": [
+        30,
+        25,
+        40
+      ],
+      "new": [
+        1340,
+        1110,
+        1780
+      ]
+    },
+    "ac_season_01": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        15,
+        30,
+        15
+      ],
+      "new": [
+        630,
+        1250,
+        630
+      ]
+    },
+    "ac_season_02": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        15,
+        25,
+        10
+      ],
+      "new": [
+        750,
+        1250,
+        500
+      ]
+    },
+    "ac_season_03": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        15,
+        20,
+        25
+      ],
+      "new": [
+        750,
+        1000,
+        1250
+      ]
+    },
+    "ac_season_04": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        10,
+        30,
+        15
+      ],
+      "new": [
+        420,
+        1250,
+        630
+      ]
+    },
+    "ac_teacher_01": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        35,
+        40,
+        30
+      ],
+      "new": [
+        1090,
+        1250,
+        940
+      ]
+    },
+    "ac_teacher_02": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        30,
+        10,
+        5
+      ],
+      "new": [
+        1250,
+        420,
+        210
+      ]
+    },
+    "ac_teacher_03": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        40,
+        35,
+        20
+      ],
+      "new": [
+        1250,
+        1090,
+        630
+      ]
+    },
+    "ac_night_01": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        40,
+        20
+      ],
+      "new": [
+        1250,
+        630
+      ]
+    },
+    "ac_night_02": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        25,
+        20,
+        10
+      ],
+      "new": [
+        1250,
+        1000,
+        500
+      ]
+    },
+    "ac_night_03": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        20,
+        15,
+        10
+      ],
+      "new": [
+        1250,
+        940,
+        630
+      ]
+    },
+    "ac_exam_01": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        50,
+        45,
+        20
+      ],
+      "new": [
+        1250,
+        1130,
+        500
+      ]
+    },
+    "ac_exam_02": {
+      "phase": "adventure",
+      "refLevel": 12,
+      "old": [
+        50,
+        40,
+        25
+      ],
+      "new": [
+        1380,
+        1100,
+        690
+      ]
+    },
+    "ac_social_01": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        25,
+        10,
+        5
+      ],
+      "new": [
+        1250,
+        500,
+        250
+      ]
+    },
+    "ac_social_02": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        20,
+        15,
+        5
+      ],
+      "new": [
+        1250,
+        940,
+        310
+      ]
+    },
+    "ac_social_03": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        30,
+        15,
+        25
+      ],
+      "new": [
+        1250,
+        630,
+        1040
+      ]
+    },
+    "ac_adv_01": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        40,
+        20,
+        5
+      ],
+      "new": [
+        1250,
+        630,
+        160
+      ]
+    },
+    "ac_adv_02": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        35,
+        10,
+        20
+      ],
+      "new": [
+        1250,
+        360,
+        710
+      ]
+    },
+    "ac_adv_03": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        20,
+        15,
+        5
+      ],
+      "new": [
+        1250,
+        940,
+        310
+      ]
+    },
+    "ac_sp_01": {
+      "phase": "adventure",
+      "refLevel": 12,
+      "old": [
+        80,
+        30
+      ],
+      "new": [
+        1380,
+        520
+      ]
+    },
+    "ac_sp_02": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        10,
+        10,
+        30
+      ],
+      "new": [
+        420,
+        420,
+        1250
+      ]
+    },
+    "sp_wp_04": {
+      "phase": "adventure",
+      "refLevel": 14,
+      "old": [
+        90,
+        70
+      ],
+      "new": [
+        1650,
+        1280
+      ]
+    },
+    "sp_wp_05": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        100,
+        50
+      ],
+      "new": [
+        1250,
+        630
+      ]
+    },
+    "sp_bs_04": {
+      "phase": "adventure",
+      "refLevel": 30,
+      "old": [
+        120,
+        60
+      ],
+      "new": [
+        3950,
+        1980
+      ]
+    },
+    "sp_bs_05": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        60,
+        40
+      ],
+      "new": [
+        1250,
+        830
+      ]
+    },
+    "sp_tl_03": {
+      "phase": "adventure",
+      "refLevel": 16,
+      "old": [
+        80,
+        60
+      ],
+      "new": [
+        1920,
+        1440
+      ]
+    },
+    "sp_pl_03": {
+      "phase": "adventure",
+      "refLevel": 18,
+      "old": [
+        100,
+        80
+      ],
+      "new": [
+        2200,
+        1760
+      ]
+    },
+    "sp_gd_03": {
+      "phase": "god",
+      "refLevel": 90,
+      "old": [
+        200,
+        120
+      ],
+      "new": [
+        8610,
+        5170
+      ]
+    },
+    "sp_df_02": {
+      "phase": "adventure",
+      "refLevel": 15,
+      "old": [
+        100,
+        70
+      ],
+      "new": [
+        1780,
+        1250
+      ]
+    },
+    "sp_sp_02": {
+      "phase": "adventure",
+      "refLevel": 15,
+      "old": [
+        90,
+        60
+      ],
+      "new": [
+        1780,
+        1190
+      ]
+    },
+    "sp_ct_02": {
+      "phase": "adventure",
+      "refLevel": 18,
+      "old": [
+        100,
+        100
+      ],
+      "new": [
+        2200,
+        2200
+      ]
+    },
+    "sp_aux_02": {
+      "phase": "adventure",
+      "refLevel": 15,
+      "old": [
+        100,
+        80
+      ],
+      "new": [
+        1780,
+        1420
+      ]
+    },
+    "or_village_01": {
+      "phase": "academy",
+      "refLevel": 1,
+      "old": [
+        30,
+        25
+      ],
+      "new": [
+        230,
+        190
+      ]
+    },
+    "or_village_02": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        70,
+        80
+      ],
+      "new": [
+        1090,
+        1250
+      ]
+    },
+    "or_village_03": {
+      "phase": "adventure",
+      "refLevel": 20,
+      "old": [
+        120,
+        60
+      ],
+      "new": [
+        2480,
+        1240
+      ]
+    },
+    "or_noble_01": {
+      "phase": "academy",
+      "refLevel": 1,
+      "old": [
+        20,
+        40
+      ],
+      "new": [
+        120,
+        230
+      ]
+    },
+    "or_noble_02": {
+      "phase": "adventure",
+      "refLevel": 15,
+      "old": [
+        80,
+        70
+      ],
+      "new": [
+        1780,
+        1560
+      ]
+    },
+    "or_noble_03": {
+      "phase": "adventure",
+      "refLevel": 25,
+      "old": [
+        150,
+        80
+      ],
+      "new": [
+        3210,
+        1710
+      ]
+    },
+    "or_border_01": {
+      "phase": "academy",
+      "refLevel": 1,
+      "old": [
+        30,
+        40
+      ],
+      "new": [
+        170,
+        230
+      ]
+    },
+    "or_border_02": {
+      "phase": "adventure",
+      "refLevel": 12,
+      "old": [
+        100,
+        80
+      ],
+      "new": [
+        1380,
+        1100
+      ]
+    },
+    "or_border_03": {
+      "phase": "adventure",
+      "refLevel": 18,
+      "old": [
+        50,
+        30
+      ],
+      "new": [
+        2200,
+        1320
+      ]
+    },
+    "or_sea_01": {
+      "phase": "academy",
+      "refLevel": 1,
+      "old": [
+        25,
+        30
+      ],
+      "new": [
+        190,
+        230
+      ]
+    },
+    "or_sea_02": {
+      "phase": "adventure",
+      "refLevel": 14,
+      "old": [
+        80,
+        60
+      ],
+      "new": [
+        1650,
+        1240
+      ]
+    },
+    "or_sea_03": {
+      "phase": "adventure",
+      "refLevel": 22,
+      "old": [
+        150,
+        100
+      ],
+      "new": [
+        2770,
+        1850
+      ]
+    },
+    "dy_lone_01": {
+      "phase": "academy",
+      "refLevel": 3,
+      "old": [
+        80,
+        40
+      ],
+      "new": [
+        790,
+        400
+      ]
+    },
+    "dy_lone_02": {
+      "phase": "adventure",
+      "refLevel": 12,
+      "old": [
+        60,
+        70
+      ],
+      "new": [
+        1180,
+        1380
+      ]
+    },
+    "dy_lone_03": {
+      "phase": "adventure",
+      "refLevel": 25,
+      "old": [
+        120,
+        80
+      ],
+      "new": [
+        3210,
+        2140
+      ]
+    },
+    "dy_sect_01": {
+      "phase": "adventure",
+      "refLevel": 12,
+      "old": [
+        50,
+        20
+      ],
+      "new": [
+        1380,
+        550
+      ]
+    },
+    "dy_sect_02": {
+      "phase": "adventure",
+      "refLevel": 16,
+      "old": [
+        60,
+        80
+      ],
+      "new": [
+        1440,
+        1920
+      ]
+    },
+    "dy_sect_03": {
+      "phase": "adventure",
+      "refLevel": 30,
+      "old": [
+        100,
+        80
+      ],
+      "new": [
+        3950,
+        3160
+      ]
+    },
+    "dy_adventure_01": {
+      "phase": "academy",
+      "refLevel": 6,
+      "old": [
+        60,
+        40
+      ],
+      "new": [
+        1770,
+        1180
+      ]
+    },
+    "dy_adventure_02": {
+      "phase": "adventure",
+      "refLevel": 14,
+      "old": [
+        100,
+        50
+      ],
+      "new": [
+        1650,
+        830
+      ]
+    },
+    "dy_adventure_03": {
+      "phase": "adventure",
+      "refLevel": 28,
+      "old": [
+        200,
+        120
+      ],
+      "new": [
+        3650,
+        2190
+      ]
+    },
+    "dy_hero_01": {
+      "phase": "academy",
+      "refLevel": 4,
+      "old": [
+        40,
+        20
+      ],
+      "new": [
+        1110,
+        560
+      ]
+    },
+    "dy_hero_02": {
+      "phase": "adventure",
+      "refLevel": 18,
+      "old": [
+        150,
+        100
+      ],
+      "new": [
+        2200,
+        1470
+      ]
+    },
+    "dy_hero_03": {
+      "phase": "adventure",
+      "refLevel": 30,
+      "old": [
+        100,
+        60
+      ],
+      "new": [
+        3950,
+        2370
+      ]
+    },
+    "dy_fate_01": {
+      "phase": "academy",
+      "refLevel": 2,
+      "old": [
+        25,
+        15
+      ],
+      "new": [
+        500,
+        300
+      ]
+    },
+    "dy_fate_02": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        20,
+        30
+      ],
+      "new": [
+        830,
+        1250
+      ]
+    },
+    "dy_fate_03": {
+      "phase": "adventure",
+      "refLevel": 22,
+      "old": [
+        50,
+        80,
+        60
+      ],
+      "new": [
+        1730,
+        2770,
+        2080
+      ]
+    },
+    "gbl_adv_01": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        90,
+        120,
+        100,
+        80
+      ],
+      "new": [
+        940,
+        1250,
+        1040,
+        830
+      ]
+    },
+    "gbl_adv_02": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        110,
+        60,
+        40
+      ],
+      "new": [
+        1250,
+        680,
+        450
+      ]
+    },
+    "gbl_adv_03": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        60,
+        80,
+        90
+      ],
+      "new": [
+        830,
+        1110,
+        1250
+      ]
+    },
+    "gbl_adv_04": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        70,
+        60,
+        100
+      ],
+      "new": [
+        880,
+        750,
+        1250
+      ]
+    },
+    "gbl_adv_05": {
+      "phase": "adventure",
+      "refLevel": 11,
+      "old": [
+        80,
+        70,
+        90
+      ],
+      "new": [
+        1110,
+        970,
+        1250
+      ]
+    },
+    "gbl_mas_01": {
+      "phase": "adventure",
+      "refLevel": 19,
+      "old": [
+        150,
+        200,
+        180,
+        120
+      ],
+      "new": [
+        1760,
+        2340,
+        2110,
+        1400
+      ]
+    },
+    "gbl_mas_02": {
+      "phase": "adventure",
+      "refLevel": 20,
+      "old": [
+        120,
+        140,
+        220
+      ],
+      "new": [
+        1350,
+        1580,
+        2480
+      ]
+    },
+    "gbl_mas_03": {
+      "phase": "adventure",
+      "refLevel": 22,
+      "old": [
+        160,
+        240,
+        100
+      ],
+      "new": [
+        1850,
+        2770,
+        1150
+      ]
+    },
+    "east_port_explore_tide_marks": {
+      "phase": "adventure",
+      "refLevel": 20,
+      "old": [
+        65,
+        45
+      ],
+      "new": [
+        2480,
+        1720
+      ]
+    },
+    "east_port_explore_sealed_warehouse": {
+      "phase": "adventure",
+      "refLevel": 20,
+      "old": [
+        70,
+        40
+      ],
+      "new": [
+        2480,
+        1420
+      ]
+    },
+    "east_port_explore_storm_buoy": {
+      "phase": "adventure",
+      "refLevel": 20,
+      "old": [
+        75,
+        55
+      ],
+      "new": [
+        2480,
+        1820
+      ]
+    },
+    "east_port_commission_captain_license": {
+      "phase": "adventure",
+      "refLevel": 20,
+      "old": [
+        55,
+        null
+      ],
+      "new": [
+        2480,
+        null
+      ]
+    },
+    "east_port_commission_supply_manifest": {
+      "phase": "adventure",
+      "refLevel": 20,
+      "old": [
+        40,
+        null
+      ],
+      "new": [
+        2480,
+        null
+      ]
+    },
+    "east_port_commission_sea_route": {
+      "phase": "adventure",
+      "refLevel": 20,
+      "old": [
+        60,
+        null
+      ],
+      "new": [
+        2480,
+        null
+      ]
+    },
+    "east_port_contact_soul_master_guard": {
+      "phase": "adventure",
+      "refLevel": 20,
+      "old": [
+        55,
+        null
+      ],
+      "new": [
+        2480,
+        null
+      ]
+    },
+    "east_port_contact_smuggler_conflict": {
+      "phase": "adventure",
+      "refLevel": 20,
+      "old": [
+        null,
+        70
+      ],
+      "new": [
+        null,
+        2480
+      ]
+    },
+    "sea_island_explore_qualification": {
+      "phase": "god",
+      "refLevel": 75,
+      "old": [
+        100,
+        80
+      ],
+      "new": [
+        6990,
+        5590
+      ]
+    },
+    "sea_island_explore_reef_tracks": {
+      "phase": "god",
+      "refLevel": 75,
+      "old": [
+        110,
+        85
+      ],
+      "new": [
+        6990,
+        5400
+      ]
+    },
+    "sea_island_explore_seven_pillars": {
+      "phase": "god",
+      "refLevel": 75,
+      "old": [
+        120,
+        90
+      ],
+      "new": [
+        6990,
+        5240
+      ]
+    },
+    "sea_island_commission_lake_survey": {
+      "phase": "god",
+      "refLevel": 75,
+      "old": [
+        70,
+        null
+      ],
+      "new": [
+        6990,
+        null
+      ]
+    },
+    "sea_island_commission_resident_task": {
+      "phase": "god",
+      "refLevel": 75,
+      "old": [
+        75,
+        60
+      ],
+      "new": [
+        6990,
+        5590
+      ]
+    },
+    "sea_island_commission_storm_watch": {
+      "phase": "god",
+      "refLevel": 75,
+      "old": [
+        80,
+        100
+      ],
+      "new": [
+        5590,
+        6990
+      ]
+    },
+    "sea_island_contact_guardian": {
+      "phase": "god",
+      "refLevel": 75,
+      "old": [
+        90,
+        null
+      ],
+      "new": [
+        6990,
+        null
+      ]
+    },
+    "sea_island_contact_exam_clue": {
+      "phase": "god",
+      "refLevel": 75,
+      "old": [
+        95,
+        70
+      ],
+      "new": [
+        6990,
+        5150
+      ]
+    }
+  }
+}

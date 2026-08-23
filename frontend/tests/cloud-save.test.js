@@ -28,6 +28,10 @@ function jsonResponse(status, body) {
   return { status, ok: status >= 200 && status < 300, json: async () => body }
 }
 
+function loginResponse(username = '云档账号') {
+  return jsonResponse(200, { success: true, username, token: 'tok_login', expiresIn: 2592000000 })
+}
+
 const spirit = {
   id: 'cloud_spirit', eventKey: 'cloud', name: '云存档武魂', tier: 'mid',
   type: '器武魂', subtype: '武器', attack: 12, defense: 8, hp: 30, speed: 9,
@@ -47,52 +51,67 @@ afterEach(() => {
   delete globalThis.fetch
 })
 
-describe('后台云存档冲突处理（BUG-后台 409 静默失败）', () => {
-  it('saveToCloud 遇 401 后重新认证并重试一次，恢复云同步', async () => {
+describe('后台云存档（账号登录模式）', () => {
+  it('未登录时 saveToCloud 返回 needLogin，进度已保存本地且不请求云端', async () => {
+    const fetchMock = vi.fn(async () => jsonResponse(404, { error: 'not found' }))
+    globalThis.fetch = fetchMock
+
+    const api = useApi()
+    const result = await saveToCloud(api)
+
+    expect(result.success).toBe(false)
+    expect(result.needLogin).toBe(true)
+    // 本地副本必须已写入，玩家进度不丢
+    expect(loadFromLocal()).not.toBeNull()
+    expect(globalThis.localStorage.getItem(LOCAL_SAVE_KEY)).not.toBeNull()
+    // 未登录绝不触碰云端
+    expect(fetchMock).not.toHaveBeenCalled()
+  })
+
+  it('登录过期（401）时 saveToCloud 返回 needLogin 且不静默重试', async () => {
     let saveCalls = 0
-    let authCalls = 0
     globalThis.fetch = vi.fn(async (url) => {
-      if (url === '/api/player/auth') {
-        authCalls++
-        return jsonResponse(200, { success: true, token: `tok_${authCalls}`, expiresIn: 86400000 })
-      }
+      if (url === '/api/auth/login') return loginResponse()
       if (url === '/api/player/save') {
         saveCalls++
-        // 第一次保存时服务端内存 tokenStore 已失效（模拟容器重启）
-        if (saveCalls === 1) return jsonResponse(401, { error: '未授权或 Token 已过期，请重新认证' })
-        return jsonResponse(200, { success: true, version: 7, lastSave: new Date().toISOString() })
+        return jsonResponse(401, { error: '未登录或登录已过期，请重新登录' })
       }
       return jsonResponse(404, { error: 'not found' })
     })
 
     const api = useApi()
+    await api.login('云档账号', 'pass1234')
     const result = await saveToCloud(api)
 
-    expect(result.success).toBe(true)
-    expect(result.version).toBe(7)
-    expect(authCalls).toBe(2) // 首次认证 + 401 后的重新认证
-    expect(saveCalls).toBe(2) // 首次失败 + 重试成功
+    expect(result.success).toBe(false)
+    expect(result.needLogin).toBe(true)
+    // 401 后 api 自动登出，需要账号密码重新登录，不再自动重试
+    expect(api.isAuthenticated()).toBe(false)
+    expect(saveCalls).toBe(1)
+    expect(loadFromLocal()).not.toBeNull()
   })
 
   it('两个客户端制造版本冲突：本地进度保留、云端不被静默覆盖，conflict 结果透传', async () => {
     let step = 0
     globalThis.fetch = vi.fn(async (url) => {
-      step++
-      if (url === '/api/player/auth') return jsonResponse(200, { success: true, token: 'tok' })
+      if (url === '/api/auth/login') return loginResponse()
       if (url === '/api/player/save') {
-        if (step === 2) return jsonResponse(200, { success: true, version: 1 }) // 客户端A首次保存
-        if (step === 3) return jsonResponse(200, { success: true, version: 2 }) // 另一客户端推进云端
+        step++
+        if (step === 1) return jsonResponse(200, { success: true, version: 1 }) // 客户端A首次保存
+        if (step === 2) return jsonResponse(200, { success: true, version: 2 }) // 另一客户端推进云端
         return jsonResponse(409, { error: '存档版本冲突，请刷新后重试', currentVersion: 2, conflict: true })
       }
       return jsonResponse(404, { error: 'not found' })
     })
 
     const api = useApi()
+    await api.login('云档账号', 'pass1234')
+
     const first = await saveToCloud(api)
     expect(first.success).toBe(true)
 
     // 模拟另一客户端把云端推进到 v2
-    const other = await api.saveData({ name: '云档测试' }, 1)
+    const other = await api.saveData({ playerId: usePlayerStore().playerId, name: '云档测试' }, 1)
     expect(other.success).toBe(true)
     expect(other.version).toBe(2)
 
@@ -112,7 +131,7 @@ describe('后台云存档冲突处理（BUG-后台 409 静默失败）', () => {
   it('乐观锁保证：expectVersion 不匹配时云端版本不被覆盖', async () => {
     let cloudVersion = 5
     globalThis.fetch = vi.fn(async (url, options) => {
-      if (url === '/api/player/auth') return jsonResponse(200, { success: true, token: 'tok' })
+      if (url === '/api/auth/login') return loginResponse()
       if (url === '/api/player/save') {
         const body = JSON.parse(options.body)
         if (body.expectVersion !== cloudVersion) {
@@ -125,33 +144,21 @@ describe('后台云存档冲突处理（BUG-后台 409 静默失败）', () => {
     })
 
     const api = useApi()
-    await api.authenticate('p_cloud', '云档测试')
-    const res = await api.saveData({ name: '云档测试' }, 3) // 期望 v3，云端已是 v5
+    await api.login('云档账号', 'pass1234')
+    const res = await api.saveData({ playerId: 'p_cloud', name: '云档测试' }, 3) // 期望 v3，云端已是 v5
 
     expect(res.conflict).toBe(true)
     expect(res.currentVersion).toBe(5)
     expect(cloudVersion).toBe(5) // 云端未被静默覆盖
   })
 
-  it('401 后 saveToCloud 不抛异常，返回结构化失败结果供调用方降级到本地', async () => {
-    let authCalls = 0
-    globalThis.fetch = vi.fn(async (url) => {
-      if (url === '/api/player/auth') {
-        authCalls++
-        if (authCalls <= 2) return jsonResponse(200, { success: true, token: 'tok_x', expiresIn: 86400000 })
-        return jsonResponse(500, { error: '认证服务不可用' })
-      }
-      if (url === '/api/player/save') return jsonResponse(401, { error: '未授权' })
-      return jsonResponse(404, { error: 'not found' })
-    })
+  it('未登录直接调 saveData 抛错，不产生网络请求', async () => {
+    const fetchMock = vi.fn(async () => jsonResponse(404, { error: 'not found' }))
+    globalThis.fetch = fetchMock
 
     const api = useApi()
-    const result = await saveToCloud(api)
-
-    expect(result.success).toBe(false)
-    expect(result.error).toBeTruthy()
-    // 本地副本仍已写入，玩家进度不丢
-    expect(loadFromLocal()).not.toBeNull()
+    await expect(api.saveData({ playerId: 'p_cloud', name: '云档测试' })).rejects.toThrow()
+    expect(fetchMock).not.toHaveBeenCalled()
   })
 
   it('暂时只保留本地后，自动保存仍可只写本地，手动保存会用原 currentVersion 重开冲突', () => {

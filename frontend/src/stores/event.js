@@ -11,6 +11,9 @@ export const useEventStore = defineStore('event', {
     doneEvents: [],
     completedEvents: [],
     _recentEvents: [],
+    // 洗牌袋抽取队列（经济规格 v2）：同批候选耗尽前不重复；键=当前地点|阶段
+    _drawQueue: [],
+    _drawQueueKey: '',
     _eventCount: 0,
     _storyPath: [],
     _storyDecisions: {},

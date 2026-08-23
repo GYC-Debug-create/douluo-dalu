@@ -179,11 +179,14 @@ export function calculateDamage(attack, defense, options){
   return Math.max(1, Math.round(base * (finiteNumber(opt.multiplier, 1))));
 }
 
-// 成长曲线与事件奖励量级对齐：前期仍需数次事件升级，后期不再指数膨胀。
-// Lv.1 需要 92，Lv.99 需要 1268，1→100 累计 67320 经验。
+// 成长曲线（单一来源，与 legacy game.js expNeed 完全一致）：
+// expNeed(lv) = round(40 * lv^1.15)。Lv.1 需 40，Lv.10 需 565，Lv.99 需 7889，
+// 1→100 累计 367,228 经验。事件奖励档位按此标定：
+// academy≈1000 / adventure≈2000 / master≈4000 / god≈8000（满选项均值），
+// 单局约 101 个满选项事件走完 1→100；全池目标 ≥10× 累计需求。
 export function experienceNeededForLevel(level){
   const normalizedLevel = Math.max(1, Math.floor(finiteNumber(level, 1)));
-  return 80 + normalizedLevel * 12;
+  return Math.round(40 * Math.pow(normalizedLevel, 1.15));
 }
 
 export function advanceExperience(stateValue, amount, expNeed){

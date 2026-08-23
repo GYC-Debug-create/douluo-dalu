@@ -124,7 +124,7 @@ describe('M2 抽取一致性快照', () => {
     const random = vi.spyOn(Math, 'random').mockImplementation(prng)
     try {
       const ids = drawSnapshot(engine, 30)
-      // 基线：2026-08-15 于 T4 出身限定修复后重新生成（种子 20260814，Lv.5 academy 阶段，
+      // 基线：2026-08-22 于经济规格 v2 落地后重新生成（种子 20260814，Lv.5 academy 阶段，
       // 全量事件池 364 条，含 events-expanded 副作用合并）。
       // 变更记录：
       // - 2026-08-14 M2 基线：首版（重构前后一致性锁定）
@@ -138,13 +138,20 @@ describe('M2 抽取一致性快照', () => {
       //   事件移入进阶学院期（minLevel 10+），academy 池收窄为入门/武魂/命运内容；
       //   dy_sect_01 收徒按判例 7 提至 12 级。序列以 sp_wp_01/first_class/spirit_show/
       //   mentor_1 为主——重标生效的证据（学院日常不再出现在初级学院期）。
+      // - 2026-08-22 经济规格 v2 基线：普通池抽取改为洗牌袋无放回
+      //   （engine/event-rules.buildDrawQueue + 引擎 drawFromBag，队列随存档持久化），
+      //   同一批候选耗尽前零重复——旧基线中 sp_wp_01 连续/高频重复的模式消失，
+      //   四个池事件按周期轮转均匀分布；dyn_lucky 走动态事件路径（35% 判定），
+      //   不经过洗牌袋，仅受种子影响位置。同日曲线统一为幂曲线 40*lv^1.15、
+      //   事件经验按 academy1000/adventure2000/master4000/god8000 重标定
+      //   （数值变更不影响抽取序列，记录备查）。
       expect(ids).toEqual([
-        'sp_wp_01', 'first_class', 'sp_wp_01', 'first_class', 'dyn_lucky',
-        'sp_wp_01', 'spirit_show', 'first_class', 'sp_wp_01', 'first_class',
-        'sp_wp_01', 'mentor_1', 'sp_wp_01', 'spirit_show', 'sp_wp_01',
-        'mentor_1', 'sp_wp_01', 'first_class', 'first_class', 'sp_wp_01',
-        'sp_wp_01', 'first_class', 'sp_wp_01', 'sp_wp_01', 'sp_wp_01',
-        'sp_wp_01', 'sp_wp_01', 'first_class', 'mentor_1', 'sp_wp_01'
+        'sp_wp_01', 'dyn_lucky', 'first_class', 'spirit_show', 'mentor_1',
+        'sp_wp_01', 'first_class', 'spirit_show', 'first_class', 'spirit_show',
+        'sp_wp_01', 'mentor_1', 'sp_wp_01', 'mentor_1', 'spirit_show',
+        'first_class', 'first_class', 'mentor_1', 'mentor_1', 'sp_wp_01',
+        'spirit_show', 'first_class', 'sp_wp_01', 'spirit_show', 'first_class',
+        'sp_wp_01', 'spirit_show', 'mentor_1', 'mentor_1', 'mentor_1'
       ])
     } finally {
       random.mockRestore()
