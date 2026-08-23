@@ -1290,7 +1290,7 @@ function showDetail(id){
   const entryTotal = allItems.length;
 
   const img = it.image
-    ? `<img src="${esc(it.image)}" alt="${esc(it.name)}"
+    ? `<img src="${esc(it.image)}" alt="${esc(it.name)}" loading="lazy" decoding="async"
         onerror="this.outerHTML='<div class=icon-fallback>${esc(it.icon || '❖')}</div>'">`
     : `<div class="icon-fallback">${esc(it.icon || '❖')}</div>`;
 
@@ -1391,7 +1391,7 @@ function closeModal(){ setModalOpen(false); }
 function showNpcDetail(it){
   const color = factionColor(it.faction);
   const img = it.image
-    ? `<img src="${esc(it.image)}" alt="${esc(it.name)}" style="width:100%;height:200px;object-fit:cover"
+    ? `<img src="${esc(it.image)}" alt="${esc(it.name)}" loading="lazy" decoding="async" style="width:100%;height:200px;object-fit:cover"
         onerror="this.outerHTML='<div class=icon-fallback style=font-size:80px;height:200px;display:flex;align-items:center;justify-content:center;background:${color}22>${esc(it.name[0])}</div>'">`
     : `<div class="icon-fallback" style="font-size:80px;height:200px;display:flex;align-items:center;justify-content:center;background:${color}22">${esc(it.name[0])}</div>`;
   const html = `<div class="modal-grid">
@@ -1414,7 +1414,7 @@ function showNpcDetail(it){
 function showBoneDetail(it){
   const color = boneTypeColor(it.type);
   const img = it.image
-    ? `<img src="${esc(it.image)}" alt="${esc(it.name)}" style="width:100%;height:200px;object-fit:cover"
+    ? `<img src="${esc(it.image)}" alt="${esc(it.name)}" loading="lazy" decoding="async" style="width:100%;height:200px;object-fit:cover"
         onerror="this.outerHTML='<div class=icon-fallback style=font-size:80px;height:200px;display:flex;align-items:center;justify-content:center;background:${color}22>🦴</div>'">`
     : `<div class="icon-fallback" style="font-size:80px;height:200px;display:flex;align-items:center;justify-content:center;background:${color}22">🦴</div>`;
   const html = `<div class="modal-grid">
@@ -1433,7 +1433,7 @@ function showBoneDetail(it){
 
 function showLocationDetail(it){
   const img = it.image
-    ? `<img src="${esc(it.image)}" alt="${esc(it.name)}" style="width:100%;height:200px;object-fit:cover"
+    ? `<img src="${esc(it.image)}" alt="${esc(it.name)}" loading="lazy" decoding="async" style="width:100%;height:200px;object-fit:cover"
         onerror="this.outerHTML='<div class=icon-fallback style=font-size:80px;height:200px;display:flex;align-items:center;justify-content:center;background:rgba(201,168,76,.1)>📍</div>'">`
     : `<div class="icon-fallback" style="font-size:80px;height:200px;display:flex;align-items:center;justify-content:center;background:rgba(201,168,76,.1)">📍</div>`;
   const html = `<div class="modal-grid">
