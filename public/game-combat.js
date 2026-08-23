@@ -640,7 +640,7 @@ const BattleSystem = (() => {
     if(!state.enemy.isNpc && state.options.countKill !== false) G.battleStats.kills++;
     if(state.enemy.isBoss){
       G._bossKills = (G._bossKills || 0) + 1;
-      if(state.options.finalBoss || /holy_lord|武魂殿圣殿大供奉/.test(state.enemy.id + state.enemy.name)) G._bossKilled = true;
+      if(state.options.finalBoss || /holy_lord|bibi_dong|武魂殿圣殿大供奉|教皇比比东/.test(state.enemy.id + state.enemy.name)) G._bossKilled = true;
     }
     const event = state.options.event;
     // 魂环事件只有在吸收成功后才算完成；失败时必须保留待猎状态。
@@ -858,11 +858,11 @@ const BattleSystem = (() => {
       </div>
       <div class="battle-log">${state.logs.map(log => `<div class="${log.type}">${esc(log.text)}</div>`).join('')}</div>
       <div class="battle-actions">
-        <button class="battle-action primary" id="btn-battle-attack" ${state.turn !== 'player' || state.ended || state.busy ? 'disabled' : ''}>普通攻击</button>
+        <button class="battle-action primary" id="btn-battle-attack" ${state.turn !== 'player' || state.ended || state.busy ? 'disabled' : ''}>${G && G._simpleMode !== false ? '攻击' : '普通攻击'}</button>
         ${skills}
-        <button class="battle-action" id="btn-battle-fusion" ${state.turn !== 'player' || state.ended || state.busy || state.fusionUsed || (G.rings || []).length < 3 ? 'disabled' : ''} title="${(G.rings || []).length < 3 ? '至少获得三个魂环后才能施展武魂融合' : '武魂融合：40魂力，高额伤害并获得护盾'}">武魂融合<small>${state.fusionUsed ? '本场已使用' : ((G.rings || []).length < 3 ? '需≥3魂环' : '40魂力')}</small></button>
+        ${G && G._simpleMode !== false ? '' : `<button class="battle-action" id="btn-battle-fusion" ${state.turn !== 'player' || state.ended || state.busy || state.fusionUsed || (G.rings || []).length < 3 ? 'disabled' : ''} title="${(G.rings || []).length < 3 ? '至少获得三个魂环后才能施展武魂融合' : '武魂融合：40魂力，高额伤害并获得护盾'}">武魂融合<small>${state.fusionUsed ? '本场已使用' : ((G.rings || []).length < 3 ? '需≥3魂环' : '40魂力')}</small></button>
         <button class="battle-action" id="btn-battle-defend" ${state.turn !== 'player' || state.ended || state.busy ? 'disabled' : ''}>防御</button>
-        <button class="battle-action" id="btn-battle-item" ${state.turn !== 'player' || state.ended || state.busy ? 'disabled' : ''}>道具</button>
+        <button class="battle-action" id="btn-battle-item" ${state.turn !== 'player' || state.ended || state.busy ? 'disabled' : ''}>道具</button>`}
         <button class="battle-action danger" id="btn-battle-flee" ${state.turn !== 'player' || state.ended || state.busy || state.enemy.isBoss || state.options.allowFlee === false ? 'disabled' : ''}>逃跑</button>
       </div>${items}
     </div>`;
@@ -873,15 +873,18 @@ const BattleSystem = (() => {
     const flee = document.getElementById('btn-battle-flee');
     const auto = document.getElementById('btn-battle-auto');
     const speed = document.getElementById('btn-battle-speed');
-    if(attack) attack.addEventListener('click', performAttack);
+    // 玩家亲自出手：若自动战斗进行中先切回手动，把操作权还给玩家（再点【自动】可交回）。
+    const manualAction = fn => () => { if(state && state.auto) toggleAuto(); fn(); };
+    if(attack) attack.addEventListener('click', manualAction(performAttack));
     if(fusion) fusion.addEventListener('click', performFusion);
     if(defend) defend.addEventListener('click', performDefend);
     if(item) item.addEventListener('click', showItems);
     if(flee) flee.addEventListener('click', attemptFlee);
     if(auto) auto.addEventListener('click', toggleAuto);
     if(speed) speed.addEventListener('click', cycleSpeed);
-    area.querySelectorAll('[data-battle-skill]').forEach(button => button.addEventListener('click', () => performSkill(Number(button.dataset.battleSkill))));
+    area.querySelectorAll('[data-battle-skill]').forEach(button => button.addEventListener('click', manualAction(() => performSkill(Number(button.dataset.battleSkill)))));
     area.querySelectorAll('[data-battle-item]').forEach(button => button.addEventListener('click', () => useItem(Number(button.dataset.battleItem))));
+    if(typeof refreshChildGuide === 'function') refreshChildGuide();
     autoAction();
   }
 
@@ -906,7 +909,8 @@ const BattleSystem = (() => {
       defending:false,
       busy:false,
       ended:false,
-      auto:false,
+      // 低龄化：简单模式默认自动战斗，小朋友只看故事和结果。
+      auto:G && G._simpleMode !== false && !(options && options.training),
       speed:(() => { try{ const pref = localStorage.getItem('dldl_battle_animation'); return pref === 'minimal' ? 3 : (pref === 'fast' ? 2 : 1); }catch(e){ return 1; } })(),
       showItems:false,
       bossPhase:1,

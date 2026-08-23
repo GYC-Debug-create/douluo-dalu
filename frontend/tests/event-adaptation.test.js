@@ -31,7 +31,8 @@ function ctx(overrides = {}) {
 
 describe('事件中央触发规则', () => {
   it('扩展后的静态事件 ID 唯一，并包含地点专属事件', () => {
-    expect(EVENTS).toHaveLength(348 + LOCATION_EVENTS.length)
+    // 基线 350 = 348 + P0-B 新增 ml_bibi_omen / ml_bibi_hunt（比比东主线铺垫）。
+    expect(EVENTS).toHaveLength(350 + LOCATION_EVENTS.length)
     expect(new Set(EVENTS.map(event => event.id)).size).toBe(EVENTS.length)
     expect(EVENTS.filter(event => event.locationActionType === 'local_exploration')).toHaveLength(6)
     expect(EVENTS.filter(event => event.locationActionType === 'local_commission')).toHaveLength(6)

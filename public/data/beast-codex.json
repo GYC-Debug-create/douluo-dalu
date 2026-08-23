@@ -1448,7 +1448,7 @@
       "image": "assets/beasts/幽冥狼王.jpg",
       "variants": {
         "ten": {
-          "name": "十年幽冥狼王",
+          "name": "十年幽冥狼",
           "attack": 6,
           "defense": 3,
           "hp": 30,
@@ -1457,7 +1457,7 @@
           "dropRate": 0.7
         },
         "hundred": {
-          "name": "百年幽冥狼王",
+          "name": "百年幽冥狼",
           "attack": 20,
           "defense": 10,
           "hp": 80,
@@ -1931,7 +1931,7 @@
       "image": "assets/beasts/泰坦巨猿王.jpg",
       "variants": {
         "ten": {
-          "name": "十年泰坦巨猿王",
+          "name": "十年泰坦巨猿",
           "attack": 7,
           "defense": 5,
           "hp": 46,
@@ -1940,7 +1940,7 @@
           "dropRate": 0.7
         },
         "hundred": {
-          "name": "百年泰坦巨猿王",
+          "name": "百年泰坦巨猿",
           "attack": 22,
           "defense": 15,
           "hp": 120,
@@ -2069,7 +2069,7 @@
       "image": "assets/beasts/深海魔鲸王.jpg",
       "variants": {
         "ten": {
-          "name": "十年深海魔鲸王",
+          "name": "十年深海魔鲸",
           "attack": 8,
           "defense": 7,
           "hp": 76,
@@ -2078,7 +2078,7 @@
           "dropRate": 0.7
         },
         "hundred": {
-          "name": "百年深海魔鲸王",
+          "name": "百年深海魔鲸",
           "attack": 25,
           "defense": 20,
           "hp": 200,

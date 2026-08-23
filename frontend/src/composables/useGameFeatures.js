@@ -166,10 +166,13 @@ export function useGameFeatures() {
     return { ...previewDailySign(gameStore._dailySign, today), today }
   }
 
-  function dailySign(todayKey) {
+  function dailySign(todayKey, options = {}) {
     const today = todayKey || localDateKey()
     const recorded = recordDailySign(gameStore._dailySign, today)
-    if (!recorded.changed) return ui.notify('今日已经签到', 'info')
+    if (!recorded.changed) {
+      if (!options.silent) ui.notify('今天的奖励已经领过了', 'info')
+      return { changed: false, rewardDay: recorded.rewardDay || 0, items: [] }
+    }
     gameStore._dailySign = recorded.sign
     const reward = DAILY_REWARDS[recorded.rewardDay - 1]?.reward || {}
     const items = [`第${recorded.rewardDay}天奖励`]
@@ -181,8 +184,9 @@ export function useGameFeatures() {
     }
     addDiary(`每日签到第${recorded.rewardDay}档，连续${recorded.nextStreak}天。`)
     // 成就解锁必须在签到后单独提示，其 50 金币/20 经验不能静默混入签到奖励。
-    checkAchievements(true)
-    persist(`签到成功，领取${items.join('，')}`)
+    checkAchievements(!options.silent)
+    persist(options.silent ? '' : `领取成功：${items.join('，')}`)
+    return { changed: true, rewardDay: recorded.rewardDay, items }
   }
 
   function totalSkillPoints() { return Math.floor(player.level / 5) * 2 }
@@ -269,15 +273,16 @@ export function useGameFeatures() {
       tower: gameStore._towerFloor, rings: player.rings.length
     })[type] || 0
   }
-  function claimQuest(questId) {
+  function claimQuest(questId, options = {}) {
     const quest = QUESTS.find(entry => entry.id === questId)
     const quests = flags.value._quests || (flags.value._quests = {})
-    if (!quest || quests[`${questId}_claimed`] || questProgress(quest.type) < quest.target) return
+    if (!quest || quests[`${questId}_claimed`] || questProgress(quest.type) < quest.target) return false
     quests[`${questId}_claimed`] = true
     if (quest.reward.gold) addGold(quest.reward.gold)
     if (quest.reward.exp) awardExp(quest.reward.exp)
     addDiary(`完成任务「${quest.name}」。`)
-    persist(`任务奖励已领取：${quest.name}`)
+    persist(options.silent ? '' : `奖励已领取：${quest.name}`)
+    return true
   }
 
   function combatPower() {
@@ -287,19 +292,95 @@ export function useGameFeatures() {
   function checkAchievements(notify = true) {
     const unlocked = player._achievementList || (player._achievementList = [])
     const G = snapshot.value
+    // 战力只算一次：combatPower→finalStats 是全量重算，循环内逐条调用是 M7 记录的重复开销
+    const power = combatPower()
+    let unlockedCount = 0
     for (const achievement of ACHIEVEMENTS) {
       if (unlocked.includes(achievement.id)) continue
-      if (achievement.id === 'power_10k' && combatPower() < 10000) continue
-      if (achievement.id === 'power_30k' && combatPower() < 30000) continue
-      if (achievement.id === 'power_50k' && combatPower() < 50000) continue
+      if (achievement.id === 'power_10k' && power < 10000) continue
+      if (achievement.id === 'power_30k' && power < 30000) continue
+      if (achievement.id === 'power_50k' && power < 50000) continue
       let met = false
       try { met = Boolean(achievement.cond(G)) } catch { met = false }
       if (!met) continue
       unlocked.push(achievement.id)
+      unlockedCount++
       addGold(50); awardExp(20)
       if (notify) ui.notify(`解锁成就「${achievement.name}」，奖励金币+50、经验+20`, 'gold')
     }
     try { saveToLocal() } catch (error) { ui.notify(`成就进度保存失败：${error.message}`, 'error', 5000) }
+    return unlockedCount
+  }
+
+  /**
+   * 简单模式把被隐藏页面里的无风险收益全部代办：孩子不需要知道签到、任务、
+   * 技能树和称号，也不会因为没打开这些页面而少拿奖励。只做确定收益，不自动
+   * 消费金币、不锻造、不挑战，避免替玩家承担随机或不可逆风险。
+   */
+  function runSimpleModeAutomation(todayKey) {
+    if (gameStore._simpleMode === false || !player.name) return { changed: false, messages: [] }
+    const messages = []
+    let changed = false
+
+    const sign = dailySign(todayKey, { silent: true })
+    if (sign.changed) {
+      changed = true
+      messages.push(`今天奖励已自动领取：${sign.items.slice(1).join('、') || '已放进背包'}`)
+    }
+
+    // 奖励可能带来升级并完成下一条任务，因此最多做三轮，直到没有新任务可领。
+    let questCount = 0
+    for (let pass = 0; pass < 3; pass++) {
+      let claimedThisPass = 0
+      for (const quest of QUESTS) {
+        if (claimQuest(quest.id, { silent: true })) {
+          claimedThisPass++
+          questCount++
+        }
+      }
+      if (!claimedThisPass) break
+    }
+    if (questCount) {
+      changed = true
+      messages.push(`${questCount}份完成奖励已自动收好`)
+    }
+
+    // 防守优先、四路轮换。该顺序没有随机性，也不会改变完整模式下的重置能力。
+    const branchOrder = ['defense', 'offense', 'spirit', 'agility']
+    let learned = 0
+    let guard = 0
+    while (totalSkillPoints() > usedSkillPoints() && guard++ < 100) {
+      const available = branchOrder
+        .map(key => SKILL_TREE[key]?.nodes.find(node => !player._skillTree[node.id] && node.req.every(id => player._skillTree[id])))
+        .filter(Boolean)
+      const pointsLeft = totalSkillPoints() - usedSkillPoints()
+      const node = available.find(candidate => candidate.cost <= pointsLeft)
+      if (!node) break
+      player._skillTree[node.id] = true
+      learned++
+    }
+    if (learned) {
+      applySkillBonuses()
+      changed = true
+      messages.push(`自动变强 ${learned} 次`)
+    }
+
+    const achievementCount = checkAchievements(false)
+    if (achievementCount) {
+      changed = true
+      messages.push(`${achievementCount}份成长奖励已自动收好`)
+    }
+
+    const titles = unlockedTitles()
+    const bestTitle = titles[titles.length - 1]
+    if (bestTitle && flags.value._activeTitle !== bestTitle.id) {
+      flags.value._activeTitle = bestTitle.id
+      if (!player._titles.includes(bestTitle.id)) player._titles.push(bestTitle.id)
+      changed = true
+    }
+
+    if (changed) persist('')
+    return { changed, messages }
   }
 
   function unlockedTitles() {
@@ -461,7 +542,7 @@ export function useGameFeatures() {
     useInventoryItem, buyItem, signPreview, dailySign,
     totalSkillPoints, usedSkillPoints, learnSkill, resetSkills,
     forge, train, questProgress, claimQuest, checkAchievements,
-    combatPower, unlockedTitles, equipTitle, selectFormation,
+    combatPower, unlockedTitles, equipTitle, selectFormation, runSimpleModeAutomation,
     relationLevel, canInteract, interactNpc, startNpcSpar, startTower
   }
 }

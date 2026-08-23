@@ -71,8 +71,27 @@ function loadEvents(publicDir, errors) {
   }
 }
 
-const PHASE_RANGES = { academy:[1,6], adventure:[7,18], master:[19,40], god:[41,100] };
+// 与 public/game-rules.js 的 phaseForLevel、frontend/src/engine/event-rules.js 的
+// PHASE_RANGES 保持同一边界（正典身份期：初级学院 1~10、进阶学院 11~40、历练 41~70、封神 71~100）。
+const PHASE_RANGES = { academy:[1,10], adventure:[11,40], master:[41,70], god:[71,100] };
 const NUMERIC_RESULT_FIELDS = ['attack','defense','speed','hp','maxHp','heal','damage','exp','gold','fate','mp','spiritPowerGain'];
+
+// 正典称呼纠偏（判例23）：史莱克七怪与主角同代，不得被称为"学长/导师"。
+const CANON_ADDRESS_PATTERN = /(唐三|戴沐白|小舞|奥斯卡|马红俊|宁荣荣|朱竹清)[^"'”“」』]{0,6}(学长|导师)/;
+
+function validateCanonAddress(sourceName, event, errors){
+  const texts = [event && event.name, ...(event && event.text || [])];
+  for(const choice of (event && event.choices) || []){
+    if(!choice) continue;
+    texts.push(choice.text, choice.result && choice.result.text);
+  }
+  for(const text of texts){
+    if(typeof text === 'string' && CANON_ADDRESS_PATTERN.test(text)){
+      errors.push(`${sourceName}：${event.id} 对正典人物使用不当称呼「${CANON_ADDRESS_PATTERN.exec(text)[0]}」（应为"同学"等平辈称呼）`);
+      return;
+    }
+  }
+}
 
 function validateResult(eventId, choiceIndex, result, errors){
   if(!result || typeof result !== 'object') return;
@@ -100,10 +119,11 @@ function validateEvents(publicDir, errors, eventNames) {
     names.add(nameKey);
     const min = Number(event.minLevel) || 1;
     const max = Number(event.maxLevel) || 100;
-    const effectivePhase = min <= 6 ? 'academy' : min <= 18 ? 'adventure' : min <= 40 ? 'master' : 'god';
+    const effectivePhase = min <= 10 ? 'academy' : min <= 40 ? 'adventure' : min <= 70 ? 'master' : 'god';
     const range = PHASE_RANGES[event.phase];
     if(!range) errors.push(`事件库：${event.id} 使用无效阶段 ${event.phase}`);
     else if(min > max || min > range[1] || max < range[0]) errors.push(`事件库：${event.id} 的阶段与等级区间不可达（应归入 ${effectivePhase}）`);
+    validateCanonAddress('事件库', event, errors);
     if(event.npcIds && !Array.isArray(event.npcIds)) errors.push(`game-data.js：${event.id} 的 npcIds 必须是数组`);
     if(!Array.isArray(event.choices) || event.choices.length === 0){
       errors.push(`game-data.js：${event.id} 缺少可选项`);
@@ -155,6 +175,7 @@ function validateSpiritEventMap(publicDir, errors, baseEvents, eventNames) {
       const nameKey = String(event.name || '').trim();
       if(nameKey && names.has(nameKey)) errors.push(`spirit-events.json：事件名与已有事件重复「${nameKey}」（${event.id}）`);
       names.add(nameKey);
+      validateCanonAddress('spirit-events.json', event, errors);
       if(event.npcIds && !Array.isArray(event.npcIds)) errors.push(`spirit-events.json：${event.id} 的 npcIds 必须是数组`);
       const min = Number(event.minLevel) || 1;
       const max = Number(event.maxLevel) || 100;

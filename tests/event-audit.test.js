@@ -12,7 +12,8 @@ test('事件中央规则审计覆盖基线与地点专属事件且无阻断项',
     encoding: 'utf8'
   });
   assert.equal(result.status, 0, `${result.stdout}\n${result.stderr}`);
-  assert.match(result.stdout, /事件审计：541 条/);
+  // 基线 543 = 541 + P0-B 新增 ml_bibi_omen / ml_bibi_hunt（比比东主线铺垫）。
+  assert.match(result.stdout, /事件审计：543 条/);
 });
 
 test('事件资源统一解析审计无缺失文件', () => {

@@ -23,6 +23,9 @@
     <div class="main-area">
       <TopBar @action="onTopAction" />
 
+      <!-- 儿童引导条：简单模式常驻"下一步"提示与主按钮 -->
+      <ChildGuideBar v-if="simpleMode" :guide="childGuide" @action="onGuideAction" />
+
       <!-- 通知浮层：最多同时显示三条，其余由 UI store 排队 -->
       <div class="notification-rail" aria-label="游戏通知" aria-live="polite">
         <TransitionGroup name="toast">
@@ -53,6 +56,7 @@
         :can-hunt="engine.canHunt.value"
         :location-name="currentLocationName"
         :check-cond="engine.checkCond"
+        :simple-mode="simpleMode"
         @explore="engine.explore"
         @rest="engine.rest"
         @hunt="engine.hunt"
@@ -143,6 +147,8 @@ import StatusPanel from '@/components/StatusPanel.vue'
 import TopBar from '@/components/TopBar.vue'
 import SceneArea from '@/components/SceneArea.vue'
 import ModalDialog from '@/components/ModalDialog.vue'
+import ChildGuideBar from '@/components/ChildGuideBar.vue'
+import { buildChildGuide } from '@/utils/child-mode'
 import {
   clearCloudConflict,
   createCloudConflictState,
@@ -186,11 +192,60 @@ const pendingCloudConflict = cloudConflict.pending
 const showAbandonExplorationDialog = ref(false)
 const pendingAbandonExplorationId = ref('')
 let autoSaveTimer = null
+// 未登录提示只弹一次，避免每分钟自动保存都重复打扰
+let cloudLoginWarned = false
 
 // 事件引擎
 const engine = useEventEngine()
 const features = useGameFeatures()
 const battle = useBattleSystem()
+
+// 简单模式（低龄化默认）：常驻"下一步"引导条，任何时刻告诉孩子现在该点什么。
+const simpleMode = computed(() => gameStore._simpleMode !== false)
+const childGuide = computed(() => simpleMode.value ? buildChildGuide({
+  player,
+  eventStore,
+  gameStore,
+  sceneState: engine.sceneState.value,
+  currentEvent: engine.currentEvent.value
+}) : null)
+
+// 引导条主按钮：全部指向这条主线上已有的动作，不引入新状态。
+function onGuideAction(action) {
+  switch (action) {
+    case 'explore':
+      engine.explore()
+      break
+    case 'continue':
+      engine.continueAction()
+      break
+    case 'hunt':
+      engine.hunt()
+      break
+    case 'map':
+      onOpenMap()
+      break
+    case 'location-primary': {
+      const ev = engine.currentEvent.value
+      if (ev?.activeHere || ev?.suspendedHere) engine.resumeLocationExploration()
+      else engine.startLocationExploration('local_exploration')
+      break
+    }
+    default:
+      break
+  }
+}
+
+// 简单模式自动代办：签到/任务/技能树等隐藏页面里的确定收益，进档时静默结算并提示。
+function runChildAutomation() {
+  if (!player.name || !player.spirit) return
+  try {
+    const result = features.runSimpleModeAutomation()
+    for (const message of result?.messages || []) ui.notify(message, 'success', 5000)
+  } catch (error) {
+    console.warn('简单模式自动代办失败', error)
+  }
+}
 
 // 当前地点名称
 const currentLocationName = computed(() => {
@@ -261,6 +316,7 @@ onMounted(async () => {
   // 从地图/图鉴返回时 Pinia 仍保留最新状态，禁止再次请求云端覆盖刚发生的旅行或事件。
   if (player.name && player.spirit) {
     resumeCurrentGame()
+    runChildAutomation()
     return
   }
 
@@ -272,6 +328,7 @@ onMounted(async () => {
     return
   }
   resumeCurrentGame()
+  runChildAutomation()
 })
 
 onBeforeRouteLeave((to, from, next) => {
@@ -313,7 +370,17 @@ async function backgroundSave() {
       return
     }
     if (!result.success) {
-      console.warn('后台云存档失败，已保留本地：', result.error)
+      if (result.needLogin) {
+        if (!cloudLoginWarned) {
+          cloudLoginWarned = true
+          ui.notify('尚未登录账号，进度已保存到本地；在标题页登录后即可同步云端', 'warning', 5000)
+        }
+      } else {
+        console.warn('后台云存档失败，已保留本地：', result.error)
+      }
+    } else {
+      // 重新登录并成功同步后重置提示标志，避免一次登录过期导致永久静默。
+      cloudLoginWarned = false
     }
   } catch (error) {
     console.warn('后台存档失败', error)
@@ -408,17 +475,26 @@ function onTopAction(action) {
       router.push('/')
       break
     case 'help':
-      modalTitle.value = '操作说明'
+      modalTitle.value = '怎么玩'
       modalContent.value = `
-        <h3>基本操作</h3>
-        <p>1. 点击「探索四周」可以触发事件，事件完成后点击「继续前行」继续推进剧情</p>
-        <p>2. 点击「原地休息」可以恢复少量生命与魂力</p>
-        <p>3. 达到等级要求后可以「猎杀魂兽」获取魂环</p>
-        <p>4. 事件选项可能有条件限制，灰色表示不满足</p>
-        <p>5. 记得定期存档！</p>
+        <h3>三步就能玩</h3>
+        <p>1. 点【探索四周】看故事，选一个你喜欢的选项</p>
+        <p>2. 打不过就点【原地休息】，把血补满再打</p>
+        <p>3. 升到 10 级、20 级……可以【猎杀魂兽】拿魂环，角色会越来越厉害！</p>
+        <h3>小贴士</h3>
+        <p>· 打架的时候点一下【自动】，角色就会自己打</p>
+        <p>· 想自己出招？直接点【技能】按钮，就会换成你操作；再点【自动】就交回给它</p>
+        <p>· 不知道去哪？看左边的【猎环目标】，点【查看地图】跟着走</p>
+        <p>· 玩完了记得点【存档】保存进度</p>
       `
       showModal.value = true
       break
+    case 'mode': {
+      const next = !(gameStore._simpleMode !== false)
+      gameStore.setSimpleMode(next)
+      ui.notify(next ? '已切换到简单模式：只保留最简单的玩法' : '已切换到完整模式：技能树、商店等全部功能已恢复', 'info')
+      break
+    }
     case 'bag': case 'shop': case 'quests': case 'signin': case 'skilltree':
     case 'bone': case 'forge': case 'train': case 'tower': case 'formation':
     case 'achievement': case 'title': case 'npc': case 'relation':
@@ -480,9 +556,13 @@ async function doSave() {
   }
 
   if (result.success) {
+    cloudLoginWarned = false
     ui.notify(`存档成功（云端版本 ${result.version}）`, 'success')
   } else if (!result.success && result.conflict) {
     recordCloudConflict(result)
+  } else if (result.needLogin) {
+    cloudLoginWarned = true
+    ui.notify('尚未登录账号，进度已保存到本地；请在标题页登录后同步云端', 'warning', 5000)
   } else {
     ui.notify(
       result.localFailed ? `本地存档失败：${result.error || '浏览器存储不可用'}` : `云端不可用，已保存到本地：${result.error || '稍后可重试'}`,

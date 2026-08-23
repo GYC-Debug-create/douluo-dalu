@@ -24,9 +24,10 @@ import { playerFacingBeastName, ringSourceForChoice } from '@/utils/ring-names'
 import { resolveEventAsset } from '@/utils/asset-resolver'
 import { buildTravelArrivalSummary } from '@/utils/travel-arrival'
 import { EVENTS, DYNAMIC_EVENTS, CHAINED_EVENTS, ENDINGS } from '@/data/game-data'
-import { advanceExperience, calculateRingBacklash, classifyEventLocation, normalizeLegacyHealthResult, rankTitleForLevel, RING_LEVELS, GLOBAL_LOCATION_PREFIX } from '@/engine/rules'
+import { advanceExperience, calculateRingBacklash, classifyEventLocation, normalizeLegacyHealthResult, phaseForLevel, rankTitleForLevel, RING_LEVELS, GLOBAL_LOCATION_PREFIX } from '@/engine/rules'
 import {
   adaptEvent,
+  buildDrawQueue,
   isEventEligible,
   MAIN_STORY_REQUIREMENTS
 } from '@/engine/event-rules'
@@ -53,6 +54,8 @@ const MAIN_STORY_MILESTONES = [
   { id: 'spirit_hall_exam', name: '武魂殿考核', minLevel: 30, targetId: 'spirit_hall', requires: MAIN_STORY_REQUIREMENTS.spirit_hall_exam },
   { id: 'soul_master_final', name: '魂师大赛·决赛', minLevel: 40, targetId: 'tian_dou_city', requires: MAIN_STORY_REQUIREMENTS.soul_master_final },
   { id: 'god_trial_sea', name: '神位传承·海神九考', minLevel: 50, targetId: 'sea_god_island', requires: MAIN_STORY_REQUIREMENTS.god_trial_sea },
+  { id: 'ml_bibi_omen', name: '教皇的影子', minLevel: 60, targetId: 'wuhun_city', requires: MAIN_STORY_REQUIREMENTS.ml_bibi_omen },
+  { id: 'ml_bibi_hunt', name: '猎魂封锁线', minLevel: 72, targetId: 'star_duo_deep', requires: MAIN_STORY_REQUIREMENTS.ml_bibi_hunt },
   { id: 'final_evil', name: '最终决战·讨伐武魂殿', minLevel: 95, targetId: 'wuhun_city', requires: MAIN_STORY_REQUIREMENTS.final_evil }
 ]
 
@@ -491,6 +494,31 @@ export function useEventEngine() {
 
   function recentCooldown(pool) {
     return cooldownSafeEventPool(pool, eventStore._recentEvents, eventStore.doneEvents)
+  }
+
+  // 洗牌袋无放回抽取（经济规格 v2）：候选按权重洗成队列后逐个弹出，耗尽才重洗。
+  // 队列随存档持久化；地点或阶段变化时键控失效重建。近期记录仍由 recentCooldown 前置排除。
+  function drawFromBag(candidates) {
+    if (!Array.isArray(candidates) || candidates.length === 0) return null
+    if (!Array.isArray(eventStore._drawQueue)) eventStore._drawQueue = []
+    const key = `${gameStore._currentLocation || ''}|${currentPhase()}`
+    let queue = eventStore._drawQueueKey === key ? eventStore._drawQueue.slice() : []
+    const validIds = new Set(candidates.map(e => e.id))
+    while (queue.length > 0 && !validIds.has(queue[0])) queue.shift()
+    if (queue.length === 0) {
+      const weights = {}
+      for (const e of candidates) weights[e.id] = Math.max(1, (e.weight || 1) + eventMatchBonus(e))
+      queue = buildDrawQueue(candidates.map(e => e.id), weights)
+    }
+    let pickedId = null
+    while (queue.length > 0) {
+      const id = queue.shift()
+      if (validIds.has(id)) { pickedId = id; break }
+    }
+    if (!pickedId) pickedId = candidates[0].id
+    eventStore._drawQueue = queue
+    eventStore._drawQueueKey = key
+    return candidates.find(e => e.id === pickedId) || null
   }
 
   // ==================== 主线里程碑 ====================
@@ -1373,16 +1401,9 @@ export function useEventEngine() {
       return
     }
 
-    // 加权随机选取
+    // 洗牌袋加权抽取（同批候选耗尽前不重复，见 drawFromBag）
     const candidates = recentCooldown(pool)
-    const weighted = []
-    candidates.forEach(e => {
-      const baseW = e.weight || 1
-      const matchBonus = eventMatchBonus(e)
-      const totalW = Math.max(1, baseW + matchBonus)
-      for (let i = 0; i < totalW; i++) weighted.push(e)
-    })
-    const ev = pick(weighted)
+    const ev = drawFromBag(candidates)
     showEvent(ev)
   }
 

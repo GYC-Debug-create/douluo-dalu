@@ -7,11 +7,14 @@
 
 import { phaseForLevel } from './rules.js'
 
+// 与 rules.js phaseForLevel 保持同一边界（正典身份期：初级学院 1~10、
+// 进阶学院 11~40、历练 41~70、封神 71~100）。历史版本是 1-6/7-18/19-40/41-100，
+// 已废弃——新增或校验事件时一律以 phaseForLevel 为准。
 export const PHASE_RANGES = Object.freeze({
-  academy: [1, 6],
-  adventure: [7, 18],
-  master: [19, 40],
-  god: [41, 100]
+  academy: [1, 10],
+  adventure: [11, 40],
+  master: [41, 70],
+  god: [71, 100]
 })
 
 export const MAIN_STORY_EVENT_IDS = Object.freeze([
@@ -21,6 +24,8 @@ export const MAIN_STORY_EVENT_IDS = Object.freeze([
   'spirit_hall_exam',
   'soul_master_final',
   'god_trial_sea',
+  'ml_bibi_omen',
+  'ml_bibi_hunt',
   'final_evil'
 ])
 
@@ -31,7 +36,9 @@ export const MAIN_STORY_REQUIREMENTS = Object.freeze({
   spirit_hall_exam: ['soul_master_prelim'],
   soul_master_final: ['soul_master_prelim'],
   god_trial_sea: ['soul_master_final'],
-  final_evil: ['god_trial_sea']
+  ml_bibi_omen: ['god_trial_sea'],
+  ml_bibi_hunt: ['ml_bibi_omen'],
+  final_evil: ['god_trial_sea', 'ml_bibi_hunt']
 })
 
 // 当前结局流程在最终主线后结束，没有成神后的自由游玩状态。
@@ -71,6 +78,8 @@ const EXPLICIT_RULES = Object.freeze({
   spirit_hall_exam: { mainStoryOnly: true, minLevel: 30, phase: 'adventure' },
   soul_master_final: { mainStoryOnly: true, minLevel: 40, phase: 'adventure' },
   god_trial_sea: { mainStoryOnly: true, minLevel: 50, phase: 'master' },
+  ml_bibi_omen: { mainStoryOnly: true, minLevel: 60, phase: 'master' },
+  ml_bibi_hunt: { mainStoryOnly: true, minLevel: 72, phase: 'god' },
   final_evil: { mainStoryOnly: true, minLevel: 95, phase: 'god' },
 
   // 身份/能力门槛：等级与魂环数量同时满足，避免只靠 god phase 越级。
@@ -278,6 +287,31 @@ export function isEventEligible(event, ctx = {}) {
   if (current.season && ctx.season && current.season !== ctx.season) return false
   if (current.timeOfDay && ctx.timeOfDay && current.timeOfDay !== ctx.timeOfDay) return false
   return true
+}
+
+/**
+ * 洗牌袋抽取队列（经济规格 v2：多周目不撞车）。
+ * 候选按权重展开 → Fisher-Yates 洗牌 → 按首次出现顺序去重。
+ * 引擎按序弹出即可保证：同批候选耗尽前零重复；权重越大越倾向早出场，
+ * 整个周期的出场分布仍与加权随机同分布。
+ */
+export function buildDrawQueue(candidateIds, weights = {}, rand = Math.random) {
+  const ids = Array.isArray(candidateIds) ? candidateIds.filter(Boolean) : []
+  const expanded = []
+  for (const id of ids) {
+    const w = Math.max(1, Math.min(20, Math.round(Number(weights[id]) || 1)))
+    for (let i = 0; i < w; i++) expanded.push(id)
+  }
+  for (let i = expanded.length - 1; i > 0; i--) {
+    const j = Math.floor(rand() * (i + 1))
+    if (i !== j) { const tmp = expanded[i]; expanded[i] = expanded[j]; expanded[j] = tmp }
+  }
+  const seen = new Set()
+  const queue = []
+  for (const id of expanded) {
+    if (!seen.has(id)) { seen.add(id); queue.push(id) }
+  }
+  return queue
 }
 
 export function eventRuleSummary(event, options = {}) {

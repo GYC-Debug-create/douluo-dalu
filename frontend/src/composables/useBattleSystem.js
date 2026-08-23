@@ -9,6 +9,7 @@ import { usePlayerStore } from '@/stores/player'
 import { useEventStore } from '@/stores/event'
 import { useCombatStore } from '@/stores/combat'
 import { useUiStore } from '@/stores/ui'
+import { useGameStore } from '@/stores/game'
 import { beastTierForEncounter } from '@/utils/ring-hunt'
 import { resolveAssetPath } from '@/utils/asset-resolver'
 import { useGameData } from '@/composables/useGameData'
@@ -136,6 +137,15 @@ function buildEnemy(key, playerLevel, finalStatsFn, beasts) {
     arena_fighter: () => npcEnemy('竞技场·双刀客', 0.98),
     evil_master: () => npcEnemy('邪魂师·黑袍人', 1.03, '☠️'),
     god_rival: () => npcEnemy('神位传承者·宿敌', 1.15, '👑'),
+    // 正典终局 Boss：教皇比比东（双生武魂 死亡蛛皇+噬魂蛛皇，斗罗1 最终决战）。
+    bibi_dong: () => ({
+      id: 'bibi_dong', name: '教皇比比东', isNpc: false, isBoss: true, icon: '🕷️', image: resolveAssetPath('assets/npcs/比比东.jpg'),
+      attack: Math.round(fs.attack * 0.95), defense: Math.round(fs.defense * 0.9),
+      hp: Math.round(fs.maxHp * 2.3), maxHp: Math.round(fs.maxHp * 2.3),
+      speed: Math.round(fs.speed * 0.95), element: 'dark', sub: '最终BOSS · 武魂殿教皇', special: '双生武魂：死亡蛛皇',
+      exp: 800, gold: 300
+    }),
+    // holy_lord 为 P0-A 换脸前的旧最终 Boss，保留以兼容旧存档/旧战斗引用。
     holy_lord: () => ({
       id: 'holy_lord', name: '武魂殿圣殿大供奉', isNpc: false, isBoss: true, icon: '👁️', image: null,
       attack: Math.round(fs.attack * 0.92), defense: Math.round(fs.defense * 0.88),
@@ -200,8 +210,11 @@ export function useBattleSystem() {
   const eventStore = useEventStore()
   const combat = useCombatStore()
   const ui = useUiStore()
+  const gameStore = useGameStore()
   const { data } = useGameData()
   const { finalStats, getMaxSpiritPower } = useGameRules()
+  // 简单模式（低龄化默认）：战斗自动开打、只留"攻击/逃跑"按钮。
+  const simpleMode = computed(() => gameStore._simpleMode !== false)
 
   const enemy = computed(() => battleState?.enemy || null)
   const logs = computed(() => battleState?.logs || [])
@@ -892,6 +905,11 @@ export function useBattleSystem() {
     battleState.cooldowns = (player.skills || []).map(() => 0)
     battleActive.value = true
     combat._battleActive = true
+    // 简单模式默认自动战斗：小朋友只看故事和结果，不需要理解魂力/冷却。
+    if (simpleMode.value && !options.training) {
+      battleState.auto = true
+      scheduleAutoAction()
+    }
 
     // 初始化技能加成
     const sb = player._skillBonuses || {}
@@ -1047,6 +1065,7 @@ export function useBattleSystem() {
     // 系统
     start, startEventBattle, startTraining, isActive, cancelTraining, resetBattle,
     buildEnemy, normalizeElement, elementMultiplier,
-    ELEMENT_ICONS, ELEMENT_NAMES, STATUS_INFO
+    ELEMENT_ICONS, ELEMENT_NAMES, STATUS_INFO,
+    simpleMode
   }
 }

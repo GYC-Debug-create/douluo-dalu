@@ -5,7 +5,7 @@
       <div class="sp-spirit-img-wrap">
         <div class="spirit-aura"></div>
         <div class="sp-spirit-img">
-          <img v-if="player.spirit?.image" :src="player.spirit.image" :alt="player.spirit?.name" @error="onImgError" />
+          <img v-if="player.spirit?.image" :src="player.spirit.image" :alt="player.spirit?.name" decoding="async" @error="onImgError" />
           <span v-else>{{ player.spirit?.icon || '✦' }}</span>
         </div>
       </div>
@@ -15,21 +15,21 @@
         <div class="sp-spirit-name">武魂：<span>{{ player.spirit?.name }}（{{ tierName }}）</span></div>
         <div class="sp-traits">
           <span v-for="trait in displayTraits" :key="trait" class="trait-tag">{{ trait }}</span>
-          <span class="destiny-tag">✦ {{ player._destiny?.name || '命运之路' }}</span>
+          <span v-if="!simpleMode" class="destiny-tag">✦ {{ player._destiny?.name || '命运之路' }}</span>
         </div>
       </div>
     </div>
 
-    <!-- 状态条 -->
+    <!-- 状态条：简单模式用儿童用语（体力/能量/升级点数） -->
     <div>
-      <StatBar label="生命" type="hp" :current="player.hp" :max="maxHp" />
-      <StatBar label="魂力" type="mp" :current="player.spiritPower" :max="maxSpiritPower" />
-      <StatBar label="经验" type="exp" :current="player.exp" :max="expNeed" />
+      <StatBar :label="simpleMode ? '体力' : '生命'" type="hp" :current="player.hp" :max="maxHp" />
+      <StatBar :label="simpleMode ? '能量' : '魂力'" type="mp" :current="player.spiritPower" :max="maxSpiritPower" />
+      <StatBar :label="simpleMode ? '升级' : '经验'" type="exp" :current="player.exp" :max="expNeed" />
     </div>
 
     <!-- 主线与魂环 -->
     <div>
-      <div class="panel-sec-title">主线与魂环</div>
+      <div class="panel-sec-title">{{ simpleMode ? '我的任务' : '主线与魂环' }}</div>
       <div class="rings-row">
         <div
           v-for="(ring, idx) in ringSlots"
@@ -61,7 +61,7 @@
             <button v-if="ringObjective.deferredActions === 0" type="button" class="ro-button quiet" :disabled="ringActionLocked" @click="emit('defer-ring-hunt')">暂缓提醒</button>
           </div>
         </section>
-        <details v-if="huntingKnowledge.experience > 0" class="hunter-journal" data-testid="hunter-journal">
+        <details v-if="!simpleMode && huntingKnowledge.experience > 0" class="hunter-journal" data-testid="hunter-journal">
           <summary>
             <span>猎魂简记</span>
             <small>历练 {{ huntingKnowledge.experience }} · 已识 {{ knownBeastCount }} 种</small>
@@ -88,14 +88,14 @@
       <div class="attr-grid2">
         <div class="attr-cell2"><span class="al">攻击</span><span class="av" style="color:#d08a6a">{{ stats.attack }}</span></div>
         <div class="attr-cell2"><span class="al">防御</span><span class="av" style="color:#8fb8d8">{{ stats.defense }}</span></div>
-        <div class="attr-cell2"><span class="al">生命</span><span class="av" style="color:#7fc48c">{{ stats.maxHp }}</span></div>
+        <div class="attr-cell2"><span class="al">{{ simpleMode ? '体力' : '生命' }}</span><span class="av" style="color:#7fc48c">{{ stats.maxHp }}</span></div>
         <div class="attr-cell2"><span class="al">速度</span><span class="av" style="color:#e6c878">{{ stats.speed }}</span></div>
       </div>
     </div>
 
     <!-- 金币与命运值 -->
-    <div class="gold-row"><span>金币</span><b>{{ player.gold }}</b></div>
-    <div class="gold-row"><span>命运值</span><b style="color:#c9a0d8">{{ player.fatePoints }}</b></div>
+    <div class="gold-row"><span>{{ simpleMode ? '金魂币' : '金币' }}</span><b>{{ player.gold }}</b></div>
+    <div v-if="!simpleMode" class="gold-row"><span>命运值</span><b style="color:#c9a0d8">{{ player.fatePoints }}</b></div>
   </aside>
 </template>
 
@@ -121,6 +121,8 @@ const combatStore = useCombatStore()
 const { TIER_NAMES, phaseName, expNeeded, finalStats, getMaxSpiritPower } = useGameRules()
 
 const tierName = computed(() => player.spirit ? TIER_NAMES[player.spirit.tier] || '' : '')
+// 简单模式（低龄化默认）：隐藏命运值/命运之路/猎魂简记等对小朋友多余的信息。
+const simpleMode = computed(() => gameStore._simpleMode !== false)
 const stats = computed(() => finalStats())
 const maxHp = computed(() => stats.value.maxHp)
 const maxSpiritPower = computed(() => getMaxSpiritPower())

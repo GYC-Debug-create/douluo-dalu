@@ -24,7 +24,10 @@ export const useGameStore = defineStore('game', {
     _saveIntegrityWarnings: [],
     _legacyRingOverflow: [],
     _orphanedSkills: [],
-    _forgeBonesMigrated: false
+    _forgeBonesMigrated: false,
+    // 低龄化：默认简单模式——隐藏技能树/商店/挑战塔等复杂系统，只留
+    // "看故事 → 选选项 → 打怪 → 升级拿魂环"主循环。老玩家可在顶栏切回完整模式。
+    _simpleMode: true
   }),
   getters: {
     currentLocation: (state) => state._currentLocation,
@@ -48,6 +51,9 @@ export const useGameStore = defineStore('game', {
     },
     advanceTime() {
       this._gameTime++
+    },
+    setSimpleMode(value) {
+      this._simpleMode = value !== false
     }
   }
 })

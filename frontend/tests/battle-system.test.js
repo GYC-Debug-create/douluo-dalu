@@ -5,6 +5,7 @@ import { useBattleSystem } from '@/composables/useBattleSystem'
 import { initNewCharacter } from '@/stores/serializer'
 import { useCombatStore } from '@/stores/combat'
 import { useEventStore } from '@/stores/event'
+import { useGameStore } from '@/stores/game'
 import { usePlayerStore } from '@/stores/player'
 
 class MemoryStorage {
@@ -27,6 +28,8 @@ beforeEach(() => {
   globalThis.localStorage = new MemoryStorage()
   globalThis.sessionStorage = new MemoryStorage()
   initNewCharacter({ name: '战斗验收', origin: ORIGINS[0], spirit, innatePower: 70 })
+  // 本文件验证完整模式的手动战斗闭环；简单模式的默认行为单独用例覆盖。
+  useGameStore()._simpleMode = false
 })
 
 afterEach(() => {
@@ -171,6 +174,26 @@ describe('自动战斗闭环（BUG-006）', () => {
     expect(battle.enemy.value.hp).toBe(0)
     expect(battle.round.value).toBe(1)
     expect(battle.isActive()).toBe(false)
+  })
+
+  it('简单模式（低龄化默认）下战斗默认自动开启，无需手动点击', async () => {
+    const gameStore = useGameStore()
+    gameStore._simpleMode = true
+    const player = usePlayerStore()
+    player.skills = []
+    player.rings = []
+    player.spiritPower = 100
+    const battle = useBattleSystem()
+    battle.start({
+      id: 'auto_dummy', name: '自动木偶', isNpc: true,
+      hp: 500, maxHp: 500, attack: 1, defense: 0, speed: 1
+    }, { allowFlee: false, countKill: false })
+
+    expect(battle.autoMode.value).toBe(true)
+
+    await vi.advanceTimersByTimeAsync(1600)
+    expect(battle.round.value).toBeGreaterThan(1)
+    expect(battle.enemy.value.hp).toBeLessThan(500)
   })
 
   it('1×/2×/3× 速度切换可用且影响自动行动节奏', async () => {

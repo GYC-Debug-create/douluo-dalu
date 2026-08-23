@@ -2,16 +2,18 @@
   <div class="scene-area">
     <!-- 事件叙事 -->
     <div v-if="sceneState === 'event' && currentEvent" class="scene-event">
-      <div class="scene-location" v-if="currentEvent.location">【{{ currentEvent.location }}】</div>
-      <div class="event-title">{{ currentEvent.name }}</div>
+      <div class="scene-location" v-if="currentEvent.location">【{{ displayLocation }}】</div>
+      <div class="event-title">{{ displayTitle }}</div>
       <img
         v-if="currentEvent.image"
         :src="currentEvent.image"
         :alt="currentEvent.name"
         class="scene-img"
+        decoding="async"
         @error="onImgError"
       />
-      <div class="event-text" v-html="eventText"></div>
+      <div v-if="simpleMode" class="event-text">{{ eventText }}</div>
+      <div v-else class="event-text" v-html="eventText"></div>
       <div class="event-choices">
         <button
           v-for="(choice, idx) in availableChoices"
@@ -22,8 +24,8 @@
         >
           <span class="ck">{{ String.fromCharCode(65 + idx) }}</span>
           <span class="choice-copy">
-            <span class="choice-text">{{ choice.text }}</span>
-            <span v-if="choice.strategy" class="choice-strategy">
+            <span class="choice-text">{{ choiceLabel(choice) }}</span>
+            <span v-if="!simpleMode && choice.strategy" class="choice-strategy">
               <span>{{ choice.strategy.year }}</span>
               <span>{{ choice.strategy.risk }}</span>
               <span>{{ choice.strategy.reward }}</span>
@@ -106,31 +108,32 @@
         <button v-else class="btn btn-gold action-card" aria-label="探索当地" @click="$emit('start-exploration', 'local_exploration')">
           <span class="action-glyph" aria-hidden="true">✦</span><span class="action-copy"><strong>探索当地</strong><small>调查地形，追踪区域线索</small></span><span class="action-arrow" aria-hidden="true">→</span>
         </button>
-        <button class="btn action-card" aria-label="接取当地委托" @click="$emit('start-exploration', 'local_commission')">
+        <button v-if="!simpleMode" class="btn action-card" aria-label="接取当地委托" @click="$emit('start-exploration', 'local_commission')">
           <span class="action-glyph" aria-hidden="true">◆</span><span class="action-copy"><strong>接取当地委托</strong><small>完成一轮当地任务与交付</small></span><span class="action-arrow" aria-hidden="true">→</span>
         </button>
-        <button class="btn action-card" aria-label="拜访当地人物" @click="$emit('start-exploration', 'local_contact')">
+        <button v-if="!simpleMode" class="btn action-card" aria-label="拜访当地人物" @click="$emit('start-exploration', 'local_contact')">
           <span class="action-glyph" aria-hidden="true">◇</span><span class="action-copy"><strong>拜访当地人物</strong><small>交换情报，建立地域关系</small></span><span class="action-arrow" aria-hidden="true">→</span>
         </button>
         <button class="btn map-btn action-card action-card-muted" aria-label="返回万象地图" @click="$emit('open-map')">
-          <span class="action-glyph" aria-hidden="true">🗺</span><span class="action-copy"><strong>返回万象地图</strong><small>查看路线、目标与其它地点</small></span><span class="action-arrow" aria-hidden="true">→</span>
+          <span class="action-glyph" aria-hidden="true">🗺</span><span class="action-copy"><strong>{{ simpleMode ? '看看地图' : '返回万象地图' }}</strong><small>{{ simpleMode ? '去别的地方走走' : '查看路线、目标与其它地点' }}</small></span><span class="action-arrow" aria-hidden="true">→</span>
         </button>
       </div>
     </div>
 
     <!-- 继续前行（事件结果） -->
     <div v-else-if="sceneState === 'continue'" class="scene-continue">
-      <div class="scene-location" v-if="locationName">【{{ locationName }}】</div>
-      <div class="event-title">{{ currentEvent?.name || '继续旅程' }}</div>
-      <div class="event-text" v-html="resultDisplayText"></div>
+      <div class="scene-location" v-if="locationName">【{{ simpleMode ? childCopy(locationName) : locationName }}】</div>
+      <div class="event-title">{{ currentEvent?.name ? (simpleMode ? childCopy(currentEvent.name) : currentEvent.name) : '继续旅程' }}</div>
+      <div v-if="simpleMode" class="event-text">{{ resultDisplayText }}</div>
+      <div v-else class="event-text" v-html="resultDisplayText"></div>
       <div class="event-choices">
         <button class="choice-btn continue-btn" @click="$emit('continue')">
           <span class="ck">▶</span>
-          <span class="choice-text">继续前行</span>
+          <span class="choice-text">{{ simpleMode ? '继续出发' : '继续前行' }}</span>
         </button>
         <button class="choice-btn map-btn" @click="$emit('open-map')">
           <span class="ck">🗺</span>
-          <span class="choice-text">查阅万象地图</span>
+          <span class="choice-text">{{ simpleMode ? '看看地图' : '查阅万象地图' }}</span>
         </button>
       </div>
     </div>
@@ -168,9 +171,9 @@
         <div class="scene-idle-desc">{{ idleDesc }}</div>
         <div class="scene-idle-tip">{{ idleTip }}</div>
         <div class="explore-btns">
-          <button class="btn btn-gold" @click="$emit('explore')">✦ 探索四周</button>
-          <button class="btn" @click="$emit('rest')">原地休息</button>
-          <button class="btn" @click="$emit('hunt')" v-if="canHunt">猎杀魂兽</button>
+          <button class="btn btn-gold" @click="$emit('explore')">{{ simpleMode ? '✦ 去探索' : '✦ 探索四周' }}</button>
+          <button class="btn" @click="$emit('rest')">{{ simpleMode ? '休息一下' : '原地休息' }}</button>
+          <button class="btn" @click="$emit('hunt')" v-if="canHunt">{{ simpleMode ? '去打怪' : '猎杀魂兽' }}</button>
         </div>
       </div>
     </div>
@@ -180,6 +183,7 @@
 <script setup>
 import { computed } from 'vue'
 import BattleArena from './BattleArena.vue'
+import { childCopy, shortChildStory, shortChildChoice } from '@/utils/child-mode'
 
 const props = defineProps({
   sceneState: { type: String, default: 'idle' },
@@ -190,7 +194,8 @@ const props = defineProps({
   playerLevel: { type: Number, default: 1 },
   canHunt: { type: Boolean, default: false },
   locationName: { type: String, default: '' },
-  checkCond: { type: Function, default: () => true }
+  checkCond: { type: Function, default: () => true },
+  simpleMode: { type: Boolean, default: false }
 })
 
 const emit = defineEmits([
@@ -198,12 +203,19 @@ const emit = defineEmits([
   'start-exploration', 'resume-exploration', 'return-exploration', 'abandon-exploration'
 ])
 
-const idleTitle = computed(() => '旅途尚待展开')
-const idleDesc = computed(() => '你正站在斗罗大陆的道路上，远处城镇灯火微明，林间传来魂兽的低鸣。')
-const idleTip = computed(() => '你可以探索四周、寻找魂兽，或前往附近城镇。')
+const idleTitle = computed(() => props.simpleMode ? '准备好出发啦' : '旅途尚待展开')
+const idleDesc = computed(() => props.simpleMode
+  ? '点一下金色大按钮，看看会遇见什么故事。'
+  : '你正站在斗罗大陆的道路上，远处城镇灯火微明，林间传来魂兽的低鸣。')
+const idleTip = computed(() => props.simpleMode ? '' : '你可以探索四周、寻找魂兽，或前往附近城镇。')
+
+// 简单模式：地点/标题去术语，正文压缩到三句以内，选项一行以内。
+const displayLocation = computed(() => props.simpleMode ? childCopy(props.currentEvent?.location || props.locationName) : (props.currentEvent?.location || props.locationName))
+const displayTitle = computed(() => props.simpleMode ? childCopy(props.currentEvent?.name || '') : (props.currentEvent?.name || ''))
 
 const eventText = computed(() => {
   if (!props.currentEvent?.text) return ''
+  if (props.simpleMode) return shortChildStory(props.currentEvent.text, 3, 150)
   const texts = Array.isArray(props.currentEvent.text) ? props.currentEvent.text : [props.currentEvent.text]
   return texts
     .join('<br/><br/>')
@@ -213,6 +225,7 @@ const eventText = computed(() => {
 
 const resultDisplayText = computed(() => {
   if (!props.resultText) return '你休整片刻，准备踏上新的旅程。'
+  if (props.simpleMode) return shortChildStory(props.resultText, 3, 160)
   return props.resultText
     .replace(/\{name\}/g, props.playerName)
     .replace(/\{spirit\}/g, props.spiritName)
@@ -222,6 +235,10 @@ const availableChoices = computed(() => {
   if (!props.currentEvent?.choices) return []
   return props.currentEvent.choices
 })
+
+function choiceLabel(choice) {
+  return props.simpleMode ? shortChildChoice(choice.text) : choice.text
+}
 
 function choiceAvailable(choice) {
   const cond = choice.cond || choice.req
@@ -235,8 +252,10 @@ function choiceAvailable(choice) {
 function choiceHint(choice) {
   const cond = choice.cond || choice.req
   if (!cond) return ''
-  if (typeof choice.requirementHint === 'string' && choice.requirementHint.trim()) return choice.requirementHint.trim()
-  if (typeof cond === 'function') return '留意事件描述中的条件线索'
+  if (typeof choice.requirementHint === 'string' && choice.requirementHint.trim()) {
+    return props.simpleMode ? childCopy(choice.requirementHint.trim()) : choice.requirementHint.trim()
+  }
+  if (typeof cond === 'function') return props.simpleMode ? '' : '留意事件描述中的条件线索'
   const parts = []
   if (cond.attack) parts.push(`攻击≥${cond.attack}`)
   if (cond.defense) parts.push(`防御≥${cond.defense}`)
@@ -245,7 +264,8 @@ function choiceHint(choice) {
   if (cond.gold) parts.push(`金币≥${cond.gold}`)
   if (cond.fate) parts.push(`命运≥${cond.fate}`)
   if (cond.item) parts.push(`需要${cond.item}`)
-  return parts.join('·')
+  const text = parts.join('·')
+  return props.simpleMode ? childCopy(text) : text
 }
 
 function chooseOption(choice, idx) {

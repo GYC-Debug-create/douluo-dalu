@@ -643,6 +643,14 @@ button{font-family:inherit;cursor:pointer}
 .status-toggle{display:none;position:sticky;top:0;z-index:22;width:100%;min-height:36px;border:1px solid var(--line);border-radius:4px;background:#211a10;color:var(--gold);font-family:inherit}
 .compact-status{display:none;padding:7px 12px;border-bottom:1px solid var(--line);background:rgba(20,16,10,.88);color:var(--ink-dim);font-size:12px;line-height:1.5;text-align:center;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}
 .compact-status>span{min-width:0}.compact-action{min-height:28px;padding:4px 9px;border:1px solid rgba(127,196,140,.7);border-radius:4px;background:rgba(127,196,140,.1);color:#b9e7c0;font:inherit;font-size:11px;cursor:pointer}.compact-action:hover,.compact-action:focus-visible{border-color:#e6c878;color:#e6c878}
+/* 儿童引导条（与 Vue 端 ChildGuideBar 同一视觉） */
+.child-guide{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:12px;margin:10px 14px 0;padding:11px 12px;border:2px solid #e3b94f;border-radius:12px;background:linear-gradient(110deg,rgba(83,55,12,.96),rgba(36,28,13,.96));box-shadow:0 0 22px rgba(227,185,79,.22);color:#fff4c6}
+.child-guide[hidden]{display:none}
+.child-guide-icon{display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:#f0c75e;color:#2b1c06;font-size:20px;font-weight:900}
+.child-guide strong{font-size:16px;line-height:1.45}
+.child-guide-button{min-height:44px;padding:9px 18px;border:0;border-radius:10px;background:#f0c75e;color:#241704;font:inherit;font-size:15px;font-weight:800;cursor:pointer}
+.child-guide-button:hover,.child-guide-button:focus-visible{background:#ffe28b}
+@media(max-width:700px){.child-guide{grid-template-columns:auto minmax(0,1fr);margin:8px 8px 0}.child-guide-button{grid-column:1/-1;width:100%}}
 @media(min-width:1600px){
   .game-layout{width:min(100%,2560px);margin:0 auto;grid-template-columns:clamp(290px,17vw,380px) minmax(0,1fr);box-shadow:0 0 60px rgba(0,0,0,.45)}
   .scene-area{padding-left:clamp(28px,3vw,64px);padding-right:clamp(28px,3vw,64px)}
@@ -2400,7 +2408,7 @@ body.low-effects .awaken-img-wrap,body.low-effects .awaken-img-wrap img{box-shad
                 <button class="top-btn" id="btn-signin">签到</button>
               </div>
             </details>
-            <details class="top-group">
+            <details class="top-group" id="group-growth">
               <summary>成长</summary>
               <div class="top-group-menu">
                 <button class="top-btn" id="btn-skilltree" style="color:#e6c878">技能树</button>
@@ -2413,7 +2421,7 @@ body.low-effects .awaken-img-wrap,body.low-effects .awaken-img-wrap img{box-shad
                 <button class="top-btn" id="btn-title" style="color:#e6c878">称号</button>
               </div>
             </details>
-            <details class="top-group">
+            <details class="top-group" id="group-codex">
               <summary>人物与图鉴</summary>
               <div class="top-group-menu">
                 <button class="top-btn" id="btn-npc">人物</button>
@@ -2424,14 +2432,17 @@ body.low-effects .awaken-img-wrap,body.low-effects .awaken-img-wrap img{box-shad
             <details class="top-group">
               <summary>系统</summary>
               <div class="top-group-menu">
-                <button class="top-btn" id="btn-save">存档</button>
-                <button class="top-btn" id="btn-help" style="color:#a78bfa">帮助</button>
-                <button class="top-btn" id="btn-home">返回主页</button>
+            <button class="top-btn" id="btn-save">存档</button>
+            <button class="top-btn" id="btn-help" style="color:#a78bfa">帮助</button>
+            <button class="top-btn" id="btn-mode" style="color:#88ddaa">完整模式</button>
+            <button class="top-btn" id="btn-home">返回主页</button>
               </div>
             </details>
           </div>
           <div id="time-weather-display" class="time-weather-display"></div>
         </div>
+        <!-- 儿童引导条：简单模式常驻"下一步"提示与主按钮（game.js refreshChildGuide 控制） -->
+        <section id="child-guide" class="child-guide" hidden aria-live="polite"></section>
         <div class="compact-status" id="compact-status" aria-live="polite"></div>
         <div class="notification-rail" aria-live="polite">
           <div id="achievement-banner" role="status" aria-live="polite" aria-atomic="true">

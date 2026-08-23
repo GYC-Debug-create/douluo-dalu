@@ -1128,8 +1128,9 @@ function refreshPanel(){
   const traitEl = $('sp-traits');
   if(traitEl && G._personality){
     const traits = (G._personality.traits || []).slice(0, 3);
+    // 简单模式不展示"命运之路"标签，减少小朋友看不懂的概念。
     traitEl.innerHTML = traits.map(t => `<span class="trait-tag">${esc(t)}</span>`).join('') +
-      `<span class="destiny-tag">✦ ${esc(G._destiny && G._destiny.name ? G._destiny.name : '')}</span>`;
+      (G._simpleMode === false ? `<span class="destiny-tag">✦ ${esc(G._destiny && G._destiny.name ? G._destiny.name : '')}</span>` : '');
   }
   const img = $('sp-spirit-img');
   img.replaceChildren();
@@ -1236,7 +1237,13 @@ function refreshPanel(){
   $('at-hp').textContent = fs.maxHp;
   $('at-speed').textContent = fs.speed;
   $('sp-gold').textContent = G.gold;
-  $('sp-fate').textContent = G.fatePoints;
+  const fateValue = $('sp-fate');
+  if(fateValue){
+    fateValue.textContent = G.fatePoints;
+    // 简单模式隐藏命运值行（对小朋友是多余概念，结局仍照常结算）。
+    const fateRow = fateValue.closest('.gold-row');
+    if(fateRow) fateRow.style.display = G._simpleMode === false ? '' : 'none';
+  }
   const compactStatus = $('compact-status');
   if(compactStatus){
     const ringHint = atRingGate ? `第${G.rings.length + 1}魂环待猎取` : `魂环 ${G.rings.length}/9`;
@@ -1830,7 +1837,9 @@ const MAIN_STORY_MILESTONES = [
   { id:'spirit_hall_exam', name:'武魂殿考核', minLevel:25, targetId:'spirit_hall', requires:['soul_master_prelim'] },
   { id:'soul_master_final', name:'魂师大赛·决赛', minLevel:36, targetId:'tian_dou_city', requires:['soul_master_prelim'] },
   { id:'god_trial_sea', name:'神位传承·海神九考', minLevel:75, targetId:'sea_god_island', requires:['soul_master_final'] },
-  { id:'final_evil', name:'最终决战·讨伐武魂殿', minLevel:95, targetId:'wuhun_city', requires:['god_trial_sea'] }
+  { id:'ml_bibi_omen', name:'教皇的影子', minLevel:60, targetId:'wuhun_city', requires:['god_trial_sea'] },
+  { id:'ml_bibi_hunt', name:'猎魂封锁线', minLevel:72, targetId:'star_duo_deep', requires:['ml_bibi_omen'] },
+  { id:'final_evil', name:'最终决战·讨伐武魂殿', minLevel:95, targetId:'wuhun_city', requires:['god_trial_sea','ml_bibi_hunt'] }
 ];
 
 function nextMainStoryMilestone(){
@@ -2404,19 +2413,25 @@ function renderContinue(ev, extraText, nextHandler){
   const currentLoc = G._currentLocation || 'slk_academy';
   const locData = DATA.mapData ? DATA.mapData.find(l => l.id === currentLoc) : null;
   const locName = locData ? locData.name : (ev ? ev.location : '大陆某地');
+  const simple = isSimple();
+  const bodyText = simple
+    ? esc(childShort(extraText || '你休整片刻，准备踏上新的旅程。', 3, 160))
+    : (extraText || '你休整片刻，准备踏上新的旅程。');
+  const titleText = simple ? esc(childText(ev ? ev.name : '继续旅程')) : esc(ev ? ev.name : '继续旅程');
   area.innerHTML = `
-    <div class="scene-location">【${esc(locName)}】</div>
-    <div class="scene-title">${esc(ev ? ev.name : '继续旅程')}</div>
-    <div class="scene-text"><p>${extraText || '你休整片刻，准备踏上新的旅程。'}</p></div>
+    <div class="scene-location">【${esc(simple ? childText(locName) : locName)}】</div>
+    <div class="scene-title">${titleText}</div>
+    <div class="scene-text"><p>${bodyText}</p></div>
     <div class="choices">
-      <button class="choice-btn" id="btn-next-ev"><span class="ck">▶</span>继续前行</button>
-      <button class="choice-btn" id="btn-open-map" style="border-color:rgba(139,92,246,.4)"><span class="ck">🗺</span>查阅万象地图</button>
+      <button class="choice-btn" id="btn-next-ev"><span class="ck">▶</span>${simple ? '继续出发' : '继续前行'}</button>
+      <button class="choice-btn" id="btn-open-map" style="border-color:rgba(139,92,246,.4)"><span class="ck">🗺</span>${simple ? '看看地图' : '查阅万象地图'}</button>
     </div>`;
   $('btn-next-ev').addEventListener('click', typeof nextHandler === 'function' ? nextHandler : nextEvent);
   $('btn-open-map').addEventListener('click', openMap);
   // 记录访问地点并同步状态栏，确保暂缓猎环、失败休整等状态立即可见。
   if(currentLoc) visitLocation(currentLoc);
   refreshPanel();
+  refreshChildGuide();
 }
 
 // 事件地点由公共规则统一分类：具体地点映射到地图 ID，抽象地点显式标记为全局。
@@ -2642,7 +2657,9 @@ function renderScene(ev, choices){
     const imgHtml = ev.image
       ? `<img class="scene-img" src="${ev.image}" alt="" onerror="this.style.display='none'">` : '';
 
-    const paras = ev.text.map(p => `<p>${fmt(p)}</p>`).join('');
+    const paras = isSimple()
+      ? `<p>${esc(childShort(ev.text.join('。'), 3, 150))}</p>`
+      : ev.text.map(p => `<p>${fmt(p)}</p>`).join('');
 
     const choicesHtml = choices.map((c, i) => {
       const key = String.fromCharCode(65 + i);
@@ -2652,9 +2669,11 @@ function renderScene(ev, choices){
       const condTxt = cond ? condText(cond) : '';
       const hintTxt = c.hint || '';
       const sub = [hintTxt, condTxt, costTxt].filter(Boolean).join('　');
+      const label = isSimple() ? esc(childChoiceText(c.text)) : fmt(c.text);
+      const subSimple = isSimple() && sub ? esc(childText(sub)) : sub;
       return `<button class="choice-btn" data-i="${i}" ${ok ? '' : 'disabled'}>
-        <span class="ck">${key}</span>${fmt(c.text)}
-        ${sub ? `<span class="cond ${cond ? (ok ? 'ok' : 'no') : ''}">${esc(sub)}${cond ? (ok ? ' ✓' : ' ✗') : ''}</span>` : ''}
+        <span class="ck">${key}</span>${label}
+        ${subSimple ? `<span class="cond ${cond ? (ok ? 'ok' : 'no') : ''}">${subSimple}${cond ? (ok ? ' ✓' : ' ✗') : ''}</span>` : ''}
       </button>`;
     }).join('');
 
@@ -2678,6 +2697,7 @@ function renderScene(ev, choices){
         c.fn();
       }));
     refreshPanel();
+    refreshChildGuide();
   }, '◆');
 }
 
@@ -3005,6 +3025,16 @@ function buildEnemy(key){
     arena_fighter:  () => npcEnemy('竞技场·双刀客', 0.98),
     evil_master:    () => npcEnemy('邪魂师·黑袍人', 1.03, '☠️'),
     god_rival:      () => npcEnemy('神位传承者·宿敌', 1.15, '👑'),
+    // 正典终局 Boss：教皇比比东（双生武魂 死亡蛛皇+噬魂蛛皇，斗罗1 最终决战）。
+    bibi_dong:     () => ({
+      id:'bibi_dong', name:'教皇比比东', isNpc:false, isBoss:true, icon:'🕷️',
+      image:'assets/npcs/比比东.jpg',
+      attack:Math.round(fs.attack * 0.95), defense:Math.round(fs.defense * 0.9),
+      hp:Math.round(fs.maxHp * 2.3), maxHp:Math.round(fs.maxHp * 2.3),
+      speed:Math.round(fs.speed * 0.95), element:'暗', sub:'最终BOSS · 武魂殿教皇', special:'双生武魂：死亡蛛皇',
+      exp:800, gold:300
+    }),
+    // holy_lord 为 P0-A 换脸前的旧最终 Boss，保留以兼容旧存档/旧战斗引用。
     holy_lord:     () => ({
       id:'holy_lord', name:'武魂殿圣殿大供奉', isNpc:false, isBoss:true, icon:'👁️',
       image:null,
@@ -3329,6 +3359,10 @@ function enterGame(isNewGame){
   }
   G = migrated;
   window.G = G;
+  // 低龄化：默认简单模式（隐藏技能树/商店等复杂入口），顶栏"完整模式"可切回。
+  G._simpleMode = G._simpleMode !== false;
+  applySimpleMode();
+  autoDailySignIn();
   // 旧档兼容：早期版本 _personality/_destiny 可能保存为字符串，
   // 若不做归一化，refreshPanel 读取 .traits/.name 会抛异常导致“继续冒险”中断。
   if(G._personality && typeof G._personality === 'string'){
@@ -5191,7 +5225,162 @@ function openSettings(){
 }
 
 // ==================== 帮助面板 ====================
+// 简单模式（低龄化默认）：隐藏小朋友用不到的入口；切回完整模式即全部恢复。
+function applySimpleMode(){
+  const simple = G && G._simpleMode !== false;
+  ['btn-shop','btn-quests','group-growth','group-codex','time-weather-display'].forEach(id => {
+    const el = $(id);
+    if(el) el.style.display = simple ? 'none' : '';
+  });
+  const modeBtn = $('btn-mode');
+  if(modeBtn) modeBtn.textContent = simple ? '完整模式' : '简单模式';
+  refreshChildGuide();
+}
+
+// ==================== 儿童文案与引导（与 Vue 端 child-mode.js 同一套规则） ====================
+function isSimple(){
+  return typeof G !== 'undefined' && G && G._simpleMode !== false;
+}
+
+const CHILD_WORDS = [
+  [/武魂真身/g, '变身'],
+  [/魂环年限|年限/g, '强度'],
+  [/生命值|生命/g, '体力'],
+  [/魂力/g, '能量'],
+  [/冷却/g, '等一下'],
+  [/命运值|命运点|命运/g, '好运'],
+  [/猎杀魂兽/g, '去打怪'],
+  [/万象地图/g, '地图'],
+  [/万象图鉴/g, '图鉴'],
+  [/金币/g, '金魂币']
+];
+
+function childText(value){
+  let text = String(value == null ? '' : value)
+    .replace(/<br\s*\/?>/gi, '。')
+    .replace(/<[^>]*>/g, '')
+    .replace(/\{name\}/g, G ? G.name : '你')
+    .replace(/\{spirit\}/g, G && G.spirit ? G.spirit.name : '武魂');
+  for(const [pattern, replacement] of CHILD_WORDS) text = text.replace(pattern, replacement);
+  return text.replace(/\s*([，。！？；：])\s*/g, '$1').replace(/。{2,}/g, '。').trim();
+}
+
+// 儿童版正文：最多 3 句、150 字，超出截断。
+function childShort(value, maxSentences, maxChars){
+  const limit = maxSentences || 3, cap = maxChars || 150;
+  const text = childText(value);
+  if(!text) return '';
+  const sentences = text.match(/[^。！？；]+[。！？；]?/g) || [text];
+  let result = sentences.slice(0, limit).join('').trim();
+  if(result.length > cap) result = result.slice(0, cap - 1).replace(/[，、；：\s]+$/g, '') + '…';
+  return result;
+}
+
+// 儿童版选项：一行以内。
+function childChoiceText(value){
+  const text = childText(value).replace(/^[A-DＡ-Ｄ][.、：:]\s*/i, '');
+  return text.length > 34 ? text.slice(0, 33).replace(/[，、；：\s]+$/g, '') + '…' : text;
+}
+
+const CHILD_LOCATION_NAMES = {
+  holy_soul_village:'圣魂村', shrek_academy:'史莱克学院', star_duo_outer:'星斗森林外围',
+  star_duo_deep:'星斗森林深处', wuhun_city:'武魂城', spirit_hall:'武魂殿', tian_dou_city:'天斗城',
+  east_sea_port:'东海港口', sunset_forest:'落日森林', sea_god_island:'海神岛', ice_forest:'冰封森林',
+  slaughter_city:'杀戮之都', ancient_ruins:'远古遗迹'
+};
+
+// 简单模式常驻"下一步"引导条：任何时刻告诉孩子现在该做什么。
+function refreshChildGuide(){
+  const bar = $('child-guide');
+  if(!bar) return;
+  if(!isSimple()){ bar.hidden = true; return; }
+  if(!G){ bar.hidden = true; return; }
+  bar.hidden = false;
+
+  let icon = '➜', text = '', button = '', action = '';
+  const area = $('scene-area');
+  const awaiting = area && area.dataset && area.dataset.awaitingChoice === 'true';
+  const continuing = Boolean(area && area.querySelector('#btn-next-ev'));
+
+  if(G.finished){
+    icon = '★'; text = '你的冒险完成了！';
+  } else if(typeof BattleSystem !== 'undefined' && BattleSystem.isActive()){
+    icon = '⚔'; text = '正在自动打怪。想自己出招，也可以点下面的大按钮。';
+  } else if(awaiting){
+    icon = '➜'; text = '选一个你喜欢的办法，故事就会继续。';
+  } else if(continuing){
+    icon = '✓'; text = '奖励收好了。继续出发吧！'; button = '继续出发'; action = 'continue';
+  } else if(Number(G.pendingRingLv) > 0){
+    const target = G._ringTargetId || '';
+    if(target && G._currentLocation !== target){
+      const place = CHILD_LOCATION_NAMES[target] || G._ringTargetName || '目标地点';
+      icon = '🗺'; text = `下一步：去${place}拿新魂环。`; button = '带我去'; action = 'map';
+    } else {
+      icon = '⚔'; text = '下一步：打赢目标，拿到新魂环。'; button = '去探索'; action = 'explore';
+    }
+  } else {
+    const milestone = nextMainStoryMilestone();
+    const level = Number(G.level) || 1;
+    if(milestone && level < milestone.minLevel){
+      icon = '⬆'; text = `下一步：继续探索，升到 ${milestone.minLevel} 级。`; button = '去探索'; action = 'explore';
+    } else if(milestone && milestone.targetId && G._currentLocation !== milestone.targetId){
+      const place = CHILD_LOCATION_NAMES[milestone.targetId] || milestone.name;
+      icon = '🗺'; text = `下一步：去${place}。`; button = '带我去'; action = 'map';
+    } else if(milestone){
+      icon = '★'; text = `下一步：${milestone.name.replace(/^[^·]*·/, '')}。`; button = '去探索'; action = 'explore';
+    } else {
+      icon = '✦'; text = '继续探索，看看还会遇到什么。'; button = '去探索'; action = 'explore';
+    }
+  }
+
+  bar.innerHTML = `<span class="child-guide-icon" aria-hidden="true">${icon}</span><strong>${esc(text)}</strong>` +
+    (button ? `<button type="button" class="child-guide-button" id="child-guide-btn">${esc(button)} <span aria-hidden="true">→</span></button>` : '');
+  const btn = $('child-guide-btn');
+  if(btn){
+    btn.addEventListener('click', () => {
+      if(action === 'map'){ openMap(); return; }
+      if(action === 'continue'){ const el = $('btn-next-ev'); if(el){ el.click(); return; } }
+      if(action === 'explore'){ nextEvent(); }
+    });
+  }
+}
+
+// 简单模式自动代办：进档时静默完成当日签到，孩子不点签到也不吃亏。
+function autoDailySignIn(){
+  if(!G || G._simpleMode === false || !G._dailySign) return;
+  try{
+    const today = localDateKey();
+    const preview = GameRules.previewDailySign(G._dailySign, today);
+    if(preview.signedToday) return;
+    const recorded = GameRules.recordDailySign(G._dailySign, today);
+    if(!recorded.changed) return;
+    G._dailySign = recorded.sign;
+    const reward = DAILY_REWARDS[preview.rewardDay - 1];
+    const raw = reward ? reward.reward : {};
+    const parts = applyResultRewards({ gold:raw.gold || 0, exp:raw.exp || 0, fate:raw.fatePoint || 0 }).list;
+    toast(`今天的签到奖励自动收好啦：${parts.length ? parts.join('、') : '已入账'}`);
+    addDiaryEntry(`简单模式自动签到第${preview.rewardDay}档，获得${parts.join('、')}。`, 'event');
+    saveLocal();
+    refreshPanel();
+  }catch(e){ /* 自动签到失败不影响进档 */ }
+}
+
 function openHelp(){
+  // 简单模式：只给小朋友看三步玩法，不展示复杂系统说明。
+  if(G && G._simpleMode !== false){
+    openModal('✦ 怎么玩 ✦', `<div class="help-container"><div class="help-content"><div class="help-section">
+      <h3>🎮 三步就能玩</h3>
+      <div class="help-item">1. 点【探索四周】看故事，选一个你喜欢的选项</div>
+      <div class="help-item">2. 打不过就点【原地休息】，把血补满再打</div>
+      <div class="help-item">3. 升到 10 级、20 级……可以【猎杀魂兽】拿魂环，越来越厉害！</div>
+      <h3>💡 小贴士</h3>
+      <div class="help-item">· 打架时点一下【自动】，角色就会自己打</div>
+      <div class="help-item">· 想自己出招？直接点【技能】按钮，就会换成你操作；再点【自动】就交回给它</div>
+      <div class="help-item">· 不知道去哪？看【猎环目标】，跟着地图走</div>
+      <div class="help-item">· 玩完了记得点【存档】保存进度</div>
+    </div></div></div>`);
+    return;
+  }
   const html = `<div class="help-container">
     <div class="help-tabs">
       <button class="help-tab active" data-tab="basics">基础操作</button>
@@ -6280,6 +6469,14 @@ function bindUI(){
   if(btnInventory) btnInventory.addEventListener('click', openInventory);
   const btnHelp = $('btn-help');
   if(btnHelp) btnHelp.addEventListener('click', openHelp);
+  const btnMode = $('btn-mode');
+  if(btnMode) btnMode.addEventListener('click', () => {
+    if(!G) return;
+    G._simpleMode = G._simpleMode === false;
+    applySimpleMode();
+    toast(G._simpleMode === false ? '已切换到完整模式：技能树、商店等全部功能已恢复' : '已切换到简单模式：只保留最简单的玩法');
+    if(typeof saveServer === 'function') saveServer(false);
+  });
 
   $('btn-ending-restart').addEventListener('click', () => { localStorage.removeItem(LS_KEY); showScreen('screen-title'); });
   $('btn-ending-codex').addEventListener('click', () => { if(window.navigateTo) navigateTo('codex'); else location.href = '/codex.html'; });

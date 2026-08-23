@@ -222,6 +222,7 @@ export function deserializeSave(data) {
   // Event store 字段
   const eventFields = [
     'choices', 'doneEvents', 'completedEvents', '_recentEvents', '_eventCount',
+    '_drawQueue', '_drawQueueKey',
     '_storyPath', '_storyDecisions', '_dynCooldowns', '_introPendingEvent',
     '_pendingChain',
     '_mainStoryVersion', '_storyMilestoneDeferredUntil', '_prologueDone',
@@ -239,7 +240,7 @@ export function deserializeSave(data) {
     '_metNpcs', '_npcRelations', '_npcCooldowns', '_dailySign', '_towerFloor',
     '_gameTime', '_weather', '_totalGoldEarned', '_progressionRulesVersion',
     '_saveVersion', '_locationProgress', '_saveIntegrityWarnings', '_legacyRingOverflow',
-    '_orphanedSkills', '_forgeBonesMigrated'
+    '_orphanedSkills', '_forgeBonesMigrated', '_simpleMode'
   ]
 
   // 逐字段赋值到各个 store
@@ -358,6 +359,8 @@ export function initNewCharacter(charData) {
   event.doneEvents = []
   event.completedEvents = []
   event._recentEvents = []
+  event._drawQueue = []
+  event._drawQueueKey = ''
   event._prologueDone = false
   event._spiritAwakeningStoryDone = false
   event._earlyLifeDone = false
@@ -469,10 +472,10 @@ export function loadFromLocal() {
 }
 
 /**
- * 保存到云端（带 Token 鉴权 + 乐观锁）
+ * 保存到云端（账号登录 + 乐观锁）
  * 同时写入本地作为备份
  * @param {Object} api - useApi() 返回的 API 工具
- * @returns {Promise<{success: boolean, conflict?: boolean, version?: number, error?: string}>}
+ * @returns {Promise<{success: boolean, conflict?: boolean, needLogin?: boolean, version?: number, error?: string}>}
  */
 export async function saveToCloud(api, options = {}) {
   let save
@@ -482,45 +485,29 @@ export async function saveToCloud(api, options = {}) {
     return { success: false, localFailed: true, error: error.message }
   }
 
-  // 新建/切换角色时不能复用上一个角色的 Token 和乐观锁版本。
-  if (api.isAuthenticated() && api.playerId() !== save.playerId) {
-    api.logout()
-  }
-
-  // 确保当前角色已认证
+  // 未登录时只保留本地进度，绝不调用云端
   if (!api.isAuthenticated()) {
-    const pid = save.playerId
-    if (!pid) return { success: false, error: '无玩家 ID' }
-    try {
-      await api.authenticate(pid, save.name)
-    } catch (e) {
-      return { success: false, error: e.message }
-    }
+    return { success: false, needLogin: true, error: '尚未登录账号，进度已保存到本地' }
   }
 
   try {
     const result = await api.saveData(save)
     return result
   } catch (e) {
-    // Token 已失效（例如容器重启导致服务端内存 tokenStore 清空，或 401 后被清除）：
-    // 重新认证并重试一次，避免后台云同步因一次瞬时失败而永久停摆。
+    // Token 已失效（401 后 api 内部自动登出）：需要账号密码才能重新登录，
+    // 不再静默自动认证，明确提示玩家登录。
     if (!api.isAuthenticated()) {
-      try {
-        await api.authenticate(save.playerId, save.name)
-        return await api.saveData(save)
-      } catch (retryErr) {
-        return { success: false, error: retryErr.message }
-      }
+      return { success: false, needLogin: true, error: '登录已过期，请重新登录（进度已保存到本地）' }
     }
     return { success: false, error: e.message }
   }
 }
 
 /**
- * 从云端加载存档
+ * 从云端加载存档（需已登录且存档属于当前账号）
  * @param {Object} api - useApi() 返回的 API 工具
  * @param {string} playerId - 玩家 ID
- * @returns {Promise<{success: boolean, data?: Object, error?: string}>}
+ * @returns {Promise<{success: boolean, data?: Object, needLogin?: boolean, error?: string}>}
  */
 export async function loadFromCloud(api, playerId) {
   try {
@@ -540,6 +527,9 @@ export async function loadFromCloud(api, playerId) {
     }
     return { success: false, error: '无云端存档' }
   } catch (e) {
+    if (!api.isAuthenticated()) {
+      return { success: false, needLogin: true, error: e.message || '请先登录账号' }
+    }
     return { success: false, error: e.message }
   }
 }

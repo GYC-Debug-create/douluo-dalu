@@ -80,7 +80,8 @@ describe('每日签到：预览、发放与提示使用同一奖励对象', () =
 
     const toasts = toastMessages()
     // 签到成功提示必须与面板预览（第1天 金币+100）完全一致。
-    expect(toasts.at(-1)).toBe('签到成功，领取第1天奖励，金币+100')
+    // 低龄化文案：前缀由"签到成功，领取"简化为"领取成功："，奖励内容契约不变。
+    expect(toasts.at(-1)).toBe('领取成功：第1天奖励，金币+100')
     // 成就奖励以独立提示出现，不允许静默混入签到奖励。
     expect(toasts).toContain('解锁成就「小有积蓄」，奖励金币+50、经验+20')
     // 全部提示金额之和与角色实际增量完全一致。
@@ -111,7 +112,7 @@ describe('每日签到：预览、发放与提示使用同一奖励对象', () =
     expect(player.gold - goldBefore).toBe(150)
     expect(player.exp - expBefore).toBe(50)
     expect(player.level).toBe(5)
-    expect(toastMessages().at(-1)).toBe('签到成功，领取第2天奖励，金币+150，经验+50')
+    expect(toastMessages().at(-1)).toBe('领取成功：第2天奖励，金币+150，经验+50')
     expect(game._dailySign).toMatchObject({ lastDate: '2026-08-04', cycleDay: 2, totalDays: 2 })
   })
 
@@ -146,7 +147,7 @@ describe('每日签到：预览、发放与提示使用同一奖励对象', () =
       if (key === 'gold') expectedDeltas.gold = value
       if (key === 'exp') expectedDeltas.exp = value
     }
-    expect(toastMessages().at(-1)).toBe(`签到成功，领取${expectedParts.join('，')}`)
+    expect(toastMessages().at(-1)).toBe(`领取成功：${expectedParts.join('，')}`)
     // 奖励表中有多少就发多少；表中没有的经验/金币不得出现在提示或到账中。
     if (rewardEntry.reward.gold) expect(player.gold - goldBefore).toBe(rewardEntry.reward.gold)
     else expect(player.gold - goldBefore).toBe(0)
@@ -178,7 +179,8 @@ describe('每日签到：预览、发放与提示使用同一奖励对象', () =
     expect(player.gold).toBe(goldBefore)
     expect(player.exp).toBe(expBefore)
     expect(game._dailySign.totalDays).toBe(1)
-    expect(toastMessages().slice(-2)).toEqual(['今日已经签到', '今日已经签到'])
+    // 低龄化文案：重复签到提示由"今日已经签到"改为口语化的"今天的奖励已经领过了"。
+    expect(toastMessages().slice(-2)).toEqual(['今天的奖励已经领过了', '今天的奖励已经领过了'])
   })
 
   it('刷新恢复后保留签到状态，且不能再次领取', () => {
@@ -233,7 +235,7 @@ describe('每日签到：预览、发放与提示使用同一奖励对象', () =
     expect(fresh.today).toBe('2026-08-04')
     features.dailySign(fresh.today)
 
-    expect(toastMessages().at(-1)).toBe('签到成功，领取第2天奖励，金币+150，经验+50')
+    expect(toastMessages().at(-1)).toBe('领取成功：第2天奖励，金币+150，经验+50')
     expect(game._dailySign.lastDate).toBe('2026-08-04')
     expect(game._dailySign.cycleDay).toBe(2)
   })

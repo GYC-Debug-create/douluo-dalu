@@ -6,14 +6,14 @@
         <summary>常用</summary>
         <div class="top-group-menu">
           <button class="top-btn" @click="$emit('action', 'bag')">背包</button>
-          <button class="top-btn" @click="$emit('action', 'shop')">商店</button>
+          <button v-if="!simpleMode" class="top-btn" @click="$emit('action', 'shop')">商店</button>
           <button class="top-btn" @click="$emit('action', 'map')">地图</button>
           <button class="top-btn" style="color:#7fc48c" @click="$emit('action', 'travel')">旅行</button>
-          <button class="top-btn" @click="$emit('action', 'quests')">任务</button>
+          <button v-if="!simpleMode" class="top-btn" @click="$emit('action', 'quests')">任务</button>
           <button class="top-btn" @click="$emit('action', 'signin')">签到</button>
         </div>
       </details>
-      <details class="top-group">
+      <details v-if="!simpleMode" class="top-group">
         <summary>成长</summary>
         <div class="top-group-menu">
           <button class="top-btn" style="color:#e6c878" @click="$emit('action', 'skilltree')">技能树</button>
@@ -26,7 +26,7 @@
           <button class="top-btn" style="color:#e6c878" @click="$emit('action', 'title')">称号</button>
         </div>
       </details>
-      <details class="top-group">
+      <details v-if="!simpleMode" class="top-group">
         <summary>人物与图鉴</summary>
         <div class="top-group-menu">
           <button class="top-btn" @click="$emit('action', 'npc')">人物</button>
@@ -39,11 +39,12 @@
         <div class="top-group-menu">
           <button class="top-btn" @click="$emit('action', 'save')">存档</button>
           <button class="top-btn" style="color:#a78bfa" @click="$emit('action', 'help')">帮助</button>
+          <button class="top-btn" style="color:#88ddaa" @click="$emit('action', 'mode')">{{ simpleMode ? '完整模式' : '简单模式' }}</button>
           <button class="top-btn" @click="$emit('action', 'home')">返回主页</button>
         </div>
       </details>
     </div>
-    <div class="time-weather-display">{{ timeWeatherText }}</div>
+    <div v-if="!simpleMode" class="time-weather-display">{{ timeWeatherText }}</div>
   </div>
 </template>
 
@@ -52,6 +53,9 @@ import { computed } from 'vue'
 import { useGameStore } from '@/stores/game'
 
 const gameStore = useGameStore()
+
+// 简单模式（低龄化默认）：只保留小朋友能看懂的入口，其余菜单整体隐藏。
+const simpleMode = computed(() => gameStore._simpleMode !== false)
 
 const TIME_PERIODS = ['黎明', '上午', '正午', '午后', '黄昏', '夜晚', '深夜', '凌晨']
 const WEATHER_TYPES = ['晴朗', '多云', '小雨', '大雨', '雷暴', '雾', '雪']
