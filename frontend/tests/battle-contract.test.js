@@ -48,7 +48,7 @@ describe('createEventBattleRequest 请求单', () => {
       result: { battle: 'wind_rabbit_ten', exp: 100 }
     })
     expect(request.enemyRef).toBe('wind_rabbit_ten')
-    expect(request.rewardResult).toBe(request.enemyRef === 'wind_rabbit_ten' ? request.rewardResult : request.rewardResult)
+    expect(request.rewardResult).toEqual({ battle: 'wind_rabbit_ten', exp: 100 })
     expect(request.huntingMeta).toEqual({ ringHunt: true, eventName: '第一魂环' })
     expect(request.allowFlee).toBe(true)
   })

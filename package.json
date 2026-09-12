@@ -6,7 +6,8 @@
   "scripts": {
     "postinstall": "npm run install:frontend",
     "install:frontend": "npm ci --prefix frontend --include=dev",
-    "build": "npm run build:frontend",
+    "sync:legacy": "node scripts/sync-legacy-data.mjs",
+    "build": "npm run sync:legacy && npm run build:frontend",
     "build:frontend": "npm run build --prefix frontend",
     "prestart": "npm run build",
     "start": "node server.js",
