@@ -85,6 +85,50 @@ const rateLimitCleanupTimer = setInterval(() => {
 }, 5 * 60 * 1000);
 rateLimitCleanupTimer.unref();
 
+// ============ 旧轨访问统计(为"双轨退役"决策积累数据) ============
+// 精确计数旧版专属入口的命中次数;计数中间件必须挂在静态挂载之前,
+// 否则被 static 终结的请求不会经过。数据落盘 data/legacy-access-stats.json,
+// 一周后按 /api/health 读数决定旧轨去留;决策完成后可整体移除本模块。
+const LEGACY_ACCESS_PATHS = new Set([
+  '/game.html', '/map.html', '/codex.html', '/debug-saves.html',
+  '/game.js', '/game-combat.js', '/game-data.js', '/game-events-expanded.js',
+  '/game-visual.js', '/game-rules.js', '/save-utils.js'
+]);
+const LEGACY_STATS_FILE = path.resolve(DATA_DIR, 'legacy-access-stats.json');
+let legacyAccess = { since: new Date().toISOString().slice(0, 10), totals: {} };
+try {
+  const raw = JSON.parse(fs.readFileSync(LEGACY_STATS_FILE, 'utf8'));
+  if (raw && typeof raw.totals === 'object' && raw.since) legacyAccess = raw;
+} catch { /* 首次统计 */ }
+
+// 统计文件仅约 200 字节,同步写 + tmp/rename 原子替换;退出前也要落全,
+// 故不用异步 IO(与"请求路径禁同步"约定不冲突——这里不在请求路径上)。
+function flushLegacyAccess() {
+  try {
+    const tmp = LEGACY_STATS_FILE + '.tmp';
+    fs.writeFileSync(tmp, JSON.stringify(legacyAccess, null, 2), 'utf8');
+    fs.renameSync(tmp, LEGACY_STATS_FILE);
+  } catch (error) {
+    console.warn('旧轨访问统计写入失败:', error.message);
+  }
+}
+
+app.use((req, res, next) => {
+  if (LEGACY_ACCESS_PATHS.has(req.path)) {
+    legacyAccess.totals[req.path] = (legacyAccess.totals[req.path] || 0) + 1;
+  }
+  next();
+});
+// 定时落盘与信号钩子仅真实启动时挂载:被测试 require 时不产生定时器和
+// 磁盘写入,避免测试计数污染生产测量数据。
+if (require.main === module) {
+  const legacyAccessFlushTimer = setInterval(flushLegacyAccess, 60 * 1000);
+  legacyAccessFlushTimer.unref();
+  for (const signal of ['SIGINT', 'SIGTERM']) {
+    process.once(signal, flushLegacyAccess);
+  }
+}
+
 // ============ JSON 解析 + 缓存头 ============
 app.use(express.json({ limit: MAX_BODY_SIZE }));
 
@@ -310,6 +354,7 @@ app.get('/api/health', rateLimit(RATE_LIMIT_GENERAL, 'health'), async (req, res)
       heap: `${Math.round(memUsage.heapUsed / 1024 / 1024)}/${Math.round(memUsage.heapTotal / 1024 / 1024)}MB`
     },
     saves: saveCount,
+    legacyAccess: { since: legacyAccess.since, totals: { ...legacyAccess.totals } },
     timestamp: new Date().toISOString()
   });
 });
