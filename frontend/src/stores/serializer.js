@@ -160,6 +160,126 @@ export function serializeSave() {
 }
 
 /**
+ * G 存档字段 → store 归属映射表（唯一收口）。
+ *
+ * 反序列化只认这张表：新增字段时在此登记；新代码一律访问语义化字段，
+ * `_` 前缀的兼容字段仅由 serializer / engine/save 迁移层读写。
+ * legacy 标注说明字段的存档版本来源，便于评估旧档兼容面。
+ */
+const SAVE_FIELD_MAP = Object.freeze({
+  // ---- player store：角色核心（旧轨 G 继承字段，v1 起即存在） ----
+  playerId: { store: 'player' },
+  name: { store: 'player' },
+  origin: { store: 'player' },
+  originName: { store: 'player' },
+  spirit: { store: 'player' },
+  spiritBase: { store: 'player' },
+  innatePower: { store: 'player' },
+  level: { store: 'player' },
+  exp: { store: 'player' },
+  overflowExp: { store: 'player' },           // 魂环门槛暂存经验（T 系列：硬门槛设计）
+  hp: { store: 'player' },
+  spiritPower: { store: 'player' },
+  spiritPowerMax: { store: 'player' },
+  spiritPowerGain: { store: 'player' },
+  gold: { store: 'player' },
+  fatePoints: { store: 'player' },
+  rings: { store: 'player' },
+  skills: { store: 'player' },
+  inventory: { store: 'player' },
+  weapon: { store: 'player' },                // 出身武器（边境小城开局）
+  bonus: { store: 'player' },                 // 事件累积的永久属性加成
+  originBonus: { store: 'player' },
+  finished: { store: 'player' },
+  createdAt: { store: 'player' },
+  // ---- player store：旧轨兼容运行时字段（`_` 前缀，旧档迁移层维护） ----
+  _personality: { store: 'player', legacy: '武魂特质人格（创建期生成；旧档曾为字符串，save.js 迁移为对象）' },
+  _destiny: { store: 'player', legacy: '命运之路标签（创建期生成）' },
+  _bones: { store: 'player', legacy: '魂骨（旧字段，已被 _craftedBones/_forgeBones 取代，保留兼容）' },
+  _forgeBones: { store: 'player', legacy: '魂骨碎片（T15 战斗掉落）' },
+  _craftedBones: { store: 'player', legacy: '已锻造魂骨（锻造系统）' },
+  _skillTree: { store: 'player', legacy: '技能树已点节点（每 5 级 2 点）' },
+  _titles: { store: 'player', legacy: '已获称号（成就系统发放）' },
+  _achievementList: { store: 'player', legacy: '已解锁成就' },
+  _bossKills: { store: 'player', legacy: 'Boss 击杀计数' },
+  _skillBonuses: { store: 'player', legacy: '技能树派生加成（战斗公式消费）' },
+  _tempAtkBuff: { store: 'player', legacy: '临时攻击增益（NPC 切磋等）' },
+  _tempDefBuff: { store: 'player', legacy: '临时防御增益' },
+  _tempSpdBuff: { store: 'player', legacy: '临时速度增益' },
+
+  // ---- combat store：战斗遥测（战斗系统统计，v1 起存在） ----
+  battleStats: { store: 'combat' },
+  _battleActive: { store: 'combat', legacy: '战斗进行中标记（刷新前兜底）' },
+  _formationsUsed: { store: 'combat', legacy: '已用阵法（统计）' },
+  _usedElements: { store: 'combat', legacy: '已触发元素（元素反应图鉴）' },
+  _maxCombo: { store: 'combat', legacy: '最高连击' },
+  _maxComboFinisher: { store: 'combat', legacy: '连携终结最高连击数' },
+  _reactionCount: { store: 'combat', legacy: '元素反应触发次数' },
+  _reactionTriggered: { store: 'combat', legacy: '是否触发过元素反应' },
+  _fusionUsed: { store: 'combat', legacy: '是否使用过武魂融合' },
+  'huntingKnowledge': { store: 'combat', legacy: '猎魂历练（猎环难度自适应）' },
+
+  // ---- event store：事件推进与剧情状态 ----
+  choices: { store: 'event' },                // 各事件已选分支（A/B/C…）
+  doneEvents: { store: 'event' },
+  completedEvents: { store: 'event' },        // 与 doneEvents 同步维护（图鉴消费）
+  _recentEvents: { store: 'event', legacy: '近期事件环形缓冲（轮换冷却输入，上限 15）' },
+  _eventCount: { store: 'event', legacy: '世界行动计数（冷却/挂起判定的时钟）' },
+  _drawQueue: { store: 'event', legacy: '洗牌袋队列（经济规格 v2：同批候选不重复）' },
+  _drawQueueKey: { store: 'event', legacy: '洗牌袋键 = 地点|阶段，变化即重建' },
+  _storyPath: { store: 'event', legacy: '抉择路径标签（结局判定/面板展示）' },
+  _storyDecisions: { store: 'event', legacy: '事件 → 选项 id 映射（剧情回溯）' },
+  _dynCooldowns: { store: 'event', legacy: '动态事件冷却（按行动数递减）' },
+  _introPendingEvent: { store: 'event', legacy: '入学流程待播事件（通常为 first_class）' },
+  _pendingChain: { store: 'event', legacy: '待触发的连锁事件 id' },
+  _mainStoryVersion: { store: 'event', legacy: '主线里程碑链版本（v1 = 10/40/70 重划后）' },
+  _storyMilestoneDeferredUntil: { store: 'event', legacy: '主线暂缓截止事件数（暂缓两次行动）' },
+  _prologueDone: { store: 'event', legacy: '序章完成标记（Vue 版新增；旧档由 save.js 迁移推断）' },
+  _spiritAwakeningStoryDone: { store: 'event', legacy: '觉醒小故事完成（Vue 版新增）' },
+  _earlyLifeDone: { store: 'event', legacy: '早年经历完成（Vue 版新增；旧档按 _prologueDone 推断）' },
+  _registeredAtHall: { store: 'event', legacy: '武魂殿登记完成' },
+  _enrollmentComplete: { store: 'event', legacy: '入学手续完成' },
+  _firstClassDone: { store: 'event', legacy: '第一堂课完成' },
+  _tutorialPostponed: { store: 'event', legacy: '引导稍后再看' },
+  _academyRecommendation: { store: 'event', legacy: '学院分班建议（面板展示）' },
+  _ringHuntDeferredUntil: { store: 'event', legacy: '猎环目标挂起截止事件数（T9 判例5）' },
+  pendingRingLv: { store: 'event' },          // 待猎魂环等级（侧边目标卡数据源）
+  _ringHuntLevel: { store: 'event', legacy: '进行中猎环的等级快照' },
+  _ringOrdinal: { store: 'event', legacy: '进行中猎环的序号快照' },
+  _ringTargetId: { store: 'event', legacy: '进行中猎环的目的地 id' },
+  _ringTargetName: { store: 'event', legacy: '进行中猎环的目的地名' },
+  _lastRingHuntLevel: { store: 'event', legacy: '上一次猎环等级（完成文案用）' },
+  _lastRingOrdinal: { store: 'event', legacy: '上一次猎环序号' },
+  _lastRingTargetId: { store: 'event', legacy: '上一次猎环目的地 id' },
+  _lastRingTargetName: { store: 'event', legacy: '上一次猎环目的地名' },
+  _diary: { store: 'event', legacy: '冒险日记（上限 200 条，engine/save.appendDiaryEntry）' },
+  locationExplorationsByLocation: { store: 'event', legacy: '地点探索按地点归档（地图探索重构 v2）' },
+  locationExploration: { store: 'event', legacy: '旧版全局探索镜像（兼容旧脚本，只读）' },
+
+  // ---- game store：世界与系统状态 ----
+  gameMode: { store: 'game' },                // 'text-rpg' = Vue 文字 RPG 存档
+  _currentLocation: { store: 'game' },
+  _visitedLocations: { store: 'game' },
+  _discoveredHidden: { store: 'game', legacy: '已发现隐藏地点（秘境传闻 0/6）' },
+  _metNpcs: { store: 'game', legacy: '已结识 NPC id 列表' },
+  _npcRelations: { store: 'game', legacy: 'NPC 好感度（20~500 七档）' },
+  _npcCooldowns: { store: 'game', legacy: 'NPC 互动冷却（按游戏日）' },
+  _dailySign: { store: 'game', legacy: '签到状态（cycleDay/totalDays/maxStreak）' },
+  _towerFloor: { store: 'game', legacy: '挑战塔进度层数' },
+  _gameTime: { store: 'game', legacy: '游戏时间（时段/季节循环时钟，T17）' },
+  _weather: { store: 'game', legacy: '天气（展示层）' },
+  _totalGoldEarned: { store: 'game', legacy: '累计获得金币（财富成就输入）' },
+  _progressionRulesVersion: { store: 'game', legacy: '成长规则版本（v2 = 经验重标定）' },
+  _saveVersion: { store: 'game', legacy: '存档格式版本（当前 10，save.js 迁移链终点）' },
+  _locationProgress: { store: 'game', legacy: '地点探索进度（轮次/探索度/委托/关系）' },
+  _saveIntegrityWarnings: { store: 'game', legacy: '存档完整性告警（迁移层写入）' },
+  _legacyRingOverflow: { store: 'game', legacy: '旧档魂环溢出经验的隔离区（迁移层维护）' },
+  _orphanedSkills: { store: 'game', legacy: '无主魂技隔离区（迁移层维护）' },
+  _forgeBonesMigrated: { store: 'game', legacy: '魂骨碎片迁移标记（T15）' },
+  _simpleMode: { store: 'game', legacy: '低龄简单模式（默认 true，顶栏可切换完整模式）' }
+})
+
+/**
  * 从存档对象反序列化到各个 store
  * @param {Object} data - 存档对象（G 格式）
  * @returns {boolean} 是否成功
@@ -171,85 +291,24 @@ export function deserializeSave(data) {
   const migrated = migrateSave(data)
   if (!migrated) return false
 
-  const player = usePlayerStore()
-  const combat = useCombatStore()
-  const event = useEventStore()
-  const game = useGameStore()
+  const stores = {
+    player: usePlayerStore(),
+    combat: useCombatStore(),
+    event: useEventStore(),
+    game: useGameStore()
+  }
 
   // 防止“读取角色 B”或“新游戏”时残留角色 A 的运行时状态。
-  player.$reset()
-  combat.$reset()
-  event.$reset()
-  game.$reset()
+  for (const store of Object.values(stores)) store.$reset()
 
-  // Player store 字段
-  const playerFields = [
-    'playerId', 'name', 'origin', 'originName', 'spirit', 'spiritBase',
-    'innatePower', 'level', 'exp', 'overflowExp', 'hp', 'spiritPower',
-    'spiritPowerMax', 'spiritPowerGain', 'gold', 'fatePoints', 'rings',
-    'skills', 'inventory', 'weapon', 'bonus', 'originBonus', '_personality',
-    '_destiny', '_bones', '_forgeBones', '_craftedBones', '_skillTree',
-    '_titles', '_achievementList', '_bossKills', '_skillBonuses',
-    '_tempAtkBuff', '_tempDefBuff', '_tempSpdBuff', 'finished', 'createdAt'
-  ]
-
-  // Combat store 字段
-  const combatFields = [
-    'battleStats', '_battleActive', '_formationsUsed', '_usedElements',
-    '_maxCombo', '_maxComboFinisher', '_reactionCount', '_reactionTriggered', '_fusionUsed',
-    'huntingKnowledge'
-  ]
-
-  // Event store 字段
-  const eventFields = [
-    'choices', 'doneEvents', 'completedEvents', '_recentEvents', '_eventCount',
-    '_drawQueue', '_drawQueueKey',
-    '_storyPath', '_storyDecisions', '_dynCooldowns', '_introPendingEvent',
-    '_pendingChain',
-    '_mainStoryVersion', '_storyMilestoneDeferredUntil', '_prologueDone',
-    '_spiritAwakeningStoryDone', '_earlyLifeDone', '_registeredAtHall',
-    '_enrollmentComplete', '_firstClassDone', '_tutorialPostponed',
-    '_academyRecommendation', '_ringHuntDeferredUntil', 'pendingRingLv',
-    '_ringHuntLevel', '_ringOrdinal', '_ringTargetId', '_ringTargetName',
-    '_lastRingHuntLevel', '_lastRingOrdinal', '_lastRingTargetId', '_lastRingTargetName', '_diary',
-    'locationExplorationsByLocation', 'locationExploration'
-  ]
-
-  // Game store 字段
-  const gameFields = [
-    'gameMode', '_currentLocation', '_visitedLocations', '_discoveredHidden',
-    '_metNpcs', '_npcRelations', '_npcCooldowns', '_dailySign', '_towerFloor',
-    '_gameTime', '_weather', '_totalGoldEarned', '_progressionRulesVersion',
-    '_saveVersion', '_locationProgress', '_saveIntegrityWarnings', '_legacyRingOverflow',
-    '_orphanedSkills', '_forgeBonesMigrated', '_simpleMode'
-  ]
-
-  // 逐字段赋值到各个 store
-  playerFields.forEach(key => {
+  // 按映射表逐字段赋值到对应 store
+  for (const [key, { store }] of Object.entries(SAVE_FIELD_MAP)) {
     if (migrated[key] !== undefined) {
-      player[key] = migrated[key]
+      stores[store][key] = migrated[key]
     }
-  })
+  }
 
-  combatFields.forEach(key => {
-    if (migrated[key] !== undefined) {
-      combat[key] = migrated[key]
-    }
-  })
-
-  eventFields.forEach(key => {
-    if (migrated[key] !== undefined) {
-      event[key] = migrated[key]
-    }
-  })
-
-  gameFields.forEach(key => {
-    if (migrated[key] !== undefined) {
-      game[key] = migrated[key]
-    }
-  })
-
-  const knownFields = new Set([...playerFields, ...combatFields, ...eventFields, ...gameFields])
+  const knownFields = new Set(Object.keys(SAVE_FIELD_MAP))
   const dynamicFlags = migrated._dynamicFlags && typeof migrated._dynamicFlags === 'object'
     ? { ...migrated._dynamicFlags }
     : {}
@@ -258,7 +317,7 @@ export function deserializeSave(data) {
       dynamicFlags[key] = value
     }
   }
-  event._dynamicFlags = dynamicFlags
+  stores.event._dynamicFlags = dynamicFlags
 
   return true
 }
