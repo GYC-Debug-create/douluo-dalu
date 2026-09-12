@@ -1,0 +1,362 @@
+/* CreatePage.vue 样式(快速重抽/神级选择/详情/过渡/响应式)——由阶段三 3.2 拆分自 <style scoped> 块,
+ * 通过 <style scoped src> 引入,内容逐行未改。 */
+
+/* BUG-DIALOG-005 方案B+：快速重抽期间旧结果保留并压暗。
+   用 filter 亮度 0.55（视觉等价 opacity 45%~60%），避开 is-revealed 动画 fill 对 opacity 的持续接管；
+   快速重抽期间结果区/操作条 DOM 与布局零变化；压暗立即生效（无过渡，避免与 250ms 收敛计时打架）。 */
+.awaken-stage.is-rerolling .awaken-img-wrap,
+.awaken-stage.is-rerolling #awaken-info,
+.awaken-stage.is-rerolling .awaken-left {
+  filter: brightness(0.55) saturate(0.85);
+}
+.reroll-hint {
+  position: absolute;
+  left: 50%;
+  translate: -50% 0;
+  top: calc(var(--disc-size) + 6px);
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 6px 18px;
+  border: 1px solid var(--gold);
+  border-radius: 30px;
+  background: rgba(12, 9, 4, 0.88);
+  color: var(--gold);
+  font-size: 14px;
+  letter-spacing: 2px;
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: 0 0 18px rgba(201, 168, 76, 0.35);
+}
+.reroll-hint b { color: var(--gold-hi); }
+.reroll-hint span { color: #8f8778; font-size: 12px; letter-spacing: 1px; }
+@media (max-width: 480px) {
+  .reroll-hint {
+    white-space: normal;
+    width: max-content;
+    max-width: 92vw;
+    text-align: center;
+  }
+}
+
+/* 神级武魂选择（BUG-DIALOG-004 方案C） */
+.god-picker-body {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.god-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+.god-pick-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.25s;
+  text-align: center;
+  font-family: inherit;
+}
+.god-pick-card:hover,
+.god-pick-card:focus-visible {
+  border-color: var(--gold);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 18px rgba(201, 168, 76, 0.2);
+  outline: none;
+}
+.god-pick-card:focus-visible {
+  box-shadow: 0 0 0 2px var(--gold), 0 6px 18px rgba(201, 168, 76, 0.2);
+}
+.gpc-icon {
+  font-size: 36px;
+  margin-bottom: 8px;
+  color: var(--gold-hi);
+}
+.gpc-name {
+  font-family: var(--font-display);
+  font-size: 18px;
+  color: var(--gold-hi);
+  letter-spacing: 2px;
+  margin-bottom: 6px;
+}
+.gpc-desc {
+  font-size: 12px;
+  color: var(--ink-dim);
+  line-height: 1.6;
+}
+.gpc-action {
+  margin-top: 8px;
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: var(--gold);
+}
+
+/* 独立详情视图：左侧大图 + 右侧完整介绍与确认按钮，黑金风格 */
+.god-dossier {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.god-dossier-back-row {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 14px;
+}
+.god-dossier-back {
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: rgba(36, 28, 14, 0.85);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 14px;
+  letter-spacing: 2px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.god-dossier-back:hover,
+.god-dossier-back:focus-visible {
+  border-color: var(--gold);
+  color: var(--gold-hi);
+  outline: none;
+  box-shadow: 0 0 0 2px var(--gold);
+}
+.god-dossier-main {
+  display: grid;
+  grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+  gap: 26px;
+  align-items: start;
+  min-height: 0;
+}
+.god-dossier-image {
+  aspect-ratio: 1 / 1;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  overflow: hidden;
+  background: radial-gradient(circle at center, #2a1f0e 0%, #181008 55%, #0a0804 100%);
+  display: grid;
+  place-items: center;
+  min-height: 0;
+}
+.god-dossier-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.god-dossier-icon {
+  font-size: clamp(64px, 12vw, 96px);
+  color: var(--gold-hi);
+  text-shadow: 0 0 30px rgba(201, 168, 76, 0.5);
+}
+.god-dossier-body {
+  min-width: 0;
+}
+.god-dossier-kicker {
+  display: inline-block;
+  font-size: 12px;
+  letter-spacing: 4px;
+  color: var(--gold);
+  border: 1px solid var(--gold);
+  border-radius: 3px;
+  padding: 2px 10px;
+  margin-bottom: 10px;
+  background: rgba(0, 0, 0, 0.35);
+}
+.god-dossier-name {
+  font-family: var(--font-display);
+  font-size: clamp(24px, 3.5vw, 30px);
+  color: var(--gold-hi);
+  letter-spacing: 4px;
+  margin: 0 0 12px;
+  text-shadow: 0 0 24px rgba(201, 168, 76, 0.35);
+}
+.god-dossier-desc {
+  text-align: left;
+}
+.god-dossier-p {
+  margin: 0 0 10px;
+  text-indent: 2em;
+}
+.god-dossier-p:last-child {
+  margin-bottom: 0;
+}
+.god-dossier-confirm {
+  margin-top: 16px;
+}
+@media (max-width: 640px) {
+  .god-dossier-main {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .god-dossier-image {
+    max-width: 100%;
+  }
+}
+
+/* 过渡动画 */
+.slide-forward-enter-active, .slide-forward-leave-active,
+.slide-back-enter-active, .slide-back-leave-active {
+  transition: all 0.25s ease-out;
+}
+.slide-forward-enter-from { opacity: 0; transform: translateX(28px); }
+.slide-forward-leave-to { opacity: 0; transform: translateX(-28px); }
+.slide-back-enter-from { opacity: 0; transform: translateX(-28px); }
+.slide-back-leave-to { opacity: 0; transform: translateX(28px); }
+
+/* 响应式适配 */
+@media (max-height: 960px) {
+  .step-dots { margin-bottom: clamp(8px, 1.6vh, 16px); }
+  .step-title { font-size: clamp(24px, 4vh, 34px); }
+  .step-sub { margin-bottom: clamp(10px, 2vh, 18px); font-size: 14px; }
+  .origin-grid { gap: 10px; }
+  .oc-banner { height: clamp(72px, 12vh, 96px); }
+  .oc-body { padding: 9px 13px 11px; }
+  .oc-name { font-size: 18px; margin-bottom: 3px; }
+  .oc-desc { line-height: 1.5; margin-bottom: 4px; }
+  .create-actions { margin-top: clamp(10px, 2vh, 18px); }
+  .btn { min-height: 42px; padding: 9px 24px; font-size: 15px; }
+  .awaken-stage { --disc-size: clamp(136px, 21vh, 200px); }
+  .awaken-stage.has-result { --disc-size: clamp(104px, 15vh, 144px); }
+  .awaken-left { margin-top: 8px; min-height: 30px; }
+}
+
+@media (max-width: 768px) {
+  .create-screen {
+    padding: 16px 12px;
+  }
+  .create-header h1 {
+    font-size: 24px;
+    letter-spacing: 3px;
+  }
+  .create-card {
+    padding: 16px 14px;
+    border-radius: 8px;
+  }
+  .create-card h2 {
+    font-size: 18px;
+  }
+  .name-input {
+    font-size: 18px;
+  }
+  .spirit-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .origin-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .oc-banner { height: clamp(64px, 10vh, 82px); }
+  .oc-body { padding: 8px 9px 9px; }
+  .oc-name { font-size: 16px; letter-spacing: 1px; }
+  .oc-desc {
+    display: -webkit-box;
+    overflow: hidden;
+    font-size: 12px;
+    line-height: 1.45;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+  .oc-bonus { font-size: 11px; letter-spacing: 0; }
+  .origin-tag { top: 5px; right: 5px; padding: 1px 5px; font-size: 9px; }
+  .create-actions { flex-wrap: nowrap; gap: 8px; }
+  .create-actions .btn { flex: 1; min-width: 0; padding-inline: 10px; letter-spacing: 1px; }
+  .awaken-stage.has-result { --disc-size: clamp(100px, 15vh, 132px); }
+  .awaken-stage.has-result .awaken-tier {
+    margin-bottom: 2px;
+    padding: 3px 12px;
+    font-size: 12px;
+    letter-spacing: 3px;
+  }
+  .awaken-stage.has-result .awaken-name {
+    margin-bottom: 3px;
+    font-size: 21px;
+    letter-spacing: 4px;
+  }
+  .awaken-stage.has-result .awaken-stats { gap: 3px 4px; margin-bottom: 2px; }
+  .awaken-stage.has-result .awaken-stat {
+    padding: 2px 5px;
+    font-size: 10px;
+    letter-spacing: 0;
+  }
+  .awaken-stage.has-result .awaken-ring-ready {
+    max-width: 96vw;
+    margin-bottom: 3px;
+    padding: 3px 6px;
+    font-size: 10px;
+    letter-spacing: 0;
+  }
+  .awaken-stage.has-result .awaken-desc {
+    height: clamp(108px, calc(170px - 8vw), 140px);
+    width: min(640px, 96vw);
+    margin-bottom: 2px;
+    padding: 6px 8px;
+    font-size: 11px;
+    line-height: 1.38;
+    border-left-width: 2px;
+  }
+  .awaken-stage.has-result .awaken-desc-head {
+    margin-bottom: 2px;
+    font-size: 10px;
+    letter-spacing: 2px;
+  }
+  .awaken-stage.has-result .awaken-desc-p { text-indent: 1em; }
+  .awaken-stage.has-result .awaken-desc-p + .awaken-desc-p { margin-top: 2px; }
+  .awaken-stage.has-result .awaken-left {
+    height: 60px;
+    margin-top: 1px;
+    font-size: 10px;
+    line-height: 1.3;
+    letter-spacing: 0.3px;
+  }
+  .awaken-stage.has-result .awaken-other-pity { font-size: 9px; }
+  .awaken-stage.has-result .awaken-actions {
+    height: 34px;
+    min-height: 34px;
+    margin-top: 2px;
+  }
+  .awaken-stage.has-result .awaken-actions .btn {
+    height: 100%;
+    min-height: 0;
+    padding-block: 5px;
+    font-size: 11px;
+  }
+  .awaken-stage.has-result .awaken-actions:has(.btn:nth-child(4)) .btn {
+    padding-inline: 2px;
+    font-size: 9px;
+    letter-spacing: 0;
+  }
+  .create-nav {
+    gap: 8px;
+    padding: 10px 0;
+  }
+  .create-nav button {
+    padding: 8px 16px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .create-screen {
+    padding: 12px 8px;
+  }
+  .create-header h1 {
+    font-size: 20px;
+  }
+  .create-card {
+    padding: 12px 10px;
+  }
+  .create-card h2 {
+    font-size: 16px;
+  }
+  .step-dots { margin-bottom: 8px; }
+  .step-title { font-size: 20px; letter-spacing: 2px; }
+  .step-sub { font-size: 12px; line-height: 1.45; letter-spacing: 1px; margin-bottom: 8px; }
+  .btn { min-height: 44px; font-size: 13px; }
+  .name-input { font-size: 16px; width: 100%; }
+}

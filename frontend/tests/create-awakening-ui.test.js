@@ -10,7 +10,11 @@ const codexPath = path.resolve(__dirname, '../../public/data/spirit-codex.json')
 const codex = JSON.parse(readFileSync(codexPath, 'utf8'))
 
 const createPagePath = path.resolve(__dirname, '../src/pages/CreatePage.vue')
-const createPageSource = readFileSync(createPagePath, 'utf8')
+// 阶段三 3.2：CreatePage 的样式拆分到同名外部 CSS（<style scoped src> 引入），
+// 源码断言仍需覆盖样式规则，故把三片 CSS 拼进 createPageSource。
+const createStyleSources = ['create-page.base.css', 'create-page.awaken.css', 'create-page.result.css']
+  .map(file => readFileSync(path.resolve(__dirname, '../src/pages', file), 'utf8'))
+const createPageSource = [readFileSync(createPagePath, 'utf8'), ...createStyleSources].join('\n')
 const modalDialogPath = path.resolve(__dirname, '../src/components/ModalDialog.vue')
 const modalDialogSource = readFileSync(modalDialogPath, 'utf8')
 
