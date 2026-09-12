@@ -3,6 +3,8 @@
  * 包含属性计算、等级提升、阶段名称等核心公式
  * 从 game.js 的 calcBaseStats / previewStats / finalStats / getMaxSpiritPower 迁移
  */
+import { computed } from 'vue'
+import { getActivePinia } from 'pinia'
 import { usePlayerStore } from '@/stores/player'
 import { useEventStore } from '@/stores/event'
 import { useGameStore } from '@/stores/game'
@@ -112,6 +114,13 @@ function previewStats(spirit, origin, level) {
   )
 }
 
+// 阶段四C:finalStats 记忆化(基于 Pinia 的 computed)。
+// 战斗血条/蓝条等热路径每次生命/魂力跳动都会读 finalStats——若每次全链重算
+// (魂环/魂骨/称号/NPC 多重循环),开销随存档规模线性放大。computed 只在其
+// 真实依赖(等级/加成/魂环/魂骨/称号/阵法/NPC 关系)变化时才重算,HP/魂力
+// 跳动直接命中缓存。overrides 路径(结算草稿复算)不走缓存。
+let statsMemo = null // { pinia, ref }——按 Pinia 实例隔离,测试间互不污染
+
 /**
  * 最终属性计算（含魂环、魂骨、技能树、称号加成）
  * 从 game.js finalStats 迁移，简化版（暂不含阵法/NPC好感度，后续阶段补全）
@@ -122,6 +131,24 @@ function previewStats(spirit, origin, level) {
  *  - spiritBase   用该武魂基础属性替换 player.spiritBase（进化结算用）
  */
 function finalStats(overrides = {}) {
+  if (overrides && Object.keys(overrides).length) return computeFinalStats(overrides)
+  const pinia = getActivePinia()
+  if (!pinia) return computeFinalStats({})
+  if (!statsMemo || statsMemo.pinia !== pinia) {
+    statsMemo = { pinia, ref: computed(() => computeFinalStats({})) }
+  }
+  return statsMemo.ref.value
+}
+
+/**
+ * 最终属性计算（含魂环、魂骨、技能树、称号加成）——原实现，供记忆化包装调用
+ *
+ * overrides（可选，供引擎结算层在"草稿状态"下复算，不影响语义）：
+ *  - level        按该等级计算基础成长
+ *  - bonus        用该永久加成对象替换 player.bonus
+ *  - spiritBase   用该武魂基础属性替换 player.spiritBase（进化结算用）
+ */
+function computeFinalStats(overrides = {}) {
   const player = usePlayerStore()
   const lv = overrides.level !== undefined ? overrides.level : player.level
   const bonusSource = overrides.bonus !== undefined ? overrides.bonus : player.bonus

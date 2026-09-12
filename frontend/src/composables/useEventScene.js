@@ -86,7 +86,7 @@ export function useEventScene(deps) {
     resultText.value = ''
     resultRewards.value = []
     sceneState.value = 'ending'
-    deps.saveGame()
+    deps.saveGame(true) // 结局是终态,立即落盘
   }
 
   function normalizeEvent(source, isChain) {

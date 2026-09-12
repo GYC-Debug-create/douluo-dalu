@@ -490,6 +490,46 @@ export function saveToLocal(options = {}) {
   return save
 }
 
+// ============ 阶段四C:存档写入节流(脏标记 + 空闲落盘) ============
+// 高频动作(选选项/战斗结束/探索步进)不再每动作全量序列化,只标记脏;
+// 800ms 内无后续动作才真正落盘。页面隐藏/手动存档/结局走 flushSaveIfDirty
+// 立即落盘。saveToLocal 始终序列化最新 store 状态,脏标记只裁剪冗余写入。
+let saveDirty = false;
+let saveTimer = null;
+let saveErrorHandler = null;
+
+/** 标记存档为"待落盘";800ms 静默后自动写。onError 接收写入失败(如配额超限)。 */
+export function markSaveDirty(onError) {
+  saveDirty = true
+  if (typeof onError === 'function') saveErrorHandler = onError
+  if (saveTimer != null) return
+  saveTimer = setTimeout(() => {
+    saveTimer = null
+    try {
+      flushSaveIfDirty()
+    } catch (error) {
+      console.warn('空闲存档失败', error)
+      try { if (typeof saveErrorHandler === 'function') saveErrorHandler(error) } catch { /* 通知失败忽略 */ }
+    }
+  }, 800)
+}
+
+/** 立即落盘(若有脏数据);返回 saveToLocal 的结果或 null。调用方负责 try/catch。 */
+export function flushSaveIfDirty() {
+  if (saveTimer != null) { clearTimeout(saveTimer); saveTimer = null }
+  if (!saveDirty) return null
+  const handler = saveErrorHandler
+  saveErrorHandler = null
+  saveDirty = false
+  try {
+    return saveToLocal()
+  } catch (error) {
+    // 写失败(如配额超限)先走登记的 onError(通知用户),再把错误抛给调用方
+    try { if (typeof handler === 'function') handler(error) } catch { /* 通知失败忽略 */ }
+    throw error
+  }
+}
+
 /**
  * 从本地 localStorage 加载
  * @returns {Object|null} 存档对象

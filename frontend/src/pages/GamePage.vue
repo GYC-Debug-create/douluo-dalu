@@ -138,7 +138,7 @@ import { usePlayerStore } from '@/stores/player'
 import { useEventStore } from '@/stores/event'
 import { useGameStore } from '@/stores/game'
 import { useUiStore } from '@/stores/ui'
-import { deserializeSave, loadFromLocal, loadFromCloud, saveToCloud, saveToLocal } from '@/stores/serializer'
+import { deserializeSave, loadFromLocal, loadFromCloud, saveToCloud, saveToLocal, flushSaveIfDirty } from '@/stores/serializer'
 import { useApi } from '@/composables/useApi'
 import { useEventEngine } from '@/composables/useEventEngine'
 import { useBattleSystem } from '@/composables/useBattleSystem'
@@ -388,7 +388,11 @@ async function backgroundSave() {
 }
 
 function handleVisibilitySave() {
-  if (document.visibilityState === 'hidden') void backgroundSave()
+  if (document.visibilityState === 'hidden') {
+    // 阶段四C:先立即落盘节流中的脏数据,再走云端同步,保证最新进度不丢
+    try { flushSaveIfDirty() } catch (error) { console.warn('页面隐藏落盘失败', error) }
+    void backgroundSave()
+  }
 }
 
 onMounted(() => {
@@ -399,6 +403,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   if (autoSaveTimer) clearInterval(autoSaveTimer)
+  try { flushSaveIfDirty() } catch (error) { console.warn('卸载落盘失败', error) }
   document.removeEventListener('visibilitychange', handleVisibilitySave)
   window.removeEventListener('pagehide', handleVisibilitySave)
   // 兜底：若战斗仍处于进行中（HMR、异常导航或未来代码绕过路由守卫），

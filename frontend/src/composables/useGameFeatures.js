@@ -7,7 +7,7 @@ import { useUiStore } from '@/stores/ui'
 import { useGameData } from '@/composables/useGameData'
 import { useGameRules } from '@/composables/useGameRules'
 import { useBattleSystem } from '@/composables/useBattleSystem'
-import { saveToLocal } from '@/stores/serializer'
+import { markSaveDirty } from '@/stores/serializer'
 import { advanceExperience, previewDailySign, recordDailySign } from '@/engine/rules'
 import { resolveConsumable } from '@/engine/item-effects'
 import {
@@ -62,12 +62,8 @@ export function useGameFeatures() {
   }))
 
   function persist(message, type = 'success') {
-    try {
-      saveToLocal()
-    } catch (error) {
-      ui.notify(`进度未能写入本地：${error.message}`, 'error', 5000)
-      return false
-    }
+    // 阶段四C:脏标记+空闲落盘;失败经 markSaveDirty 的 onError 通知
+    markSaveDirty(error => ui.notify(`进度未能写入本地：${error.message}`, 'error', 5000))
     if (message) ui.notify(message, type)
     return true
   }
@@ -298,7 +294,7 @@ export function useGameFeatures() {
       addGold(50); awardExp(20)
       if (notify) ui.notify(`解锁成就「${achievement.name}」，奖励金币+50、经验+20`, 'gold')
     }
-    try { saveToLocal() } catch (error) { ui.notify(`成就进度保存失败：${error.message}`, 'error', 5000) }
+    markSaveDirty(error => ui.notify(`成就进度保存失败：${error.message}`, 'error', 5000))
     return unlockedCount
   }
 
@@ -518,7 +514,7 @@ export function useGameFeatures() {
       },
       onDefeat: () => {
         eventStore._towerCooldownUntil = (eventStore._eventCount || 0) + 5
-        try { saveToLocal() } catch (error) { ui.notify(`挑战结果保存失败：${error.message}`, 'error', 5000) }
+        markSaveDirty(error => ui.notify(`挑战结果保存失败：${error.message}`, 'error', 5000))
         hooks.onDefeat?.(floor)
       }
     })

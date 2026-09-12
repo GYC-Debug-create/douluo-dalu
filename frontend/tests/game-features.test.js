@@ -31,7 +31,7 @@ vi.mock('@/composables/useBattleSystem', () => ({
 
 import { ORIGINS } from '@/data/game-data'
 import { useGameFeatures } from '@/composables/useGameFeatures'
-import { initNewCharacter } from '@/stores/serializer'
+import { initNewCharacter, flushSaveIfDirty } from '@/stores/serializer'
 import { useEventStore } from '@/stores/event'
 import { useGameStore } from '@/stores/game'
 import { usePlayerStore } from '@/stores/player'
@@ -84,6 +84,7 @@ describe('人物正式切磋', () => {
     expect(event._dynamicFlags._npcSparDone).toBe(true)
     expect(player._achievementList).toContain('npc_spar')
     expect(onVictory).toHaveBeenCalledOnce()
+    flushSaveIfDirty() // 节流模式下先落盘再断言
     expect(localStorage.getItem('dldl_text_rpg_save')).toBeTruthy()
   })
 })

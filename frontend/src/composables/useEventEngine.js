@@ -26,7 +26,7 @@ import { useEventFlow } from '@/composables/useEventFlow'
 import { createLocationExplorationSystem } from '@/composables/useLocationExploration'
 import { EVENTS, DYNAMIC_EVENTS, CHAINED_EVENTS, ENDINGS } from '@/data/game-data'
 import { createEngineCommands } from '@/engine/engine-commands'
-import { saveToLocal } from '@/stores/serializer'
+import { saveToLocal, markSaveDirty } from '@/stores/serializer'
 
 // 测试从本模块导入 cooldownSafeEventPool；实现已下沉到 engine/event-draw.js。
 export { cooldownSafeEventPool } from '@/engine/event-draw'
@@ -48,7 +48,15 @@ export function useEventEngine() {
 
   // ==================== 共享小工具 ====================
 
-  function saveGame() {
+  function saveGame(immediate = false) {
+    if (!immediate) {
+      // 阶段四C:高频路径走脏标记+空闲落盘,结局/手动存档传 true 立即写
+      markSaveDirty(error => {
+        console.warn('自动存档失败', error)
+        ui.notify(`进度未能写入本地：${error.message}`, 'error', 5000)
+      })
+      return
+    }
     try {
       saveToLocal()
     } catch (e) {

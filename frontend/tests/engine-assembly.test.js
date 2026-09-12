@@ -60,7 +60,7 @@ describe('组合根装配链路', () => {
     expect(player.exp).toBeGreaterThan(expBefore)
     expect(player.gold).toBeGreaterThanOrEqual(100 + 10)
 
-    engine.saveGame()
+    engine.saveGame(true) // 立即落盘(节流模式下显式 flush)
     const raw = JSON.parse(localStorage.getItem(LOCAL_SAVE_KEY))
     expect(isValidSave(raw)).toBe(true)
     expect(raw.name).toBe('装配验收')
