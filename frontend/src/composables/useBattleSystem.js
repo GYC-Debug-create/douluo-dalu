@@ -15,6 +15,8 @@ import {
   normalizeElement, elementMultiplier, statusDamageModifier, statusHtml,
   buildEnemy, addStatus, damageFormula, maybeApplyElementStatus, skillElement
 } from '@/engine/battle-core'
+import { resolveConsumable } from '@/engine/item-effects'
+import { applyExpGain } from '@/engine/settlement'
 import { useGameData } from '@/composables/useGameData'
 import { useGameRules } from '@/composables/useGameRules'
 
@@ -373,45 +375,25 @@ export function useBattleSystem() {
     if (!battleState || battleState.turn !== 'player' || battleState.busy || battleState.ended) return
     const item = player.inventory[index]
     if (!item || item.count <= 0) return
-    const maxHp = finalStats().maxHp
-    let message = ''
-    if (item.type === 'heal' || item.type === 'healFull') {
-      const amount = item.type === 'healFull' ? maxHp : Math.min(maxHp, player.hp + Number(item.value || 0))
-      const healed = amount - player.hp
-      if (healed <= 0) { addLog('当前生命已满，无需恢复。', 'warning'); return }
-      player.heal(healed)
-      message = `恢复 ${healed} 点生命`
-    } else if (item.type === 'mp') {
-      const before = player.spiritPower
-      player.spiritPower = Math.min(playerMaxSpirit(), player.spiritPower + Number(item.value || 0))
-      message = `恢复 ${player.spiritPower - before} 点魂力`
-    } else if (item.type === 'buffAtk') {
-      addStatus(battleState.playerStatuses, 'rage', 3, Number(item.value || 0.2))
-      message = '获得 3 回合狂暴'
-    } else if (item.type === 'buffDef') {
-      addStatus(battleState.playerStatuses, 'shield', 3, Number(item.value || 0.2))
-      message = '获得 3 回合护盾'
-    } else if (item.type === 'buffSpd') {
-      addStatus(battleState.playerStatuses, 'haste', 3, Number(item.value || 0.2))
-      message = '获得 3 回合疾风，闪避率提升'
-    } else if (item.type === 'cure') {
-      const before = battleState.playerStatuses.length
-      battleState.playerStatuses = battleState.playerStatuses.filter(s => s.id !== String(item.value || 'poison'))
-      if (before === battleState.playerStatuses.length) { addLog('当前没有中毒，无需使用解毒丹。', 'warning'); return }
-      message = '解除了中毒'
-    } else if (item.type === 'cureAll') {
-      const before = battleState.playerStatuses.length
-      battleState.playerStatuses = battleState.playerStatuses.filter(s => !(STATUS_INFO[s.id] || {}).harmful)
-      if (before === battleState.playerStatuses.length) { addLog('当前没有负面状态，无需使用净化符。', 'warning'); return }
-      message = '清除了所有负面状态'
-    } else {
-      addLog(`「${item.name}」不能在战斗中使用。`, 'warning'); return
-    }
+    // 效果数学统一走 engine/item-effects.js（与非战斗使用同一份规则）
+    const outcome = resolveConsumable(item, {
+      hp: player.hp,
+      maxHp: finalStats().maxHp,
+      spiritPower: player.spiritPower,
+      maxSpiritPower: playerMaxSpirit(),
+      statuses: battleState.playerStatuses
+    }, 'battle')
+    if (!outcome.ok) { addLog(outcome.message, 'warning'); return }
+    const { effect } = outcome
+    if (effect.heal) player.heal(effect.heal)
+    if (effect.mp) player.spiritPower = Math.min(playerMaxSpirit(), player.spiritPower + effect.mp)
+    if (effect.status) addStatus(battleState.playerStatuses, effect.status.id, effect.status.turns, effect.status.power)
+    if (effect.statuses) battleState.playerStatuses = effect.statuses
     item.count--
     player.inventory = player.inventory.filter(it => it.count > 0)
     battleState.combo = 0
     battleState.showItems = false
-    addLog(`${player.name}使用「${item.name}」，${message}。`, 'heal')
+    addLog(`${player.name}使用「${item.name}」，${outcome.message}。`, 'heal')
     afterPlayerAction()
   }
 
@@ -655,9 +637,15 @@ export function useBattleSystem() {
     const gains = []
     let exp = 0, gold = 0
     if (result.exp) {
-      exp = Math.round(result.exp)
-      player.addExp(exp)
-      gains.push(`经验+${exp}`)
+      // 统一走 T14 判例16 规则(settlement.applyExpGain):满级转金币,未满级入经验
+      const outcome = applyExpGain(player, result.exp)
+      if (outcome.kind === 'gold') {
+        gold = outcome.value
+        gains.push(`满级经验转化为金币+${outcome.value}`)
+      } else {
+        exp = outcome.value
+        gains.push(`经验+${outcome.value}`)
+      }
     }
     if (result.gold) {
       gold = Math.round(result.gold)

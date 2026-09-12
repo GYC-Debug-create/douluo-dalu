@@ -65,6 +65,22 @@ export function settleLevelProgress(state, ctx) {
 }
 
 /**
+ * 经验入账的统一规则（T14 判例16，单一来源）：
+ * 满级后一切经验来源 1:1 转化为金币，避免静默清零；未满级走 player.addExp。
+ * 返回 { kind: 'exp'|'gold', value } 供调用方组织文案与累计口径。
+ * @param {object} player 需暴露 level/addExp/gold（store 或视图）
+ */
+export function applyExpGain(player, amount) {
+  const value = Math.max(0, Math.round(Number(amount) || 0))
+  if (player.level >= 100) {
+    player.gold = (Number(player.gold) || 0) + value
+    return { kind: 'gold', value }
+  }
+  player.addExp(value)
+  return { kind: 'exp', value }
+}
+
+/**
  * 事件奖励结算（镜像原 applyResultRewards，逐分支一致）。
  * @param {object} view 可变草稿：{ bonus:{attack,defense,hp,speed}, hp, spiritPower, spiritPowerMax,
  *   gold, fatePoints, inventory, level, exp, overflowExp, spirit, spiritBase, ringCount, totalGoldEarned }

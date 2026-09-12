@@ -9,6 +9,7 @@ import { useGameRules } from '@/composables/useGameRules'
 import { useBattleSystem } from '@/composables/useBattleSystem'
 import { saveToLocal } from '@/stores/serializer'
 import { advanceExperience, previewDailySign, recordDailySign } from '@/engine/rules'
+import { resolveConsumable } from '@/engine/item-effects'
 import {
   ACHIEVEMENTS, CHALLENGE_TOWER, DAILY_REWARDS, FORGE_RECIPES,
   NPC_RELATION_LEVELS, QUESTS, SHOP_ITEMS, SKILL_TREE, TITLES, TRAINING_OPTIONS
@@ -116,33 +117,22 @@ export function useGameFeatures() {
     if (combat._battleActive) return ui.notify('战斗中请使用战斗界面的“道具”按钮', 'warning')
     const item = player.inventory[index]
     if (!item || item.count <= 0) return
-    const maxHp = finalStats().maxHp
-    let message = ''
-    if (item.type === 'heal' || item.type === 'healFull') {
-      const before = player.hp
-      player.hp = item.type === 'healFull' ? maxHp : Math.min(maxHp, player.hp + Number(item.value || 0))
-      if (player.hp === before) return ui.notify('当前生命已满', 'info')
-      message = `恢复 ${player.hp - before} 点生命`
-    } else if (item.type === 'mp') {
-      const before = player.spiritPower
-      player.spiritPower = Math.min(getMaxSpiritPower(), player.spiritPower + Number(item.value || 0))
-      if (player.spiritPower === before) return ui.notify('当前魂力已满', 'info')
-      message = `恢复 ${player.spiritPower - before} 点魂力`
-    } else if (item.type === 'buffAtk') {
-      player._tempAtkBuff = Number(item.value || 0.2); message = '下场战斗获得3回合攻击增益'
-    } else if (item.type === 'buffDef') {
-      player._tempDefBuff = Number(item.value || 0.2); message = '下场战斗获得3回合防御增益'
-    } else if (item.type === 'buffSpd') {
-      player._tempSpdBuff = Number(item.value || 0.2); message = '下场战斗获得3回合速度增益'
-    } else if (item.type === 'cure' || item.type === 'cureAll') {
-      return ui.notify('净化类道具只能在战斗中使用', 'info')
-    } else {
-      return ui.notify('该物品当前不能直接使用', 'info')
-    }
+    // 效果数学统一走 engine/item-effects.js(与战斗内使用同一份规则)
+    const outcome = resolveConsumable(item, {
+      hp: player.hp,
+      maxHp: finalStats().maxHp,
+      spiritPower: player.spiritPower,
+      maxSpiritPower: getMaxSpiritPower()
+    }, 'inventory')
+    if (!outcome.ok) return ui.notify(outcome.message, 'info')
+    const { effect } = outcome
+    if (effect.heal) player.hp = Math.min(finalStats().maxHp, player.hp + effect.heal)
+    if (effect.mp) player.spiritPower = Math.min(getMaxSpiritPower(), player.spiritPower + effect.mp)
+    if (effect.tempField) player[effect.tempField] = effect.value
     item.count--
     player.inventory = player.inventory.filter(entry => entry.count > 0)
-    addDiary(`使用「${item.name}」，${message}。`)
-    persist(`已使用「${item.name}」：${message}`)
+    addDiary(`使用「${item.name}」，${outcome.message}。`)
+    persist(`已使用「${item.name}」：${outcome.message}`)
   }
 
   function buyItem(itemId) {
