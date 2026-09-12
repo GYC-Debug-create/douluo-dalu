@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { buildRingCompletionMessage, buildRingHuntMeta, buildRingObjective, RING_DESTINATIONS, ringDestination } from '@/utils/ring-hunt'
 import statusPanelSource from '@/components/StatusPanel.vue?raw'
 import sceneAreaSource from '@/components/SceneArea.vue?raw'
-import eventEngineSource from '@/composables/useEventEngine.js?raw'
+import growthSettlementSource from '@/composables/useGrowthSettlement.js?raw'
 import gamePageSource from '@/pages/GamePage.vue?raw'
 
 describe('BUG-DIALOG-012 猎环目标持久挂在侧边并可恢复', () => {
@@ -77,10 +77,11 @@ describe('BUG-DIALOG-012 猎环目标持久挂在侧边并可恢复', () => {
   })
 
   it('暂缓与继续都保存既有序列化字段，成功授环仍清除目标', () => {
-    expect(eventEngineSource).toContain('function resumeRingHunt()')
-    expect(eventEngineSource).toContain('function deferRingHunt()')
-    expect(eventEngineSource).toContain('eventStore._ringHuntDeferredUntil = (eventStore._eventCount || 0) + 3')
-    expect(eventEngineSource).toContain('eventStore.pendingRingLv = null')
-    expect(eventEngineSource).toContain('eventStore._ringHuntDeferredUntil = 0')
+    // 阶段一重构后，猎环动作迁入 useGrowthSettlement.js（行为不变，源码契约随迁）。
+    expect(growthSettlementSource).toContain('function resumeRingHunt()')
+    expect(growthSettlementSource).toContain('function deferRingHunt()')
+    expect(growthSettlementSource).toContain('eventStore._ringHuntDeferredUntil = (eventStore._eventCount || 0) + 3')
+    expect(growthSettlementSource).toContain('eventStore.pendingRingLv = null')
+    expect(growthSettlementSource).toContain('eventStore._ringHuntDeferredUntil = 0')
   })
 })

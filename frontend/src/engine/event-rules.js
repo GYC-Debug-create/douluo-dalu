@@ -41,6 +41,36 @@ export const MAIN_STORY_REQUIREMENTS = Object.freeze({
   final_evil: ['god_trial_sea', 'ml_bibi_hunt']
 })
 
+// 主线里程碑链（展示文案 + 等级门槛 + 传送目标）。触发顺序由 requires 串联决定。
+export const MAIN_STORY_MILESTONES = Object.freeze([
+  { id: 'first_hunt', name: '第一次魂兽实战', minLevel: 5, targetId: 'star_duo_outer' },
+  { id: 'reach_lv10', name: '修炼至 Lv.10', minLevel: 10, requires: ['first_hunt'] },
+  { id: 'soul_master_prelim', name: '魂师大赛·预赛', minLevel: 30, targetId: 'tian_dou_city', requires: MAIN_STORY_REQUIREMENTS.soul_master_prelim },
+  { id: 'spirit_hall_exam', name: '武魂殿考核', minLevel: 30, targetId: 'spirit_hall', requires: MAIN_STORY_REQUIREMENTS.spirit_hall_exam },
+  { id: 'soul_master_final', name: '魂师大赛·决赛', minLevel: 40, targetId: 'tian_dou_city', requires: MAIN_STORY_REQUIREMENTS.soul_master_final },
+  { id: 'god_trial_sea', name: '神位传承·海神九考', minLevel: 50, targetId: 'sea_god_island', requires: MAIN_STORY_REQUIREMENTS.god_trial_sea },
+  { id: 'ml_bibi_omen', name: '教皇的影子', minLevel: 60, targetId: 'wuhun_city', requires: MAIN_STORY_REQUIREMENTS.ml_bibi_omen },
+  { id: 'ml_bibi_hunt', name: '猎魂封锁线', minLevel: 72, targetId: 'star_duo_deep', requires: MAIN_STORY_REQUIREMENTS.ml_bibi_hunt },
+  { id: 'final_evil', name: '最终决战·讨伐武魂殿', minLevel: 95, targetId: 'wuhun_city', requires: MAIN_STORY_REQUIREMENTS.final_evil }
+])
+
+/**
+ * 下一個应触发的主线里程碑（纯函数）。
+ * 旧主线版本（_mainStoryVersion < 1）没有里程碑链，只关心终局是否完成。
+ */
+export function nextMainStoryMilestone({ mainStoryVersion, doneEvents }) {
+  const done = Array.isArray(doneEvents) ? doneEvents : []
+  const fullStory = Number(mainStoryVersion) >= 1
+  if (!fullStory) {
+    const finalMilestone = MAIN_STORY_MILESTONES.find(item => item.id === 'final_evil')
+    return finalMilestone && !done.includes('final_evil') ? finalMilestone : null
+  }
+  return MAIN_STORY_MILESTONES.find(item => {
+    if (done.includes(item.id)) return false
+    return (item.requires || []).every(id => done.includes(id))
+  }) || null
+}
+
 // 当前结局流程在最终主线后结束，没有成神后的自由游玩状态。
 // 这些事件保留给未来模式，但未设置真实 ascended 状态时永远不能进入随机池。
 export const POST_ASCENSION_EVENT_IDS = Object.freeze([

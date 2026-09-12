@@ -115,10 +115,17 @@ function previewStats(spirit, origin, level) {
 /**
  * 最终属性计算（含魂环、魂骨、技能树、称号加成）
  * 从 game.js finalStats 迁移，简化版（暂不含阵法/NPC好感度，后续阶段补全）
+ *
+ * overrides（可选，供引擎结算层在"草稿状态"下复算，不影响语义）：
+ *  - level        按该等级计算基础成长
+ *  - bonus        用该永久加成对象替换 player.bonus
+ *  - spiritBase   用该武魂基础属性替换 player.spiritBase（进化结算用）
  */
-function finalStats() {
+function finalStats(overrides = {}) {
   const player = usePlayerStore()
-  const lv = player.level
+  const lv = overrides.level !== undefined ? overrides.level : player.level
+  const bonusSource = overrides.bonus !== undefined ? overrides.bonus : player.bonus
+  const spiritBaseSource = overrides.spiritBase !== undefined ? overrides.spiritBase : player.spiritBase
 
   let ringAtk = 0, ringDef = 0, ringHp = 0
   ;(player.rings || []).forEach(r => {
@@ -134,17 +141,17 @@ function finalStats() {
   const craftedHp = crafted.reduce((sum, bone) => sum + (Number(bone.hp) || 0), 0)
   const craftedSpd = crafted.reduce((sum, bone) => sum + (Number(bone.speed) || 0), 0)
 
-  const base = calcBaseStats(player.spiritBase, player.originBonus, lv, player.weapon)
+  const base = calcBaseStats(spiritBaseSource, player.originBonus, lv, player.weapon)
 
   const skillBonus = player._skillBonuses || {}
   const equippedTitleBonus = titleBonus()
   const formation = activeFormation()
   const npcBonus = npcRelationBonuses()
 
-  let attack = base.attack + (player.bonus?.attack || 0) + ringAtk + craftedAtk + (Number(equippedTitleBonus.attack) || 0)
-  let defense = base.defense + (player.bonus?.defense || 0) + ringDef + craftedDef + (Number(equippedTitleBonus.defense) || 0)
-  let maxHp = base.hp + (player.bonus?.hp || 0) + ringHp + craftedHp + (Number(equippedTitleBonus.hp) || 0)
-  let speed = base.speed + (player.bonus?.speed || 0) + craftedSpd + (Number(equippedTitleBonus.speed) || 0)
+  let attack = base.attack + (bonusSource?.attack || 0) + ringAtk + craftedAtk + (Number(equippedTitleBonus.attack) || 0)
+  let defense = base.defense + (bonusSource?.defense || 0) + ringDef + craftedDef + (Number(equippedTitleBonus.defense) || 0)
+  let maxHp = base.hp + (bonusSource?.hp || 0) + ringHp + craftedHp + (Number(equippedTitleBonus.hp) || 0)
+  let speed = base.speed + (bonusSource?.speed || 0) + craftedSpd + (Number(equippedTitleBonus.speed) || 0)
 
   attack = Math.round(attack * (1 + (Number(skillBonus.attackMult) || 0) + formation.attack))
   defense = Math.round(defense * (1 + (Number(skillBonus.defenseMult) || 0) + formation.defense))
@@ -169,13 +176,15 @@ function finalStats() {
 
 /**
  * 最大魂力计算
+ * overrides（可选）：spiritPowerMax —— 结算草稿下按指定上限复算。
  */
-function getMaxSpiritPower() {
+function getMaxSpiritPower(overrides = {}) {
   const player = usePlayerStore()
+  const powerMax = overrides.spiritPowerMax !== undefined ? overrides.spiritPowerMax : player.spiritPowerMax
   const skillMultiplier = Number(player._skillBonuses?.mpMult) || 0
   const formationMultiplier = Number(activeFormation().spirit) || 0
   const titlePower = Math.max(0, Number(titleBonus().spiritPowerGain) || 0)
-  return Math.max(1, Math.round((Number(player.spiritPowerMax) || 1) * (1 + skillMultiplier + formationMultiplier) + titlePower))
+  return Math.max(1, Math.round((Number(powerMax) || 1) * (1 + skillMultiplier + formationMultiplier) + titlePower))
 }
 
 /**
