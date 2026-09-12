@@ -8,3 +8,8 @@ frontend/dist/
 
 # 审查截图证据（122MB，不入库）
 docs/local/
+
+# 归档目录中的大文件与本地工具配置不入库
+docs/archive/*.tgz
+.ocu-*.json
+opencode.json
