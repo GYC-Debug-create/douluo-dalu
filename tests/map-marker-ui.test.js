@@ -3,7 +3,7 @@ const assert = require('node:assert/strict')
 const fs = require('node:fs')
 const path = require('node:path')
 
-const mapHtml = fs.readFileSync(path.join(__dirname, '..', 'public', 'map.html'), 'utf8')
+const mapHtml = fs.readFileSync(path.join(__dirname, '..', 'public', 'legacy', 'map.html'), 'utf8')
 
 test('BUG-ORAL-007 地点详情兼容字符串与数组形式的著名事件', () => {
   assert.match(mapHtml, /function detailTagList\(value\)/)

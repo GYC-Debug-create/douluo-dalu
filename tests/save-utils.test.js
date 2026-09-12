@@ -2,7 +2,7 @@
 
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { CURRENT_SAVE_VERSION, migrateSave, isValidSave, recoverFromStorage } = require('../public/save-utils');
+const { CURRENT_SAVE_VERSION, migrateSave, isValidSave, recoverFromStorage } = require('../public/legacy/save-utils');
 
 test('旧存档迁移到当前版本并补齐新增字段', () => {
   const migrated = migrateSave({ name:'测试魂师', spirit:'蓝银草', level:5 });

@@ -5,9 +5,9 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 
-const html = fs.readFileSync(path.resolve(__dirname, '..', 'public', 'game.html'), 'utf8');
-const game = fs.readFileSync(path.resolve(__dirname, '..', 'public', 'game.js'), 'utf8');
-const visual = fs.readFileSync(path.resolve(__dirname, '..', 'public', 'game-visual.js'), 'utf8');
+const html = fs.readFileSync(path.resolve(__dirname, '..', 'public', 'legacy', 'game.html'), 'utf8');
+const game = fs.readFileSync(path.resolve(__dirname, '..', 'public', 'legacy', 'game.js'), 'utf8');
+const visual = fs.readFileSync(path.resolve(__dirname, '..', 'public', 'legacy', 'game-visual.js'), 'utf8');
 
 test('正式文字 RPG HTML 不含重复 ID，关键引导目标存在', () => {
   const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map(match => match[1]);

@@ -6,7 +6,10 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const publicDir = path.resolve(__dirname, '..', 'public');
-const read = name => fs.readFileSync(path.join(publicDir, name), 'utf8');
+const legacyDir = path.resolve(publicDir, 'legacy');
+// 旧轨已整体迁入 public/legacy/(阶段四整改),仍以裸相对路径引用根级 assets/data
+const read = name => fs.readFileSync(path.join(legacyDir, name), 'utf8');
+const readRoot = name => fs.readFileSync(path.join(publicDir, name), 'utf8');
 
 test('主要表单控件具有可访问名称和输入属性', () => {
   const index = read('index.html');

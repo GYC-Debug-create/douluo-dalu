@@ -4,7 +4,7 @@
  *
  * frontend/src/data/game-data.js 是剧情与静态数据的唯一来源；
  * 本脚本在构建时把它转译为旧轨（public/game.html 等）使用的全局变量格式，
- * 生成 public/game-data.js，杜绝两份 1900 行数据靠人肉同步。
+ * 生成 public/legacy/game-data.js，杜绝两份 1900 行数据靠人肉同步。
  *
  * 转译规则：`export const X =` → 分节注释 + `const X =`（旧轨页面按同作用域
  * 全局常量消费）。生成后做结构指纹校验：在 vm 里执行产物并与 ESM 源逐常量
@@ -20,7 +20,7 @@ import vm from 'node:vm'
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)))
 const SOURCE = join(root, 'frontend', 'src', 'data', 'game-data.js')
-const TARGET = join(root, 'public', 'game-data.js')
+const TARGET = join(root, 'public', 'legacy', 'game-data.js')
 
 // 分节注释映射：与历史 public/game-data.js 的分节保持一致（validate-data.js
 // 依赖"结局库"标记定位 EVENTS 数据段）。
@@ -175,4 +175,4 @@ for (const marker of ['const EVENTS = [', '// ==================== 结局库 ===
 }
 
 writeFileSync(TARGET, out, 'utf8')
-console.log(`✓ 已生成 public/game-data.js（${out.split('\n').length} 行，${changed} 个常量，结构指纹校验通过）`)
+console.log(`✓ 已生成 public/legacy/game-data.js（${out.split('\n').length} 行，${changed} 个常量，结构指纹校验通过）`)

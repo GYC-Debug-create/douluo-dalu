@@ -86,13 +86,16 @@ const rateLimitCleanupTimer = setInterval(() => {
 rateLimitCleanupTimer.unref();
 
 // ============ 旧轨访问统计(为"双轨退役"决策积累数据) ============
+// 旧轨已整体迁入 public/legacy/(阶段四整改):眼不见为净,但仍可正常访问。
 // 精确计数旧版专属入口的命中次数;计数中间件必须挂在静态挂载之前,
 // 否则被 static 终结的请求不会经过。数据落盘 data/legacy-access-stats.json,
 // 一周后按 /api/health 读数决定旧轨去留;决策完成后可整体移除本模块。
 const LEGACY_ACCESS_PATHS = new Set([
-  '/game.html', '/map.html', '/codex.html', '/debug-saves.html',
-  '/game.js', '/game-combat.js', '/game-data.js', '/game-events-expanded.js',
-  '/game-visual.js', '/game-rules.js', '/save-utils.js'
+  '/legacy/game.html', '/legacy/map.html', '/legacy/codex.html', '/legacy/debug-saves.html',
+  '/legacy/index.html',
+  '/legacy/game.js', '/legacy/game-combat.js', '/legacy/game-data.js',
+  '/legacy/game-events-expanded.js', '/legacy/game-visual.js', '/legacy/game-rules.js',
+  '/legacy/save-utils.js'
 ]);
 const LEGACY_STATS_FILE = path.resolve(DATA_DIR, 'legacy-access-stats.json');
 let legacyAccess = { since: new Date().toISOString().slice(0, 10), totals: {} };
@@ -159,6 +162,12 @@ app.use('/api', (req, res, next) => {
   res.setHeader('Cache-Control', 'no-store');
   next();
 });
+
+// 旧轨已迁入 public/legacy/，但其代码仍以裸相对路径引用 assets/data
+// （浏览器按 /legacy/assets/... 解析），这里挂两个别名目录指向真实文件，
+// 免改旧轨任何代码；真实目录仍由下方 public 静态挂载提供。
+app.use('/legacy/assets', express.static(path.join(PUBLIC_DIR, 'assets'), staticOptions));
+app.use('/legacy/data', express.static(path.join(PUBLIC_DIR, 'data'), staticOptions));
 
 // Vue 生产构建优先；旧 public 目录继续提供地图、图鉴、数据等兼容资源。
 app.use(express.static(FRONTEND_DIST_DIR, staticOptions));

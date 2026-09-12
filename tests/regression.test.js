@@ -6,10 +6,10 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const root = path.resolve(__dirname, '..');
-const game = fs.readFileSync(path.join(root, 'public', 'game.js'), 'utf8');
-const combat = fs.readFileSync(path.join(root, 'public', 'game-combat.js'), 'utf8');
-const { migrateSave, isValidSave, recoverFromStorage } = require('../public/save-utils');
-const { advanceExperience } = require('../public/game-rules');
+const game = fs.readFileSync(path.join(root, 'public', 'legacy', 'game.js'), 'utf8');
+const combat = fs.readFileSync(path.join(root, 'public', 'legacy', 'game-combat.js'), 'utf8');
+const { migrateSave, isValidSave, recoverFromStorage } = require('../public/legacy/save-utils');
+const { advanceExperience } = require('../public/legacy/game-rules');
 
 // ---------- P0-01：保存 → 回标题 → 继续 → 刷新 → 再继续（数据层回归） ----------
 test('P0-01 保存后继续冒险：存档写入后可反复恢复同一角色（含刷新）', () => {
@@ -89,8 +89,8 @@ test('P0-01 字符串 _personality/_destiny 旧档迁移为对象，避免继续
 
 // ---------- P1-03：地点名称统一 ----------
 test('P1-03 事件地点统一使用稳定基名（星斗大森林外围/深处）', () => {
-  const expanded = fs.readFileSync(path.join(root, 'public', 'game-events-expanded.js'), 'utf8');
-  const base = fs.readFileSync(path.join(root, 'public', 'game-data.js'), 'utf8');
+  const expanded = fs.readFileSync(path.join(root, 'public', 'legacy', 'game-events-expanded.js'), 'utf8');
+  const base = fs.readFileSync(path.join(root, 'public', 'legacy', 'game-data.js'), 'utf8');
   const source = base + '\n' + expanded;
   // 不允许残留“星斗大森林·外围/深处/边缘”等旧变体写法
   assert.doesNotMatch(source, /星斗大森林·深处/);
@@ -201,7 +201,7 @@ test('P2-17 隐藏地点提供玩家可理解线索并在帮助页展示', () =>
 
 // ---------- P2-18：魂骨内部字段不直接展示 ----------
 test('P2-18 魂骨图鉴不直接展示内部 tier 值', () => {
-  const codex = fs.readFileSync(path.join(root, 'public', 'codex.html'), 'utf8');
+  const codex = fs.readFileSync(path.join(root, 'public', 'legacy', 'codex.html'), 'utf8');
   const boneMetaLine = (codex.match(/if\(currentCodex === 'bone'\)\s+return `[^`]*`/) || [''])[0];
   assert.doesNotMatch(boneMetaLine, /esc\(it\.tier\)/, 'codex.html 卡片不应直接输出内部 tier');
   assert.match(boneMetaLine, /boneTierName\(it\.tier\)/, 'codex.html 应使用中文品级映射');
@@ -219,11 +219,11 @@ test('P2-18 魂骨图鉴不直接展示内部 tier 值', () => {
 
 // ---------- P3-19：开场跳过即时生效 ----------
 test('P3-19 开场跳过按钮即时生效', () => {
-  const visual = fs.readFileSync(path.join(root, 'public', 'game-visual.js'), 'utf8');
+  const visual = fs.readFileSync(path.join(root, 'public', 'legacy', 'game-visual.js'), 'utf8');
   assert.match(visual, /ci-skip/, '电影开场应存在跳过按钮');
   assert.match(visual, /click.*skip/, '跳过按钮应绑定点击');
   const skipBlock = visual.slice(visual.indexOf('function skip'), visual.indexOf('function skip') + 600);
   assert.match(skipBlock, /finish\(\)/, '跳过应立即完成开场');
-  const html = fs.readFileSync(path.join(root, 'public', 'game.html'), 'utf8');
+  const html = fs.readFileSync(path.join(root, 'public', 'legacy', 'game.html'), 'utf8');
   assert.match(html, /id="ci-skip"/, 'game.html 应包含跳过按钮');
 });

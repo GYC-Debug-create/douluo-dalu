@@ -2391,7 +2391,7 @@ try {
       bg006Errors.push(`requestfailed: ${request.url()} (${request.failure()?.errorText || 'unknown'})`)
     }
   })
-  await bg006Page.goto(`${baseUrl}map.html`, { waitUntil: 'networkidle' })
+  await bg006Page.goto(`${baseUrl}legacy/map.html`, { waitUntil: 'networkidle' })
   await bg006Page.waitForSelector('.location-marker')
   const bg007DeepMarker = bg006Page.locator('.location-marker').filter({ hasText: '星斗大森林深处' }).first()
   await bg007DeepMarker.locator('.marker-hitarea').click({ force: true })
@@ -2476,7 +2476,7 @@ try {
 
   const bg006ReducedContext = await browser.newContext({ viewport: { width: 1024, height: 900 }, reducedMotion: 'reduce' })
   const bg006ReducedPage = await bg006ReducedContext.newPage()
-  await bg006ReducedPage.goto(`${baseUrl}map.html`, { waitUntil: 'networkidle' })
+  await bg006ReducedPage.goto(`${baseUrl}legacy/map.html`, { waitUntil: 'networkidle' })
   const bg006ReducedMarker = bg006ReducedPage.locator('.location-marker').filter({ hasText: '史莱克学院' }).first()
   await bg006ReducedMarker.focus()
   const bg006ReducedAnimations = await bg006ReducedMarker.evaluate(element =>

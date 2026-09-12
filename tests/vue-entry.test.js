@@ -41,7 +41,7 @@ test('生产入口提供 Vue 构建，同时保留 API 与 public 兼容资源',
   const spiritData = await dataResponse.json();
   assert.ok(Array.isArray(spiritData.spirits), '旧 public 数据仍应可读取');
 
-  const mapResponse = await fetch(base + '/map.html');
+  const mapResponse = await fetch(base + '/legacy/map.html');
   assert.equal(mapResponse.status, 200, '旧地图页面仍应可访问');
 
   const healthResponse = await fetch(base + '/api/health');

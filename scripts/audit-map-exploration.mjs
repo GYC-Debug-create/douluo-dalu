@@ -82,13 +82,13 @@ for (const targetId of ringTargets) {
 const seaRoute = shortestRoute('shrek_academy', 'sea_god_island')
 check(seaRoute.includes('east_sea_port'), '海神岛路线没有经过东海港口：' + seaRoute.join(' -> '))
 
-const mapHtml = fs.readFileSync(path.join(publicDir, 'map.html'), 'utf8')
+const mapHtml = fs.readFileSync(path.join(publicDir, 'legacy', 'map.html'), 'utf8')
 const markerNames = [...mapHtml.matchAll(/\{id:'([^']+)'/g)].map(match => match[1])
-for (const name of markerNames) check(names.has(name), 'public/map.html 硬编码节点 ' + name + ' 不存在于 map-data.json')
+for (const name of markerNames) check(names.has(name), 'public/legacy/map.html 硬编码节点 ' + name + ' 不存在于 map-data.json')
 const keyBlock = mapHtml.match(/const LOCATION_KEYS = \{([\s\S]*?)\n\};/)
 const keyValues = keyBlock ? [...keyBlock[1].matchAll(/'[^']+'\s*:\s*'([^']+)'/g)].map(match => match[1]) : []
-check(keyValues.includes('east_sea_port'), 'public/map.html LOCATION_KEYS 缺少 east_sea_port')
-check(keyValues.includes('sea_god_island'), 'public/map.html LOCATION_KEYS 缺少 sea_god_island')
+check(keyValues.includes('east_sea_port'), 'public/legacy/map.html LOCATION_KEYS 缺少 east_sea_port')
+check(keyValues.includes('sea_god_island'), 'public/legacy/map.html LOCATION_KEYS 缺少 sea_god_island')
 
 const bridgeSource = fs.readFileSync(path.join(root, 'frontend/src/utils/mapBridge.js'), 'utf8')
 const saveSource = fs.readFileSync(path.join(root, 'frontend/src/engine/save.js'), 'utf8')

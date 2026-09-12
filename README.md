@@ -87,5 +87,5 @@ npm test               # 先构建 Vue，再运行 Node 测试
 
 - `/` 与 `/index.html` 返回 `frontend/dist/index.html`（Vue 应用）。
 - `/api/*` 继续由 Express 提供。
-- `/data/*`、`/map.html`、`/codex.html` 以及其他旧 `public/` 资源继续可直接访问。
+- `/data/*`、`/assets/*` 继续直接访问;旧轨整套已归拢至 `/legacy/*`(game.html/map.html/codex.html 等),仍可正常打开。
 - 如果直接运行 `node server.js` 且 Vue 尚未构建，入口会返回 503 并提示先执行 `npm run build`；正常使用 `npm start` 不会遇到这一情况。

@@ -2,7 +2,7 @@
 
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { calculateRingBacklash, normalizeLegacyHealthResult, findRingChoiceResult, classifyEventLocation, previewDailySign, recordDailySign, levelCapForRings, advanceExperience, calculateDamage } = require('../public/game-rules');
+const { calculateRingBacklash, normalizeLegacyHealthResult, findRingChoiceResult, classifyEventLocation, previewDailySign, recordDailySign, levelCapForRings, advanceExperience, calculateDamage } = require('../public/legacy/game-rules');
 
 test('魂环反噬对零风险、缺失字段和异常生命值始终返回有限数字', () => {
   for(const input of [

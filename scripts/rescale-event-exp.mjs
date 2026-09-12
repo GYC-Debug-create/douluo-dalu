@@ -250,7 +250,7 @@ for (const rel of ['frontend/src/data/game-data.js', 'frontend/src/data/events-e
   }))
 }
 // public 两件套：宽松模式——直接套用 canonical 绝对值（顺带归一 6 个历史漂移事件）
-for (const rel of ['public/game-data.js', 'public/game-events-expanded.js']) {
+for (const rel of ['public/legacy/game-data.js', 'public/legacy/game-events-expanded.js']) {
   if (!fs.existsSync(path.join(ROOT, rel))) { console.log('(跳过不存在文件)', rel); continue }
   results.push(applyToFile(rel, (id, ord, oldVal, st) => {
     const rec = manifest[id]

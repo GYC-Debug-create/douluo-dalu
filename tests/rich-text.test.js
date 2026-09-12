@@ -4,7 +4,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
-const { richText, plainText } = require('../public/game-rules');
+const { richText, plainText } = require('../public/legacy/game-rules');
 
 const root = path.resolve(__dirname, '..');
 
@@ -37,7 +37,7 @@ test('plainText 剥离全部标签并将 <br> 转为换行', () => {
 
 // ---------- 数据侧：实战训练事件的三条结果文本 ----------
 test('实战训练结果文本经 richText 后不再出现字面量标签', () => {
-  const gameData = fs.readFileSync(path.join(root, 'public', 'game-data.js'), 'utf8');
+  const gameData = fs.readFileSync(path.join(root, 'public', 'legacy', 'game-data.js'), 'utf8');
   const matches = gameData.match(/result: \{ text: '[^']*<[^']*'/g) || [];
   assert.ok(matches.length >= 3, '应能找到带 HTML 的结果文本');
   for(const m of matches){
@@ -51,8 +51,8 @@ test('实战训练结果文本经 richText 后不再出现字面量标签', () =
 
 // ---------- 渲染点接入断言：防止回归为 fmt 全量转义 ----------
 test('结果文本渲染点已接入白名单富文本（game.js / game-combat.js）', () => {
-  const game = fs.readFileSync(path.join(root, 'public', 'game.js'), 'utf8');
-  const combat = fs.readFileSync(path.join(root, 'public', 'game-combat.js'), 'utf8');
+  const game = fs.readFileSync(path.join(root, 'public', 'legacy', 'game.js'), 'utf8');
+  const combat = fs.readFileSync(path.join(root, 'public', 'legacy', 'game-combat.js'), 'utf8');
   assert.match(game, /renderContinue\(ev, `\$\{richText\(resolvedResult\.text\)\}\$\{renderRewardSummary\(reward\)\}`/);
   assert.match(game, /addDiaryEntry\(`经历事件「\$\{ev\.name\}」：\$\{plainText\(/);
   assert.match(combat, /safeRichText\(state\.options\.result\.text\)/);

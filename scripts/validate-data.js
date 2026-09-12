@@ -3,7 +3,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
-const { classifyEventLocation } = require('../public/game-rules');
+const { classifyEventLocation } = require('../public/legacy/game-rules');
 
 function walk(dir, predicate, output = []) {
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -30,11 +30,11 @@ function validateImageReferences(publicDir, errors) {
   const dataSources = walk(path.join(publicDir, 'data'), file => file.endsWith('.json'));
   const sources = [
     ...dataSources,
-    path.join(publicDir, 'index.html'),
-    path.join(publicDir, 'game.html'),
-    path.join(publicDir, 'codex.html'),
-    path.join(publicDir, 'map.html'),
-    path.join(publicDir, 'js', 'config.js')
+    path.join(publicDir, 'legacy', 'index.html'),
+    path.join(publicDir, 'legacy', 'game.html'),
+    path.join(publicDir, 'legacy', 'codex.html'),
+    path.join(publicDir, 'legacy', 'map.html'),
+    path.join(publicDir, 'legacy', 'js', 'config.js')
   ];
   const pattern = /(?:src\s*=\s*["']|(?:image|icon|banner)\s*[:=]\s*["'])(assets\/[^"]+?\.(?:jpg|jpeg|png|webp|gif))/gi;
   for (const file of sources) {
@@ -50,7 +50,7 @@ function validateImageReferences(publicDir, errors) {
 }
 
 function loadEvents(publicDir, errors) {
-  const file = path.join(publicDir, 'game-data.js');
+  const file = path.join(publicDir, 'legacy', 'game-data.js');
   const source = fs.readFileSync(file, 'utf8');
   const start = source.indexOf('const EVENTS = [');
   const end = source.indexOf('// ==================== 结局库', start);
@@ -62,7 +62,7 @@ function loadEvents(publicDir, errors) {
   try {
     vm.createContext(context);
     vm.runInContext(`${source.slice(start, end)}\nthis.EVENTS = EVENTS;`, context, { timeout: 1000 });
-    const expanded = fs.readFileSync(path.join(publicDir, 'game-events-expanded.js'), 'utf8');
+    const expanded = fs.readFileSync(path.join(publicDir, 'legacy', 'game-events-expanded.js'), 'utf8');
     vm.runInContext(`${expanded}\nthis.EVENTS = EVENTS;`, context, { timeout: 3000 });
     return context.EVENTS || [];
   } catch (error) {

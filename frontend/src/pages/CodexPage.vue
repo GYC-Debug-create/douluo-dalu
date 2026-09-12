@@ -21,7 +21,8 @@ const router = useRouter()
 const codexFrame = ref(null)
 const baseUrl = (import.meta.env.BASE_URL || '/').replace(/\/?$/, '/')
 const codexUrl = computed(() => {
-  return `${baseUrl}codex.html`
+  // 旧轨(含图鉴页)已归拢至 public/legacy/(阶段四整改)
+  return `${baseUrl}legacy/codex.html`
 })
 
 function sendPlayerSummary() {
