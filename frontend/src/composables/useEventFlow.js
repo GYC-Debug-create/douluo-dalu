@@ -7,6 +7,7 @@
  */
 import { computed } from 'vue'
 import { normalizeLegacyHealthResult, classifyEventLocation } from '@/engine/rules'
+import { createEventBattleRequest } from '@/engine/battle-contract'
 import { adaptEvent, isEventEligible, nextMainStoryMilestone as nextMainStoryMilestonePure } from '@/engine/event-rules'
 import { buildPrologueEvent, buildEarlyLifeEvents } from '@/data/story-intro'
 import { buildTravelArrivalSummary } from '@/utils/travel-arrival'
@@ -303,9 +304,14 @@ export function useEventFlow(deps) {
 
     // 战斗检查
     if (resolvedResult.battle) {
-      // 启动正式战斗系统
+      // 按契约（engine/battle-contract.js）发起战斗：战斗系统不理解事件语义，
+      // 胜利奖励与战败/逃跑后的剧情挂起都在本回调（事件层）完成。
       scene.sceneState.value = 'battle'
-      battleSystem.startEventBattle(ev, resolvedResult, (result) => {
+      battleSystem.startEventBattle(createEventBattleRequest({
+        event: ev,
+        result: resolvedResult,
+        finalBoss: ev.id === 'final_evil'
+      }), (result) => {
         if (result.type === 'victory') {
           const rewardResult = { ...resolvedResult }
           delete rewardResult.battle
@@ -329,8 +335,14 @@ export function useEventFlow(deps) {
             const reward = growth.applyResultRewards(rewardResult)
             result.gains = [...(result.gains || []), ...reward.list]
           }
-        } else if (ev.ring) {
-          eventStore._ringHuntDeferredUntil = (eventStore._eventCount || 0) + 2
+        } else {
+          // 战败/逃跑：按事件语义挂起目标（原实现由战斗系统直写，现收口到事件层）
+          if (ev.ring) {
+            eventStore._ringHuntDeferredUntil = (eventStore._eventCount || 0) + 2
+          }
+          if (ev._mainStory) {
+            eventStore._storyMilestoneDeferredUntil = (eventStore._eventCount || 0) + 2
+          }
         }
         handleBattleEnd(result)
       })

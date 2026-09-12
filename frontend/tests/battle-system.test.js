@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
 import { ORIGINS } from '@/data/game-data'
 import { useBattleSystem } from '@/composables/useBattleSystem'
+import { createEventBattleRequest } from '@/engine/battle-contract'
 import { initNewCharacter } from '@/stores/serializer'
 import { useCombatStore } from '@/stores/combat'
 import { useEventStore } from '@/stores/event'
@@ -78,22 +79,29 @@ describe('Vue 正式战斗状态闭环', () => {
     const combat = useCombatStore()
     const battle = useBattleSystem()
     const ended = vi.fn()
-    eventStore._eventCount = 4
 
+    // 阶段一 1.3 契约化：战斗只接收请求单并发布标准化结果，
+    // 战败后的主线挂起职责移到事件层（见 battle-contract.test.js）。
     battle.startEventBattle(
-      { id: 'main_battle', name: '主线强敌', _mainStory: true },
-      {
-        battle: {
-          id: 'overwhelming_enemy', name: '强敌', isNpc: true,
-          hp: 1000, maxHp: 1000, attack: 99999, defense: 10, speed: 999
-        }
-      },
+      createEventBattleRequest({
+        event: { id: 'main_battle', name: '主线强敌', _mainStory: true },
+        result: {
+          battle: {
+            id: 'overwhelming_enemy', name: '强敌', isNpc: true,
+            hp: 1000, maxHp: 1000, attack: 99999, defense: 10, speed: 999
+          }
+        },
+        finalBoss: false
+      }),
       ended
     )
     await vi.advanceTimersByTimeAsync(1200)
 
-    expect(ended).toHaveBeenCalledWith(expect.objectContaining({ type: 'defeat' }))
-    expect(eventStore._storyMilestoneDeferredUntil).toBe(6)
+    expect(ended).toHaveBeenCalledWith(expect.objectContaining({
+      type: 'defeat',
+      enemy: expect.objectContaining({ id: 'overwhelming_enemy' }),
+      rounds: expect.any(Number)
+    }))
     expect(battle.isActive()).toBe(false)
     expect(combat._battleActive).toBe(false)
   })

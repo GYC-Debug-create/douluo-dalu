@@ -6,7 +6,6 @@
  */
 import { ref, reactive, computed } from 'vue'
 import { usePlayerStore } from '@/stores/player'
-import { useEventStore } from '@/stores/event'
 import { useCombatStore } from '@/stores/combat'
 import { useUiStore } from '@/stores/ui'
 import { useGameStore } from '@/stores/game'
@@ -207,7 +206,6 @@ function createState() {
 
 export function useBattleSystem() {
   const player = usePlayerStore()
-  const eventStore = useEventStore()
   const combat = useCombatStore()
   const ui = useUiStore()
   const gameStore = useGameStore()
@@ -606,18 +604,14 @@ export function useBattleSystem() {
       battleActive.value = false
       combat._battleActive = false
       addLog('你成功脱离了战斗。', 'warning')
-      if (battleState.options.event && battleState.options.event.ring) {
-        eventStore._ringHuntDeferredUntil = (eventStore._eventCount || 0) + 2
-      }
-      if (battleState.options.event && battleState.options.event._mainStory) {
-        eventStore._storyMilestoneDeferredUntil = (eventStore._eventCount || 0) + 2
-      }
       combat.recordHuntingOutcome(battleState.enemy, 'escape', {
-        ringHunt: Boolean(battleState.options.event?.ring),
-        eventName: battleState.options.event?.name || ''
+        ringHunt: Boolean(battleState.options.huntingMeta?.ringHunt),
+        eventName: battleState.options.huntingMeta?.eventName || ''
       })
-      const ringEvent = battleState.options.event && battleState.options.event.ring
-      const escapeText = ringEvent ? '你摆脱了魂兽追击；魂环尚未获得，再历练两次后可重新搜寻。' : '你避开敌人的追击，重新整理行装。'
+      // 契约（engine/battle-contract.js）：逃跑后挂起猎环/主线的剧情处理由事件层完成。
+      const escapeText = battleState.options.huntingMeta?.ringHunt
+        ? '你摆脱了魂兽追击；魂环尚未获得，再历练两次后可重新搜寻。'
+        : '你避开敌人的追击，重新整理行装。'
       _callOnEnd('escape', escapeText)
     } else {
       addLog('逃跑失败，敌人抓住了破绽！', 'damage')
@@ -758,21 +752,21 @@ export function useBattleSystem() {
     let gains = []
     let rewardExp = 0
     let rewardGold = 0
-    if (battleState.options.result && !battleState.options.deferResult) {
-      const reward = _applyResultRewards(battleState.options.result)
+    if (battleState.options.rewardResult && !battleState.options.deferResult) {
+      const reward = _applyResultRewards(battleState.options.rewardResult)
       gains = reward.list
       rewardExp += reward.exp || 0
       rewardGold += reward.gold || 0
     }
-    if (battleState.enemy.exp && !battleState.options.result) {
+    if (battleState.enemy.exp && !battleState.options.rewardResult) {
       const reward = _applyResultRewards({ exp: battleState.enemy.exp, gold: battleState.enemy.gold || 0 })
       gains.push(...reward.list)
       rewardExp += reward.exp || 0
       rewardGold += reward.gold || 0
     }
     const huntingRecord = combat.recordHuntingOutcome(battleState.enemy, 'victory', {
-      ringHunt: Boolean(battleState.options.event?.ring),
-      eventName: battleState.options.event?.name || ''
+      ringHunt: Boolean(battleState.options.huntingMeta?.ringHunt),
+      eventName: battleState.options.huntingMeta?.eventName || ''
     })
     if (huntingRecord.gain > 0) gains.push(`猎魂历练+${huntingRecord.gain}`)
     // 魂骨碎片掉落（T15，判例 21）：普通魂兽 3%、Boss 15%——魂骨为原著至宝，
@@ -792,8 +786,8 @@ export function useBattleSystem() {
         if (isCurrentBattleInstance(currentState, generation)) onVictory(currentState.enemy, gains)
       }, 40)
     } else {
-      const resultText = battleState.options.result && battleState.options.result.text
-        ? battleState.options.result.text
+      const resultText = battleState.options.rewardResult && battleState.options.rewardResult.text
+        ? battleState.options.rewardResult.text
         : `你击败了${battleState.enemy.name}。`
       _callOnEnd('victory', resultText, gains, rewardExp, rewardGold)
     }
@@ -807,8 +801,8 @@ export function useBattleSystem() {
     combat._battleActive = false
     combat.recordLoss()
     combat.recordHuntingOutcome(battleState.enemy, 'defeat', {
-      ringHunt: Boolean(battleState.options.event?.ring),
-      eventName: battleState.options.event?.name || ''
+      ringHunt: Boolean(battleState.options.huntingMeta?.ringHunt),
+      eventName: battleState.options.huntingMeta?.eventName || ''
     })
     // T9 判例5：战败轻微代价——损失 5% 金币（四舍五入后至少 0），
     // 打破"零成本无限重试"，但不构成挫败性惩罚。
@@ -817,13 +811,7 @@ export function useBattleSystem() {
       player.gold = Math.max(0, (player.gold || 0) - goldLoss)
       addLog(`战斗失利，损失 ${goldLoss} 金币。`, 'damage')
     }
-    const failedEvent = battleState.options.event
-    if (failedEvent?.ring) {
-      eventStore._ringHuntDeferredUntil = (eventStore._eventCount || 0) + 2
-    }
-    if (failedEvent?._mainStory) {
-      eventStore._storyMilestoneDeferredUntil = (eventStore._eventCount || 0) + 2
-    }
+    // 契约（engine/battle-contract.js）：战败后挂起猎环/主线的剧情处理由事件层完成。
     player.setHp(Math.max(1, Math.round(finalStats().maxHp * 0.3)))
     battleState.combo = 0
     const onDefeat = battleState.options.onDefeat
@@ -863,10 +851,18 @@ export function useBattleSystem() {
     return { list: gains, exp, gold }
   }
 
-  // 结束回调
+  // 结束回调：按 engine/battle-contract.js 发布标准化结果
   function _callOnEnd(type, text, gains, exp, gold) {
     if (typeof battleState.options.onEnd === 'function') {
-      battleState.options.onEnd({ type, text, gains: gains || [], exp: exp || 0, gold: gold || 0 })
+      battleState.options.onEnd({
+        type,
+        text,
+        gains: gains || [],
+        exp: exp || 0,
+        gold: gold || 0,
+        enemy: battleState.enemy,
+        rounds: battleState.round
+      })
     }
   }
 
@@ -934,16 +930,16 @@ export function useBattleSystem() {
     return battleState
   }
 
-  function startEventBattle(event, result, onEnd) {
-    const enemyData = buildEnemy(result.battle, player.level, finalStats, data.value.beasts)
+  // 事件战斗入口：只接收 engine/battle-contract.js 的请求单，不理解事件语义。
+  // 奖励结算（deferResult）与战败/逃跑的剧情处理都由事件层完成。
+  function startEventBattle(request, onEnd) {
+    const enemyData = buildEnemy(request.enemyRef, player.level, finalStats, data.value.beasts)
     return start(enemyData, {
-      event,
-      result,
-      finalBoss: event && event.id === 'final_evil',
-      // 事件奖励统一由 useEventEngine 在胜利回调中结算，避免战败也完成事件，
-      // 同时保证物品、永久属性、武魂进化等完整字段不会被简化结算器丢失。
+      rewardResult: request.rewardResult,
+      finalBoss: Boolean(request.finalBoss),
       deferResult: true,
-      allowFlee: !(event && event.id === 'final_evil'),
+      allowFlee: request.allowFlee !== false,
+      huntingMeta: request.huntingMeta || { ringHunt: false, eventName: '' },
       onEnd
     })
   }

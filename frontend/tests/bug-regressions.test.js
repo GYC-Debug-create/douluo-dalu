@@ -8,7 +8,7 @@ vi.mock('@/composables/useBattleSystem', () => ({
     return {
       active: battleHarness.active,
       isActive: () => battleHarness.active.value,
-      startEventBattle(_event, _result, callback) {
+      startEventBattle(_request, callback) {
         battleHarness.callback = callback
         battleHarness.active.value = true
       }
