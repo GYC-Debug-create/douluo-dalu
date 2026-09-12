@@ -1,0 +1,795 @@
+{
+  "_activeTitle": "novice",
+  "_activeFormation": "none",
+  "_bossKilled": false,
+  "_exploredHidden": [],
+  "_prevStats": {
+    "attack": 132,
+    "defense": 42,
+    "hp": 503,
+    "speed": 17,
+    "gold": 853
+  },
+  "_fateExplained": true,
+  "_nightTraining": true,
+  "_totalDamage": 1320,
+  "_maxDamage": 118,
+  "_mentorMet": true,
+  "_totalDamageTaken": 1175,
+  "_mentorTested": true,
+  "_lastRandomEncounterAction": 25,
+  "_tutorialStarted": true,
+  "_mentorAccepted": true,
+  "playerId": "p_ms7sj4lkedoo7",
+  "name": "gyc",
+  "origin": "spirit_city",
+  "originName": "武魂城世家子弟",
+  "spirit": {
+    "id": "邪火凤凰",
+    "eventKey": "evil_phoenix",
+    "name": "邪火凤凰",
+    "tier": "top",
+    "type": "兽武魂",
+    "subtype": "强攻系",
+    "image": "assets/spirits/邪火凤凰.jpg",
+    "desc": "下三宗邪火凤凰一族传承武魂。拥有邪火之力，火焰温度远超寻常，可焚烧一切。邪火附带腐蚀效果，难以被普通防御抵挡。真身化凤后可浴火重生，是拥有再生能力的恐怖武魂。",
+    "icon": "🐦‍🔥"
+  },
+  "spiritBase": {
+    "attack": 30,
+    "defense": 14,
+    "hp": 150,
+    "speed": 10
+  },
+  "innatePower": 98,
+  "level": 11,
+  "exp": 137,
+  "overflowExp": 0,
+  "hp": 79,
+  "spiritPower": 243,
+  "spiritPowerMax": 243,
+  "spiritPowerGain": 0,
+  "gold": 853,
+  "fatePoints": 17,
+  "rings": [
+    {
+      "ringId": "purple_ring",
+      "name": "千年紫环",
+      "tier": "purple",
+      "yearLabel": "千年魂环",
+      "color": "#a855f7",
+      "skill": "啸月护",
+      "skillType": "防御",
+      "skillDesc": "魂力护体，大幅提升防御",
+      "skillAnim": "shield",
+      "source": "千年暗金恐爪熊",
+      "bonus": {
+        "attack": 25,
+        "defense": 15,
+        "hp": 200
+      },
+      "skillDef": {
+        "damage": 64,
+        "cost": 15,
+        "cooldown": 3
+      },
+      "skillId": "ring:purple_ring:1"
+    }
+  ],
+  "skills": [
+    {
+      "name": "啸月护",
+      "type": "防御",
+      "desc": "魂力护体，大幅提升防御",
+      "anim": "shield",
+      "damage": 64,
+      "cost": 15,
+      "cooldown": 3,
+      "ring": 1,
+      "source": "千年暗金恐爪熊",
+      "skillId": "ring:purple_ring:1",
+      "element": null
+    }
+  ],
+  "inventory": [
+    {
+      "name": "聚魂丹",
+      "type": "mp",
+      "value": 40,
+      "count": 1
+    }
+  ],
+  "weapon": null,
+  "bonus": {
+    "attack": 62,
+    "defense": 9,
+    "hp": 0,
+    "speed": 0
+  },
+  "originBonus": {
+    "attack": 3,
+    "defense": 1,
+    "hp": 10,
+    "speed": 1
+  },
+  "_personality": {
+    "traits": [
+      "力量",
+      "破坏",
+      "狂暴",
+      "威严"
+    ],
+    "subtype": "强攻系"
+  },
+  "_destiny": {
+    "id": "sect_master",
+    "name": "宗门之路",
+    "desc": "广结善缘，开宗立派，以宗门之力问鼎巅峰",
+    "tags": [
+      "social",
+      "sect",
+      "teach",
+      "trade"
+    ]
+  },
+  "_bones": [],
+  "_forgeBones": [],
+  "_craftedBones": [],
+  "_skillTree": {},
+  "_titles": [],
+  "_achievementList": [
+    "story_first",
+    "story_3",
+    "npc_10",
+    "night_owl",
+    "fate_5",
+    "story_all",
+    "story_saint",
+    "first_blood",
+    "gold_500",
+    "npc_20",
+    "fate_10",
+    "lv_10"
+  ],
+  "_bossKills": 0,
+  "_skillBonuses": {
+    "attackMult": 0,
+    "defenseMult": 0,
+    "hpMult": 0,
+    "speedMult": 0,
+    "mpMult": 0,
+    "critRate": 0,
+    "critDmg": 0,
+    "defPenetration": 0,
+    "antiCrit": 0,
+    "regen": 0,
+    "comboBonus": 0,
+    "extraAttack": 0,
+    "dodge": 0,
+    "skillDmgBonus": 0,
+    "mpCostReduction": 0,
+    "cdReduction": 0,
+    "mpRecovery": 0,
+    "alwaysStatus": false,
+    "lastStand": false,
+    "firstStrike": false
+  },
+  "_tempAtkBuff": 0,
+  "_tempDefBuff": 0,
+  "_tempSpdBuff": 0,
+  "finished": false,
+  "createdAt": 1785432700424,
+  "battleStats": {
+    "wins": 5,
+    "losses": 2,
+    "kills": 5
+  },
+  "_battleActive": false,
+  "_formationsUsed": [],
+  "_usedElements": [],
+  "_maxCombo": 4,
+  "_maxComboFinisher": 0,
+  "_reactionCount": 0,
+  "_reactionTriggered": false,
+  "_fusionUsed": false,
+  "choices": {
+    "early_family_spirit_city": "train",
+    "early_person_spirit_city": "truth",
+    "early_spirit_邪火凤凰": "promise",
+    "ac_lib_02": "B",
+    "ac_forest_02": "B",
+    "ac_extra_07": "B",
+    "dyn_night": "A",
+    "or_village_01": "A",
+    "ac_forest_04": "B",
+    "first_class": "A",
+    "forest_trip": "A",
+    "mentor_1": "A",
+    "ac_daily_01": "A",
+    "dy_sect_01": "A",
+    "ac_fun_02": "C",
+    "sp_df_01": "B",
+    "or_sea_01": "B",
+    "adv_extra_02": "B",
+    "adv_town_17": "B",
+    "adv_more_08": "B",
+    "hot_spring": "A",
+    "adv_sp_13": "B",
+    "adv_more_11": "A",
+    "adv_more_01": "B",
+    "caravan": "A",
+    "mentor_2": "A",
+    "sp_wp_05": "A",
+    "adv_enc_04": "B",
+    "adv_more_07": "A",
+    "rival_challenge": "A",
+    "ring_hunt_40": "A",
+    "mentor_3_good": "A"
+  },
+  "doneEvents": [
+    "early_family_spirit_city",
+    "early_person_spirit_city",
+    "early_spirit_邪火凤凰",
+    "dyn_night",
+    "first_class",
+    "mentor_1",
+    "mentor_2",
+    "ring_hunt_40",
+    "ring_hunt_10",
+    "mentor_3_good"
+  ],
+  "completedEvents": [
+    "early_family_spirit_city",
+    "early_person_spirit_city",
+    "early_spirit_邪火凤凰",
+    "dyn_night",
+    "first_class",
+    "mentor_1",
+    "mentor_2",
+    "ring_hunt_40",
+    "ring_hunt_10",
+    "mentor_3_good"
+  ],
+  "_recentEvents": [
+    "adv_town_17",
+    "adv_more_08",
+    "hot_spring",
+    "dyn_night",
+    "adv_sp_13",
+    "adv_more_11",
+    "adv_more_01",
+    "caravan",
+    "mentor_2",
+    "sp_wp_05",
+    "adv_enc_04",
+    "adv_more_07",
+    "rival_challenge",
+    "ring_hunt_40",
+    "mentor_3_good"
+  ],
+  "_eventCount": 34,
+  "_storyPath": [
+    "pragmatic",
+    "scholar",
+    "saint",
+    "merciful",
+    "scholar",
+    "prudent",
+    "merciful",
+    "ambitious",
+    "ambitious",
+    "merciful",
+    "scholar",
+    "merciful",
+    "ambitious",
+    "merciful",
+    "ambitious",
+    "prudent",
+    "ambitious",
+    "merciful",
+    "ambitious"
+  ],
+  "_storyDecisions": {
+    "early_family_spirit_city": "train",
+    "early_person_spirit_city": "truth",
+    "early_spirit_邪火凤凰": "promise",
+    "event:ac_lib_02": "B",
+    "event:ac_forest_02": "B",
+    "event:or_village_01": "A",
+    "event:ac_forest_04": "B",
+    "event:first_class": "A",
+    "event:forest_trip": "A",
+    "event:dy_sect_01": "A",
+    "event:sp_df_01": "B",
+    "event:or_sea_01": "B",
+    "event:adv_more_08": "B",
+    "event:adv_sp_13": "B",
+    "event:mentor_2": "A",
+    "event:adv_enc_04": "B",
+    "event:adv_more_07": "A",
+    "event:rival_challenge": "A",
+    "event:ring_hunt_40": "A"
+  },
+  "_dynCooldowns": {
+    "dyn_night": 0
+  },
+  "_pendingChain": null,
+  "_introPendingEvent": null,
+  "_mainStoryVersion": 0,
+  "_storyMilestoneDeferredUntil": 0,
+  "_prologueDone": true,
+  "_spiritAwakeningStoryDone": true,
+  "_earlyLifeDone": true,
+  "_registeredAtHall": true,
+  "_enrollmentComplete": true,
+  "_firstClassDone": true,
+  "_tutorialPostponed": false,
+  "_academyRecommendation": null,
+  "_ringHuntDeferredUntil": 0,
+  "pendingRingLv": null,
+  "_diary": [
+    {
+      "turn": 0,
+      "level": 1,
+      "phase": "学院篇",
+      "text": "【早年经历】家的灯火：一遍遍扎实的动作，让你的根基更稳。",
+      "type": "event",
+      "time": 1785432731998
+    },
+    {
+      "turn": 0,
+      "level": 1,
+      "phase": "学院篇",
+      "text": "【早年经历】重要的人：一册写满批注的旧笔记被郑重交到你手中。",
+      "type": "event",
+      "time": 1785432780044
+    },
+    {
+      "turn": 0,
+      "level": 1,
+      "phase": "学院篇",
+      "text": "【早年经历】第一次武魂感应：那缕魂光温和地亮了一瞬，像是在回应你的承诺。",
+      "type": "event",
+      "time": 1785432788400
+    },
+    {
+      "turn": 0,
+      "level": 1,
+      "phase": "学院篇",
+      "text": "首次获得命运值：它会影响部分事件和结局。",
+      "type": "event",
+      "time": 1785432797643
+    },
+    {
+      "turn": 0,
+      "level": 2,
+      "phase": "学院篇",
+      "text": "等级提升至 Lv.2！",
+      "type": "levelup",
+      "time": 1785432797649
+    },
+    {
+      "turn": 1,
+      "level": 2,
+      "phase": "学院篇",
+      "text": "经历事件「旧书里的地图」：大师看了地图说这是几十年前一位毕业学长的恶作剧。\"不过……\"他笑着说，\"他当年确实埋了东西，你去挖挖看吧。\"你挖到了一块刻着\"史莱克\"的铜牌，作为纪念。",
+      "type": "event",
+      "time": 1785432797655
+    },
+    {
+      "turn": 1,
+      "level": 3,
+      "phase": "学院篇",
+      "text": "等级提升至 Lv.3！",
+      "type": "levelup",
+      "time": 1785432805758
+    },
+    {
+      "turn": 2,
+      "level": 3,
+      "phase": "学院篇",
+      "text": "经历事件「野果的诱惑」：你摘了几颗带回学院。大师确认这是朱果后分给大家一起吃，还夸你谨慎。",
+      "type": "event",
+      "time": 1785432805761
+    },
+    {
+      "turn": 3,
+      "level": 3,
+      "phase": "学院篇",
+      "text": "经历事件「学院运动会」：你参加了举重项目，靠蛮力举到了第三名。虽然不是最好的，但大家都为你鼓掌。",
+      "type": "event",
+      "time": 1785432812943
+    },
+    {
+      "turn": 4,
+      "level": 3,
+      "phase": "学院篇",
+      "text": "经历事件「月夜修炼」：月光修炼效果显著！获得45点经验！",
+      "type": "event",
+      "time": 1785432814854
+    },
+    {
+      "turn": 4,
+      "level": 4,
+      "phase": "学院篇",
+      "text": "等级提升至 Lv.4！",
+      "type": "levelup",
+      "time": 1785432814861
+    },
+    {
+      "turn": 5,
+      "level": 4,
+      "phase": "学院篇",
+      "text": "经历事件「故乡的味道」：你帮村里人干各种活——修屋顶、劈柴、挑水。乡亲们都说你变强了，但没变的是那颗热心肠。离开时，大家给你塞了好多吃的。",
+      "type": "event",
+      "time": 1785432818835
+    },
+    {
+      "turn": 6,
+      "level": 4,
+      "phase": "学院篇",
+      "text": "经历事件「受伤的兔子」：你用草药给它包扎好伤口，把它放回了草丛。小兔子跑了几步又回头看你，然后蹦蹦跳跳地走了。",
+      "type": "event",
+      "time": 1785432823808
+    },
+    {
+      "turn": 6,
+      "level": 5,
+      "phase": "学院篇",
+      "text": "等级提升至 Lv.5！",
+      "type": "levelup",
+      "time": 1785432828405
+    },
+    {
+      "turn": 7,
+      "level": 5,
+      "phase": "学院篇",
+      "text": "经历事件「第一堂课」：大师欣慰地点头：\"好志气！记住，最强的矛，要有最稳的手。\"你在笔记本上认真写下这句话。",
+      "type": "event",
+      "time": 1785432828408
+    },
+    {
+      "turn": 8,
+      "level": 5,
+      "phase": "学院篇",
+      "text": "战胜了「十年花蛇」。",
+      "type": "battle",
+      "time": 1785432832975
+    },
+    {
+      "turn": 9,
+      "level": 5,
+      "phase": "学院篇",
+      "text": "经历事件「路边的老者」：老者和你聊了许多关于魂师修炼的心得，你受益匪浅。",
+      "type": "event",
+      "time": 1785432837608
+    },
+    {
+      "turn": 10,
+      "level": 5,
+      "phase": "学院篇",
+      "text": "经历事件「清晨的钟声」：你在去考场的路上抱着书猛看。居然真的被你看到了好几道考题！",
+      "type": "event",
+      "time": 1785432842213
+    },
+    {
+      "turn": 10,
+      "level": 6,
+      "phase": "学院篇",
+      "text": "等级提升至 Lv.6！",
+      "type": "levelup",
+      "time": 1785432844950
+    },
+    {
+      "turn": 11,
+      "level": 6,
+      "phase": "学院篇",
+      "text": "经历事件「收徒」：你答应了，从此多了一个跟屁虫。虽然教他花了不少时间，但在教的过程中，你自己对基础知识的理解也更加深刻了。而且，他学得很快，让你很有成就感。",
+      "type": "event",
+      "time": 1785432844951
+    },
+    {
+      "turn": 12,
+      "level": 6,
+      "phase": "学院篇",
+      "text": "经历事件「月夜修炼」：月光修炼效果显著！获得60点经验！",
+      "type": "event",
+      "time": 1785432850370
+    },
+    {
+      "turn": 13,
+      "level": 6,
+      "phase": "学院篇",
+      "text": "经历事件「偷吃贡品」：你在供桌上放了一个铜币，然后拿了一个苹果。虽然有点滑稽，但你觉得心安理得。",
+      "type": "event",
+      "time": 1785432855024
+    },
+    {
+      "turn": 14,
+      "level": 6,
+      "phase": "学院篇",
+      "text": "经历事件「坚不可摧」：你不仅练防御，还研究了如何在防御的同时进行反击。这种\"以守为攻\"的打法让你在实战中更加游刃有余。",
+      "type": "event",
+      "time": 1785432861751
+    },
+    {
+      "turn": 14,
+      "level": 7,
+      "phase": "实战篇",
+      "text": "等级提升至 Lv.7！",
+      "type": "levelup",
+      "time": 1785432865828
+    },
+    {
+      "turn": 15,
+      "level": 7,
+      "phase": "实战篇",
+      "text": "经历事件「海的味道」：你跟着村里的渔民出海，虽然风浪不小，但你一点都不晕船。渔民们说你是\"海的儿子\"，你把打到的鱼分给了村里的老人。",
+      "type": "event",
+      "time": 1785432865829
+    },
+    {
+      "turn": 16,
+      "level": 7,
+      "phase": "实战篇",
+      "text": "经历事件「暴风雨」：你选择冒雨继续赶路，被淋成了落汤鸡，还差点被山洪冲走。第二天你感冒了。",
+      "type": "event",
+      "time": 1785432870662
+    },
+    {
+      "turn": 17,
+      "level": 7,
+      "phase": "实战篇",
+      "text": "经历事件「算命先生」：你摆摆手走开了。老者在你身后叹气：\"信不信由你，天机已泄，好自为之。\"",
+      "type": "event",
+      "time": 1785432874510
+    },
+    {
+      "turn": 18,
+      "level": 7,
+      "phase": "实战篇",
+      "text": "经历事件「铁匠的切磋」：老铁匠花了一天一夜帮你强化武器，你的武器攻击力提升了一大截。",
+      "type": "event",
+      "time": 1785432877676
+    },
+    {
+      "turn": 19,
+      "level": 7,
+      "phase": "实战篇",
+      "text": "经历事件「山中的温泉」：温热的泉水洗去了一身疲惫，你感觉每个毛孔都在欢呼。泡完澡，连魂力运转都顺畅了许多。",
+      "type": "event",
+      "time": 1785432880936
+    },
+    {
+      "turn": 20,
+      "level": 7,
+      "phase": "实战篇",
+      "text": "经历事件「月夜修炼」：宁静的月夜让你心境提升，命运值+1！",
+      "type": "event",
+      "time": 1785432884654
+    },
+    {
+      "turn": 21,
+      "level": 7,
+      "phase": "实战篇",
+      "text": "经历事件「流星雨」：你闭上眼睛许了一个愿望。流星划过天际，你觉得心情格外舒畅，魂力似乎也流畅了几分。",
+      "type": "event",
+      "time": 1785432888107
+    },
+    {
+      "turn": 22,
+      "level": 7,
+      "phase": "实战篇",
+      "text": "与「天斗学院·小霸王」交战失败，休整后重新出发。",
+      "type": "battle",
+      "time": 1785432896368
+    },
+    {
+      "turn": 23,
+      "level": 7,
+      "phase": "实战篇",
+      "text": "战胜了「十年铁甲熊」。",
+      "type": "battle",
+      "time": 1785432902852
+    },
+    {
+      "turn": 23,
+      "level": 8,
+      "phase": "实战篇",
+      "text": "等级提升至 Lv.8！",
+      "type": "levelup",
+      "time": 1785432906646
+    },
+    {
+      "turn": 24,
+      "level": 8,
+      "phase": "实战篇",
+      "text": "经历事件「商队护卫」：途中果然遇到了山贼！你护着商队且战且退，最终安全抵达。老板爽快地付了双倍酬金！",
+      "type": "event",
+      "time": 1785432906648
+    },
+    {
+      "turn": 25,
+      "level": 8,
+      "phase": "实战篇",
+      "text": "经历事件「老者的考验」：你与老者过招，虽然差距明显，但他满意地点了点头。",
+      "type": "event",
+      "time": 1785432909457
+    },
+    {
+      "turn": 26,
+      "level": 8,
+      "phase": "实战篇",
+      "text": "战胜了「野生魂兽」。",
+      "type": "battle",
+      "time": 1785432914247
+    },
+    {
+      "turn": 26,
+      "level": 9,
+      "phase": "实战篇",
+      "text": "等级提升至 Lv.9！",
+      "type": "levelup",
+      "time": 1785432925029
+    },
+    {
+      "turn": 27,
+      "level": 9,
+      "phase": "实战篇",
+      "text": "经历事件「千锤百炼」：你站在铁砧前，老铁匠用魂力化作大锤，一次次敲打你的。每一次敲打都痛彻心扉，但每一次敲打后你的武魂都更加凝练。试炼结束后，你感觉变得沉重而有力。",
+      "type": "event",
+      "time": 1785432925031
+    },
+    {
+      "turn": 28,
+      "level": 9,
+      "phase": "实战篇",
+      "text": "经历事件「月夜修炼」：月光修炼效果显著！获得75点经验！",
+      "type": "event",
+      "time": 1785432927399
+    },
+    {
+      "turn": 29,
+      "level": 9,
+      "phase": "实战篇",
+      "text": "经历事件「猎户的警告」：你忍不住打开了门——一张巨大的蜘蛛脸就在门外！你连滚带爬地退回屋里关上门，人面魔蛛在外面撞了半天门才离开。你吓得腿都软了。",
+      "type": "event",
+      "time": 1785432932049
+    },
+    {
+      "turn": 30,
+      "level": 9,
+      "phase": "实战篇",
+      "text": "经历事件「天斗城拍卖会」：你拍下了一把寒光闪闪的魂师长剑，攻击力大增。",
+      "type": "event",
+      "time": 1785432940052
+    },
+    {
+      "turn": 31,
+      "level": 9,
+      "phase": "实战篇",
+      "text": "与「天斗学院·小霸王」交战失败，休整后重新出发。",
+      "type": "battle",
+      "time": 1785432947420
+    },
+    {
+      "turn": 31,
+      "level": 11,
+      "phase": "实战篇",
+      "text": "等级提升至 Lv.10！",
+      "type": "levelup",
+      "time": 1785432986776
+    },
+    {
+      "turn": 31,
+      "level": 11,
+      "phase": "实战篇",
+      "text": "等级提升至 Lv.11！",
+      "type": "levelup",
+      "time": 1785432986777
+    },
+    {
+      "turn": 32,
+      "level": 11,
+      "phase": "实战篇",
+      "text": "战胜了「十年大地之熊」。",
+      "type": "battle",
+      "time": 1785432986777
+    },
+    {
+      "turn": 33,
+      "level": 11,
+      "phase": "实战篇",
+      "text": "战胜了「千年暗金恐爪熊」。",
+      "type": "battle",
+      "time": 1785433130788
+    },
+    {
+      "turn": 33,
+      "level": 11,
+      "phase": "实战篇",
+      "text": "获得第1魂环「千年紫环」，习得魂技「啸月护」。",
+      "type": "discovery",
+      "time": 1785433130874
+    },
+    {
+      "turn": 33,
+      "level": 11,
+      "phase": "实战篇",
+      "text": "每日签到第1档，连续1天，获得金币+100。",
+      "type": "event",
+      "time": 1785433217578
+    },
+    {
+      "turn": 34,
+      "level": 11,
+      "phase": "冒险篇 · 魂师",
+      "text": "经历事件「师徒之缘」：老者露出欣慰的笑容，传授了你一门独特功法。命运值+3，攻击与防御各+5！",
+      "type": "event",
+      "time": 1785780587202
+    }
+  ],
+  "gameMode": "text-rpg",
+  "_currentLocation": "wuhun_city",
+  "_visitedLocations": [
+    "wuhun_city",
+    "shrek_academy",
+    "star_duo_outer",
+    "sea_god_island",
+    "tian_dou_city",
+    "sunset_forest"
+  ],
+  "_discoveredHidden": [],
+  "_metNpcs": [
+    "比比东",
+    "千仞雪",
+    "胡列娜",
+    "邪月",
+    "焱",
+    "天使神",
+    "罗刹神",
+    "玉小刚",
+    "唐三",
+    "小舞",
+    "戴沐白",
+    "朱竹清",
+    "宁荣荣",
+    "奥斯卡",
+    "马红俊",
+    "赵无极",
+    "弗兰德",
+    "柳二龙",
+    "戴雨浩",
+    "海神",
+    "白沉香",
+    "泰坦",
+    "楼高",
+    "雪崩",
+    "雪清河",
+    "独孤博"
+  ],
+  "_npcRelations": {
+    "神秘老者": 100
+  },
+  "_npcCooldowns": {},
+  "_dailySign": {
+    "cycleDay": 1,
+    "totalDays": 1,
+    "maxStreak": 1,
+    "lastDate": "2026-07-31"
+  },
+  "_towerFloor": 0,
+  "_gameTime": 34,
+  "_weather": 5,
+  "_totalGoldEarned": 1103,
+  "_progressionRulesVersion": 1,
+  "_saveVersion": 8,
+  "_saveIntegrityWarnings": [],
+  "_legacyRingOverflow": [],
+  "_orphanedSkills": [],
+  "_forgeBonesMigrated": true,
+  "lastSave": "2026-08-03T18:09:52.996Z",
+  "_saveTime": 1785780592988,
+  "_serverVersion": 1,
+  "owner": "gyc"
+}

@@ -7,7 +7,8 @@ const path = require('node:path');
 
 const combat = fs.readFileSync(path.resolve(__dirname, '..', 'public', 'game-combat.js'), 'utf8');
 const game = fs.readFileSync(path.resolve(__dirname, '..', 'public', 'game.js'), 'utf8');
-const userSave = JSON.parse(fs.readFileSync(path.resolve(__dirname, '..', 'data', 'player_p_ms7sj4lkedoo7.json'), 'utf8'));
+// gyc 11 级存档的固化快照(tests/fixtures),不再依赖本机 data/ 目录,保证任意环境可复现。
+const userSave = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'fixtures', 'gyc-level11-save.json'), 'utf8'));
 
 test('魂兽战斗胜利回调必须清理结束状态并继续魂环结算', () => {
   const callbackBlock = combat.slice(combat.indexOf("if(typeof onVictory === 'function')"), combat.indexOf("const resultText", combat.indexOf("if(typeof onVictory === 'function')")));
