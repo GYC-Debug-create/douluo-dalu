@@ -25,6 +25,7 @@ import { resolveEventAsset } from '@/utils/asset-resolver'
 import { buildTravelArrivalSummary } from '@/utils/travel-arrival'
 import { EVENTS, DYNAMIC_EVENTS, CHAINED_EVENTS, ENDINGS } from '@/data/game-data'
 import { advanceExperience, calculateRingBacklash, classifyEventLocation, normalizeLegacyHealthResult, phaseForLevel, rankTitleForLevel, RING_LEVELS, GLOBAL_LOCATION_PREFIX } from '@/engine/rules'
+import { getSpiritBonus as getTraitSpiritBonus } from '@/engine/traits'
 import {
   adaptEvent,
   buildDrawQueue,
@@ -67,20 +68,7 @@ const ORIGIN_TAGS = {
   sea_island: ['sea', 'water', 'nature', 'speed']
 }
 
-// 武魂特质映射
-const SPIRIT_TRAITS = {
-  '生活器物': ['实用', '生存', '灵巧'],
-  '武器': ['战斗', '锋利', '刚猛'],
-  '强攻系': ['力量', '破坏', '狂暴'],
-  '防御系': ['坚韧', '守护', '沉稳'],
-  '敏攻系': ['敏捷', '隐匿', '灵动'],
-  '控制系': ['精神', '束缚', '智慧'],
-  '辅助系': ['治愈', '祝福', '奉献'],
-  '植物系': ['生长', '自然', '生命'],
-  '神器': ['神圣', '审判', '威严'],
-  '神兽': ['远古', '威严', '不朽'],
-  '特殊': ['神秘', '命运', '独特']
-}
+// 武魂特质表与加成计算已收敛至 engine/traits.js（单一来源），此处仅按玩家特质取值。
 
 // 地图旅行遭遇。抽取结果在 MapPage 离开前就写入 sessionStorage，
 // 这里仅决定遭遇内容，避免玩家通过刷新反复重掷“是否遇险”。
@@ -340,62 +328,9 @@ export function useEventEngine() {
     }
   }
 
-  function getSpiritPersonality(sp) {
-    const traits = SPIRIT_TRAITS[sp.subtype] || SPIRIT_TRAITS[sp.type === '器武魂' ? '武器' : '强攻系'] || ['独特']
-    const extra = []
-    if (sp.tier === 'god') extra.push('神圣')
-    if (sp.tier === 'top') extra.push('威严')
-    return { traits: [...traits, ...extra], subtype: sp.subtype || sp.type }
-  }
-
-  function getTraitMultiplier(trait, field) {
-    const TRAIT_BONUS = {
-      '战斗': { exp: 1.3, attack: 1.5 },
-      '力量': { attack: 1.5, exp: 1.2 },
-      '破坏': { attack: 2, exp: 1.2 },
-      '狂暴': { attack: 1.5 },
-      '坚韧': { defense: 1.5, maxHp: 1.3 },
-      '守护': { defense: 1.5, fate: 1 },
-      '沉稳': { defense: 1.5, exp: 1.1 },
-      '敏捷': { speed: 1.5, exp: 1.2 },
-      '隐匿': { speed: 1.5, gold: 1.2 },
-      '灵动': { speed: 1.5, fate: 1 },
-      '精神': { spiritPowerGain: 1.5, exp: 1.2 },
-      '智慧': { exp: 1.5, spiritPowerGain: 1.2 },
-      '束缚': { defense: 1.2, attack: 1.2 },
-      '治愈': { heal: 1.5, maxHp: 1.1, fate: 1 },
-      '祝福': { fate: 1.5, heal: 1.2 },
-      '奉献': { fate: 1.5, gold: 1.3 },
-      '生长': { maxHp: 1.3, defense: 1.2 },
-      '自然': { heal: 1.3, spiritPowerGain: 1.2 },
-      '生命': { maxHp: 1.2, heal: 1.5, fate: 1 },
-      '神圣': { fate: 1.5, attack: 1.3 },
-      '审判': { attack: 1.5, fate: 1 },
-      '威严': { exp: 1.3, attack: 1.2 },
-      '远古': { exp: 1.3, defense: 1.2 },
-      '不朽': { maxHp: 1.5, defense: 1.3 },
-      '实用': { gold: 1.5, exp: 1.1 },
-      '生存': { maxHp: 1.3, defense: 1.2 },
-      '灵巧': { speed: 1.3, gold: 1.2 },
-      '锋利': { attack: 1.5, speed: 1.1 },
-      '刚猛': { attack: 1.3, defense: 1.1 },
-      '神秘': { fate: 1.5, exp: 1.3 },
-      '命运': { fate: 2, exp: 1.2 },
-      '独特': { exp: 1.3, fate: 1 }
-    }
-    const bonus = TRAIT_BONUS[trait]
-    if (!bonus) return 1
-    return bonus[field] || 1
-  }
-
+  // 武魂特质加成：traits.js 为纯函数，这里绑定玩家当前特质数组（含 personality 缺失时恒为 1 的旧语义）。
   function getSpiritBonus(field) {
-    if (!player._personality) return 1
-    let mult = 1
-    for (const t of player._personality.traits || []) {
-      const value = getTraitMultiplier(t, field)
-      mult *= Number.isFinite(value) && value > 0 ? value : 1
-    }
-    return Math.min(mult, 2.5)
+    return getTraitSpiritBonus(player._personality?.traits || [], field)
   }
 
   function checkCond(cond) {

@@ -9,6 +9,7 @@ import { useCombatStore } from './combat'
 import { useEventStore } from './event'
 import { useGameStore } from './game'
 import { migrateSave, isValidSave, recoverFromStorage } from '@/engine/save'
+import { getSpiritPersonality } from '@/engine/traits'
 import { useGameRules } from '@/composables/useGameRules'
 
 // 继续使用旧版正式键，保证 Vue、旧地图/图鉴和既有玩家存档读取同一份数据。
@@ -117,19 +118,7 @@ function rotateHistory(storage, key, previousBackup) {
   }
 }
 
-const SPIRIT_TRAITS = {
-  '生活器物': ['实用', '生存', '灵巧'],
-  '武器': ['战斗', '锋利', '刚猛'],
-  '强攻系': ['力量', '破坏', '狂暴'],
-  '防御系': ['坚韧', '守护', '沉稳'],
-  '敏攻系': ['敏捷', '隐匿', '灵动'],
-  '控制系': ['精神', '束缚', '智慧'],
-  '辅助系': ['治愈', '祝福', '奉献'],
-  '植物系': ['生长', '自然', '生命'],
-  '神器': ['神圣', '审判', '威严'],
-  '神兽': ['远古', '威严', '不朽'],
-  '特殊': ['神秘', '命运', '独特']
-}
+// SPIRIT_TRAITS 与 getSpiritPersonality 已收敛至 engine/traits.js（单一来源）。
 
 const DESTINY_PATHS = [
   { id: 'lone_wolf', name: '独行之路', desc: '独自修炼，不依赖宗门，靠自己的双手开辟未来', tags: ['wild', 'hunt', 'survive'] },
@@ -138,14 +127,6 @@ const DESTINY_PATHS = [
   { id: 'hero', name: '英雄之路', desc: '行侠仗义，斩妖除魔，守护天下苍生', tags: ['justice', 'fight', 'evil', 'protect'] },
   { id: 'fate_weaver', name: '命运之路', desc: '命运的安排总是出人意料，你永远不知道明天会发生什么', tags: ['fate', 'random', 'lucky', 'unlucky'] }
 ]
-
-function getSpiritPersonality(spirit) {
-  const traits = SPIRIT_TRAITS[spirit.subtype] || SPIRIT_TRAITS[spirit.type === '器武魂' ? '武器' : '强攻系'] || ['独特']
-  const extra = []
-  if (spirit.tier === 'god') extra.push('神圣')
-  if (spirit.tier === 'top') extra.push('威严')
-  return { traits: [...traits, ...extra], subtype: spirit.subtype || spirit.type }
-}
 
 /**
  * 将所有 store 的 state 序列化为存档对象（G 格式）
