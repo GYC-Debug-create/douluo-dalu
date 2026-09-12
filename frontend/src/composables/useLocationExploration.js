@@ -24,7 +24,7 @@ export { isLocationExplorationEvent }
  * @param {object} deps {
  *   player, eventStore, gameStore, ui, data, EVENTS,
  *   battleGuard: () => boolean,
- *   showEvent, applyResultRewards, saveGame, nextEvent,
+ *   showEvent, applyResultRewards, saveGame, commands,
  *   scene: { currentEvent, sceneState, resultText, resultRewards, currentLocationName },
  *   currentMapLocation, locationName, locationCodex
  * }
@@ -32,7 +32,7 @@ export { isLocationExplorationEvent }
 export function createLocationExplorationSystem(deps) {
   const {
     player, eventStore, gameStore, ui, data, EVENTS,
-    battleGuard, showEvent, applyResultRewards, saveGame, nextEvent,
+    battleGuard, showEvent, applyResultRewards, saveGame, commands,
     scene, currentMapLocation, locationName, locationCodex
   } = deps
   const { currentEvent, sceneState, resultText, resultRewards, currentLocationName: locNameRef } = scene
@@ -114,7 +114,7 @@ export function createLocationExplorationSystem(deps) {
   function showLocationAction(message = '', { arrivalSummary = false } = {}) {
     const location = currentMapLocation()
     if (!location) {
-      nextEvent()
+      commands.nextEvent()
       return
     }
     locNameRef.value = location.name

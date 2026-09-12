@@ -25,14 +25,14 @@ import { pick as pickRandom } from '@/engine/event-draw'
  *   player, eventStore, gameStore, ui, data, EVENTS, finalStats, getMaxSpiritPower, expNeeded,
  *   battleGuard: () => boolean,
  *   scene: { showEvent, showContinue, showTravelGuide, saveGame, currentEvent },
- *   hooks: { recordEventDiscoveries(ev) }   // 迟绑定：事件引擎的发现记录
+ *   commands                 // 命令注册表(engine/engine-commands.js),事件层动作经此请求
  * }
  */
 export function useGrowthSettlement(deps) {
   const {
     player, eventStore, gameStore, ui, data, EVENTS,
     finalStats, getMaxSpiritPower, expNeeded,
-    battleGuard, scene, hooks
+    battleGuard, scene, commands
   } = deps
 
   // ==================== 结算上下文（注入 settlement 纯层） ====================
@@ -167,7 +167,7 @@ export function useGrowthSettlement(deps) {
     player.rings.push(ring)
     player.skills.push(skill)
     eventStore.markEventDone(ev.id)
-    hooks.recordEventDiscoveries(ev)
+    commands.recordEventDiscoveries(ev)
     eventStore._lastRingHuntLevel = ringMeta.ringLevel
     eventStore._lastRingOrdinal = ringMeta.ringOrdinal
     eventStore._lastRingTargetId = ringMeta.ringTargetId

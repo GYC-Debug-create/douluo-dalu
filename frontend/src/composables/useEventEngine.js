@@ -8,7 +8,7 @@
  *  - 编排层    useEventScene（场景呈现）/ useEventCandidates（候选与上下文）/
  *              useGrowthSettlement（成长结算）/ useEventFlow（事件流）/
  *              useLocationExploration（地点探索）
- * 装配顺序与迟绑定钩子（late）解决 flow ↔ exploration 的相互调用。
+ * 命令注册表（engine/engine-commands.js）解耦 flow ↔ exploration/growth 的循环调用。
  */
 import { computed } from 'vue'
 import { usePlayerStore } from '@/stores/player'
@@ -25,6 +25,7 @@ import { useGrowthSettlement } from '@/composables/useGrowthSettlement'
 import { useEventFlow } from '@/composables/useEventFlow'
 import { createLocationExplorationSystem } from '@/composables/useLocationExploration'
 import { EVENTS, DYNAMIC_EVENTS, CHAINED_EVENTS, ENDINGS } from '@/data/game-data'
+import { createEngineCommands } from '@/engine/engine-commands'
 import { saveToLocal } from '@/stores/serializer'
 
 // 测试从本模块导入 cooldownSafeEventPool；实现已下沉到 engine/event-draw.js。
@@ -71,8 +72,8 @@ export function useEventEngine() {
 
   // ==================== 子系统装配 ====================
 
-  // 迟绑定钩子：exploration/growth 需要在 flow 之后才能拿到的函数。
-  const late = {}
+  // 命令注册表：exploration/growth 请求 flow 的动作,flow 装配完成后统一注册实现。
+  const commands = createEngineCommands()
 
   const candidates = useEventCandidates({
     player, eventStore, gameStore, combatStore, data,
@@ -99,9 +100,7 @@ export function useEventEngine() {
       saveGame,
       currentEvent: scene.currentEvent
     },
-    hooks: {
-      recordEventDiscoveries: ev => late.recordEventDiscoveries?.(ev)
-    }
+    commands
   })
 
   const exploration = createLocationExplorationSystem({
@@ -111,7 +110,7 @@ export function useEventEngine() {
     applyResultRewards: growth.applyResultRewards,
     saveGame,
     addDiaryEntry: growth.addDiaryEntry,
-    nextEvent: (...args) => late.nextEvent?.(...args),
+    commands,
     scene: {
       currentEvent: scene.currentEvent,
       sceneState: scene.sceneState,
@@ -130,8 +129,8 @@ export function useEventEngine() {
     scene, candidates, growth, exploration,
     currentMapLocation, locationName, locationCodex, saveGame
   })
-  late.nextEvent = flow.nextEvent
-  late.recordEventDiscoveries = flow.recordEventDiscoveries
+  commands.register('nextEvent', flow.nextEvent)
+  commands.register('recordEventDiscoveries', flow.recordEventDiscoveries)
 
   return {
     sceneState: scene.sceneState,
