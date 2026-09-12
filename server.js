@@ -12,7 +12,8 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const FRONTEND_DIST_DIR = path.resolve(__dirname, 'frontend', 'dist');
 const PUBLIC_DIR = path.resolve(__dirname, 'public');
-const DATA_DIR = path.resolve(__dirname, 'data');
+// DATA_DIR 支持环境变量覆盖（部署/基准测试用），默认仍是仓库 data 目录。
+const DATA_DIR = path.resolve(process.env.DATA_DIR || path.join(__dirname, 'data'));
 const ARCHIVE_DIR = path.resolve(DATA_DIR, 'archive');
 
 // ============ 配置常量 ============
@@ -120,11 +121,12 @@ app.use(express.static(FRONTEND_DIST_DIR, staticOptions));
 
 function sendVueIndex(req, res, next) {
   const indexFile = path.join(FRONTEND_DIST_DIR, 'index.html');
-  if (!fs.existsSync(indexFile)) {
-    return res.status(503).type('text').send('Vue 前端尚未构建，请先运行 npm run build。');
-  }
   res.setHeader('Cache-Control', 'no-cache');
   return res.sendFile(indexFile, error => {
+    if (error && !res.headersSent) {
+      // 未构建时给出可操作的 503 提示（请求路径内不做同步 exists 探测）。
+      return res.status(503).type('text').send('Vue 前端尚未构建，请先运行 npm run build。');
+    }
     if (error) next(error);
   });
 }
@@ -180,10 +182,11 @@ try {
   if (!accounts || typeof accounts !== 'object' || Array.isArray(accounts)) accounts = {};
 } catch { /* 尚无账号文件 */ }
 
-function saveAccounts() {
+// 原子写账号文件（请求路径全异步：tmp + rename）
+async function saveAccounts() {
   const tmp = ACCOUNTS_FILE + '.tmp';
-  fs.writeFileSync(tmp, JSON.stringify(accounts, null, 2), 'utf8');
-  fs.renameSync(tmp, ACCOUNTS_FILE);
+  await fsp.writeFile(tmp, JSON.stringify(accounts, null, 2), 'utf8');
+  await fsp.rename(tmp, ACCOUNTS_FILE);
 }
 
 function isValidUsername(username) {
@@ -192,19 +195,25 @@ function isValidUsername(username) {
 function isValidPassword(password) {
   return typeof password === 'string' && password.length >= 4 && password.length <= 128;
 }
-function hashPassword(password, salt) {
-  return crypto.scryptSync(String(password), salt, 64).toString('hex');
+// scrypt 是 CPU 密集操作：异步执行避免阻塞事件循环（参数与原 scryptSync 完全一致）。
+const scryptAsync = (password, salt, keylen) => new Promise((resolve, reject) => {
+  crypto.scrypt(String(password), salt, keylen, (error, derived) => {
+    if (error) reject(error); else resolve(derived);
+  });
+});
+async function hashPassword(password, salt) {
+  return (await scryptAsync(password, salt, 64)).toString('hex');
 }
-function registerAccount(username, password) {
+async function registerAccount(username, password) {
   const salt = crypto.randomBytes(16).toString('hex');
-  accounts[username] = { salt, hash: hashPassword(password, salt), createdAt: new Date().toISOString() };
-  saveAccounts();
+  accounts[username] = { salt, hash: await hashPassword(password, salt), createdAt: new Date().toISOString() };
+  await saveAccounts();
 }
-function verifyAccount(username, password) {
+async function verifyAccount(username, password) {
   const entry = accounts[username];
   if (!entry || !entry.salt || !entry.hash) return false;
   const expected = Buffer.from(entry.hash, 'hex');
-  const actual = Buffer.from(hashPassword(password, entry.salt), 'hex');
+  const actual = Buffer.from(await hashPassword(password, entry.salt), 'hex');
   return expected.length === actual.length && crypto.timingSafeEqual(expected, actual);
 }
 
@@ -249,28 +258,33 @@ function requireAuth(req, res, next) {
 }
 
 // ============ 存档历史版本管理 ============
-function archiveCurrentSave(playerId) {
+async function archiveCurrentSave(playerId) {
   const file = getPlayerFile(playerId);
-  if (!file || !fs.existsSync(file)) return null;
+  if (!file) return null;
+  let current;
+  try {
+    current = JSON.parse(await fsp.readFile(file, 'utf8'));
+  } catch {
+    return null; // 与原实现一致：存档不存在或损坏时跳过归档
+  }
 
   const archiveDir = getArchiveDir(playerId);
   if (!archiveDir) return null;
-  if (!fs.existsSync(archiveDir)) fs.mkdirSync(archiveDir, { recursive: true });
+  await fsp.mkdir(archiveDir, { recursive: true });
 
   try {
-    const current = JSON.parse(fs.readFileSync(file, 'utf8'));
     const version = current._serverVersion || 0;
     const archiveFile = path.resolve(archiveDir, `v${version}.json`);
-    fs.writeFileSync(archiveFile, JSON.stringify(current, null, 2), 'utf8');
+    await fsp.writeFile(archiveFile, JSON.stringify(current, null, 2), 'utf8');
 
     // 清理超出上限的旧版本
-    const archives = fs.readdirSync(archiveDir)
+    const archives = (await fsp.readdir(archiveDir))
       .filter(f => /^v\d+\.json$/.test(f))
       .map(f => ({ name: f, version: parseInt(f.match(/\d+/)[0], 10) }))
       .sort((a, b) => b.version - a.version);
 
     for (let i = MAX_HISTORY; i < archives.length; i++) {
-      fs.unlinkSync(path.resolve(archiveDir, archives[i].name));
+      await fsp.unlink(path.resolve(archiveDir, archives[i].name)).catch(() => {});
     }
 
     return version;
@@ -301,7 +315,7 @@ app.get('/api/health', rateLimit(RATE_LIMIT_GENERAL, 'health'), async (req, res)
 });
 
 // ============ 注册 / 登录 ============
-app.post('/api/auth/register', rateLimit(RATE_LIMIT_AUTH, 'register'), (req, res) => {
+app.post('/api/auth/register', rateLimit(RATE_LIMIT_AUTH, 'register'), async (req, res) => {
   try {
     const { username, password } = req.body || {};
     if (!isValidUsername(username)) {
@@ -313,7 +327,7 @@ app.post('/api/auth/register', rateLimit(RATE_LIMIT_AUTH, 'register'), (req, res
     if (accounts[username]) {
       return res.status(409).json({ error: '该账号已存在，请直接登录' });
     }
-    registerAccount(username, password);
+    await registerAccount(username, password);
     return res.json({ success: true, username, token: generateToken(username), expiresIn: TOKEN_TTL });
   } catch (error) {
     console.error('注册失败:', error);
@@ -321,13 +335,13 @@ app.post('/api/auth/register', rateLimit(RATE_LIMIT_AUTH, 'register'), (req, res
   }
 });
 
-app.post('/api/auth/login', rateLimit(RATE_LIMIT_AUTH, 'login'), (req, res) => {
+app.post('/api/auth/login', rateLimit(RATE_LIMIT_AUTH, 'login'), async (req, res) => {
   try {
     const { username, password } = req.body || {};
     if (!isValidUsername(username) || !isValidPassword(password)) {
       return res.status(400).json({ error: '账号或密码格式不正确' });
     }
-    if (!verifyAccount(username, password)) {
+    if (!(await verifyAccount(username, password))) {
       return res.status(401).json({ error: '账号或密码错误' });
     }
     return res.json({ success: true, username, token: generateToken(username), expiresIn: TOKEN_TTL });
@@ -338,7 +352,7 @@ app.post('/api/auth/login', rateLimit(RATE_LIMIT_AUTH, 'login'), (req, res) => {
 });
 
 // ============ 修改密码（需登录，验证原密码） ============
-app.post('/api/auth/password', rateLimit(RATE_LIMIT_AUTH, 'password'), requireAuth, (req, res) => {
+app.post('/api/auth/password', rateLimit(RATE_LIMIT_AUTH, 'password'), requireAuth, async (req, res) => {
   try {
     const { oldPassword, newPassword } = req.body || {};
     if (!isValidPassword(oldPassword) || !isValidPassword(newPassword)) {
@@ -347,13 +361,13 @@ app.post('/api/auth/password', rateLimit(RATE_LIMIT_AUTH, 'password'), requireAu
     if (oldPassword === newPassword) {
       return res.status(400).json({ error: '新密码不能与原密码相同' });
     }
-    if (!verifyAccount(req.authUser, oldPassword)) {
+    if (!(await verifyAccount(req.authUser, oldPassword))) {
       return res.status(401).json({ error: '原密码不正确' });
     }
     const salt = crypto.randomBytes(16).toString('hex');
     accounts[req.authUser].salt = salt;
-    accounts[req.authUser].hash = hashPassword(newPassword, salt);
-    saveAccounts();
+    accounts[req.authUser].hash = await hashPassword(newPassword, salt);
+    await saveAccounts();
     return res.json({ success: true, message: '密码修改成功' });
   } catch (error) {
     console.error('修改密码失败:', error);
@@ -361,8 +375,25 @@ app.post('/api/auth/password', rateLimit(RATE_LIMIT_AUTH, 'password'), requireAu
   }
 });
 
+// ============ 同账号存档串行化 ============
+// 请求路径异步化后，"读版本→校验乐观锁→写档"之间存在 await 间隙；
+// 这里按 playerId 串行化写类操作，保持与原同步实现等价的逐请求原子语义，
+// 防止两个并发保存都读到同一版本号而互相覆盖。
+const playerLocks = new Map();
+
+function withPlayerLock(playerId, fn) {
+  const previous = playerLocks.get(playerId) || Promise.resolve();
+  const run = previous.then(fn, fn);
+  const tail = run.catch(() => {});
+  playerLocks.set(playerId, tail);
+  run.finally(() => {
+    if (playerLocks.get(playerId) === tail) playerLocks.delete(playerId);
+  });
+  return run;
+}
+
 // ============ 存档 API（账号归属 + 乐观锁 + 历史版本） ============
-app.post('/api/player/save', rateLimit(RATE_LIMIT_SAVE, 'save'), requireAuth, (req, res) => {
+app.post('/api/player/save', rateLimit(RATE_LIMIT_SAVE, 'save'), requireAuth, async (req, res) => {
   try {
     const { playerId, data, expectVersion } = req.body || {};
 
@@ -371,59 +402,69 @@ app.post('/api/player/save', rateLimit(RATE_LIMIT_SAVE, 'save'), requireAuth, (r
       return res.status(400).json({ error: '存档 ID 或数据无效' });
     }
 
-    // 乐观锁 + 账号归属：已存在的存档必须属于当前账号，且版本号必须匹配
-    let currentVersion = 0;
-    if (fs.existsSync(file)) {
-      const existing = JSON.parse(fs.readFileSync(file, 'utf8'));
-      if (!existing.owner) {
-        return res.status(403).json({ error: '该存档尚未归属任何账号，暂不能写入' });
+    const outcome = await withPlayerLock(playerId, async () => {
+      // 乐观锁 + 账号归属：已存在的存档必须属于当前账号，且版本号必须匹配
+      let currentVersion = 0;
+      let existing = null;
+      try {
+        existing = JSON.parse(await fsp.readFile(file, 'utf8'));
+      } catch {
+        existing = null; // 不存在或损坏都按"新档"处理（与原 existsSync 语义一致）
       }
-      if (existing.owner !== req.authUser) {
-        return res.status(403).json({ error: '该存档不属于当前账号' });
+      if (existing) {
+        if (!existing.owner) {
+          return { status: 403, body: { error: '该存档尚未归属任何账号，暂不能写入' } };
+        }
+        if (existing.owner !== req.authUser) {
+          return { status: 403, body: { error: '该存档不属于当前账号' } };
+        }
+        currentVersion = existing._serverVersion || 0;
+
+        if (expectVersion !== currentVersion) {
+          return {
+            status: 409,
+            body: { error: '存档版本冲突，请刷新后重试', currentVersion, conflict: true }
+          };
+        }
+
+        // 归档当前版本
+        await archiveCurrentSave(playerId);
       }
-      currentVersion = existing._serverVersion || 0;
 
-      if (expectVersion !== currentVersion) {
-        return res.status(409).json({
-          error: '存档版本冲突，请刷新后重试',
-          currentVersion,
-          conflict: true
-        });
-      }
+      const newVersion = currentVersion + 1;
+      const saveData = {
+        ...data,
+        playerId,
+        owner: req.authUser,
+        _serverVersion: newVersion,
+        lastSave: new Date().toISOString()
+      };
 
-      // 归档当前版本
-      archiveCurrentSave(playerId);
-    }
-
-    const newVersion = currentVersion + 1;
-    const saveData = {
-      ...data,
-      playerId,
-      owner: req.authUser,
-      _serverVersion: newVersion,
-      lastSave: new Date().toISOString()
-    };
-
-    fs.writeFileSync(file, JSON.stringify(saveData, null, 2), 'utf8');
-    invalidatePlayerListCache();
-    return res.json({
-      success: true,
-      message: '存档成功',
-      lastSave: saveData.lastSave,
-      version: newVersion
+      await fsp.writeFile(file, JSON.stringify(saveData, null, 2), 'utf8');
+      invalidatePlayerListCache();
+      return {
+        status: 200,
+        body: { success: true, message: '存档成功', lastSave: saveData.lastSave, version: newVersion }
+      };
     });
+
+    return res.status(outcome.status).json(outcome.body);
   } catch (error) {
     console.error('保存失败:', error);
     return res.status(500).json({ error: '服务器暂时无法保存存档' });
   }
 });
 
-app.get('/api/player/load/:playerId', rateLimit(RATE_LIMIT_GENERAL, 'load'), requireAuth, (req, res) => {
+app.get('/api/player/load/:playerId', rateLimit(RATE_LIMIT_GENERAL, 'load'), requireAuth, async (req, res) => {
   try {
     const file = getPlayerFile(req.params.playerId);
     if (!file) return res.status(400).json({ error: '存档 ID 无效' });
-    if (!fs.existsSync(file)) return res.json({ success: false, message: '无存档', data: null });
-    const data = JSON.parse(fs.readFileSync(file, 'utf8'));
+    let data = null;
+    try {
+      data = JSON.parse(await fsp.readFile(file, 'utf8'));
+    } catch {
+      return res.json({ success: false, message: '无存档', data: null });
+    }
     if (data.owner !== req.authUser) {
       return res.status(403).json({ error: '该存档不属于当前账号' });
     }
@@ -444,18 +485,20 @@ app.get('/api/player/history/:playerId', rateLimit(RATE_LIMIT_GENERAL, 'history'
     const playerId = req.params.playerId;
     const file = getPlayerFile(playerId);
     if (!file) return res.status(400).json({ error: '存档 ID 无效' });
-    if (fs.existsSync(file)) {
-      const data = JSON.parse(fs.readFileSync(file, 'utf8'));
+    try {
+      const data = JSON.parse(await fsp.readFile(file, 'utf8'));
       if (data.owner !== req.authUser) {
         return res.status(403).json({ error: '该存档不属于当前账号' });
       }
-    }
+    } catch { /* 主档不存在时不影响历史版本查询 */ }
     const archiveDir = getArchiveDir(playerId);
-    if (!archiveDir || !fs.existsSync(archiveDir)) {
+    let entries = [];
+    try {
+      entries = (await fsp.readdir(archiveDir)).filter(f => /^v\d+\.json$/.test(f));
+    } catch {
       return res.json({ success: true, versions: [] });
     }
 
-    const entries = (await fsp.readdir(archiveDir)).filter(f => /^v\d+\.json$/.test(f));
     const files = [];
     for (const f of entries) {
       const version = parseInt(f.match(/\d+/)[0], 10);
@@ -478,54 +521,69 @@ app.get('/api/player/history/:playerId', rateLimit(RATE_LIMIT_GENERAL, 'history'
   }
 });
 
-app.post('/api/player/restore/:playerId', rateLimit(RATE_LIMIT_SAVE, 'restore'), requireAuth, (req, res) => {
+app.post('/api/player/restore/:playerId', rateLimit(RATE_LIMIT_SAVE, 'restore'), requireAuth, async (req, res) => {
   try {
     const { playerId } = req.params;
     const file = getPlayerFile(playerId);
     if (!file) return res.status(400).json({ error: '存档 ID 无效' });
-    if (!fs.existsSync(file)) return res.status(404).json({ error: '无存档' });
-
-    const existing = JSON.parse(fs.readFileSync(file, 'utf8'));
-    if (existing.owner !== req.authUser) {
-      return res.status(403).json({ error: '该存档不属于当前账号' });
-    }
 
     const { version } = req.body || {};
     if (!Number.isInteger(version) || version < 0) {
       return res.status(400).json({ error: '版本号无效' });
     }
 
-    const archiveDir = getArchiveDir(playerId);
-    const archiveFile = path.resolve(archiveDir, `v${version}.json`);
-    const prefix = archiveDir.endsWith(path.sep) ? archiveDir : archiveDir + path.sep;
-    if (!archiveFile.startsWith(prefix) || !fs.existsSync(archiveFile)) {
-      return res.status(404).json({ error: '历史版本不存在' });
-    }
+    const outcome = await withPlayerLock(playerId, async () => {
+      let existing = null;
+      try {
+        existing = JSON.parse(await fsp.readFile(file, 'utf8'));
+      } catch {
+        return { status: 404, body: { error: '无存档' } };
+      }
+      if (existing.owner !== req.authUser) {
+        return { status: 403, body: { error: '该存档不属于当前账号' } };
+      }
 
-    // 归档当前版本（如果存在）
-    archiveCurrentSave(playerId);
+      const archiveDir = getArchiveDir(playerId);
+      const archiveFile = path.resolve(archiveDir, `v${version}.json`);
+      const prefix = archiveDir.endsWith(path.sep) ? archiveDir : archiveDir + path.sep;
+      if (!archiveFile.startsWith(prefix)) {
+        return { status: 404, body: { error: '历史版本不存在' } };
+      }
+      let data = null;
+      try {
+        data = JSON.parse(await fsp.readFile(archiveFile, 'utf8'));
+      } catch {
+        return { status: 404, body: { error: '历史版本不存在' } };
+      }
 
-    // 恢复指定版本
-    const data = JSON.parse(fs.readFileSync(archiveFile, 'utf8'));
-    const currentVersion = data._serverVersion || 0;
-    data._serverVersion = currentVersion + 1;
-    data.lastSave = new Date().toISOString();
-    fs.writeFileSync(file, JSON.stringify(data, null, 2), 'utf8');
+      // 归档当前版本（如果存在）
+      await archiveCurrentSave(playerId);
 
-    invalidatePlayerListCache();
-    return res.json({
-      success: true,
-      message: '版本恢复成功',
-      version: data._serverVersion
+      // 恢复指定版本
+      const currentVersion = data._serverVersion || 0;
+      data._serverVersion = currentVersion + 1;
+      data.lastSave = new Date().toISOString();
+      await fsp.writeFile(file, JSON.stringify(data, null, 2), 'utf8');
+
+      invalidatePlayerListCache();
+      return {
+        status: 200,
+        body: { success: true, message: '版本恢复成功', version: data._serverVersion }
+      };
     });
+
+    return res.status(outcome.status).json(outcome.body);
   } catch (error) {
     console.error('恢复版本失败:', error);
     return res.status(500).json({ error: '服务器暂时无法恢复版本' });
   }
 });
 
-// ============ 存档列表缓存（TTL 45s，写操作主动失效） ============
+// ============ 存档列表缓存（TTL 45s，写操作主动失效；mtime/size 增量索引） ============
+// 索引文件 data/.player-index.json 记录每个存档的 stat 指纹与已解析摘要：
+// 未变更的文件直接复用摘要（O(1)），仅变更/新增的文件才重新 JSON.parse。
 const PLAYER_LIST_TTL = 45 * 1000;
+const PLAYER_INDEX_FILE = path.join(DATA_DIR, '.player-index.json');
 let playerListCache = null;
 let playerListCacheAt = 0;
 let playerListInflight = null;
@@ -533,6 +591,36 @@ let playerListInflight = null;
 function invalidatePlayerListCache() {
   playerListCache = null;
   playerListCacheAt = 0;
+}
+
+async function readPlayerIndex() {
+  try {
+    const index = JSON.parse(await fsp.readFile(PLAYER_INDEX_FILE, 'utf8'));
+    return index && typeof index === 'object' ? index : {};
+  } catch {
+    return {}; // 无索引或损坏：退化为全量重建
+  }
+}
+
+async function writePlayerIndex(index) {
+  const tmp = PLAYER_INDEX_FILE + '.tmp';
+  try {
+    await fsp.writeFile(tmp, JSON.stringify(index), 'utf8');
+    await fsp.rename(tmp, PLAYER_INDEX_FILE);
+  } catch {
+    // 索引写失败只影响下次全量重建，不影响列表正确性
+  }
+}
+
+async function parsePlayerSummary(playerId, file) {
+  const data = JSON.parse(await fsp.readFile(file, 'utf8'));
+  if (data.gameMode !== 'text-rpg' && !(data.spirit && typeof data.spirit === 'object')) return null;
+  return {
+    playerId, name: data.name || '未知', level: Number(data.level) || 1,
+    spirit: data.spirit || '未知', gameMode: data.gameMode, lastSave: data.lastSave,
+    version: data._serverVersion || 0,
+    owner: typeof data.owner === 'string' ? data.owner : ''
+  };
 }
 
 async function loadPlayerList() {
@@ -544,24 +632,40 @@ async function loadPlayerList() {
   }
   playerListInflight = (async () => {
     const files = (await fsp.readdir(DATA_DIR)).filter(file => /^player_[A-Za-z0-9_-]{3,80}\.json$/.test(file));
+    const fileSet = new Set(files);
+    const index = await readPlayerIndex();
+    const nextIndex = {};
     const list = [];
+    let dirty = Object.keys(index).some(key => !fileSet.has(key));
+
     for (const fileName of files) {
+      const playerId = fileName.slice(7, -5);
+      const file = getPlayerFile(playerId);
+      if (!file) continue;
+      let stat = null;
       try {
-        const playerId = fileName.slice(7, -5);
-        const file = getPlayerFile(playerId);
-        if (!file) continue;
-        const data = JSON.parse(await fsp.readFile(file, 'utf8'));
-        if (data.gameMode !== 'text-rpg' && !(data.spirit && typeof data.spirit === 'object')) continue;
-        list.push({
-          playerId, name: data.name || '未知', level: Number(data.level) || 1,
-          spirit: data.spirit || '未知', gameMode: data.gameMode, lastSave: data.lastSave,
-          version: data._serverVersion || 0,
-          owner: typeof data.owner === 'string' ? data.owner : ''
-        });
+        stat = await fsp.stat(file);
+      } catch {
+        continue; // 并发删除等竞态：本轮直接跳过
+      }
+      const cached = index[fileName];
+      if (cached && cached.mtimeMs === stat.mtimeMs && cached.size === stat.size && 'summary' in cached) {
+        nextIndex[fileName] = cached;
+        if (cached.summary) list.push(cached.summary);
+        continue;
+      }
+      dirty = true;
+      let summary = null;
+      try {
+        summary = await parsePlayerSummary(playerId, file);
+        if (summary) list.push(summary);
       } catch (error) {
         console.warn(`跳过损坏存档 ${fileName}:`, error.message);
       }
+      nextIndex[fileName] = { mtimeMs: stat.mtimeMs, size: stat.size, summary };
     }
+
+    if (dirty) await writePlayerIndex(nextIndex);
     playerListCache = list;
     playerListCacheAt = Date.now();
     return list;
@@ -581,27 +685,35 @@ app.get('/api/player/list', rateLimit(RATE_LIMIT_GENERAL, 'list'), requireAuth, 
 });
 
 // ============ 删除存档（仅限本人存档） ============
-app.delete('/api/player/:playerId', rateLimit(RATE_LIMIT_SAVE, 'delete'), requireAuth, (req, res) => {
+app.delete('/api/player/:playerId', rateLimit(RATE_LIMIT_SAVE, 'delete'), requireAuth, async (req, res) => {
   try {
     const { playerId } = req.params;
     const file = getPlayerFile(playerId);
     if (!file) return res.status(400).json({ error: '存档 ID 无效' });
-    if (fs.existsSync(file)) {
-      const existing = JSON.parse(fs.readFileSync(file, 'utf8'));
-      if (existing.owner && existing.owner !== req.authUser) {
-        return res.status(403).json({ error: '该存档不属于当前账号' });
+
+    const outcome = await withPlayerLock(playerId, async () => {
+      let existing = null;
+      try {
+        existing = JSON.parse(await fsp.readFile(file, 'utf8'));
+      } catch {
+        existing = null;
       }
-      fs.unlinkSync(file);
-    }
+      if (existing && existing.owner && existing.owner !== req.authUser) {
+        return { status: 403, body: { error: '该存档不属于当前账号' } };
+      }
+      await fsp.unlink(file).catch(() => {});
 
-    // 同时清理历史版本
-    const archiveDir = getArchiveDir(playerId);
-    if (archiveDir && fs.existsSync(archiveDir)) {
-      fs.rmSync(archiveDir, { recursive: true, force: true });
-    }
+      // 同时清理历史版本
+      const archiveDir = getArchiveDir(playerId);
+      if (archiveDir) {
+        await fsp.rm(archiveDir, { recursive: true, force: true }).catch(() => {});
+      }
 
-    invalidatePlayerListCache();
-    return res.json({ success: true });
+      invalidatePlayerListCache();
+      return { status: 200, body: { success: true } };
+    });
+
+    return res.status(outcome.status).json(outcome.body);
   } catch (error) {
     console.error('删除失败:', error);
     return res.status(500).json({ error: '服务器暂时无法删除存档' });
@@ -647,5 +759,6 @@ if (require.main === module) {
 module.exports = {
   app, isValidPlayerId, getPlayerFile, getArchiveDir,
   generateToken, validateToken, archiveCurrentSave,
+  loadPlayerList, invalidatePlayerListCache, withPlayerLock,
   DATA_DIR, PUBLIC_DIR, FRONTEND_DIST_DIR, ARCHIVE_DIR
 };
