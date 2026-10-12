@@ -89,3 +89,11 @@ npm test               # 先构建 Vue，再运行 Node 测试
 - `/api/*` 继续由 Express 提供。
 - `/data/*`、`/assets/*` 继续直接访问;旧轨整套已归拢至 `/legacy/*`(game.html/map.html/codex.html 等),仍可正常打开。
 - 如果直接运行 `node server.js` 且 Vue 尚未构建，入口会返回 503 并提示先执行 `npm run build`；正常使用 `npm start` 不会遇到这一情况。
+
+---
+
+## 仓库说明
+
+- 本仓库是团队共同开发项目（斗罗大陆 · 武魂觉醒）的公开副本。
+- 提交者邮箱已匿名化；如需完整开发记录请联系团队成员。
+- 仓库中的数据与测试夹具（如剧情数据、示例账号）均为开发用的示例内容，不包含真实凭据；运行前请按 `deploy/` 与 `docker-compose.production.yml` 的说明自行配置环境变量。
