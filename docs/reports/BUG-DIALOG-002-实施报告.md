@@ -247,6 +247,6 @@ R1 的 7 张原截图（`bg002-1920-carousel.png` 等）原样保留。R2 验收
 
 ## R2-9. 关于 `memory/2026-08-05.md` 的说明
 
-父目录（`D:\GYC\project\memory\`）在 R1 会话中曾创建 `2026-08-05.md` 作为会话运行日志，该文件不属于游戏代码修改范围。本轮 R2 未继续修改、未删除该文件，游戏代码改动仅限允许范围（CreatePage.vue、create-awakening-ui.test.js、browser-smoke.mjs、本报告、docs/local/bug-dialog-002/ 下 r2 截图）。
+父目录（`<本地目录>\memory\`）在 R1 会话中曾创建 `2026-08-05.md` 作为会话运行日志，该文件不属于游戏代码修改范围。本轮 R2 未继续修改、未删除该文件，游戏代码改动仅限允许范围（CreatePage.vue、create-awakening-ui.test.js、browser-smoke.mjs、本报告、docs/local/bug-dialog-002/ 下 r2 截图）。
 
 最终结论仍由 Codex 审查后给出。
