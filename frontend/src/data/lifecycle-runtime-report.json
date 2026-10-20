@@ -1,0 +1,2006 @@
+{
+  "synthetic": true,
+  "seedCount": 2,
+  "assumptions": {
+    "source": "real Pinia stores/composables and repository spirit/map/event JSON; isolated MemoryStorage; seeded Math.random per sample; no post-creation level, ring, or gold injection; GamePage daily sign simulated once per sample with fixed date 2026-10-20; event-count achievement watcher flushed with nextTick after each loop action; skill points spent through useGameFeatures; rest triggered by low HP or spirit power before ending; battles use real useBattleSystem auto-actions with fake timers; MapPage travel random encounter roll is not replayed"
+  },
+  "samples": [
+    {
+      "sample": "木剑",
+      "tier": "mid",
+      "seed": 20481020,
+      "dailySign": {
+        "date": "2026-10-20",
+        "changed": true,
+        "rewardDay": 1
+      },
+      "created": {
+        "level": 5,
+        "exp": 0,
+        "gold": 100,
+        "rings": 0,
+        "location": "holy_soul_village"
+      },
+      "outcome": {
+        "level": 95,
+        "exp": 3864,
+        "gold": 1372,
+        "rings": 9,
+        "wins": 25,
+        "losses": 2,
+        "learnedSkills": [
+          "off1",
+          "off2",
+          "off3",
+          "off4",
+          "def1",
+          "def2",
+          "def3",
+          "def4",
+          "agi1",
+          "agi2",
+          "agi3",
+          "agi4",
+          "spi1",
+          "spi2",
+          "spi3",
+          "spi4",
+          "off5",
+          "def5",
+          "agi5",
+          "spi5"
+        ],
+        "achievementsUnlocked": 39,
+        "achievementChecks": 152,
+        "storyMilestones": [
+          "p02_nuoding",
+          "p03_master",
+          "p04_shrek_exam",
+          "p05_eight_monsters",
+          "p06_titan",
+          "p07_dugubo",
+          "p08_huangdou",
+          "p09_prelim",
+          "p10_final",
+          "p11_xiaowu",
+          "p12_haotian",
+          "p13_trial_city",
+          "p14_sea_god",
+          "p15_eve",
+          "final_evil"
+        ],
+        "finished": true,
+        "eventCount": 151
+      },
+      "checkpoints": [
+        {
+          "source": "story:p02_nuoding",
+          "level": 5,
+          "exp": 117,
+          "gold": 190,
+          "rings": 0,
+          "storyMilestones": 1,
+          "eventCount": 2,
+          "actions": 2
+        },
+        {
+          "source": "story:p03_master",
+          "level": 6,
+          "exp": 286,
+          "gold": 340,
+          "rings": 0,
+          "storyMilestones": 2,
+          "eventCount": 9,
+          "actions": 9
+        },
+        {
+          "source": "battle-settlement",
+          "level": 16,
+          "exp": 538,
+          "gold": 490,
+          "rings": 1,
+          "storyMilestones": 2,
+          "eventCount": 18,
+          "actions": 18
+        },
+        {
+          "source": "battle-settlement",
+          "level": 17,
+          "exp": 420,
+          "gold": 530,
+          "rings": 1,
+          "storyMilestones": 3,
+          "eventCount": 20,
+          "actions": 20
+        },
+        {
+          "source": "story:p05_eight_monsters",
+          "level": 18,
+          "exp": 629,
+          "gold": 580,
+          "rings": 1,
+          "storyMilestones": 4,
+          "eventCount": 22,
+          "actions": 22
+        },
+        {
+          "source": "battle-settlement",
+          "level": 22,
+          "exp": 1105,
+          "gold": 760,
+          "rings": 2,
+          "storyMilestones": 4,
+          "eventCount": 25,
+          "actions": 25
+        },
+        {
+          "source": "story:p06_titan",
+          "level": 24,
+          "exp": 241,
+          "gold": 760,
+          "rings": 2,
+          "storyMilestones": 5,
+          "eventCount": 26,
+          "actions": 26
+        },
+        {
+          "source": "story:p07_dugubo",
+          "level": 30,
+          "exp": 0,
+          "gold": 883,
+          "rings": 2,
+          "storyMilestones": 6,
+          "eventCount": 32,
+          "actions": 32
+        },
+        {
+          "source": "battle-settlement",
+          "level": 33,
+          "exp": 1076,
+          "gold": 993,
+          "rings": 3,
+          "storyMilestones": 6,
+          "eventCount": 38,
+          "actions": 38
+        },
+        {
+          "source": "battle-settlement",
+          "level": 35,
+          "exp": 1900,
+          "gold": 1018,
+          "rings": 3,
+          "storyMilestones": 7,
+          "eventCount": 43,
+          "actions": 43
+        },
+        {
+          "source": "battle-settlement",
+          "level": 43,
+          "exp": 199,
+          "gold": 998,
+          "rings": 4,
+          "storyMilestones": 7,
+          "eventCount": 51,
+          "actions": 51
+        },
+        {
+          "source": "story:p09_prelim",
+          "level": 44,
+          "exp": 1566,
+          "gold": 958,
+          "rings": 4,
+          "storyMilestones": 8,
+          "eventCount": 55,
+          "actions": 55
+        },
+        {
+          "source": "battle-settlement",
+          "level": 48,
+          "exp": 1630,
+          "gold": 998,
+          "rings": 4,
+          "storyMilestones": 9,
+          "eventCount": 60,
+          "actions": 60
+        },
+        {
+          "source": "battle-settlement",
+          "level": 53,
+          "exp": 753,
+          "gold": 1168,
+          "rings": 5,
+          "storyMilestones": 9,
+          "eventCount": 86,
+          "actions": 86
+        },
+        {
+          "source": "battle-settlement",
+          "level": 54,
+          "exp": 2436,
+          "gold": 1168,
+          "rings": 5,
+          "storyMilestones": 10,
+          "eventCount": 87,
+          "actions": 87
+        },
+        {
+          "source": "ring:ring_hunt_60",
+          "level": 62,
+          "exp": 2272,
+          "gold": 1488,
+          "rings": 6,
+          "storyMilestones": 10,
+          "eventCount": 98,
+          "actions": 98
+        },
+        {
+          "source": "story:p12_haotian",
+          "level": 64,
+          "exp": 541,
+          "gold": 1508,
+          "rings": 6,
+          "storyMilestones": 11,
+          "eventCount": 101,
+          "actions": 101
+        },
+        {
+          "source": "story:p13_trial_city",
+          "level": 70,
+          "exp": 0,
+          "gold": 1418,
+          "rings": 6,
+          "storyMilestones": 12,
+          "eventCount": 108,
+          "actions": 108
+        },
+        {
+          "source": "battle-settlement",
+          "level": 73,
+          "exp": 651,
+          "gold": 1608,
+          "rings": 7,
+          "storyMilestones": 12,
+          "eventCount": 112,
+          "actions": 112
+        },
+        {
+          "source": "story:p14_sea_god",
+          "level": 77,
+          "exp": 1871,
+          "gold": 1493,
+          "rings": 7,
+          "storyMilestones": 13,
+          "eventCount": 121,
+          "actions": 121
+        },
+        {
+          "source": "battle-settlement",
+          "level": 83,
+          "exp": 3073,
+          "gold": 1493,
+          "rings": 8,
+          "storyMilestones": 13,
+          "eventCount": 126,
+          "actions": 126
+        },
+        {
+          "source": "story:p15_eve",
+          "level": 88,
+          "exp": 953,
+          "gold": 1443,
+          "rings": 8,
+          "storyMilestones": 14,
+          "eventCount": 131,
+          "actions": 131
+        },
+        {
+          "source": "ring:ring_hunt_90",
+          "level": 94,
+          "exp": 1907,
+          "gold": 1436,
+          "rings": 9,
+          "storyMilestones": 14,
+          "eventCount": 146,
+          "actions": 146
+        },
+        {
+          "source": "battle-settlement",
+          "level": 95,
+          "exp": 3864,
+          "gold": 1372,
+          "rings": 9,
+          "storyMilestones": 15,
+          "eventCount": 151,
+          "actions": 151
+        }
+      ],
+      "actionCounts": {
+        "logRecords": 151,
+        "battlesStarted": 27,
+        "travelEdges": 50,
+        "rests": 22,
+        "storyChoices": 15,
+        "ringChoices": 23,
+        "otherChoices": 41
+      },
+      "actions": [
+        {
+          "type": "travel",
+          "to": "nuoding_city",
+          "gold": 190
+        },
+        {
+          "type": "story",
+          "id": "p02_nuoding",
+          "level": 5
+        },
+        {
+          "type": "event",
+          "id": "vue_prologue",
+          "level": 5
+        },
+        {
+          "type": "event",
+          "id": "early_family_star_forest",
+          "level": 5
+        },
+        {
+          "type": "event",
+          "id": "early_person_star_forest",
+          "level": 5
+        },
+        {
+          "type": "event",
+          "id": "early_spirit_木剑",
+          "level": 5
+        },
+        {
+          "type": "event",
+          "id": "early_registration_star_forest",
+          "level": 5
+        },
+        {
+          "type": "event",
+          "id": "early_recommendation_star_forest",
+          "level": 5
+        },
+        {
+          "type": "story",
+          "id": "p03_master",
+          "level": 5
+        },
+        {
+          "type": "event",
+          "id": "sp_wp_01",
+          "level": 6
+        },
+        {
+          "type": "event",
+          "id": "spirit_show",
+          "level": 9
+        },
+        {
+          "type": "travel",
+          "to": "shrek_academy",
+          "gold": 385
+        },
+        {
+          "type": "travel",
+          "to": "star_duo_outer",
+          "gold": 375
+        },
+        {
+          "type": "ring",
+          "id": "ring_hunt_10",
+          "level": 10
+        },
+        {
+          "type": "rest",
+          "level": 10,
+          "finished": false
+        },
+        {
+          "type": "ring",
+          "id": "ring_hunt_10",
+          "level": 10
+        },
+        {
+          "type": "rest",
+          "level": 10,
+          "finished": false
+        },
+        {
+          "type": "ring",
+          "id": "ring_hunt_10",
+          "level": 10
+        },
+        {
+          "type": "travel",
+          "to": "shrek_academy",
+          "gold": 480
+        },
+        {
+          "type": "story",
+          "id": "p04_shrek_exam",
+          "level": 16
+        },
+        {
+          "type": "rest",
+          "level": 17,
+          "finished": false
+        },
+        {
+          "type": "story",
+          "id": "p05_eight_monsters",
+          "level": 17
+        },
+        {
+          "type": "event",
+          "id": "ac_extra_05",
+          "level": 18
+        },
+        {
+          "type": "travel",
+          "to": "star_duo_outer",
+          "gold": 660
+        },
+        {
+          "type": "ring",
+          "id": "ring_hunt_20",
+          "level": 20
+        },
+        {
+          "type": "story",
+          "id": "p06_titan",
+          "level": 22
+        },
+        {
+          "type": "event",
+          "id": "adv_enc_04",
+          "level": 24
+        },
+        {
+          "type": "event",
+          "id": "or_village_03",
+          "level": 25
+        },
+        {
+          "type": "event",
+          "id": "dyn_combo_master",
+          "level": 27
+        },
+        {
+          "type": "event",
+          "id": "adv_beast_01",
+          "level": 27
+        },
+        {
+          "type": "travel",
+          "to": "sunset_forest",
+          "gold": 883
+        },
+        {
+          "type": "story",
+          "id": "p07_dugubo",
+          "level": 29
+        },
+        {
+          "type": "travel",
+          "to": "star_duo_outer",
+          "gold": 963
+        },
+        {
+          "type": "travel",
+          "to": "star_duo_deep",
+          "gold": 943
+        },
+        {
+          "type": "ring",
+          "id": "ring_hunt_30",
+          "level": 30
+        },
+        {
+          "type": "rest",
+          "level": 30,
+          "finished": false
+        },
+        {
+          "type": "rest",
+          "level": 30,
+          "finished": false
+        },
+        {
+          "type": "ring",
+          "id": "ring_hunt_30",
+          "level": 30
+        },
+        {
+          "type": "event",
+          "id": "dy_fate_02",
+          "level": 33
+        },
+        {
+          "type": "travel",
+          "to": "star_duo_outer",
+          "gold": 983
+        },
+        {
+          "type": "travel",
+          "to": "shrek_academy",
+          "gold": 973
+        },
+        {
+          "type": "travel",
+          "to": "tian_dou_city",
+          "gold": 968
+        },
+        {
+          "type": "story",
+          "id": "p08_huangdou",
+          "level": 34
+        },
+        {
+          "type": "event",
+          "id": "adv_town_20",
+          "level": 35
+        },
+        {
+          "type": "event",
+          "id": "dyn_combo_master",
+          "level": 37
+        },
+        {
+          "type": "event",
+          "id": "sp_wp_03",
+          "level": 37
+        },
+        {
+          "type": "event",
+          "id": "gbl_mas_03",
+          "level": 38
+        },
+        {
+          "type": "travel",
+          "to": "shrek_academy",
+          "gold": 1008
+        },
+        {
+          "type": "travel",
+          "to": "star_duo_outer",
+          "gold": 988
+        },
+        {
+          "type": "travel",
+          "to": "star_duo_deep",
+          "gold": 948
+        },
+        {
+          "type": "ring",
+          "id": "ring_hunt_40",
+          "level": 40
+        },
+        {
+          "type": "travel",
+          "to": "star_duo_outer",
+          "gold": 978
+        },
+        {
+          "type": "travel",
+          "to": "shrek_academy",
+          "gold": 968
+        },
+        {
+          "type": "travel",
+          "to": "tian_dou_city",
+          "gold": 958
+        },
+        {
+          "type": "story",
+          "id": "p09_prelim",
+          "level": 43
+        },
+        {
+          "type": "event",
+          "id": "adv_town_02",
+          "level": 44
+        },
+        {
+          "type": "event",
+          "id": "dyn_combo_master",
+          "level": 45
+        },
+        {
+          "type": "event",
+          "id": "adv_town_16",
+          "level": 45
+        },
+        {
+          "type": "travel",
+          "to": "wuhun_city",
+          "gold": 948
+        },
+        {
+          "type": "story",
+          "id": "p10_final",
+          "level": 47
+        },
+        {
+          "type": "event",
+          "id": "gbl_adv_01",
+          "level": 48
+        },
+        {
+          "type": "event",
+          "id": "gbl_adv_03",
+          "level": 49
+        },
+        {
+          "type": "event",
+          "id": "dy_adventure_03",
+          "level": 49
+        },
+        {
+          "type": "travel",
+          "to": "tian_dou_city",
+          "gold": 1038
+        },
+        {
+          "type": "travel",
+          "to": "shrek_academy",
+          "gold": 1028
+        },
+        {
+          "type": "travel",
+          "to": "star_duo_outer",
+          "gold": 1008
+        },
+        {
+          "type": "travel",
+          "to": "star_duo_deep",
+          "gold": 968
+        },
+        {
+          "type": "ring",
+          "id": "ring_hunt_50",
+          "level": 50
+        },
+        {
+          "type": "rest",
+          "level": 50,
+          "finished": false
+        },
+        {
+          "type": "rest",
+          "level": 50,
+          "finished": false
+        },
+        {
+          "type": "ring",
+          "id": "ring_hunt_50",
+          "level": 50
+        },
+        {
+          "type": "rest",
+          "level": 50,
+          "finished": false
+        },
+        {
+          "type": "ring",
+          "id": "ring_hunt_50",
+          "level": 50
+        },
+        {
+          "type": "rest",
+          "level": 50,
+          "finished": false
+        },
+        {
+          "type": "ring",
+          "id": "ring_hunt_50",
+          "level": 50
+        },
+        {
+          "type": "rest",
+          "level": 50,
+          "finished": false
+        },
+        {
+          "type": "rest",
+          "level": 50,
+          "finished": false
+        },
+        {
+          "type": "ring",
+          "id": "ring_hunt_50",
+          "level": 50
+        },
+        {
+          "type": "rest",
+          "level": 50,
+          "finished": false
+        },
+        {
+          "type": "rest",
+          "level": 50,
+          "finished": false
+        },
+        {
+          "type": "ring",
+          "id": "ring_hunt_50",
+          "level": 50
+        },
+        {
+          "type": "rest",
+          "level": 50,
+          "finished": false
+        },
+        {
+          "type": "rest",
+          "level": 50,
+          "finished": false
+        },
+        {
+          "type": "ring",
+          "id": "ring_hunt_50",
+          "level": 50
+        },
+        {
+          "type": "rest",
+          "level": 50,
+          "finished": false
+        },
+        {
+          "type": "ring",
+          "id": "ring_hunt_50",
+          "level": 50
+        },
+        {
+          "type": "story",
+          "id": "p11_xiaowu",
+          "level": 53
+        },
+        {
+          "type": "event",
+          "id": "dyn_combo_master",
+          "level": 54
+        },
+        {
+          "type": "event",
+          "id": "adv_more_01_beast",
+          "level": 54
+        },
+        {
+          "type": "event",
+          "id": "ma_daily_01",
+          "level": 56
+        },
+        {
+          "type": "event",
+          "id": "gbl_adv_02",
+          "level": 57
+        },
+        {
+          "type": "event",
+          "id": "dyn_night",
+          "level": 58
+        },
+        {
+          "type": "event",
+          "id": "adv_beast_13",
+          "level": 58
+        },
+        {
+          "type": "travel",
+          "to": "star_duo_outer",
+          "gold": 1568
+        },
+        {
+          "type": "travel",
+          "to": "shrek_academy",
+          "gold": 1558
+        },
+        {
+          "type": "travel",
+          "to": "tian_dou_city",
+          "gold": 1548
+        },
+        {
+          "type": "travel",
+          "to": "wuhun_city",
+          "gold": 1488
+        },
+        {
+          "type": "ring",
+          "id": "ring_hunt_60",
+          "level": 60
+        },
+        {
+          "type": "travel",
+          "to": "tian_dou_city",
+          "gold": 1528
+        },
+        {
+          "type": "travel",
+          "to": "haotian_sect",
+          "gold": 1508
+        },
+        {
+          "type": "story",
+          "id": "p12_haotian",
+          "level": 62
+        },
+        {
+          "type": "event",
+          "id": "ma_daily_02",
+          "level": 64
+        },
+        {
+          "type": "event",
+          "id": "ma_big_12",
+          "level": 65
+        },
+        {
+          "type": "event",
+          "id": "ma_daily_04",
+          "level": 67
+        },
+        {
+          "type": "travel",
+          "to": "tian_dou_city",
+          "gold": 1498
+        },
+        {
+          "type": "travel",
+          "to": "wuhun_city",
+          "gold": 1438
+        },
+        {
+          "type": "travel",
+          "to": "slaughter_city",
+          "gold": 1418
+        },
+        {
+          "type": "story",
+          "id": "p13_trial_city",
+          "level": 69
+        },
+        {
+          "type": "travel",
+          "to": "abyss_rift",
+          "gold": 1428
+        },
+        {
+          "type": "travel",
+          "to": "ancient_ruins",
+          "gold": 1498
+        },
+        {
+          "type": "travel",
+          "to": "star_duo_deep",
+          "gold": 1558
+        },
+        {
+          "type": "ring",
+          "id": "ring_hunt_70",
+          "level": 70
+        },
+        {
+          "type": "event",
+          "id": "dyn_combo_master",
+          "level": 73
+        },
+        {
+          "type": "event",
+          "id": "late_road_01",
+          "level": 73
+        },
+        {
+          "type": "event",
+          "id": "late_road_01",
+          "level": 74
+        },
+        {
+          "type": "travel",
+          "to": "star_duo_outer",
+          "gold": 1588
+        },
+        {
+          "type": "travel",
+          "to": "shrek_academy",
+          "gold": 1578
+        },
+        {
+          "type": "travel",
+          "to": "tian_dou_city",
+          "gold": 1568
+        },
+        {
+          "type": "travel",
+          "to": "east_sea_port",
+          "gold": 1553
+        },
+        {
+          "type": "travel",
+          "to": "sea_god_island",
+          "gold": 1493
+        },
+        {
+          "type": "story",
+          "id": "p14_sea_god",
+          "level": 76
+        },
+        {
+          "type": "event",
+          "id": "sea_island_explore_qualification",
+          "level": 77
+        },
+        {
+          "type": "ring",
+          "id": "ring_hunt_80",
+          "level": 80
+        },
+        {
+          "type": "rest",
+          "level": 80,
+          "finished": false
+        },
+        {
+          "type": "rest",
+          "level": 80,
+          "finished": false
+        },
+        {
+          "type": "ring",
+          "id": "ring_hunt_80",
+          "level": 80
+        },
+        {
+          "type": "event",
+          "id": "sea_island_contact_exam_clue",
+          "level": 83
+        },
+        {
+          "type": "travel",
+          "to": "east_sea_port",
+          "gold": 1463
+        },
+        {
+          "type": "travel",
+          "to": "tian_dou_city",
+          "gold": 1453
+        },
+        {
+          "type": "travel",
+          "to": "shrek_academy",
+          "gold": 1443
+        },
+        {
+          "type": "story",
+          "id": "p15_eve",
+          "level": 86
+        },
+        {
+          "type": "event",
+          "id": "late_shrek_03",
+          "level": 88
+        },
+        {
+          "type": "event",
+          "id": "dyn_combo_master",
+          "level": 89
+        },
+        {
+          "type": "event",
+          "id": "late_shrek_01",
+          "level": 89
+        },
+        {
+          "type": "travel",
+          "to": "tian_dou_city",
+          "gold": 1483
+        },
+        {
+          "type": "travel",
+          "to": "steel_city",
+          "gold": 1526
+        },
+        {
+          "type": "travel",
+          "to": "dragon_valley",
+          "gold": 1486
+        },
+        {
+          "type": "travel",
+          "to": "sky_city",
+          "gold": 1436
+        },
+        {
+          "type": "ring",
+          "id": "ring_hunt_90",
+          "level": 90
+        },
+        {
+          "type": "rest",
+          "level": 90,
+          "finished": false
+        },
+        {
+          "type": "ring",
+          "id": "ring_hunt_90",
+          "level": 90
+        },
+        {
+          "type": "rest",
+          "level": 90,
+          "finished": false
+        },
+        {
+          "type": "rest",
+          "level": 90,
+          "finished": false
+        },
+        {
+          "type": "ring",
+          "id": "ring_hunt_90",
+          "level": 90
+        },
+        {
+          "type": "rest",
+          "level": 90,
+          "finished": false
+        },
+        {
+          "type": "ring",
+          "id": "ring_hunt_90",
+          "level": 90
+        },
+        {
+          "type": "travel",
+          "to": "dragon_valley",
+          "gold": 1406
+        },
+        {
+          "type": "travel",
+          "to": "steel_city",
+          "gold": 1392
+        },
+        {
+          "type": "travel",
+          "to": "tian_dou_city",
+          "gold": 1382
+        },
+        {
+          "type": "travel",
+          "to": "wuhun_city",
+          "gold": 1322
+        },
+        {
+          "type": "story",
+          "id": "final_evil",
+          "level": 94
+        }
+      ]
+    },
+    {
+      "sample": "海神三叉戟",
+      "tier": "god",
+      "seed": 20481021,
+      "dailySign": {
+        "date": "2026-10-20",
+        "changed": true,
+        "rewardDay": 1
+      },
+      "created": {
+        "level": 10,
+        "exp": 0,
+        "gold": 100,
+        "rings": 0,
+        "location": "holy_soul_village"
+      },
+      "outcome": {
+        "level": 95,
+        "exp": 2476,
+        "gold": 1247,
+        "rings": 9,
+        "wins": 19,
+        "losses": 0,
+        "learnedSkills": [
+          "off1",
+          "off2",
+          "off3",
+          "off4",
+          "def1",
+          "def2",
+          "def3",
+          "def4",
+          "agi1",
+          "agi2",
+          "agi3",
+          "agi4",
+          "spi1",
+          "spi2",
+          "spi3",
+          "spi4",
+          "off5",
+          "def5",
+          "agi5",
+          "spi5"
+        ],
+        "achievementsUnlocked": 38,
+        "achievementChecks": 121,
+        "storyMilestones": [
+          "p02_nuoding",
+          "p03_master",
+          "p04_shrek_exam",
+          "p05_eight_monsters",
+          "p06_titan",
+          "p07_dugubo",
+          "p08_huangdou",
+          "p09_prelim",
+          "p10_final",
+          "p11_xiaowu",
+          "p12_haotian",
+          "p13_trial_city",
+          "p14_sea_god",
+          "p15_eve",
+          "final_evil"
+        ],
+        "finished": true,
+        "eventCount": 120
+      },
+      "checkpoints": [
+        {
+          "source": "story:p02_nuoding",
+          "level": 10,
+          "exp": 0,
+          "gold": 240,
+          "rings": 0,
+          "storyMilestones": 1,
+          "eventCount": 2,
+          "actions": 2
+        },
+        {
+          "source": "battle-settlement",
+          "level": 16,
+          "exp": 28,
+          "gold": 525,
+          "rings": 1,
+          "storyMilestones": 1,
+          "eventCount": 11,
+          "actions": 11
+        },
+        {
+          "source": "story:p03_master",
+          "level": 16,
+          "exp": 366,
+          "gold": 495,
+          "rings": 1,
+          "storyMilestones": 2,
+          "eventCount": 14,
+          "actions": 14
+        },
+        {
+          "source": "battle-settlement",
+          "level": 17,
+          "exp": 288,
+          "gold": 635,
+          "rings": 1,
+          "storyMilestones": 3,
+          "eventCount": 16,
+          "actions": 16
+        },
+        {
+          "source": "story:p05_eight_monsters",
+          "level": 18,
+          "exp": 477,
+          "gold": 635,
+          "rings": 1,
+          "storyMilestones": 4,
+          "eventCount": 17,
+          "actions": 17
+        },
+        {
+          "source": "battle-settlement",
+          "level": 23,
+          "exp": 1062,
+          "gold": 765,
+          "rings": 2,
+          "storyMilestones": 4,
+          "eventCount": 21,
+          "actions": 21
+        },
+        {
+          "source": "story:p06_titan",
+          "level": 25,
+          "exp": 51,
+          "gold": 765,
+          "rings": 2,
+          "storyMilestones": 5,
+          "eventCount": 22,
+          "actions": 22
+        },
+        {
+          "source": "story:p07_dugubo",
+          "level": 29,
+          "exp": 1670,
+          "gold": 838,
+          "rings": 2,
+          "storyMilestones": 6,
+          "eventCount": 27,
+          "actions": 27
+        },
+        {
+          "source": "battle-settlement",
+          "level": 33,
+          "exp": 1385,
+          "gold": 908,
+          "rings": 3,
+          "storyMilestones": 6,
+          "eventCount": 31,
+          "actions": 31
+        },
+        {
+          "source": "battle-settlement",
+          "level": 36,
+          "exp": 1658,
+          "gold": 923,
+          "rings": 3,
+          "storyMilestones": 7,
+          "eventCount": 37,
+          "actions": 37
+        },
+        {
+          "source": "battle-settlement",
+          "level": 44,
+          "exp": 614,
+          "gold": 1233,
+          "rings": 4,
+          "storyMilestones": 7,
+          "eventCount": 45,
+          "actions": 45
+        },
+        {
+          "source": "story:p09_prelim",
+          "level": 45,
+          "exp": 1938,
+          "gold": 1193,
+          "rings": 4,
+          "storyMilestones": 8,
+          "eventCount": 49,
+          "actions": 49
+        },
+        {
+          "source": "battle-settlement",
+          "level": 48,
+          "exp": 2534,
+          "gold": 1373,
+          "rings": 4,
+          "storyMilestones": 9,
+          "eventCount": 54,
+          "actions": 54
+        },
+        {
+          "source": "battle-settlement",
+          "level": 52,
+          "exp": 2463,
+          "gold": 1443,
+          "rings": 5,
+          "storyMilestones": 9,
+          "eventCount": 64,
+          "actions": 64
+        },
+        {
+          "source": "battle-settlement",
+          "level": 55,
+          "exp": 3075,
+          "gold": 1443,
+          "rings": 5,
+          "storyMilestones": 10,
+          "eventCount": 66,
+          "actions": 66
+        },
+        {
+          "source": "ring:ring_hunt_60",
+          "level": 62,
+          "exp": 2314,
+          "gold": 1563,
+          "rings": 6,
+          "storyMilestones": 10,
+          "eventCount": 76,
+          "actions": 76
+        },
+        {
+          "source": "story:p12_haotian",
+          "level": 64,
+          "exp": 603,
+          "gold": 1633,
+          "rings": 6,
+          "storyMilestones": 11,
+          "eventCount": 79,
+          "actions": 79
+        },
+        {
+          "source": "story:p13_trial_city",
+          "level": 69,
+          "exp": 2005,
+          "gold": 1343,
+          "rings": 6,
+          "storyMilestones": 12,
+          "eventCount": 86,
+          "actions": 86
+        },
+        {
+          "source": "battle-settlement",
+          "level": 73,
+          "exp": 2874,
+          "gold": 1483,
+          "rings": 7,
+          "storyMilestones": 12,
+          "eventCount": 91,
+          "actions": 91
+        },
+        {
+          "source": "story:p14_sea_god",
+          "level": 80,
+          "exp": 0,
+          "gold": 1368,
+          "rings": 7,
+          "storyMilestones": 13,
+          "eventCount": 99,
+          "actions": 99
+        },
+        {
+          "source": "battle-settlement",
+          "level": 83,
+          "exp": 1685,
+          "gold": 1368,
+          "rings": 8,
+          "storyMilestones": 13,
+          "eventCount": 103,
+          "actions": 103
+        },
+        {
+          "source": "story:p15_eve",
+          "level": 87,
+          "exp": 3305,
+          "gold": 1318,
+          "rings": 8,
+          "storyMilestones": 14,
+          "eventCount": 108,
+          "actions": 108
+        },
+        {
+          "source": "ring:ring_hunt_90",
+          "level": 94,
+          "exp": 519,
+          "gold": 1311,
+          "rings": 9,
+          "storyMilestones": 14,
+          "eventCount": 115,
+          "actions": 115
+        },
+        {
+          "source": "battle-settlement",
+          "level": 95,
+          "exp": 2476,
+          "gold": 1247,
+          "rings": 9,
+          "storyMilestones": 15,
+          "eventCount": 120,
+          "actions": 120
+        }
+      ],
+      "actionCounts": {
+        "logRecords": 120,
+        "battlesStarted": 19,
+        "travelEdges": 52,
+        "rests": 5,
+        "storyChoices": 15,
+        "ringChoices": 11,
+        "otherChoices": 37
+      },
+      "actions": [
+        {
+          "type": "travel",
+          "to": "nuoding_city",
+          "gold": 240
+        },
+        {
+          "type": "story",
+          "id": "p02_nuoding",
+          "level": 10
+        },
+        {
+          "type": "event",
+          "id": "vue_prologue",
+          "level": 10
+        },
+        {
+          "type": "event",
+          "id": "early_family_star_forest",
+          "level": 10
+        },
+        {
+          "type": "event",
+          "id": "early_person_star_forest",
+          "level": 10
+        },
+        {
+          "type": "event",
+          "id": "early_spirit_海神三叉戟",
+          "level": 10
+        },
+        {
+          "type": "event",
+          "id": "early_registration_star_forest",
+          "level": 10
+        },
+        {
+          "type": "event",
+          "id": "early_recommendation_star_forest",
+          "level": 10
+        },
+        {
+          "type": "travel",
+          "to": "shrek_academy",
+          "gold": 385
+        },
+        {
+          "type": "travel",
+          "to": "star_duo_outer",
+          "gold": 375
+        },
+        {
+          "type": "ring",
+          "id": "ring_hunt_10",
+          "level": 10
+        },
+        {
+          "type": "travel",
+          "to": "shrek_academy",
+          "gold": 515
+        },
+        {
+          "type": "travel",
+          "to": "nuoding_city",
+          "gold": 495
+        },
+        {
+          "type": "story",
+          "id": "p03_master",
+          "level": 16
+        },
+        {
+          "type": "travel",
+          "to": "shrek_academy",
+          "gold": 535
+        },
+        {
+          "type": "story",
+          "id": "p04_shrek_exam",
+          "level": 16
+        },
+        {
+          "type": "story",
+          "id": "p05_eight_monsters",
+          "level": 17
+        },
+        {
+          "type": "event",
+          "id": "ac_adv_03",
+          "level": 18
+        },
+        {
+          "type": "event",
+          "id": "help_granny",
+          "level": 19
+        },
+        {
+          "type": "travel",
+          "to": "star_duo_outer",
+          "gold": 715
+        },
+        {
+          "type": "ring",
+          "id": "ring_hunt_20",
+          "level": 20
+        },
+        {
+          "type": "story",
+          "id": "p06_titan",
+          "level": 23
+        },
+        {
+          "type": "event",
+          "id": "old_tree",
+          "level": 25
+        },
+        {
+          "type": "event",
+          "id": "adv_more_05_sheep",
+          "level": 26
+        },
+        {
+          "type": "event",
+          "id": "dy_lone_02",
+          "level": 27
+        },
+        {
+          "type": "travel",
+          "to": "sunset_forest",
+          "gold": 838
+        },
+        {
+          "type": "story",
+          "id": "p07_dugubo",
+          "level": 28
+        },
+        {
+          "type": "event",
+          "id": "dy_fate_02",
+          "level": 29
+        },
+        {
+          "type": "travel",
+          "to": "star_duo_outer",
+          "gold": 878
+        },
+        {
+          "type": "travel",
+          "to": "star_duo_deep",
+          "gold": 858
+        },
+        {
+          "type": "ring",
+          "id": "ring_hunt_30",
+          "level": 30
+        },
+        {
+          "type": "event",
+          "id": "dyn_night",
+          "level": 33
+        },
+        {
+          "type": "event",
+          "id": "gbl_mas_01",
+          "level": 33
+        },
+        {
+          "type": "travel",
+          "to": "star_duo_outer",
+          "gold": 938
+        },
+        {
+          "type": "travel",
+          "to": "shrek_academy",
+          "gold": 928
+        },
+        {
+          "type": "travel",
+          "to": "tian_dou_city",
+          "gold": 923
+        },
+        {
+          "type": "story",
+          "id": "p08_huangdou",
+          "level": 35
+        },
+        {
+          "type": "event",
+          "id": "gbl_adv_05",
+          "level": 36
+        },
+        {
+          "type": "event",
+          "id": "gbl_adv_01",
+          "level": 37
+        },
+        {
+          "type": "event",
+          "id": "arena_streak",
+          "level": 38
+        },
+        {
+          "type": "event",
+          "id": "dy_sect_03",
+          "level": 39
+        },
+        {
+          "type": "travel",
+          "to": "shrek_academy",
+          "gold": 1193
+        },
+        {
+          "type": "travel",
+          "to": "star_duo_outer",
+          "gold": 1173
+        },
+        {
+          "type": "travel",
+          "to": "star_duo_deep",
+          "gold": 1133
+        },
+        {
+          "type": "ring",
+          "id": "ring_hunt_40",
+          "level": 40
+        },
+        {
+          "type": "travel",
+          "to": "star_duo_outer",
+          "gold": 1213
+        },
+        {
+          "type": "travel",
+          "to": "shrek_academy",
+          "gold": 1203
+        },
+        {
+          "type": "travel",
+          "to": "tian_dou_city",
+          "gold": 1193
+        },
+        {
+          "type": "story",
+          "id": "p09_prelim",
+          "level": 44
+        },
+        {
+          "type": "event",
+          "id": "dyn_night",
+          "level": 45
+        },
+        {
+          "type": "event",
+          "id": "adv_enc_01",
+          "level": 45
+        },
+        {
+          "type": "event",
+          "id": "adv_gold_01",
+          "level": 46
+        },
+        {
+          "type": "travel",
+          "to": "wuhun_city",
+          "gold": 1273
+        },
+        {
+          "type": "story",
+          "id": "p10_final",
+          "level": 47
+        },
+        {
+          "type": "event",
+          "id": "gbl_adv_02",
+          "level": 48
+        },
+        {
+          "type": "event",
+          "id": "late_wuhun_01",
+          "level": 49
+        },
+        {
+          "type": "travel",
+          "to": "tian_dou_city",
+          "gold": 1463
+        },
+        {
+          "type": "travel",
+          "to": "shrek_academy",
+          "gold": 1453
+        },
+        {
+          "type": "travel",
+          "to": "star_duo_outer",
+          "gold": 1433
+        },
+        {
+          "type": "travel",
+          "to": "star_duo_deep",
+          "gold": 1393
+        },
+        {
+          "type": "ring",
+          "id": "ring_hunt_50",
+          "level": 50
+        },
+        {
+          "type": "rest",
+          "level": 50,
+          "finished": false
+        },
+        {
+          "type": "rest",
+          "level": 50,
+          "finished": false
+        },
+        {
+          "type": "ring",
+          "id": "ring_hunt_50",
+          "level": 50
+        },
+        {
+          "type": "event",
+          "id": "dy_adventure_03",
+          "level": 52
+        },
+        {
+          "type": "story",
+          "id": "p11_xiaowu",
+          "level": 54
+        },
+        {
+          "type": "rest",
+          "level": 55,
+          "finished": false
+        },
+        {
+          "type": "event",
+          "id": "ma_daily_01",
+          "level": 55
+        },
+        {
+          "type": "event",
+          "id": "adv_more_01_beast",
+          "level": 57
+        },
+        {
+          "type": "event",
+          "id": "dyn_night",
+          "level": 59
+        },
+        {
+          "type": "event",
+          "id": "ma_daily_02",
+          "level": 59
+        },
+        {
+          "type": "travel",
+          "to": "star_duo_outer",
+          "gold": 1593
+        },
+        {
+          "type": "travel",
+          "to": "shrek_academy",
+          "gold": 1583
+        },
+        {
+          "type": "travel",
+          "to": "tian_dou_city",
+          "gold": 1573
+        },
+        {
+          "type": "travel",
+          "to": "wuhun_city",
+          "gold": 1563
+        },
+        {
+          "type": "ring",
+          "id": "ring_hunt_60",
+          "level": 60
+        },
+        {
+          "type": "travel",
+          "to": "tian_dou_city",
+          "gold": 1603
+        },
+        {
+          "type": "travel",
+          "to": "haotian_sect",
+          "gold": 1633
+        },
+        {
+          "type": "story",
+          "id": "p12_haotian",
+          "level": 62
+        },
+        {
+          "type": "event",
+          "id": "ma_big_15",
+          "level": 64
+        },
+        {
+          "type": "event",
+          "id": "gbl_adv_03",
+          "level": 66
+        },
+        {
+          "type": "event",
+          "id": "late_road_01",
+          "level": 66
+        },
+        {
+          "type": "travel",
+          "to": "tian_dou_city",
+          "gold": 1423
+        },
+        {
+          "type": "travel",
+          "to": "wuhun_city",
+          "gold": 1363
+        },
+        {
+          "type": "travel",
+          "to": "slaughter_city",
+          "gold": 1343
+        },
+        {
+          "type": "story",
+          "id": "p13_trial_city",
+          "level": 68
+        },
+        {
+          "type": "event",
+          "id": "ma_big_12",
+          "level": 69
+        },
+        {
+          "type": "travel",
+          "to": "abyss_rift",
+          "gold": 1353
+        },
+        {
+          "type": "travel",
+          "to": "ancient_ruins",
+          "gold": 1423
+        },
+        {
+          "type": "travel",
+          "to": "star_duo_deep",
+          "gold": 1433
+        },
+        {
+          "type": "ring",
+          "id": "ring_hunt_70",
+          "level": 70
+        },
+        {
+          "type": "event",
+          "id": "late_road_02",
+          "level": 73
+        },
+        {
+          "type": "event",
+          "id": "ma_big_13",
+          "level": 75
+        },
+        {
+          "type": "travel",
+          "to": "star_duo_outer",
+          "gold": 1463
+        },
+        {
+          "type": "travel",
+          "to": "shrek_academy",
+          "gold": 1453
+        },
+        {
+          "type": "travel",
+          "to": "tian_dou_city",
+          "gold": 1443
+        },
+        {
+          "type": "travel",
+          "to": "east_sea_port",
+          "gold": 1428
+        },
+        {
+          "type": "travel",
+          "to": "sea_god_island",
+          "gold": 1368
+        },
+        {
+          "type": "story",
+          "id": "p14_sea_god",
+          "level": 78
+        },
+        {
+          "type": "ring",
+          "id": "ring_hunt_80",
+          "level": 80
+        },
+        {
+          "type": "rest",
+          "level": 80,
+          "finished": false
+        },
+        {
+          "type": "rest",
+          "level": 80,
+          "finished": false
+        },
+        {
+          "type": "ring",
+          "id": "ring_hunt_80",
+          "level": 80
+        },
+        {
+          "type": "event",
+          "id": "sea_island_explore_reef_tracks",
+          "level": 83
+        },
+        {
+          "type": "travel",
+          "to": "east_sea_port",
+          "gold": 1338
+        },
+        {
+          "type": "travel",
+          "to": "tian_dou_city",
+          "gold": 1328
+        },
+        {
+          "type": "travel",
+          "to": "shrek_academy",
+          "gold": 1318
+        },
+        {
+          "type": "story",
+          "id": "p15_eve",
+          "level": 86
+        },
+        {
+          "type": "event",
+          "id": "late_shrek_03",
+          "level": 87
+        },
+        {
+          "type": "event",
+          "id": "late_shrek_01",
+          "level": 89
+        },
+        {
+          "type": "travel",
+          "to": "tian_dou_city",
+          "gold": 1358
+        },
+        {
+          "type": "travel",
+          "to": "steel_city",
+          "gold": 1401
+        },
+        {
+          "type": "travel",
+          "to": "dragon_valley",
+          "gold": 1361
+        },
+        {
+          "type": "travel",
+          "to": "sky_city",
+          "gold": 1311
+        },
+        {
+          "type": "ring",
+          "id": "ring_hunt_90",
+          "level": 90
+        },
+        {
+          "type": "travel",
+          "to": "dragon_valley",
+          "gold": 1281
+        },
+        {
+          "type": "travel",
+          "to": "steel_city",
+          "gold": 1267
+        },
+        {
+          "type": "travel",
+          "to": "tian_dou_city",
+          "gold": 1257
+        },
+        {
+          "type": "travel",
+          "to": "wuhun_city",
+          "gold": 1197
+        },
+        {
+          "type": "story",
+          "id": "final_evil",
+          "level": 94
+        }
+      ]
+    }
+  ]
+}

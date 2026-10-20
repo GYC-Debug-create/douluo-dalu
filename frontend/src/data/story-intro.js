@@ -29,6 +29,8 @@ export const INTRO_ORIGINS = {
 export function buildPrologueEvent(player) {
   const origin = INTRO_ORIGINS[player.origin] || INTRO_ORIGINS.star_forest
   const traits = (player._personality?.traits || ['独特']).slice(0, 3).join('、')
+  // 圣魂村出身的孩子，和唐三同一天觉醒（原著第一个名场面）。
+  const sameDayAsTangSan = player.origin === 'star_forest'
   return {
     id: 'vue_prologue',
     name: '序章 · 武魂觉醒',
@@ -39,13 +41,17 @@ export function buildPrologueEvent(player) {
       origin.birth,
       '终于，你六岁了。武魂殿的魂师来到这里，为适龄的孩子主持觉醒仪式。',
       `六枚觉醒石依次点亮，你的武魂「${player.spirit?.name || '武魂'}」第一次显现在世间。`,
+      ...(sameDayAsTangSan
+        ? ['排在你旁边的黑发男孩手里冒出了一株细细的蓝银草。主持仪式的执事摇摇头："废武魂。"周围有人小声笑了，可那个男孩一点也不沮丧，只是认真地看着自己的手心。你记住了他的样子。']
+        : []),
       `你从武魂的回应里理解了${traits}。武魂定义起点，却不能替你决定终点。`
     ],
     choices: [{
       id: 'begin',
       text: '记住自己的来处，踏上魂师之路',
       path: 'begin',
-      result: { text: `你的名字是${player.name}，先天魂力${player.innatePower}级。斗罗大陆的篇章，就此展开……` },
+      ...(sameDayAsTangSan ? { marks: ['saw_tangsan_awaken'] } : {}),
+      result: { text: `你的名字是${player.name}，觉醒资质${player.innatePower}/100，起始魂力等级${Math.max(1, Math.min(10, Math.floor((Number(player.innatePower) || 0) / 10)))}级。斗罗大陆的篇章，就此展开……` },
       // 旧脚本约定：effect(G) 通过 G 代理写 store（_prologueDone 属 event store 顶层字段），
       // 与拆分前闭包直写 eventStore 的效果逐位一致。
       effect: G => {
@@ -97,21 +103,13 @@ export function buildEarlyLifeEvents(player) {
       ]
     },
     {
-      id: `early_recommendation_${player.origin}`, name: '入学资格与推荐', location: origin.place, image: origin.image,
-      text: '登记完成后，你要决定以什么方式争取进入更好的魂师学院。',
+      // 原著里唐三是带着推荐信去诺丁学院当工读生的；儿童版玩家同样从诺丁起步，之后再一起考进史莱克。
+      id: `early_recommendation_${player.origin}`, name: '去诺丁学院', location: origin.place, image: origin.image,
+      text: '登记完成后，执事交给你一封推荐信：诺丁城有一所诺丁初级魂师学院，收"工读生"——一边帮学院干活，一边跟着老师学本事。这是你成为魂师的第一站。',
       choices: [
-        { id: 'shrek_recommend', text: '接受史莱克学院的入学推荐', path: 'sect_master', result: { fate: 1, exp: 15 }, reply: '推荐信上盖下了印章。', after: 'recommended' },
-        { id: 'local_then_shrek', text: '先在当地学院打基础，再申请转入', path: 'pragmatic', result: { defense: 1, exp: 25 }, reply: '你选择稳扎稳打。', after: 'recommended' },
-        { id: 'self_recommend', text: '自荐参加史莱克的公开考核', path: 'rebel', result: { attack: 1, speed: 1 }, reply: '你在报名册上写下自己的名字。', after: 'recommended' }
-      ]
-    },
-    {
-      id: `early_enrollment_${player.origin}`, name: '报到与分班', location: '史莱克学院', image: 'assets/scenes/academy_classroom.jpg',
-      text: '几日后，你抵达史莱克学院，完成登记、核验与入学考核。',
-      choices: [
-        { id: 'combat_class', text: '选择实战班，从训练场开始', path: 'ambitious', result: { attack: 1, hp: 10 }, reply: '你决定用一次次实战赢得认可。', after: 'enrolled' },
-        { id: 'theory_class', text: '选择理论与战术班，先打牢基础', path: 'scholar', result: { defense: 1, spiritPowerGain: 1 }, reply: '你选择先理解知识，再把它变成判断。', after: 'enrolled' },
-        { id: 'balanced_class', text: '选择综合班，边学边找方向', path: 'pragmatic', result: { speed: 1, fate: 1 }, reply: '你决定在学院生活中找到真正适合自己的道路。', after: 'enrolled' }
+        { id: 'go_now', text: '收好推荐信，第二天一早就出发', path: 'pragmatic', result: { speed: 1, exp: 20 }, reply: '天还没亮你就上路了。走到诺丁城门口时，太阳刚刚升起来。', after: 'nuoding' },
+        { id: 'farewell', text: '先和家人好好告别，再出发', path: 'loyal', result: { defense: 1, exp: 20 }, reply: '家人送了你很远很远。你回头挥了好几次手，才终于走进了诺丁城。', after: 'nuoding' },
+        { id: 'study_route', text: '把推荐信读三遍，记住去诺丁的路', path: 'prudent', result: { fate: 1, exp: 20 }, reply: '你把路线背得滚瓜烂熟，一路上一次都没有走错，顺顺利利到了诺丁城。', after: 'nuoding' }
       ]
     }
   ]

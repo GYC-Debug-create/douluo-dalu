@@ -1,3 +1,4 @@
+import { travelDurationTicks } from '@/engine/time-rules'
 import { buildRingObjective, ringDestination } from './ring-hunt.js'
 import {
   explorationProgress,
@@ -14,6 +15,8 @@ const FRAME_ROUTES = Object.freeze({
   map: '/map',
   codex: '/codex'
 })
+
+export const TRAVEL_ENCOUNTER_RATES = Object.freeze({ normal:0.32, fast:0.08 })
 
 const LOCATION_ALIASES = Object.freeze({
   slk_academy: 'shrek_academy',
@@ -32,6 +35,9 @@ const LOCATION_ALIASES = Object.freeze({
   '海神岛': 'sea_god_island',
   '冰封森林': 'ice_forest',
   '杀戮之都': 'slaughter_city',
+  '试炼之城': 'slaughter_city',
+  '诺丁城': 'nuoding_city',
+  '诺丁学院': 'nuoding_city',
   '远古遗迹': 'ancient_ruins',
   '深渊裂缝': 'abyss_rift',
   '龙之谷': 'dragon_valley',
@@ -607,8 +613,9 @@ export function performMapTravel({ locations, locationId, fast, player, game, ev
   }
 
   eventStore._eventCount = (Number(eventStore._eventCount) || 0) + 1
-  if (typeof game.advanceTime === 'function') game.advanceTime()
-  else game._gameTime = (Number(game._gameTime) || 0) + 1
+  const durationTicks = travelDurationTicks(travelDays(target, useFast))
+  if (typeof game.advanceTime === 'function') game.advanceTime(durationTicks)
+  else game._gameTime = (Number(game._gameTime) || 0) + durationTicks
 
   if (Math.random() < 0.3) game._weather = Math.floor(Math.random() * 6)
   if (!isRecord(eventStore._dynamicFlags)) eventStore._dynamicFlags = {}
@@ -640,7 +647,7 @@ export function performMapTravel({ locations, locationId, fast, player, game, ev
     cost,
     useFast,
     travelDays: travelDays(target, useFast),
-    encounterRate: useFast ? 0.08 : 0.32,
+    encounterRate: useFast ? TRAVEL_ENCOUNTER_RATES.fast : TRAVEL_ENCOUNTER_RATES.normal,
     destinationPlan: buildDestinationPlan(target, player, game, eventStore, isVisited),
     revealed
   }

@@ -16,7 +16,8 @@ vi.mock('@/composables/useBattleSystem', () => ({
   }
 }))
 
-import { ORIGINS } from '@/data/game-data'
+import { ORIGINS, EVENTS } from '@/data/game-data'
+import '@/data/events-expanded'
 import { cooldownSafeEventPool, useEventEngine } from '@/composables/useEventEngine'
 import { useGameData } from '@/composables/useGameData'
 import { initNewCharacter } from '@/stores/serializer'
@@ -49,6 +50,29 @@ beforeEach(() => {
 })
 
 describe('事件与成长闭环', () => {
+  it('第六环淬炼只奖励一次，保留待突破目标且不显示吸收失败', () => {
+    const engine=useEventEngine(), player=usePlayerStore(), event=useEventStore()
+    player.level=60
+    player.rings=Array.from({length:5},(_,i)=>({ringId:`test_ring_${i}`,bonus:{}}))
+    event.pendingRingLv=60
+    const source=EVENTS.find(e=>e.id==='ring_hunt_60')
+    const before=Number(player.bonus.attack)||0
+    engine.applyChoice(source,source.choices[1],1)
+    // 永久属性奖励还受武魂特质倍率影响，断言执行成功及不会重复领取。
+    expect(player.bonus.attack).toBeGreaterThan(before)
+    expect(player.rings).toHaveLength(5)
+    expect(event.pendingRingLv).toBe(60)
+    expect(event._dynamicFlags._refinedGiftAt60).toBe(true)
+    expect(engine.checkCond(source.choices[1].cond)).toBe(false)
+    expect(engine.resultText.value).toContain('淬炼')
+    expect(engine.resultText.value).not.toContain('狂暴的魂力')
+    const snapshot=JSON.stringify(player.$state)
+    engine.applyChoice(source,source.choices[1],1)
+    expect(JSON.stringify(player.$state)).toBe(snapshot)
+    delete event._dynamicFlags._refinedGiftAt60
+    engine.applyChoice(source,source.choices[1],1)
+    expect(JSON.stringify(player.$state)).toBe(snapshot) // 旧档选择记录也能阻止重复领取
+  })
   it('战斗事件在战败时不完成，胜利后才完成并发放事件奖励', () => {
     const engine = useEventEngine()
     const eventStore = useEventStore()
@@ -154,14 +178,15 @@ describe('事件与成长闭环', () => {
     expect(cooldownSafeEventPool(pool, ['a', 'b', 'c', 'a'], ['a', 'b', 'c'])).toEqual([{ id: 'b' }])
   })
 
-  it('幂经验曲线与 legacy 层一致：40*lv^1.15，1→100 累计 367228', () => {
+  it('经验曲线：40 级前为 40*lv^1.15（与旧版一致），41 级后逐步打折，1→100 累计 260218', () => {
     expect(experienceNeededForLevel(1)).toBe(40)
     expect(experienceNeededForLevel(10)).toBe(565)
     expect(experienceNeededForLevel(17)).toBe(1040)
-    expect(experienceNeededForLevel(99)).toBe(7889)
+    expect(experienceNeededForLevel(40)).toBe(Math.round(40 * Math.pow(40, 1.15)))
+    expect(experienceNeededForLevel(99)).toBe(4339)
     const total = Array.from({ length: 99 }, (_, index) => experienceNeededForLevel(index + 1))
       .reduce((sum, value) => sum + value, 0)
-    expect(total).toBe(367228)
+    expect(total).toBe(260218)
   })
 
   it('主线与猎环事件要求玩家真实抵达目标地点', () => {
@@ -174,18 +199,18 @@ describe('事件与成长闭环', () => {
     eventStore._enrollmentComplete = true
     eventStore._firstClassDone = true
 
-    player.level = 5
-    game._currentLocation = 'shrek_academy'
+    player.level = 2
+    game._currentLocation = 'holy_soul_village'
     engine.nextEvent()
-    expect(engine.currentEvent.value?.targetId).toBe('star_duo_outer')
+    expect(engine.currentEvent.value?.targetId).toBe('nuoding_city')
     expect(engine.currentEvent.value?.id).toContain('story_travel_')
 
-    game.setLocation('star_duo_outer')
+    game.setLocation('nuoding_city')
     engine.nextEvent()
-    expect(engine.currentEvent.value?.id).toBe('first_hunt')
+    expect(engine.currentEvent.value?.id).toBe('p02_nuoding')
     expect(engine.currentEvent.value?._mainStory).toBe(true)
 
-    eventStore.doneEvents.push('first_hunt')
+    eventStore.doneEvents.push('p02_nuoding', 'p03_master')
     player.level = 10
     eventStore.pendingRingLv = 10
     game.setLocation('shrek_academy')

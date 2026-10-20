@@ -20,10 +20,17 @@ const ARCHIVE_DIR = path.resolve(DATA_DIR, 'archive');
 const TOKEN_TTL = 30 * 24 * 60 * 60 * 1000;   // Token 有效期 30 天（家用规模，减少重复登录）
 const RATE_LIMIT_WINDOW = 60 * 1000;          // 限流窗口 1 分钟
 const RATE_LIMIT_GENERAL = 60;                // 通用 API 每分钟上限
-const RATE_LIMIT_AUTH = 30;                   // 登录/注册类接口每分钟上限
+const RATE_LIMIT_AUTH = Number(process.env.RATE_LIMIT_AUTH) || 10; // 登录/注册类接口每分钟上限（按 IP；测试可调大）
 const RATE_LIMIT_SAVE = 10;                   // 存档接口每分钟上限
 const MAX_HISTORY = 5;                        // 最多保留 5 个历史版本
+const MAX_SAVES_PER_ACCOUNT = 30;             // 每个账号最多存档数，防止磁盘被灌满
+const LOGIN_MAX_FAILS = 5;                    // 同一账号连续输错次数上限
+const LOGIN_LOCK_MS = 15 * 60 * 1000;         // 超限后锁定 15 分钟（防暴力猜密码）
+const MIN_NEW_PASSWORD = 6;                   // 新设密码最短长度（老账号登录仍兼容 4 位）
 const MAX_BODY_SIZE = '2mb';
+// 内测期不开放注册：账号只能由管理员用 scripts/account-admin.js 创建。
+// 需要临时开放时设置环境变量 ALLOW_REGISTER=1（每次请求实时读取）。
+const isRegistrationOpen = () => process.env.ALLOW_REGISTER === '1';
 const ACCOUNTS_FILE = process.env.ACCOUNTS_FILE || path.resolve(DATA_DIR, 'accounts.json');
 const TOKEN_SECRET_FILE = process.env.TOKEN_SECRET_FILE || path.resolve(DATA_DIR, '.token-secret');
 
@@ -76,11 +83,38 @@ function rateLimit(maxRequests, label) {
   };
 }
 
+// 登录失败计数（按账号名）：连续输错 LOGIN_MAX_FAILS 次锁定 LOGIN_LOCK_MS，
+// 按账号而非 IP 计数，换 IP 也无法继续猜同一个账号的密码。
+const loginFailures = new Map();
+
+function loginLockRemainingMs(username) {
+  const entry = loginFailures.get(username);
+  if (!entry) return 0;
+  return Math.max(0, entry.lockedUntil - Date.now());
+}
+
+function recordLoginFailure(username) {
+  const now = Date.now();
+  const entry = loginFailures.get(username) || { count: 0, lockedUntil: 0, lastAt: 0 };
+  // 距上次失败超过锁定时长则重新计数
+  if (now - entry.lastAt > LOGIN_LOCK_MS) entry.count = 0;
+  entry.count++;
+  entry.lastAt = now;
+  if (entry.count >= LOGIN_MAX_FAILS) {
+    entry.lockedUntil = now + LOGIN_LOCK_MS;
+    entry.count = 0;
+  }
+  loginFailures.set(username, entry);
+}
+
 // 定期清理过期的限流桶（每 5 分钟）
 const rateLimitCleanupTimer = setInterval(() => {
   const now = Date.now();
   for (const [key, bucket] of rateBuckets) {
     if (now > bucket.resetTime + RATE_LIMIT_WINDOW) rateBuckets.delete(key);
+  }
+  for (const [key, entry] of loginFailures) {
+    if (now > entry.lockedUntil && now - entry.lastAt > LOGIN_LOCK_MS) loginFailures.delete(key);
   }
 }, 5 * 60 * 1000);
 rateLimitCleanupTimer.unref();
@@ -168,6 +202,9 @@ app.use('/api', (req, res, next) => {
 // 免改旧轨任何代码；真实目录仍由下方 public 静态挂载提供。
 app.use('/legacy/assets', express.static(path.join(PUBLIC_DIR, 'assets'), staticOptions));
 app.use('/legacy/data', express.static(path.join(PUBLIC_DIR, 'data'), staticOptions));
+// Docker 镜像只带 frontend/dist（public/assets 不进镜像），再挂一层 dist 下的同名目录兜底。
+app.use('/legacy/assets', express.static(path.join(FRONTEND_DIST_DIR, 'assets'), staticOptions));
+app.use('/legacy/data', express.static(path.join(FRONTEND_DIST_DIR, 'data'), staticOptions));
 
 // Vue 生产构建优先；旧 public 目录继续提供地图、图鉴、数据等兼容资源。
 app.use(express.static(FRONTEND_DIST_DIR, staticOptions));
@@ -229,17 +266,50 @@ function loadOrCreateTokenSecret() {
 const TOKEN_SECRET = loadOrCreateTokenSecret();
 
 // ---- 账号存储（文件持久化 + 原子写入） ----
+// 管理员会在服务运行期间用 scripts/account-admin.js 直接改 accounts.json：
+// 按 mtime 热加载，新建/删除/重置密码即时生效，也避免服务端把内存旧副本写回覆盖掉管理员的修改。
 let accounts = {};
+let accountsMtimeMs = -1;
 try {
   accounts = JSON.parse(fs.readFileSync(ACCOUNTS_FILE, 'utf8'));
   if (!accounts || typeof accounts !== 'object' || Array.isArray(accounts)) accounts = {};
+  accountsMtimeMs = fs.statSync(ACCOUNTS_FILE).mtimeMs;
 } catch { /* 尚无账号文件 */ }
+
+async function refreshAccounts() {
+  try {
+    const stat = await fsp.stat(ACCOUNTS_FILE);
+    if (stat.mtimeMs === accountsMtimeMs) return;
+    const parsed = JSON.parse(await fsp.readFile(ACCOUNTS_FILE, 'utf8'));
+    if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+      accounts = parsed;
+      accountsMtimeMs = stat.mtimeMs;
+    }
+  } catch (error) {
+    // 文件不存在 / 写到一半解析失败：沿用内存副本，下次请求再试
+    if (error.code !== 'ENOENT') console.warn('读取账号文件失败，沿用内存中的账号:', error.message);
+  }
+}
+
+// 账号写操作串行化，避免并发改密码时 tmp 文件互相踩踏
+let accountsWriteChain = Promise.resolve();
+function withAccountsLock(fn) {
+  const run = accountsWriteChain.then(async () => {
+    await refreshAccounts();
+    return fn();
+  });
+  accountsWriteChain = run.catch(() => {});
+  return run;
+}
 
 // 原子写账号文件（请求路径全异步：tmp + rename）
 async function saveAccounts() {
   const tmp = ACCOUNTS_FILE + '.tmp';
-  await fsp.writeFile(tmp, JSON.stringify(accounts, null, 2), 'utf8');
+  await fsp.writeFile(tmp, JSON.stringify(accounts, null, 2), { encoding: 'utf8', mode: 0o600 });
   await fsp.rename(tmp, ACCOUNTS_FILE);
+  try {
+    accountsMtimeMs = (await fsp.stat(ACCOUNTS_FILE)).mtimeMs;
+  } catch { /* 下次 refresh 会重新读 */ }
 }
 
 function isValidUsername(username) {
@@ -262,9 +332,14 @@ async function registerAccount(username, password) {
   accounts[username] = { salt, hash: await hashPassword(password, salt), createdAt: new Date().toISOString() };
   await saveAccounts();
 }
+// 账号不存在时也跑一次同等开销的 scrypt，避免靠响应耗时探测哪些账号存在。
+const DUMMY_SALT = crypto.randomBytes(16).toString('hex');
 async function verifyAccount(username, password) {
-  const entry = accounts[username];
-  if (!entry || !entry.salt || !entry.hash) return false;
+  const entry = Object.prototype.hasOwnProperty.call(accounts, username) ? accounts[username] : null;
+  if (!entry || !entry.salt || !entry.hash) {
+    await hashPassword(password, DUMMY_SALT);
+    return false;
+  }
   const expected = Buffer.from(entry.hash, 'hex');
   const actual = Buffer.from(await hashPassword(password, entry.salt), 'hex');
   return expected.length === actual.length && crypto.timingSafeEqual(expected, actual);
@@ -300,14 +375,34 @@ function validateToken(token) {
   return { username, expires };
 }
 
+// Token 只编码了过期时间，签发时间 = 过期时间 - TOKEN_TTL。
+// 改密码 / 管理员重置密码会写 passwordChangedAt，此前签发的 Token 全部作废；
+// 账号被管理员删除后，其 Token 也立即失效。
+function isSessionCurrent(session) {
+  const entry = Object.prototype.hasOwnProperty.call(accounts, session.username) ? accounts[session.username] : null;
+  if (!entry || !entry.hash) return false;
+  const changedAt = Date.parse(entry.passwordChangedAt || '') || 0;
+  return session.expires - TOKEN_TTL >= changedAt;
+}
+
 // 鉴权中间件：所有存档读写接口必须携带有效 Token
-function requireAuth(req, res, next) {
-  const session = validateToken(req.headers['x-auth-token']);
-  if (!session) {
-    return res.status(401).json({ error: '未登录或登录已过期，请重新登录' });
+async function requireAuth(req, res, next) {
+  try {
+    const session = validateToken(req.headers['x-auth-token']);
+    if (session) await refreshAccounts();
+    if (!session || !isSessionCurrent(session)) {
+      return res.status(401).json({ error: '未登录或登录已过期，请重新登录' });
+    }
+    req.authUser = session.username;
+    next();
+  } catch (error) {
+    next(error);
   }
-  req.authUser = session.username;
-  next();
+}
+
+function isLoopbackRequest(req) {
+  const ip = req.ip || '';
+  return ip === '127.0.0.1' || ip === '::1' || ip === '::ffff:127.0.0.1';
 }
 
 // ============ 存档历史版本管理 ============
@@ -347,7 +442,12 @@ async function archiveCurrentSave(playerId) {
 }
 
 // ============ 健康检查 ============
+// 公网只回 status；内存、存档数、旧轨统计等运维细节仅对本机请求开放
+//（容器内：docker exec douluo-game-app wget -qO- http://127.0.0.1:3000/api/health）。
 app.get('/api/health', rateLimit(RATE_LIMIT_GENERAL, 'health'), async (req, res) => {
+  if (!isLoopbackRequest(req)) {
+    return res.json({ status: 'ok', timestamp: new Date().toISOString() });
+  }
   const memUsage = process.memoryUsage();
   let saveCount = 0;
   try {
@@ -371,17 +471,24 @@ app.get('/api/health', rateLimit(RATE_LIMIT_GENERAL, 'health'), async (req, res)
 // ============ 注册 / 登录 ============
 app.post('/api/auth/register', rateLimit(RATE_LIMIT_AUTH, 'register'), async (req, res) => {
   try {
+    if (!isRegistrationOpen()) {
+      return res.status(403).json({ error: '暂未开放注册，请联系管理员获取账号' });
+    }
     const { username, password } = req.body || {};
     if (!isValidUsername(username)) {
       return res.status(400).json({ error: '账号需为 2-20 位字母、数字、中文或 _- 字符' });
     }
-    if (!isValidPassword(password)) {
-      return res.status(400).json({ error: '密码长度需为 4-128 位' });
+    if (!isValidPassword(password) || password.length < MIN_NEW_PASSWORD) {
+      return res.status(400).json({ error: `密码长度需为 ${MIN_NEW_PASSWORD}-128 位` });
     }
-    if (accounts[username]) {
+    const created = await withAccountsLock(async () => {
+      if (Object.prototype.hasOwnProperty.call(accounts, username)) return false;
+      await registerAccount(username, password);
+      return true;
+    });
+    if (!created) {
       return res.status(409).json({ error: '该账号已存在，请直接登录' });
     }
-    await registerAccount(username, password);
     return res.json({ success: true, username, token: generateToken(username), expiresIn: TOKEN_TTL });
   } catch (error) {
     console.error('注册失败:', error);
@@ -395,9 +502,18 @@ app.post('/api/auth/login', rateLimit(RATE_LIMIT_AUTH, 'login'), async (req, res
     if (!isValidUsername(username) || !isValidPassword(password)) {
       return res.status(400).json({ error: '账号或密码格式不正确' });
     }
+    const lockedMs = loginLockRemainingMs(username);
+    if (lockedMs > 0) {
+      const retryAfter = Math.ceil(lockedMs / 1000);
+      res.setHeader('Retry-After', retryAfter);
+      return res.status(429).json({ error: `密码输错次数过多，请 ${Math.ceil(retryAfter / 60)} 分钟后再试`, retryAfter });
+    }
+    await refreshAccounts();
     if (!(await verifyAccount(username, password))) {
+      recordLoginFailure(username);
       return res.status(401).json({ error: '账号或密码错误' });
     }
+    loginFailures.delete(username);
     return res.json({ success: true, username, token: generateToken(username), expiresIn: TOKEN_TTL });
   } catch (error) {
     console.error('登录失败:', error);
@@ -412,17 +528,33 @@ app.post('/api/auth/password', rateLimit(RATE_LIMIT_AUTH, 'password'), requireAu
     if (!isValidPassword(oldPassword) || !isValidPassword(newPassword)) {
       return res.status(400).json({ error: '密码长度需为 4-128 位' });
     }
+    if (newPassword.length < MIN_NEW_PASSWORD) {
+      return res.status(400).json({ error: `新密码至少 ${MIN_NEW_PASSWORD} 位` });
+    }
     if (oldPassword === newPassword) {
       return res.status(400).json({ error: '新密码不能与原密码相同' });
     }
-    if (!(await verifyAccount(req.authUser, oldPassword))) {
-      return res.status(401).json({ error: '原密码不正确' });
+    // 原密码同样计入失败锁定，防止拿到 Token 后借改密码接口猜原密码
+    const lockedMs = loginLockRemainingMs(req.authUser);
+    if (lockedMs > 0) {
+      return res.status(429).json({ error: `密码输错次数过多，请 ${Math.ceil(lockedMs / 60000)} 分钟后再试` });
     }
-    const salt = crypto.randomBytes(16).toString('hex');
-    accounts[req.authUser].salt = salt;
-    accounts[req.authUser].hash = await hashPassword(newPassword, salt);
-    await saveAccounts();
-    return res.json({ success: true, message: '密码修改成功' });
+    const outcome = await withAccountsLock(async () => {
+      if (!(await verifyAccount(req.authUser, oldPassword))) return { ok: false };
+      const salt = crypto.randomBytes(16).toString('hex');
+      accounts[req.authUser].salt = salt;
+      accounts[req.authUser].hash = await hashPassword(newPassword, salt);
+      accounts[req.authUser].passwordChangedAt = new Date().toISOString();
+      await saveAccounts();
+      return { ok: true };
+    });
+    if (!outcome.ok) {
+      recordLoginFailure(req.authUser);
+      // 用 403 而非 401：前端遇 401 会当作登录过期直接登出，输错原密码不该被踢下线
+      return res.status(403).json({ error: '原密码不正确' });
+    }
+    // 旧 Token（包括其他设备上的登录）随改密作废，这里给当前设备换发新 Token
+    return res.json({ success: true, message: '密码修改成功', token: generateToken(req.authUser), expiresIn: TOKEN_TTL });
   } catch (error) {
     console.error('修改密码失败:', error);
     return res.status(500).json({ error: '服务器暂时无法修改密码' });
@@ -483,6 +615,11 @@ app.post('/api/player/save', rateLimit(RATE_LIMIT_SAVE, 'save'), requireAuth, as
 
         // 归档当前版本
         await archiveCurrentSave(playerId);
+      } else {
+        const { list } = await loadPlayerList();
+        if (list.filter(item => item.owner === req.authUser).length >= MAX_SAVES_PER_ACCOUNT) {
+          return { status: 403, body: { error: `每个账号最多 ${MAX_SAVES_PER_ACCOUNT} 个存档，请先删除不用的存档` } };
+        }
       }
 
       const newVersion = currentVersion + 1;
@@ -539,12 +676,17 @@ app.get('/api/player/history/:playerId', rateLimit(RATE_LIMIT_GENERAL, 'history'
     const playerId = req.params.playerId;
     const file = getPlayerFile(playerId);
     if (!file) return res.status(400).json({ error: '存档 ID 无效' });
+    // 必须是本人名下的存档才能查历史；主档不存在/损坏时无法确认归属，一律按无历史处理，
+    // 避免任何登录用户凭 playerId 窥探别人的历史版本。
+    let owned = false;
     try {
       const data = JSON.parse(await fsp.readFile(file, 'utf8'));
       if (data.owner !== req.authUser) {
         return res.status(403).json({ error: '该存档不属于当前账号' });
       }
-    } catch { /* 主档不存在时不影响历史版本查询 */ }
+      owned = true;
+    } catch { /* 主档不存在或损坏 */ }
+    if (!owned) return res.json({ success: true, versions: [] });
     const archiveDir = getArchiveDir(playerId);
     let entries = [];
     try {
@@ -749,10 +891,13 @@ app.delete('/api/player/:playerId', rateLimit(RATE_LIMIT_SAVE, 'delete'), requir
       let existing = null;
       try {
         existing = JSON.parse(await fsp.readFile(file, 'utf8'));
-      } catch {
-        existing = null;
+      } catch (error) {
+        // 文件本就不存在：幂等成功，但不动历史目录（无法确认归属）
+        if (error.code === 'ENOENT') return { status: 200, body: { success: true } };
+        return { status: 403, body: { error: '存档已损坏，无法确认归属，请联系管理员处理' } };
       }
-      if (existing && existing.owner && existing.owner !== req.authUser) {
+      // 只有存档主人能删；未归属账号的旧档也不允许任何人删除
+      if (!existing || existing.owner !== req.authUser) {
         return { status: 403, body: { error: '该存档不属于当前账号' } };
       }
       await fsp.unlink(file).catch(() => {});
@@ -775,8 +920,19 @@ app.delete('/api/player/:playerId', rateLimit(RATE_LIMIT_SAVE, 'delete'), requir
 });
 
 // ============ 游戏数据接口 ============
-app.get('/api/spirits', (req, res) => res.json({ success: true, data: require('./public/data/spirits.json') }));
-app.get('/api/beasts', (req, res) => res.json({ success: true, data: require('./public/data/beasts.json') }));
+// 只读数据：首次请求时序列化一次并缓存字符串，避免每次请求重复 stringify 大 JSON。
+const staticJsonCache = new Map();
+function sendStaticData(res, file) {
+  let body = staticJsonCache.get(file);
+  if (!body) {
+    body = JSON.stringify({ success: true, data: require(file) });
+    staticJsonCache.set(file, body);
+  }
+  res.setHeader('Cache-Control', 'public, max-age=3600');
+  return res.type('json').send(body);
+}
+app.get('/api/spirits', (req, res) => sendStaticData(res, './public/data/spirits.json'));
+app.get('/api/beasts', (req, res) => sendStaticData(res, './public/data/beasts.json'));
 app.use('/api', (req, res) => res.status(404).json({ error: '接口不存在' }));
 
 // ============ 页面入口 ============

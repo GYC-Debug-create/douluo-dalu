@@ -11,12 +11,18 @@ export const useEventStore = defineStore('event', {
     doneEvents: [],
     completedEvents: [],
     _recentEvents: [],
+    // 普通事件重复次数：每个普通事件一局最多出现两次（第一次 + 重温一次），避免同一件事反复出现。
+    _eventRepeatCounts: {},
     // 洗牌袋抽取队列（经济规格 v2）：同批候选耗尽前不重复；键=当前地点|阶段
     _drawQueue: [],
     _drawQueueKey: '',
     _eventCount: 0,
     _storyPath: [],
     _storyDecisions: {},
+    // 世界账本：名场面里的选择留下的记号，以及"已认识"的原著人物（met:唐三），见 engine/story-marks.js。
+    _storyMarks: [],
+    // 旅程记录：每一次选择、战斗、旅行都记一笔（只存在本地/本人存档里），供复盘剧情是否连贯。
+    _journeyLog: [],
     _dynCooldowns: {},
     _pendingChain: null,
     // 兼容旧版事件脚本运行时创建的顶层 G._* 标记。
@@ -61,6 +67,21 @@ export const useEventStore = defineStore('event', {
     },
     recordChoice(eventId, choiceIndex) {
       this.choices[eventId] = choiceIndex
+    },
+    addStoryMarks(marks) {
+      if (!Array.isArray(this._storyMarks)) this._storyMarks = []
+      for (const mark of Array.isArray(marks) ? marks : [marks]) {
+        if (mark && !this._storyMarks.includes(mark)) this._storyMarks.push(mark)
+      }
+    },
+    hasStoryMark(mark) {
+      return Array.isArray(this._storyMarks) && this._storyMarks.includes(mark)
+    },
+    logJourney(entry) {
+      if (!Array.isArray(this._journeyLog)) this._journeyLog = []
+      this._journeyLog.push({ n: Number(this._eventCount) || 0, t: Date.now(), ...entry })
+      // 上限 3000 条：一局完整通关约 1500~2500 条，超出时丢弃最早的记录。
+      if (this._journeyLog.length > 3000) this._journeyLog.splice(0, this._journeyLog.length - 3000)
     },
     addDiaryEntry(entry) {
       if (!Array.isArray(this._diary)) this._diary = []

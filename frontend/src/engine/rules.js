@@ -5,6 +5,9 @@
 
 'use strict';
 
+import { ACTIONS_PER_SEASON } from './time-rules.js'
+export { ACTIONS_PER_DAY, ACTIONS_PER_SEASON, travelDurationDays, travelDurationTicks } from './time-rules.js'
+
 export function finiteNumber(value, fallback){
   const number = Number(value);
   return Number.isFinite(number) ? number : fallback;
@@ -42,6 +45,7 @@ export function findRingChoiceResult(choices, beast){
 }
 
 const EVENT_LOCATION_HINTS = [
+  [/诺丁/, 'nuoding_city'],
   [/史莱克|学院|大师|食堂|操场|宿舍|图书馆|后山|大礼堂|清水湖|练功场|课堂|自习室|校园|钟楼|冥想室/, 'shrek_academy'],
   [/星斗大森林.*(?:深处|核心|湖畔|核心区|禁忌区|黑水河)|森林深处/, 'star_duo_deep'],
   [/圣魂村|出生的小村庄|山村/, 'holy_soul_village'],
@@ -52,7 +56,7 @@ const EVENT_LOCATION_HINTS = [
   [/东海港口|东海港|港口调查|船队补给|海运委托|港口执事|船长|海上航行|出海/, 'east_sea_port'],
   [/海神岛|海滩|近海|深海|魔鲸海域/, 'sea_god_island'],
   [/极北冰原|北方冰原|冰封森林|冰原/, 'ice_forest'],
-  [/杀戮之都/, 'slaughter_city'],
+  [/杀戮之都|试炼之城/, 'slaughter_city'],
   [/远古遗迹|上古遗迹|地下遗迹|剑冢|魂骨殿|丹房|古籍阁|密室/, 'ancient_ruins'],
   [/上三宗|七宝琉璃宗/, 'seven_treasure_glaze'],
   [/昊天宗/, 'haotian_sect'],
@@ -142,6 +146,12 @@ export function levelCapForRings(ringCount){
   return count >= RING_LEVELS.length ? 100 : RING_LEVELS[count];
 }
 
+// 季节：32 个时段（4 天）换一个季节，四季循环。
+export function seasonForGameTime(gameTime){
+  const t = Math.max(0, Math.floor(finiteNumber(gameTime, 0)));
+  return ['spring', 'summer', 'autumn', 'winter'][Math.floor(t / ACTIONS_PER_SEASON) % 4];
+}
+
 // 阶段名与魂师等级称号分开：god phase 从 Lv.41 开始，并不等于已经成神。
 export function rankTitleForLevel(level){
   const value = Math.max(1, Math.floor(finiteNumber(level, 1)));
@@ -179,15 +189,26 @@ export function calculateDamage(attack, defense, options){
   return Math.max(1, Math.round(base * (finiteNumber(opt.multiplier, 1))));
 }
 
-// 成长曲线（单一来源，与 legacy game.js expNeed 完全一致）：
-// expNeed(lv) = round(40 * lv^1.15)。Lv.1 需 40，Lv.10 需 565，Lv.99 需 7889，
-// 1→100 累计 367,228 经验。事件奖励档位按此标定：
-// academy≈1000 / adventure≈2000 / master≈4000 / god≈8000（满选项均值），
-// 单局约 101 个满选项事件走完 1→100；全池目标 ≥10× 累计需求。
+// 成长曲线（单一来源）：
+// expNeed(lv) = round(40 * lv^1.15 * 后期折扣)。Lv.1 需 40，Lv.10 需 565，Lv.50 需 3192，Lv.99 需 4339，
+// 1→100 累计 260,218 经验（儿童版加入后期折扣前为 367,228）。
+// 40 级以前与旧版完全一致；旧轨 legacy game.js 仍使用无折扣的旧公式（旧轨已停止维护）。
+// 儿童版节奏调整：41 级以后所需经验逐步打折（到 80 级起只需原来的 55%），
+// 让后期每一级大约 3~4 次行动，不再出现"连续几十次行动升不了一级"。
+export function lateGameExpMultiplier(level){
+  const lv = Math.max(1, Math.floor(finiteNumber(level, 1)));
+  if(lv <= 40) return 1;
+  return 1 - 0.45 * Math.min(1, (lv - 40) / 40);
+}
+
 export function experienceNeededForLevel(level){
   const normalizedLevel = Math.max(1, Math.floor(finiteNumber(level, 1)));
-  return Math.round(40 * Math.pow(normalizedLevel, 1.15));
+  return Math.round(40 * Math.pow(normalizedLevel, 1.15) * lateGameExpMultiplier(normalizedLevel));
 }
+
+// 卡在魂环门槛时，最多暂存 1.5 级的经验。超出部分由结算层折成金币并提示去猎环，
+// 避免拿到魂环后一口气连升十级、跳过一整段内容。
+export const OVERFLOW_LEVEL_LIMIT = 1.5;
 
 export function advanceExperience(stateValue, amount, expNeed){
   const state = stateValue && typeof stateValue === 'object' ? stateValue : {};
@@ -200,10 +221,14 @@ export function advanceExperience(stateValue, amount, expNeed){
   const ringCount = Math.max(0, Math.floor(finiteNumber(state.ringCount, Array.isArray(state.rings) ? state.rings.length : 0)));
   const cap = levelCapForRings(ringCount);
   const levels = [];
+  let wasted = 0;
 
   while(level < 100 && remaining > 0){
     if(level >= cap){
-      overflowExp += remaining;
+      const limit = Math.max(1, Math.round(OVERFLOW_LEVEL_LIMIT * Math.max(1, finiteNumber(needFor(cap), 1))));
+      const stored = overflowExp + remaining;
+      overflowExp = Math.min(stored, limit);
+      wasted = Math.max(0, stored - limit);
       remaining = 0;
       break;
     }
@@ -223,7 +248,9 @@ export function advanceExperience(stateValue, amount, expNeed){
     exp = 0;
     overflowExp = 0;
   }
-  return { level, exp, overflowExp, levels, capped: level < 100 && level >= cap };
+  const result = { level, exp, overflowExp, levels, capped: level < 100 && level >= cap };
+  if(wasted > 0) result.wasted = wasted;
+  return result;
 }
 
 function escapeHtml(text){
@@ -249,6 +276,46 @@ export function richText(text){
     safe = safe.replace(pattern, replacement);
   }
   return safe;
+}
+
+// 剧情占位符（单一来源）：{name}=主角名、{spirit}=武魂名、{ringLabel}=本次魂环名、{origin}=出身。
+// 文本会以 v-html 渲染，替换值一律先转义，防止玩家名注入标签。未提供的占位符用中性兜底词，
+// 保证玩家永远看不到花括号原文。
+const TEMPLATE_FALLBACKS = Object.freeze({ name: '你', spirit: '武魂', ringLabel: '新的魂环', origin: '家乡' })
+export function fillTemplate(text, values = {}){
+  if(text == null) return text;
+  return String(text).replace(/\{(name|spirit|ringLabel|origin)\}/g, (_, key) => {
+    const value = values[key];
+    return escapeHtml(value === undefined || value === null || value === '' ? TEMPLATE_FALLBACKS[key] : value);
+  });
+}
+
+// 对整个事件做占位符替换：正文、选项文本、选项结果文本、条件提示。返回新对象，不改原数据。
+export function fillEventTemplates(event, values = {}){
+  if(!event || typeof event !== 'object') return event;
+  const fill = text => typeof text === 'string' ? fillTemplate(text, values) : text;
+  const text = Array.isArray(event.text) ? event.text.map(fill) : fill(event.text);
+  const choices = Array.isArray(event.choices) ? event.choices.map(choice => {
+    if(!choice || typeof choice !== 'object') return choice;
+    const next = { ...choice, text: fill(choice.text) };
+    if(typeof choice.reply === 'string') next.reply = fill(choice.reply);
+    if(typeof choice.requirementHint === 'string') next.requirementHint = fill(choice.requirementHint);
+    if(choice.result && typeof choice.result === 'object' && typeof choice.result.text === 'string'){
+      next.result = { ...choice.result, text: fill(choice.result.text) };
+    }
+    if(choice.result?.defeatOutcome && typeof choice.result.defeatOutcome.text === 'string'){
+      next.result = { ...(next.result || choice.result), defeatOutcome: { ...choice.result.defeatOutcome, text: fill(choice.result.defeatOutcome.text) } };
+    }
+    if(Array.isArray(choice.replyVariants)){
+      next.replyVariants = choice.replyVariants.map(variant => ({ ...variant, text: fill(variant.text) }));
+    }
+    return next;
+  }) : event.choices;
+  // 名场面专用字段（engine/story-marks.js）：按记号追加的段落与收尾段落也要替换占位符。
+  const extra = {};
+  if(Array.isArray(event.variants)) extra.variants = event.variants.map(variant => ({ ...variant, text: fill(variant.text) }));
+  if(typeof event.closing === 'string') extra.closing = fill(event.closing);
+  return { ...event, ...extra, name: fill(event.name), text, choices };
 }
 
 // 纯文本：剥离全部标签（<br> 转为换行）并还原常见实体，供日记等纯文本展示场景。

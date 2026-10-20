@@ -2,6 +2,11 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 
 const routes = [
   {
+    path: '/design',
+    name: 'design',
+    component: () => import('@/pages/NumericalDesignPage.vue')
+  },
+  {
     path: '/',
     name: 'title',
     component: () => import('@/pages/TitlePage.vue')

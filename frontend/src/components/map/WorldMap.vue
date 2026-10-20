@@ -38,6 +38,7 @@
         :busy="busy"
         @close="selectedId = ''"
         @travel="$emit('travel', $event)"
+        @glimpse="$emit('glimpse', $event)"
       />
 
       <div class="map-controls" aria-label="地图缩放">
@@ -86,7 +87,7 @@ const props = defineProps({
   busy: { type: Boolean, default: false }
 })
 
-defineEmits(['travel'])
+defineEmits(['travel', 'glimpse'])
 
 const selectedId = ref('')
 const rumorOpen = ref(false)

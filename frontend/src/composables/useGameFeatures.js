@@ -10,6 +10,8 @@ import { useBattleSystem } from '@/composables/useBattleSystem'
 import { markSaveDirty } from '@/stores/serializer'
 import { advanceExperience, previewDailySign, recordDailySign } from '@/engine/rules'
 import { resolveConsumable } from '@/engine/item-effects'
+import { itemPurchaseAvailability, ACHIEVEMENT_REWARD } from '@/engine/economy-rules'
+import { NPC_INTERACTIONS } from '@/engine/relationship-rules'
 import {
   ACHIEVEMENTS, CHALLENGE_TOWER, DAILY_REWARDS, FORGE_RECIPES,
   NPC_RELATION_LEVELS, QUESTS, SHOP_ITEMS, SKILL_TREE, TITLES, TRAINING_OPTIONS
@@ -21,15 +23,6 @@ export const FORMATIONS = [
   { id: 'defense', name: '铁桶阵', desc: '稳扎稳打', bonus: '防御+20%，攻击-5%' },
   { id: 'speed', name: '疾风阵', desc: '抢占先机', bonus: '速度+25%' },
   { id: 'spirit', name: '聚灵阵', desc: '凝聚魂力', bonus: '最大魂力与恢复+30%' }
-]
-
-const NPC_INTERACTIONS = [
-  { id: 'talk', name: '闲谈', cost: 0, affinity: 3, cooldown: 3 },
-  { id: 'gift_small', name: '赠送小礼', cost: 100, affinity: 8, cooldown: 2 },
-  { id: 'gift_big', name: '赠送重礼', cost: 500, affinity: 20, cooldown: 5 },
-  { id: 'spar', name: '切磋武艺', cost: 0, affinity: 15, cooldown: 5, type: 'battle' },
-  { id: 'help', name: '协助事务', cost: 0, affinity: 10, cooldown: 4, reqLevel: 10 },
-  { id: 'feast', name: '设宴款待', cost: 1000, affinity: 35, cooldown: 10, reqLevel: 15 }
 ]
 
 function localDateKey() {
@@ -133,10 +126,11 @@ export function useGameFeatures() {
 
   function buyItem(itemId) {
     const item = SHOP_ITEMS.find(entry => entry.id === itemId)
-    if (!item || (item.reqLevel && player.level < item.reqLevel)) return
-    if (player.gold < item.price) return ui.notify('金币不足', 'warning')
+    const availability = itemPurchaseAvailability(item, player)
+    if (!availability.ok) return ui.notify(availability.reason, 'warning')
     player.gold -= item.price
-    if (item.type === 'exp') awardExp(item.value)
+    // 经验丹按当前等级给半级经验，后期也有用（原来固定 400 点，后期等于没有）。
+    if (item.type === 'exp') awardExp(Math.max(Number(item.value) || 0, Math.round(expNeeded(player.level) * 0.5)))
     else if (item.type === 'fate') player.fatePoints += item.value
     else {
       const owned = player.inventory.find(entry => entry.id === item.id || entry.name === item.name)
@@ -291,82 +285,11 @@ export function useGameFeatures() {
       if (!met) continue
       unlocked.push(achievement.id)
       unlockedCount++
-      addGold(50); awardExp(20)
-      if (notify) ui.notify(`解锁成就「${achievement.name}」，奖励金币+50、经验+20`, 'gold')
+      addGold(ACHIEVEMENT_REWARD.gold); awardExp(ACHIEVEMENT_REWARD.exp)
+      if (notify) ui.notify(`解锁成就「${achievement.name}」，奖励金币+${ACHIEVEMENT_REWARD.gold}、经验+${ACHIEVEMENT_REWARD.exp}`, 'gold')
     }
     markSaveDirty(error => ui.notify(`成就进度保存失败：${error.message}`, 'error', 5000))
     return unlockedCount
-  }
-
-  /**
-   * 简单模式把被隐藏页面里的无风险收益全部代办：孩子不需要知道签到、任务、
-   * 技能树和称号，也不会因为没打开这些页面而少拿奖励。只做确定收益，不自动
-   * 消费金币、不锻造、不挑战，避免替玩家承担随机或不可逆风险。
-   */
-  function runSimpleModeAutomation(todayKey) {
-    if (gameStore._simpleMode === false || !player.name) return { changed: false, messages: [] }
-    const messages = []
-    let changed = false
-
-    const sign = dailySign(todayKey, { silent: true })
-    if (sign.changed) {
-      changed = true
-      messages.push(`今天奖励已自动领取：${sign.items.slice(1).join('、') || '已放进背包'}`)
-    }
-
-    // 奖励可能带来升级并完成下一条任务，因此最多做三轮，直到没有新任务可领。
-    let questCount = 0
-    for (let pass = 0; pass < 3; pass++) {
-      let claimedThisPass = 0
-      for (const quest of QUESTS) {
-        if (claimQuest(quest.id, { silent: true })) {
-          claimedThisPass++
-          questCount++
-        }
-      }
-      if (!claimedThisPass) break
-    }
-    if (questCount) {
-      changed = true
-      messages.push(`${questCount}份完成奖励已自动收好`)
-    }
-
-    // 防守优先、四路轮换。该顺序没有随机性，也不会改变完整模式下的重置能力。
-    const branchOrder = ['defense', 'offense', 'spirit', 'agility']
-    let learned = 0
-    let guard = 0
-    while (totalSkillPoints() > usedSkillPoints() && guard++ < 100) {
-      const available = branchOrder
-        .map(key => SKILL_TREE[key]?.nodes.find(node => !player._skillTree[node.id] && node.req.every(id => player._skillTree[id])))
-        .filter(Boolean)
-      const pointsLeft = totalSkillPoints() - usedSkillPoints()
-      const node = available.find(candidate => candidate.cost <= pointsLeft)
-      if (!node) break
-      player._skillTree[node.id] = true
-      learned++
-    }
-    if (learned) {
-      applySkillBonuses()
-      changed = true
-      messages.push(`自动变强 ${learned} 次`)
-    }
-
-    const achievementCount = checkAchievements(false)
-    if (achievementCount) {
-      changed = true
-      messages.push(`${achievementCount}份成长奖励已自动收好`)
-    }
-
-    const titles = unlockedTitles()
-    const bestTitle = titles[titles.length - 1]
-    if (bestTitle && flags.value._activeTitle !== bestTitle.id) {
-      flags.value._activeTitle = bestTitle.id
-      if (!player._titles.includes(bestTitle.id)) player._titles.push(bestTitle.id)
-      changed = true
-    }
-
-    if (changed) persist('')
-    return { changed, messages }
   }
 
   function unlockedTitles() {
@@ -404,7 +327,7 @@ export function useGameFeatures() {
     const key = `${npcId}_${interaction.id}`
     if (Object.hasOwn(gameStore._npcCooldowns, key)) {
       const remaining = interaction.cooldown - (gameStore._gameTime - gameStore._npcCooldowns[key])
-      if (remaining > 0) return { ok: false, reason: `冷却${remaining}次行动` }
+      if (remaining > 0) return { ok: false, reason: `冷却${remaining}个游戏时段` }
     }
     return { ok: true }
   }
@@ -501,11 +424,9 @@ export function useGameFeatures() {
         gameStore._towerFloor = floor.floor
         addGold(floor.reward.gold || 0)
         awardExp(floor.reward.exp || 0)
-        // 魂骨碎片仅首通发放（T15，判例 21）：避免每层反复通关白嫖碎片
+        // 儿童版不再提供锻造入口，挑战塔首通改为记录一次荣誉，不再发放无处可用的魂骨碎片。
         if (isFirstClear) {
-          const tier = floor.floor >= 15 ? 3 : floor.floor >= 8 ? 2 : 1
-          player._forgeBones.push({ source: `挑战塔第${floor.floor}层·首通`, tier, obtainedAt: Date.now() })
-          addDiary(`首通挑战塔第${floor.floor}层，获得${tier}阶魂骨碎片。`, 'battle')
+          addDiary(`首次登上挑战塔第${floor.floor}层「${floor.name}」！`, 'battle')
         } else {
           addDiary(`再次通关挑战塔第${floor.floor}层，获得金币与经验。`, 'battle')
         }
@@ -525,10 +446,10 @@ export function useGameFeatures() {
     player, combat, eventStore, gameStore, data, flags, snapshot,
     SHOP_ITEMS, DAILY_REWARDS, SKILL_TREE, FORGE_RECIPES, TRAINING_OPTIONS,
     QUESTS, ACHIEVEMENTS, TITLES, FORMATIONS, CHALLENGE_TOWER, NPC_INTERACTIONS,
-    useInventoryItem, buyItem, signPreview, dailySign,
+    useInventoryItem, buyItem, canBuyItem: item => itemPurchaseAvailability(item, player), signPreview, dailySign,
     totalSkillPoints, usedSkillPoints, learnSkill, resetSkills,
     forge, train, questProgress, claimQuest, checkAchievements,
-    combatPower, unlockedTitles, equipTitle, selectFormation, runSimpleModeAutomation,
+    combatPower, unlockedTitles, equipTitle, selectFormation,
     relationLevel, canInteract, interactNpc, startNpcSpar, startTower
   }
 }

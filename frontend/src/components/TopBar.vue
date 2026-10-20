@@ -1,61 +1,57 @@
 <template>
-  <div class="game-topbar">
+  <div ref="barRef" class="game-topbar">
     <div class="gt-title">斗罗大陆 · 武魂觉醒</div>
     <div class="top-btns">
-      <details class="top-group">
-        <summary>常用</summary>
+      <details v-for="group in GROUPS" :key="group.label" class="top-group" @toggle="onToggle">
+        <summary>{{ group.label }}</summary>
         <div class="top-group-menu">
-          <button class="top-btn" @click="$emit('action', 'bag')">背包</button>
-          <button v-if="!simpleMode" class="top-btn" @click="$emit('action', 'shop')">商店</button>
-          <button class="top-btn" @click="$emit('action', 'map')">地图</button>
-          <button class="top-btn" style="color:#7fc48c" @click="$emit('action', 'travel')">旅行</button>
-          <button v-if="!simpleMode" class="top-btn" @click="$emit('action', 'quests')">任务</button>
-          <button class="top-btn" @click="$emit('action', 'signin')">签到</button>
-        </div>
-      </details>
-      <details v-if="!simpleMode" class="top-group">
-        <summary>成长</summary>
-        <div class="top-group-menu">
-          <button class="top-btn" style="color:#e6c878" @click="$emit('action', 'skilltree')">技能树</button>
-          <button class="top-btn" @click="$emit('action', 'bone')">魂骨</button>
-          <button class="top-btn" @click="$emit('action', 'forge')">锻造</button>
-          <button class="top-btn" @click="$emit('action', 'train')">修炼</button>
-          <button class="top-btn" @click="$emit('action', 'tower')">挑战塔</button>
-          <button class="top-btn" style="color:#88ccff" @click="$emit('action', 'formation')">阵法</button>
-          <button class="top-btn" style="color:#e6c878" @click="$emit('action', 'achievement')">成就</button>
-          <button class="top-btn" style="color:#e6c878" @click="$emit('action', 'title')">称号</button>
-        </div>
-      </details>
-      <details v-if="!simpleMode" class="top-group">
-        <summary>人物与图鉴</summary>
-        <div class="top-group-menu">
-          <button class="top-btn" @click="$emit('action', 'npc')">人物</button>
-          <button class="top-btn" style="color:#ff8ab8" @click="$emit('action', 'relation')">关系</button>
-          <button class="top-btn" @click="$emit('action', 'codex')">万象图鉴</button>
-        </div>
-      </details>
-      <details class="top-group">
-        <summary>系统</summary>
-        <div class="top-group-menu">
-          <button class="top-btn" @click="$emit('action', 'save')">存档</button>
-          <button class="top-btn" style="color:#a78bfa" @click="$emit('action', 'help')">帮助</button>
-          <button class="top-btn" style="color:#88ddaa" @click="$emit('action', 'mode')">{{ simpleMode ? '完整模式' : '简单模式' }}</button>
-          <button class="top-btn" @click="$emit('action', 'home')">返回主页</button>
+          <button
+            v-for="item in group.items"
+            :key="item.action"
+            class="top-btn"
+            :style="item.color ? { color: item.color } : null"
+            @click="onAction(item.action)"
+          >{{ item.label }}</button>
         </div>
       </details>
     </div>
-    <div v-if="!simpleMode" class="time-weather-display">{{ timeWeatherText }}</div>
+    <div class="time-weather-display">{{ timeWeatherText }}</div>
   </div>
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useGameStore } from '@/stores/game'
 
 const gameStore = useGameStore()
+const emit = defineEmits(['action'])
+const barRef = ref(null)
 
-// 简单模式（低龄化默认）：只保留小朋友能看懂的入口，其余菜单整体隐藏。
-const simpleMode = computed(() => gameStore._simpleMode !== false)
+// 儿童版（8~12 岁）只保留一套菜单：看得懂、用得上的入口。
+// 锻造、阵法、修炼、称号、任务板这类偏数值管理的系统不再提供入口（旧存档的已有加成照常生效）。
+const GROUPS = Object.freeze([
+  { label: '常用', items: [
+    { action: 'bag', label: '背包' },
+    { action: 'shop', label: '商店' },
+    { action: 'map', label: '地图', color: '#7fc48c' },
+    { action: 'signin', label: '签到' }
+  ] },
+  { label: '成长', items: [
+    { action: 'skilltree', label: '技能树', color: '#e6c878' },
+    { action: 'tower', label: '挑战塔' },
+    { action: 'achievement', label: '成就徽章', color: '#e6c878' }
+  ] },
+  { label: '伙伴与图鉴', items: [
+    { action: 'npc', label: '伙伴', color: '#ff8ab8' },
+    { action: 'diary', label: '冒险日记' },
+    { action: 'codex', label: '万象图鉴' }
+  ] },
+  { label: '系统', items: [
+    { action: 'save', label: '存档' },
+    { action: 'help', label: '怎么玩', color: '#a78bfa' },
+    { action: 'home', label: '返回主页' }
+  ] }
+])
 
 const TIME_PERIODS = ['黎明', '上午', '正午', '午后', '黄昏', '夜晚', '深夜', '凌晨']
 const WEATHER_TYPES = ['晴朗', '多云', '小雨', '大雨', '雷暴', '雾', '雪']
@@ -66,7 +62,39 @@ const timeWeatherText = computed(() => {
   return `${time} · ${weather}`
 })
 
-defineEmits(['action'])
+function closeAll(except = null) {
+  barRef.value?.querySelectorAll('details.top-group[open]').forEach(el => {
+    if (el !== except) el.open = false
+  })
+}
+
+// 同一时间只展开一组菜单
+function onToggle(event) {
+  if (event.target.open) closeAll(event.target)
+}
+
+// 点了菜单项后收起菜单
+function onAction(action) {
+  closeAll()
+  emit('action', action)
+}
+
+// 点菜单外面任意位置收起菜单
+function onDocumentPointer(event) {
+  if (barRef.value && !barRef.value.contains(event.target)) closeAll()
+}
+function onKeydown(event) {
+  if (event.key === 'Escape') closeAll()
+}
+
+onMounted(() => {
+  document.addEventListener('pointerdown', onDocumentPointer)
+  document.addEventListener('keydown', onKeydown)
+})
+onBeforeUnmount(() => {
+  document.removeEventListener('pointerdown', onDocumentPointer)
+  document.removeEventListener('keydown', onKeydown)
+})
 </script>
 
 <style scoped>

@@ -6,7 +6,7 @@
  * 动态/连锁事件检查。计算委托 engine/event-draw.js 与 engine/event-rules.js。
  */
 import { buildGProxy } from '@/stores/g-proxy'
-import { classifyEventLocation, phaseForLevel, GLOBAL_LOCATION_PREFIX } from '@/engine/rules'
+import { classifyEventLocation, phaseForLevel, GLOBAL_LOCATION_PREFIX, seasonForGameTime } from '@/engine/rules'
 import { getSpiritBonus as getTraitSpiritBonus } from '@/engine/traits'
 import { cooldownSafeEventPool, eventMatchBonus as matchBonusFor, drawFromBagPure } from '@/engine/event-draw'
 import { adaptEvent, isEventEligible } from '@/engine/event-rules'
@@ -42,8 +42,9 @@ export function useEventCandidates(deps) {
     const level = Number(player.level) || 1
     const gameTime = Number(gameStore._gameTime) || 0
     const timeOfDay = ['dawn', 'day', 'day', 'day', 'dusk', 'night', 'night', 'night'][gameTime % 8]
-    // 季节随游戏时间循环（T17）：春夏秋冬四季，事件可按 season 标注限定
-    const season = ['spring', 'summer', 'autumn', 'winter'][gameTime % 4]
+    // 季节：每 8 次行动是一天（时段循环），每 4 天换一个季节。
+    // 原来每次行动就换一季，等于一天之内过完四季。
+    const season = seasonForGameTime(gameTime)
     return {
       level,
       origin: player.origin || '',
@@ -56,6 +57,8 @@ export function useEventCandidates(deps) {
       combo: Number(battleSystem.combo?.value) || Number(combatStore._maxCombo) || 0,
       timeOfDay,
       season,
+      // 世界账本：支线按"认识了谁、故事走到哪一步"过滤（engine/story-marks.js）
+      storyMarks: Array.isArray(eventStore._storyMarks) ? eventStore._storyMarks : [],
       ...overrides
     }
   }
@@ -94,6 +97,12 @@ export function useEventCandidates(deps) {
     // 通过 classifyEventLocation 判断
     const info = classifyEventLocation(ev.location, data.value.mapData)
     if (info.scope === 'global') return true
+    // "学院·食堂""宿舍"这类没写明是哪所学院的校园事件，发生在玩家当前就读的学院：
+    // 入学史莱克之前是诺丁学院，之后是史莱克学院。
+    if (info.scope === 'mapped' && info.id === 'shrek_academy' && !String(ev.location).includes('史莱克')) {
+      const joinedShrek = Array.isArray(eventStore._storyMarks) && eventStore._storyMarks.includes('joined_shrek')
+      return currentLoc === (joinedShrek ? 'shrek_academy' : 'nuoding_city')
+    }
     return info.scope === 'mapped' && info.id === currentLoc
   }
 
@@ -114,9 +123,12 @@ export function useEventCandidates(deps) {
       for (const id of index.byLocation.get(currentLoc)) candidates.add(id)
     }
     const pool = []
+    const repeats = eventStore._eventRepeatCounts || {}
     for (const id of candidates) {
       const event = index.adapted.get(id)
       if (!event) continue
+      // 已经重温过一次的普通事件不再出现（一局最多两次）
+      if ((Number(repeats[id]) || 0) >= 1) continue
       if (isEventEligible(event, eventContext({
         isMainStory: false,
         isRingHunt: false,

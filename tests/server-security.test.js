@@ -4,6 +4,9 @@
 const os = require('node:os');
 process.env.ACCOUNTS_FILE = process.env.ACCOUNTS_FILE || require('node:path').join(os.tmpdir(), `douluo-test-accounts-${process.pid}.json`);
 process.env.TOKEN_SECRET_FILE = process.env.TOKEN_SECRET_FILE || require('node:path').join(os.tmpdir(), `douluo-test-secret-${process.pid}.key`);
+// 生产默认关闭注册；测试借注册接口快速建号，单独用例再验证关闭时被拒。
+process.env.ALLOW_REGISTER = '1';
+process.env.RATE_LIMIT_AUTH = '200';
 
 const test = require('node:test');
 const assert = require('node:assert/strict');
@@ -100,12 +103,12 @@ test('修改密码：验证原密码，修改后旧密码失效', async t => {
   const first = await login('oldpass1');
   assert.equal(first.status, 200);
 
-  // 原密码错误 → 401
+  // 原密码错误 → 403（不是 401，前端遇 401 会直接登出）
   const wrongOld = await fetch(base + '/api/auth/password', {
     method:'POST', headers:{ 'content-type':'application/json', ...authHeaders(first.json.token) },
     body:JSON.stringify({ oldPassword:'not-the-password', newPassword:'newpass2' })
   });
-  assert.equal(wrongOld.status, 401);
+  assert.equal(wrongOld.status, 403);
 
   // 新密码与原密码相同 → 400
   const sameAsOld = await fetch(base + '/api/auth/password', {
@@ -311,4 +314,58 @@ test('T27 服务器存档 save → load 往返一致（账号登录后）', asyn
     method:'DELETE', headers: authHeaders(token)
   });
   assert.equal(delRes.status, 200);
+});
+
+test('内测模式：未开放注册时注册接口一律 403', async t => {
+  const { server, base } = await listen();
+  t.after(() => new Promise(resolve => server.close(resolve)));
+  process.env.ALLOW_REGISTER = '0';
+  t.after(() => { process.env.ALLOW_REGISTER = '1'; });
+  const res = await fetch(base + '/api/auth/register', {
+    method:'POST', headers:{ 'content-type':'application/json' },
+    body:JSON.stringify({ username:'不该建成_' + Date.now().toString(36), password:'pass1234' })
+  });
+  assert.equal(res.status, 403);
+});
+
+test('登录连续输错 5 次后锁定，正确密码也要等锁定结束', async t => {
+  const { server, base } = await listen();
+  t.after(() => new Promise(resolve => server.close(resolve)));
+  const username = '锁定账号_' + Date.now().toString(36);
+  await register(base, username, 'right-pass');
+  const attempt = password => fetch(base + '/api/auth/login', {
+    method:'POST', headers:{ 'content-type':'application/json' },
+    body:JSON.stringify({ username, password })
+  });
+  for (let i = 0; i < 5; i++) assert.equal((await attempt('wrong-pass')).status, 401);
+  assert.equal((await attempt('right-pass')).status, 429, '锁定期内正确密码也被拒');
+});
+
+test('改密后旧 Token 立即失效，改密响应换发的新 Token 可用', async t => {
+  const { server, base } = await listen();
+  t.after(() => new Promise(resolve => server.close(resolve)));
+  const username = '换发账号_' + Date.now().toString(36);
+  const oldToken = await register(base, username, 'first-pass');
+  const change = await fetch(base + '/api/auth/password', {
+    method:'POST', headers:{ 'content-type':'application/json', ...authHeaders(oldToken) },
+    body:JSON.stringify({ oldPassword:'first-pass', newPassword:'second-pass' })
+  });
+  assert.equal(change.status, 200);
+  const { token: newToken } = await change.json();
+  assert.ok(newToken, '改密响应应携带新 Token');
+  assert.equal((await fetch(base + '/api/player/list', { headers: authHeaders(oldToken) })).status, 401);
+  assert.equal((await fetch(base + '/api/player/list', { headers: authHeaders(newToken) })).status, 200);
+});
+
+test('未归属账号的旧存档：任何登录用户都不能删除或查看历史', async t => {
+  const { server, base } = await listen();
+  t.after(() => new Promise(resolve => server.close(resolve)));
+  const token = await register(base, '越权账号_' + Date.now().toString(36), 'pass1234');
+  const playerId = 'p_unowned_' + Date.now().toString(36);
+  const file = getPlayerFile(playerId);
+  fs.writeFileSync(file, JSON.stringify({ name:'无主旧档', gameMode:'text-rpg' }));
+  t.after(() => fs.rmSync(file, { force:true }));
+  const del = await fetch(base + '/api/player/' + playerId, { method:'DELETE', headers: authHeaders(token) });
+  assert.equal(del.status, 403);
+  assert.ok(fs.existsSync(file), '无主旧档不应被删除');
 });

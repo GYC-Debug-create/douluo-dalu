@@ -42,7 +42,7 @@ export const LOCATION_EVENTS = [
   {
     id: 'east_port_commission_supply_manifest', name: '船队补给账册', location: '东海港口·补给码头', phase: 'adventure', minLevel: 20,
     locationActionType: 'local_commission', image: 'assets/scenes/blacksmith.jpg', unique: true, weight: 8,
-    text: ['港口执事委托你核对三艘船的补给账册，其中一船的淡水数量与登记不符。', '缺口不大，却足以让深海航行变成一场赌命。'],
+    text: ['港口执事委托你核对三艘船的补给账册，其中一船的淡水数量与登记不符。', '缺口不大，却足以让深海航行变得非常危险。'],
     choices: [
       { text: '追查少掉的淡水', result: { gold: 45, exp: 2480, text: '你在旧仓底找到被挪用的水囊，补给账册恢复准确。' } },
       { text: '直接补齐缺口并记账', result: { gold: 30, fate: 1, text: '你先补齐缺口再追责，船队得以按时出航，执事记下了你的可靠。' } }

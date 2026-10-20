@@ -13,7 +13,8 @@ export const RING_DESTINATIONS = Object.freeze({
   20: { id: 'star_duo_outer', name: '星斗大森林·外围' },
   30: { id: 'star_duo_deep', name: '星斗大森林·深处' },
   40: { id: 'star_duo_deep', name: '星斗大森林·深处' },
-  50: { id: 'sunset_forest', name: '落日森林' },
+  // 第五环的猎物（暗金恐爪熊、人面魔蛛）生活在星斗大森林深处，与事件文本一致
+  50: { id: 'star_duo_deep', name: '星斗大森林·深处' },
   60: { id: 'wuhun_city', name: '武魂城' },
   70: { id: 'star_duo_deep', name: '星斗大森林·深处' },
   80: { id: 'sea_god_island', name: '海神岛' },
@@ -106,11 +107,17 @@ export function buildFirstHuntStatus({ level = 1, ringCount = 0 } = {}) {
   const currentRings = Math.max(0, Math.min(9, Math.floor(Number(ringCount) || 0)))
   if (currentRings > 0) {
     const nextLevel = currentRings < 9 ? (currentRings + 1) * 10 : null
+    const owned = currentRings === 1 ? '已经拥有第1魂环' : `已经拥有${currentRings}个魂环`
+    const nextText = !nextLevel
+      ? ''
+      : currentLevel >= nextLevel
+        ? `第${currentRings + 1}魂环的猎取资格已经解锁。`
+        : `第${currentRings + 1}魂环将在 Lv.${nextLevel} 解锁。`
     return {
       state: 'ring-owned',
-      intro: `你当前 Lv.${currentLevel}，已经拥有第1魂环。这是补做学院实战课，不会重复授予魂环。`,
+      intro: `你当前 Lv.${currentLevel}，${owned}。这是补上的学院实战课，不会重复授予魂环。`,
       result: nextLevel
-        ? `✦ 实战训练完成。你已拥有第1魂环，本次训练不会重复授环；第${currentRings + 1}魂环将在 Lv.${nextLevel} 解锁。`
+        ? `✦ 实战训练完成。你${owned}，本次训练不会重复授环；${nextText}`
         : '✦ 实战训练完成。你已拥有全部九个魂环，本次训练不会重复授环。'
     }
   }
@@ -172,7 +179,7 @@ export function prepareFirstRingEvent(event, player, stats = {}, huntingKnowledg
     choices,
     text: [
       ...(Array.isArray(event.text) ? event.text : []),
-      `当前评估：先天魂力 ${innatePower}，生命状态 ${Math.round(hpRatio * 100)}%。年限越高，魂兽更强、吸收收益也更高；战败不会获得魂环，需历练两次后重新搜寻。`
+      `当前评估：觉醒资质 ${innatePower}/100，生命状态 ${Math.round(hpRatio * 100)}%。年限越高，魂兽更强、吸收收益也更高；战败不会获得魂环，需历练两次后重新搜寻。`
     ]
   }
 }

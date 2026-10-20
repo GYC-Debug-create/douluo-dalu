@@ -9,7 +9,7 @@
       "tian_dou": "天斗帝国",
       "sea": "海神领域",
       "ice": "极北冰原",
-      "slaughter": "杀戮之地",
+      "slaughter": "试炼之地",
       "ancient": "远古遗迹",
       "abyss": "深渊之地",
       "sky": "天空领域",
@@ -32,10 +32,37 @@
       "description": "大陆第一怪物学院，只收怪物不收普通人。由弗兰德、柳二龙、玉小刚共同创立，以培养顶尖魂师为己任。",
       "region": "shrek",
       "unlockedLevel": 1,
-      "events": ["修炼", "教学", "竞技", "考核", "毕业", "导师授课", "团队训练", "魂师大赛"],
-      "npcs": ["弗兰德", "柳二龙", "玉小刚", "赵无极", "唐三", "小舞", "戴沐白", "朱竹清", "宁荣荣", "奥斯卡", "马红俊"],
-      "specialConditions": ["无"],
-      "connectedTo": ["star_duo_outer", "tian_dou_city"],
+      "events": [
+        "修炼",
+        "教学",
+        "竞技",
+        "考核",
+        "毕业",
+        "导师授课",
+        "团队训练",
+        "魂师大赛"
+      ],
+      "npcs": [
+        "弗兰德",
+        "柳二龙",
+        "玉小刚",
+        "赵无极",
+        "唐三",
+        "小舞",
+        "戴沐白",
+        "朱竹清",
+        "宁荣荣",
+        "奥斯卡",
+        "马红俊"
+      ],
+      "specialConditions": [
+        "无"
+      ],
+      "connectedTo": [
+        "star_duo_outer",
+        "tian_dou_city",
+        "nuoding_city"
+      ],
       "travelTime": 0
     },
     {
@@ -48,10 +75,27 @@
       "description": "星斗大森林最外层的区域，十年到百年魂兽出没，是初级魂师狩猎魂环的首选之地。",
       "region": "star_duo",
       "unlockedLevel": 3,
-      "events": ["狩猎", "采集", "采集药草", "遭遇魂兽", "发现遗迹", "奇遇"],
-      "npcs": ["猎魂森林守卫", "流浪魂师", "药草商人"],
-      "specialConditions": ["夜晚:十年魂兽减少,百年魂兽增多"],
-      "connectedTo": ["shrek_academy", "star_duo_deep", "sunset_forest"],
+      "events": [
+        "狩猎",
+        "采集",
+        "采集药草",
+        "遭遇魂兽",
+        "发现遗迹",
+        "奇遇"
+      ],
+      "npcs": [
+        "猎魂森林守卫",
+        "流浪魂师",
+        "药草商人"
+      ],
+      "specialConditions": [
+        "夜晚:十年魂兽减少,百年魂兽增多"
+      ],
+      "connectedTo": [
+        "shrek_academy",
+        "star_duo_deep",
+        "sunset_forest"
+      ],
       "travelTime": 30
     },
     {
@@ -64,10 +108,27 @@
       "description": "星斗大森林核心区域，千年乃至万年魂兽盘踞，更有传说中的十万年魂兽。只有真正的强者才敢涉足。",
       "region": "star_duo",
       "unlockedLevel": 30,
-      "events": ["狩猎", "遭遇魂兽", "BOSS战", "奇遇", "发现秘境", "远古遗迹"],
-      "npcs": ["泰坦巨猿", "天青牛蟒", "暗金恐爪熊"],
-      "specialConditions": ["夜晚:万年魂兽出现概率翻倍", "满月:十万年魂兽有概率出现"],
-      "connectedTo": ["star_duo_outer", "ancient_ruins"],
+      "events": [
+        "狩猎",
+        "遭遇魂兽",
+        "BOSS战",
+        "奇遇",
+        "发现秘境",
+        "远古遗迹"
+      ],
+      "npcs": [
+        "泰坦巨猿",
+        "天青牛蟒",
+        "暗金恐爪熊"
+      ],
+      "specialConditions": [
+        "夜晚:万年魂兽出现概率翻倍",
+        "满月:十万年魂兽有概率出现"
+      ],
+      "connectedTo": [
+        "star_duo_outer",
+        "ancient_ruins"
+      ],
       "travelTime": 60
     },
     {
@@ -80,10 +141,30 @@
       "description": "武魂殿总部所在地，整座城市围绕教皇殿而建，雄伟壮观。大陆魂师向往的圣地，也是武魂帝国的权力中心。",
       "region": "wuhun",
       "unlockedLevel": 20,
-      "events": ["朝圣", "考核", "竞技", "魂师大赛", "势力任务", "购买物品", "铸造"],
-      "npcs": ["比比东", "千仞雪", "胡列娜", "邪月", "焱", "武魂殿长老"],
-      "specialConditions": ["无"],
-      "connectedTo": ["tian_dou_city", "slaughter_city"],
+      "events": [
+        "朝圣",
+        "考核",
+        "竞技",
+        "魂师大赛",
+        "势力任务",
+        "购买物品",
+        "铸造"
+      ],
+      "npcs": [
+        "比比东",
+        "千仞雪",
+        "胡列娜",
+        "邪月",
+        "焱",
+        "武魂殿长老"
+      ],
+      "specialConditions": [
+        "无"
+      ],
+      "connectedTo": [
+        "tian_dou_city",
+        "slaughter_city"
+      ],
       "travelTime": 90
     },
     {
@@ -96,10 +177,33 @@
       "description": "天斗帝国皇都，大陆最繁华的都市之一。天斗皇家学院坐落于此，七宝琉璃宗也在城中设有分堂。",
       "region": "tian_dou",
       "unlockedLevel": 1,
-      "events": ["贸易", "任务", "拍卖会", "铸造", "购买物品", "探索", "社交"],
-      "npcs": ["雪崩", "雪清河", "剑斗罗尘心", "骨斗罗古榕", "宁荣荣", "楼高", "泰坦"],
-      "specialConditions": ["无"],
-      "connectedTo": ["shrek_academy", "wuhun_city", "sunset_forest", "east_sea_port"],
+      "events": [
+        "贸易",
+        "任务",
+        "拍卖会",
+        "铸造",
+        "购买物品",
+        "探索",
+        "社交"
+      ],
+      "npcs": [
+        "雪崩",
+        "雪清河",
+        "剑斗罗尘心",
+        "骨斗罗古榕",
+        "宁荣荣",
+        "楼高",
+        "泰坦"
+      ],
+      "specialConditions": [
+        "无"
+      ],
+      "connectedTo": [
+        "shrek_academy",
+        "wuhun_city",
+        "sunset_forest",
+        "east_sea_port"
+      ],
       "travelTime": 15
     },
     {
@@ -112,10 +216,27 @@
       "description": "天斗东境面向大海的深水港。船队、海魂师与远行商旅在这里补给，前往海神岛必须先取得船长许可并完成海上航行。",
       "region": "sea",
       "unlockedLevel": 20,
-      "events": ["港口调查", "船队补给", "接取海运委托", "拜访船长", "海上航行", "应对风暴"],
-      "npcs": ["东海船长", "港口执事", "海魂师向导"],
-      "specialConditions": ["潮汐:海上航行路线每日变化", "风暴:首次出海可能触发额外遭遇"],
-      "connectedTo": ["tian_dou_city", "sea_god_island"],
+      "events": [
+        "港口调查",
+        "船队补给",
+        "接取海运委托",
+        "拜访船长",
+        "海上航行",
+        "应对风暴"
+      ],
+      "npcs": [
+        "东海船长",
+        "港口执事",
+        "海魂师向导"
+      ],
+      "specialConditions": [
+        "潮汐:海上航行路线每日变化",
+        "风暴:首次出海可能触发额外遭遇"
+      ],
+      "connectedTo": [
+        "tian_dou_city",
+        "sea_god_island"
+      ],
       "travelTime": 45
     },
     {
@@ -128,10 +249,26 @@
       "description": "位于天斗城附近的森林，常年笼罩在夕阳般的余晖中而得名。以毒系魂兽和毒草闻名，独孤博的毒阵便设在此处。",
       "region": "star_duo",
       "unlockedLevel": 15,
-      "events": ["狩猎", "采集", "采集药草", "遭遇魂兽", "毒雾", "发现秘境"],
-      "npcs": ["独孤博"],
-      "specialConditions": ["黄昏:毒属性魂兽攻击力+20%", "雨天:毒雾扩散范围增大"],
-      "connectedTo": ["star_duo_outer", "tian_dou_city", "medicine_valley"],
+      "events": [
+        "狩猎",
+        "采集",
+        "采集药草",
+        "遭遇魂兽",
+        "毒雾",
+        "发现秘境"
+      ],
+      "npcs": [
+        "独孤博"
+      ],
+      "specialConditions": [
+        "黄昏:毒属性魂兽攻击力+20%",
+        "雨天:毒雾扩散范围增大"
+      ],
+      "connectedTo": [
+        "star_duo_outer",
+        "tian_dou_city",
+        "medicine_valley"
+      ],
       "travelTime": 20
     },
     {
@@ -144,10 +281,25 @@
       "description": "位于大陆东方的神秘岛屿，海神的传承之地。由海神七子守护，需要通过海神九考才能获得海神神位。",
       "region": "sea",
       "unlockedLevel": 50,
-      "events": ["海神考核", "海魂兽狩猎", "修炼", "奇遇", "神位传承", "BOSS战"],
-      "npcs": ["海神", "海神七子"],
-      "specialConditions": ["满月:海神考核难度降低", "风暴:海魂兽攻击力+30%"],
-      "connectedTo": ["east_sea_port"],
+      "events": [
+        "海神考核",
+        "海魂兽狩猎",
+        "修炼",
+        "奇遇",
+        "神位传承",
+        "BOSS战"
+      ],
+      "npcs": [
+        "海神",
+        "海神七子"
+      ],
+      "specialConditions": [
+        "满月:海神考核难度降低",
+        "风暴:海魂兽攻击力+30%"
+      ],
+      "connectedTo": [
+        "east_sea_port"
+      ],
       "travelTime": 180
     },
     {
@@ -160,26 +312,57 @@
       "description": "极北之地的冰封森林，终年被冰雪覆盖。冰系魂兽的天堂，冰碧帝皇蝎的领地，只有意志最坚定者才能在此生存。",
       "region": "ice",
       "unlockedLevel": 35,
-      "events": ["狩猎", "采集", "遭遇魂兽", "极寒风暴", "发现秘境", "奇遇"],
-      "npcs": ["冰碧帝皇蝎", "冰霜巨人"],
-      "specialConditions": ["夜晚:暴风雪,视野-50%", "晴天:冰系魂兽防御力-10%"],
-      "connectedTo": ["star_duo_deep", "ancient_ruins"],
+      "events": [
+        "狩猎",
+        "采集",
+        "遭遇魂兽",
+        "极寒风暴",
+        "发现秘境",
+        "奇遇"
+      ],
+      "npcs": [
+        "冰碧帝皇蝎",
+        "冰霜巨人"
+      ],
+      "specialConditions": [
+        "夜晚:暴风雪,视野-50%",
+        "晴天:冰系魂兽防御力-10%"
+      ],
+      "connectedTo": [
+        "star_duo_deep",
+        "ancient_ruins"
+      ],
       "travelTime": 120
     },
     {
       "id": "slaughter_city",
-      "name": "杀戮之都",
+      "name": "试炼之城",
       "mapX": 21,
       "mapY": 55,
       "landmarkType": "forbidden",
       "labelPosition": "left",
-      "description": "隐藏在地下的罪恶之城，弱肉强食的法则在此达到极致。进入者必须放弃武魂，在地狱杀戮场中浴血厮杀才能获得杀神领域。",
+      "description": "一座终年笼罩在红色雾气里的古城。传说城里会把人心里的害怕和怒气放大，只有心最稳的人才能走出来。唐三曾在这里学会控制自己的力量。",
       "region": "slaughter",
       "unlockedLevel": 40,
-      "events": ["地狱杀戮", "竞技", "暗杀", "探索", "领域觉醒", "BOSS战"],
-      "npcs": ["杀戮之王", "地狱使者", "堕落魂师"],
-      "specialConditions": ["进入后武魂封印", "杀戮值达到100可觉醒杀神领域"],
-      "connectedTo": ["wuhun_city", "abyss_rift"],
+      "events": [
+        "试炼",
+        "探索",
+        "心境考验",
+        "迷宫",
+        "领悟"
+      ],
+      "npcs": [
+        "守城人",
+        "迷路的孩子"
+      ],
+      "specialConditions": [
+        "城中迷雾会放大心中的害怕",
+        "心境稳定者更容易找到出口"
+      ],
+      "connectedTo": [
+        "wuhun_city",
+        "abyss_rift"
+      ],
       "travelTime": 60
     },
     {
@@ -192,10 +375,27 @@
       "description": "上古时期留下的神秘遗迹，散落着神级强者的传承和失传的上古锻造技艺。每一处遗迹都隐藏着惊人的秘密和致命的陷阱。",
       "region": "ancient",
       "unlockedLevel": 45,
-      "events": ["探索遗迹", "解谜", "获取传承", "BOSS战", "发现魂骨", "奇遇"],
-      "npcs": ["遗迹守护者", "远古魂灵"],
-      "specialConditions": ["需要特定钥匙开启各区域", "精神力低于100会陷入幻觉"],
-      "connectedTo": ["star_duo_deep", "ice_forest", "abyss_rift"],
+      "events": [
+        "探索遗迹",
+        "解谜",
+        "获取传承",
+        "BOSS战",
+        "发现魂骨",
+        "奇遇"
+      ],
+      "npcs": [
+        "遗迹守护者",
+        "远古魂灵"
+      ],
+      "specialConditions": [
+        "需要特定钥匙开启各区域",
+        "精神力低于100会陷入幻觉"
+      ],
+      "connectedTo": [
+        "star_duo_deep",
+        "ice_forest",
+        "abyss_rift"
+      ],
       "travelTime": 90
     },
     {
@@ -208,10 +408,27 @@
       "description": "大陆边缘的深渊裂缝，通往未知的深渊世界。深渊魔鲸等恐怖魂兽栖息于此，也是修罗神试炼的入口之一。",
       "region": "abyss",
       "unlockedLevel": 55,
-      "events": ["深渊试炼", "BOSS战", "神位考核", "遭遇魂兽", "奇遇", "获取传承"],
-      "npcs": ["深渊魔鲸", "修罗神"],
-      "specialConditions": ["深渊压力:每层减少10%最大生命值", "需要在深渊商店购买抗性药剂"],
-      "connectedTo": ["slaughter_city", "ancient_ruins", "evil_forest"],
+      "events": [
+        "深渊试炼",
+        "BOSS战",
+        "神位考核",
+        "遭遇魂兽",
+        "奇遇",
+        "获取传承"
+      ],
+      "npcs": [
+        "深渊魔鲸",
+        "修罗神"
+      ],
+      "specialConditions": [
+        "深渊压力:每层减少10%最大生命值",
+        "需要在深渊商店购买抗性药剂"
+      ],
+      "connectedTo": [
+        "slaughter_city",
+        "ancient_ruins",
+        "evil_forest"
+      ],
       "travelTime": 120
     },
     {
@@ -224,10 +441,27 @@
       "description": "悬浮于云端的神秘城市，据说是上古风神留下的遗迹。城中居住着翼族后裔，掌握着飞行魂技的奥秘。",
       "region": "sky",
       "unlockedLevel": 50,
-      "events": ["飞行试炼", "风神考核", "探索", "奇遇", "获取魂骨", "交易"],
-      "npcs": ["翼族长老", "风暴之翼", "风神残魂"],
-      "specialConditions": ["需要飞行能力才能进入", "暴风天气:部分区域无法通行"],
-      "connectedTo": ["element_valley", "dragon_valley"],
+      "events": [
+        "飞行试炼",
+        "风神考核",
+        "探索",
+        "奇遇",
+        "获取魂骨",
+        "交易"
+      ],
+      "npcs": [
+        "翼族长老",
+        "风暴之翼",
+        "风神残魂"
+      ],
+      "specialConditions": [
+        "需要飞行能力才能进入",
+        "暴风天气:部分区域无法通行"
+      ],
+      "connectedTo": [
+        "element_valley",
+        "dragon_valley"
+      ],
       "travelTime": 150
     },
     {
@@ -240,10 +474,28 @@
       "description": "五大元素交汇之地，火、水、风、土、雷元素在此激烈碰撞。元素魂兽的天堂，也是元素系魂师修炼的圣地。",
       "region": "element",
       "unlockedLevel": 30,
-      "events": ["元素试炼", "狩猎", "采集", "元素风暴", "修炼", "奇遇"],
-      "npcs": ["元素精灵", "赤焰狮", "雷鹰"],
-      "specialConditions": ["火元素日:火系魂兽攻击力+30%", "雷暴日:雷系魂兽出现概率翻倍"],
-      "connectedTo": ["sky_city", "desert_death", "ice_forest"],
+      "events": [
+        "元素试炼",
+        "狩猎",
+        "采集",
+        "元素风暴",
+        "修炼",
+        "奇遇"
+      ],
+      "npcs": [
+        "元素精灵",
+        "赤焰狮",
+        "雷鹰"
+      ],
+      "specialConditions": [
+        "火元素日:火系魂兽攻击力+30%",
+        "雷暴日:雷系魂兽出现概率翻倍"
+      ],
+      "connectedTo": [
+        "sky_city",
+        "desert_death",
+        "ice_forest"
+      ],
       "travelTime": 90
     },
     {
@@ -256,10 +508,28 @@
       "description": "一望无际的死亡之海，沙暴肆虐，水元素稀薄。但沙漠深处埋藏着古代帝国的宝藏和失落的上古锻造技艺。",
       "region": "desert",
       "unlockedLevel": 25,
-      "events": ["探索", "寻宝", "遭遇魂兽", "沙暴", "发现遗迹", "奇遇"],
-      "npcs": ["沙漠商人", "古代守护者", "大地之王"],
-      "specialConditions": ["沙暴:视野-80%,移动速度-50%", "夜晚:沙漠温度骤降,冰系攻击力+15%"],
-      "connectedTo": ["element_valley", "medicine_valley", "shadow_swamp"],
+      "events": [
+        "探索",
+        "寻宝",
+        "遭遇魂兽",
+        "沙暴",
+        "发现遗迹",
+        "奇遇"
+      ],
+      "npcs": [
+        "沙漠商人",
+        "古代守护者",
+        "大地之王"
+      ],
+      "specialConditions": [
+        "沙暴:视野-80%,移动速度-50%",
+        "夜晚:沙漠温度骤降,冰系攻击力+15%"
+      ],
+      "connectedTo": [
+        "element_valley",
+        "medicine_valley",
+        "shadow_swamp"
+      ],
       "travelTime": 60
     },
     {
@@ -272,10 +542,28 @@
       "description": "隐藏在山谷中的世外桃源，灵气充沛，生长着无数珍稀药草。是炼药师和毒师梦寐以求的圣地。",
       "region": "valley",
       "unlockedLevel": 10,
-      "events": ["采集药草", "炼药", "修炼", "奇遇", "交易", "发现秘境"],
-      "npcs": ["药谷长老", "独孤博", "药草商人"],
-      "specialConditions": ["清晨:珍稀药草出现概率+30%", "满月:仙品药草有概率出现"],
-      "connectedTo": ["sunset_forest", "desert_death", "shadow_swamp"],
+      "events": [
+        "采集药草",
+        "炼药",
+        "修炼",
+        "奇遇",
+        "交易",
+        "发现秘境"
+      ],
+      "npcs": [
+        "药谷长老",
+        "独孤博",
+        "药草商人"
+      ],
+      "specialConditions": [
+        "清晨:珍稀药草出现概率+30%",
+        "满月:仙品药草有概率出现"
+      ],
+      "connectedTo": [
+        "sunset_forest",
+        "desert_death",
+        "shadow_swamp"
+      ],
       "travelTime": 30
     },
     {
@@ -288,10 +576,28 @@
       "description": "终年笼罩在毒雾中的沼泽地带，暗影系魂兽的天堂。噬魂蛛皇和影猫在此横行，沼泽深处还隐藏着不为人知的黑暗力量。",
       "region": "swamp",
       "unlockedLevel": 30,
-      "events": ["狩猎", "探索", "遭遇魂兽", "毒雾", "暗影试炼", "奇遇"],
-      "npcs": ["噬魂蛛皇", "影猫", "暗影领主"],
-      "specialConditions": ["夜晚:暗影系魂兽全属性+25%", "雾天:容易迷失方向"],
-      "connectedTo": ["desert_death", "medicine_valley", "evil_forest"],
+      "events": [
+        "狩猎",
+        "探索",
+        "遭遇魂兽",
+        "毒雾",
+        "暗影试炼",
+        "奇遇"
+      ],
+      "npcs": [
+        "噬魂蛛皇",
+        "影猫",
+        "暗影领主"
+      ],
+      "specialConditions": [
+        "夜晚:暗影系魂兽全属性+25%",
+        "雾天:容易迷失方向"
+      ],
+      "connectedTo": [
+        "desert_death",
+        "medicine_valley",
+        "evil_forest"
+      ],
       "travelTime": 45
     },
     {
@@ -304,10 +610,26 @@
       "description": "以铸造技艺闻名的大陆重镇。楼高大师的铁匠铺和力之一族的驻地都在此，是天斗帝国锻造业的重心。",
       "region": "tian_dou",
       "unlockedLevel": 15,
-      "events": ["铸造", "锻造", "交易", "任务", "学习铸造技能", "订购精工装备"],
-      "npcs": ["楼高", "泰坦", "铁匠大师"],
-      "specialConditions": ["无"],
-      "connectedTo": ["tian_dou_city", "dragon_valley"],
+      "events": [
+        "铸造",
+        "锻造",
+        "交易",
+        "任务",
+        "学习铸造技能",
+        "订购精工装备"
+      ],
+      "npcs": [
+        "楼高",
+        "泰坦",
+        "铁匠大师"
+      ],
+      "specialConditions": [
+        "无"
+      ],
+      "connectedTo": [
+        "tian_dou_city",
+        "dragon_valley"
+      ],
       "travelTime": 20
     },
     {
@@ -320,10 +642,28 @@
       "description": "龙族魂兽的栖息之地，传说中的龙谷。黄金圣龙和暗黑魔龙在此争夺龙族霸主的地位，龙谷深处隐藏着龙神的传承。",
       "region": "dragon",
       "unlockedLevel": 50,
-      "events": ["龙族试炼", "BOSS战", "狩猎", "获取传承", "龙神考核", "奇遇"],
-      "npcs": ["黄金圣龙", "暗黑魔龙", "龙神残魂"],
-      "specialConditions": ["龙威:非龙系武魂攻击力-20%", "龙怒:所有龙系魂兽进入狂暴状态"],
-      "connectedTo": ["sky_city", "steel_city", "evil_forest"],
+      "events": [
+        "龙族试炼",
+        "BOSS战",
+        "狩猎",
+        "获取传承",
+        "龙神考核",
+        "奇遇"
+      ],
+      "npcs": [
+        "黄金圣龙",
+        "暗黑魔龙",
+        "龙神残魂"
+      ],
+      "specialConditions": [
+        "龙威:非龙系武魂攻击力-20%",
+        "龙怒:所有龙系魂兽进入狂暴状态"
+      ],
+      "connectedTo": [
+        "sky_city",
+        "steel_city",
+        "evil_forest"
+      ],
       "travelTime": 120
     },
     {
@@ -336,10 +676,28 @@
       "description": "大陆最危险的禁地之一，邪眼暴君和妖眼魔树的领地。精神力薄弱者进入后会立即陷入疯狂，只有意志最坚定者才能在此存活。",
       "region": "evil",
       "unlockedLevel": 55,
-      "events": ["精神试炼", "BOSS战", "探索", "获取魂骨", "奇遇", "遭遇魂兽"],
-      "npcs": ["邪眼暴君", "妖眼魔树", "恶魔之眼"],
-      "specialConditions": ["精神压制:每小时减少10点精神力", "满月:邪眼暴君全属性+50%"],
-      "connectedTo": ["abyss_rift", "shadow_swamp", "dragon_valley"],
+      "events": [
+        "精神试炼",
+        "BOSS战",
+        "探索",
+        "获取魂骨",
+        "奇遇",
+        "遭遇魂兽"
+      ],
+      "npcs": [
+        "邪眼暴君",
+        "妖眼魔树",
+        "恶魔之眼"
+      ],
+      "specialConditions": [
+        "精神压制:每小时减少10点精神力",
+        "满月:邪眼暴君全属性+50%"
+      ],
+      "connectedTo": [
+        "abyss_rift",
+        "shadow_swamp",
+        "dragon_valley"
+      ],
       "travelTime": 90
     },
     {
@@ -352,11 +710,58 @@
       "description": "一个不起眼的小村庄，却是唐三的故乡。唐昊隐居于此，村中隐藏着昊天宗的部分秘密。看似平凡，实则是命运之轮的起点。",
       "region": "tian_dou",
       "unlockedLevel": 1,
-      "events": ["探索", "修炼", "奇遇", "获取传承", "回忆"],
-      "npcs": ["唐昊", "村长杰克"],
-      "specialConditions": ["夜晚:唐昊出现概率增加", "特殊对话可触发昊天宗隐藏任务"],
-      "connectedTo": ["shrek_academy", "tian_dou_city"],
+      "events": [
+        "探索",
+        "修炼",
+        "奇遇",
+        "获取传承",
+        "回忆"
+      ],
+      "npcs": [
+        "唐昊",
+        "村长杰克"
+      ],
+      "specialConditions": [
+        "夜晚:唐昊出现概率增加",
+        "特殊对话可触发昊天宗隐藏任务"
+      ],
+      "connectedTo": [
+        "shrek_academy",
+        "tian_dou_city",
+        "nuoding_city"
+      ],
       "travelTime": 45
+    },
+    {
+      "id": "nuoding_city",
+      "name": "诺丁城",
+      "mapX": 46,
+      "mapY": 53,
+      "landmarkType": "academy",
+      "labelPosition": "left",
+      "description": "天斗帝国边上的一座小城，城里有一所诺丁初级魂师学院。学院收\"工读生\"——一边帮学院干活，一边学本事。唐三和小舞就是在这里的宿舍第一次见面的。",
+      "region": "tian_dou",
+      "unlockedLevel": 1,
+      "events": [
+        "修炼",
+        "上课",
+        "宿舍生活",
+        "打工",
+        "探索"
+      ],
+      "npcs": [
+        "工读生们",
+        "学院老师"
+      ],
+      "specialConditions": [
+        "魂师之路的第一站"
+      ],
+      "connectedTo": [
+        "holy_soul_village",
+        "shrek_academy",
+        "spirit_hall"
+      ],
+      "travelTime": 30
     },
     {
       "id": "haotian_sect",
@@ -368,10 +773,25 @@
       "description": "天下第一宗门，上三宗之首。隐世于深山之中，以昊天锤武魂闻名天下。唐昊和唐啸的师门，唐三的祖地。",
       "region": "tian_dou",
       "unlockedLevel": 40,
-      "events": ["宗门试炼", "修炼", "传承", "昊天九绝", "奇遇", "任务"],
-      "npcs": ["唐啸", "昊天宗长老"],
-      "specialConditions": ["需要昊天锤武魂或唐门信物才能进入"],
-      "connectedTo": ["holy_soul_village", "tian_dou_city"],
+      "events": [
+        "宗门试炼",
+        "修炼",
+        "传承",
+        "昊天九绝",
+        "奇遇",
+        "任务"
+      ],
+      "npcs": [
+        "唐啸",
+        "昊天宗长老"
+      ],
+      "specialConditions": [
+        "需要昊天锤武魂或唐门信物才能进入"
+      ],
+      "connectedTo": [
+        "holy_soul_village",
+        "tian_dou_city"
+      ],
       "travelTime": 60
     },
     {
@@ -384,10 +804,27 @@
       "description": "上三宗之二，以七宝琉璃塔武魂闻名。剑斗罗尘心和骨斗罗古榕两大封号斗罗坐镇，是大陆最富有的宗门。",
       "region": "tian_dou",
       "unlockedLevel": 25,
-      "events": ["任务", "交易", "修炼", "拍卖会", "社交", "获取资源"],
-      "npcs": ["宁荣荣", "剑斗罗尘心", "骨斗罗古榕", "宁风致"],
-      "specialConditions": ["需要七宝琉璃塔武魂或宁荣荣引荐才能进入核心区域"],
-      "connectedTo": ["tian_dou_city", "steel_city"],
+      "events": [
+        "任务",
+        "交易",
+        "修炼",
+        "拍卖会",
+        "社交",
+        "获取资源"
+      ],
+      "npcs": [
+        "宁荣荣",
+        "剑斗罗尘心",
+        "骨斗罗古榕",
+        "宁风致"
+      ],
+      "specialConditions": [
+        "需要七宝琉璃塔武魂或宁荣荣引荐才能进入核心区域"
+      ],
+      "connectedTo": [
+        "tian_dou_city",
+        "steel_city"
+      ],
       "travelTime": 10
     },
     {
@@ -400,10 +837,26 @@
       "description": "武魂帝国最高权力机构，遍布大陆各个城市。负责魂师注册、魂环分配和魂师等级考核，也是比比东统治大陆的工具。",
       "region": "wuhun",
       "unlockedLevel": 10,
-      "events": ["魂师考核", "任务", "交易", "修炼", "获取魂环"],
-      "npcs": ["比比东", "武魂殿主教", "武魂殿执事"],
-      "specialConditions": ["需要魂师身份证明才能进入"],
-      "connectedTo": ["wuhun_city", "tian_dou_city"],
+      "events": [
+        "魂师考核",
+        "任务",
+        "交易",
+        "修炼",
+        "获取魂环"
+      ],
+      "npcs": [
+        "比比东",
+        "武魂殿主教",
+        "武魂殿执事"
+      ],
+      "specialConditions": [
+        "需要魂师身份证明才能进入"
+      ],
+      "connectedTo": [
+        "wuhun_city",
+        "tian_dou_city",
+        "nuoding_city"
+      ],
       "travelTime": 30
     },
     {
@@ -416,10 +869,24 @@
       "description": "力之一族的聚居地，以纯力量武魂与高超锻造技艺闻名。族人豪爽重诺，与钢铁之城往来密切。",
       "region": "tian_dou",
       "unlockedLevel": 18,
-      "events": ["力量试炼", "锻造", "切磋", "宗族任务"],
-      "npcs": ["泰坦", "泰诺"],
-      "specialConditions": ["力量试炼成功可获得锻造材料"],
-      "connectedTo": ["steel_city", "tian_dou_city", "haotian_sect"],
+      "events": [
+        "力量试炼",
+        "锻造",
+        "切磋",
+        "宗族任务"
+      ],
+      "npcs": [
+        "泰坦",
+        "泰诺"
+      ],
+      "specialConditions": [
+        "力量试炼成功可获得锻造材料"
+      ],
+      "connectedTo": [
+        "steel_city",
+        "tian_dou_city",
+        "haotian_sect"
+      ],
       "travelTime": 25
     },
     {
@@ -432,10 +899,24 @@
       "description": "敏之一族的隐秘驻地，族人擅长侦察、传讯与极速身法，领地周围布满只有本族熟悉的山路。",
       "region": "tian_dou",
       "unlockedLevel": 22,
-      "events": ["速度试炼", "侦察任务", "切磋", "奇遇"],
-      "npcs": ["白鹤", "白沉香"],
-      "specialConditions": ["速度试炼成功可获得稀有情报"],
-      "connectedTo": ["tian_dou_city", "haotian_sect", "defense_clan"],
+      "events": [
+        "速度试炼",
+        "侦察任务",
+        "切磋",
+        "奇遇"
+      ],
+      "npcs": [
+        "白鹤",
+        "白沉香"
+      ],
+      "specialConditions": [
+        "速度试炼成功可获得稀有情报"
+      ],
+      "connectedTo": [
+        "tian_dou_city",
+        "haotian_sect",
+        "defense_clan"
+      ],
       "travelTime": 35
     },
     {
@@ -448,10 +929,23 @@
       "description": "御之一族的石堡坐落于群山之间，以坚不可摧的防御武魂和建筑技艺著称。",
       "region": "tian_dou",
       "unlockedLevel": 22,
-      "events": ["防御试炼", "守城任务", "切磋", "建造委托"],
-      "npcs": ["牛皋"],
-      "specialConditions": ["防御试炼成功可获得防御增益"],
-      "connectedTo": ["tian_dou_city", "speed_clan", "breaking_clan"],
+      "events": [
+        "防御试炼",
+        "守城任务",
+        "切磋",
+        "建造委托"
+      ],
+      "npcs": [
+        "牛皋"
+      ],
+      "specialConditions": [
+        "防御试炼成功可获得防御增益"
+      ],
+      "connectedTo": [
+        "tian_dou_city",
+        "speed_clan",
+        "breaking_clan"
+      ],
       "travelTime": 35
     },
     {
@@ -464,10 +958,23 @@
       "description": "破之一族的驻地遍植药草，族人兼修强攻枪法与炼药之术，是单属性四宗族中攻击最凌厉的一支。",
       "region": "tian_dou",
       "unlockedLevel": 25,
-      "events": ["攻击试炼", "炼药", "切磋", "采集药草"],
-      "npcs": ["杨无敌"],
-      "specialConditions": ["攻击试炼成功可获得灵药"],
-      "connectedTo": ["tian_dou_city", "defense_clan", "medicine_valley"],
+      "events": [
+        "攻击试炼",
+        "炼药",
+        "切磋",
+        "采集药草"
+      ],
+      "npcs": [
+        "杨无敌"
+      ],
+      "specialConditions": [
+        "攻击试炼成功可获得灵药"
+      ],
+      "connectedTo": [
+        "tian_dou_city",
+        "defense_clan",
+        "medicine_valley"
+      ],
       "travelTime": 40
     }
   ]

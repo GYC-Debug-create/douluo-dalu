@@ -228,11 +228,14 @@ const SAVE_FIELD_MAP = Object.freeze({
   _drawQueue: { store: 'event', legacy: '洗牌袋队列（经济规格 v2：同批候选不重复）' },
   _drawQueueKey: { store: 'event', legacy: '洗牌袋键 = 地点|阶段，变化即重建' },
   _storyPath: { store: 'event', legacy: '抉择路径标签（结局判定/面板展示）' },
+  _eventRepeatCounts: { store: 'event', legacy: '普通事件已重复的次数（每个事件一局最多出现两次）' },
   _storyDecisions: { store: 'event', legacy: '事件 → 选项 id 映射（剧情回溯）' },
+  _storyMarks: { store: 'event', legacy: '世界账本：名场面选择留下的记号与已认识的原著人物（met:名字）' },
+  _journeyLog: { store: 'event', legacy: '旅程记录：选择/战斗/旅行流水，供复盘剧情连贯性' },
   _dynCooldowns: { store: 'event', legacy: '动态事件冷却（按行动数递减）' },
   _introPendingEvent: { store: 'event', legacy: '入学流程待播事件（通常为 first_class）' },
   _pendingChain: { store: 'event', legacy: '待触发的连锁事件 id' },
-  _mainStoryVersion: { store: 'event', legacy: '主线里程碑链版本（v1 = 10/40/70 重划后）' },
+  _mainStoryVersion: { store: 'event', legacy: '主线里程碑链版本（v1 = 10/40/70 重划后；v2 = 名场面珍珠串）' },
   _storyMilestoneDeferredUntil: { store: 'event', legacy: '主线暂缓截止事件数（暂缓两次行动）' },
   _prologueDone: { store: 'event', legacy: '序章完成标记（Vue 版新增；旧档由 save.js 迁移推断）' },
   _spiritAwakeningStoryDone: { store: 'event', legacy: '觉醒小故事完成（Vue 版新增）' },
@@ -276,7 +279,8 @@ const SAVE_FIELD_MAP = Object.freeze({
   _legacyRingOverflow: { store: 'game', legacy: '旧档魂环溢出经验的隔离区（迁移层维护）' },
   _orphanedSkills: { store: 'game', legacy: '无主魂技隔离区（迁移层维护）' },
   _forgeBonesMigrated: { store: 'game', legacy: '魂骨碎片迁移标记（T15）' },
-  _simpleMode: { store: 'game', legacy: '低龄简单模式（默认 true，顶栏可切换完整模式）' }
+  _simpleMode: { store: 'game', legacy: '旧版简单/完整模式开关（儿童版只有一种模式，仅为旧存档兼容保留，不再读取）' },
+  _autoBattleDefault: { store: 'game', legacy: '战斗是否默认自动出招（玩家在战斗里切换后记住选择）' }
 })
 
 /**
@@ -410,7 +414,11 @@ export function initNewCharacter(charData) {
   event._tutorialPostponed = false
   event._firstClassDone = false
   event._academyRecommendation = null
-  event._mainStoryVersion = 1
+  event._mainStoryVersion = 2
+  event._storyPath = []
+  event._storyDecisions = {}
+  event._storyMarks = []
+  event._journeyLog = []
   event.locationExplorationsByLocation = {}
   event.locationExploration = null
 

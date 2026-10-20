@@ -1,0 +1,22 @@
+{
+  "synthetic": true,
+  "method": "同图鉴武魂、种子与策略；修复改变后续状态及随机消费，非固定事件一一对照。修复前快照保存于20261020验收资料，修复后由当前回归生成。",
+  "rows": [
+    {
+      "name": "木剑",
+      "seed": 20481020,
+      "beforeGold": 40081,
+      "afterGold": 1372,
+      "beforeActions": 181,
+      "afterActions": 151
+    },
+    {
+      "name": "海神三叉戟",
+      "seed": 20481021,
+      "beforeGold": 1247,
+      "afterGold": 1247,
+      "beforeActions": 120,
+      "afterActions": 120
+    }
+  ]
+}

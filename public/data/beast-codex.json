@@ -118,7 +118,9 @@
       "hp": 80,
       "speed": 15,
       "ringLevel": 2,
-      "ringColor": "黄色"
+      "ringColor": "黄色",
+      "element": "wood",
+      "battleRole": "swift"
     },
     {
       "id": "独眼狼",
@@ -187,7 +189,9 @@
       "hp": 120,
       "speed": 13,
       "ringLevel": 2,
-      "ringColor": "黄色"
+      "ringColor": "黄色",
+      "element": "dark",
+      "battleRole": "fierce"
     },
     {
       "id": "野兔",
@@ -256,7 +260,9 @@
       "hp": 60,
       "speed": 14,
       "ringLevel": 2,
-      "ringColor": "黄色"
+      "ringColor": "黄色",
+      "element": "wind",
+      "battleRole": "swift"
     },
     {
       "id": "花蛇",
@@ -325,7 +331,9 @@
       "hp": 80,
       "speed": 16,
       "ringLevel": 2,
-      "ringColor": "黄色"
+      "ringColor": "黄色",
+      "element": "poison",
+      "battleRole": "swift"
     },
     {
       "id": "蓝蛙",
@@ -394,7 +402,9 @@
       "hp": 70,
       "speed": 12,
       "ringLevel": 2,
-      "ringColor": "黄色"
+      "ringColor": "黄色",
+      "element": "water",
+      "battleRole": "balanced"
     },
     {
       "id": "铁角羊",
@@ -463,7 +473,9 @@
       "hp": 60,
       "speed": 14,
       "ringLevel": 2,
-      "ringColor": "黄色"
+      "ringColor": "黄色",
+      "element": "earth",
+      "battleRole": "tank"
     },
     {
       "id": "风蝶",
@@ -532,7 +544,9 @@
       "hp": 50,
       "speed": 10,
       "ringLevel": 2,
-      "ringColor": "黄色"
+      "ringColor": "黄色",
+      "element": "wind",
+      "battleRole": "swift"
     },
     {
       "id": "土拨鼠",
@@ -601,7 +615,9 @@
       "hp": 60,
       "speed": 14,
       "ringLevel": 2,
-      "ringColor": "黄色"
+      "ringColor": "黄色",
+      "element": "earth",
+      "battleRole": "balanced"
     },
     {
       "id": "烈焰虎",
@@ -670,7 +686,9 @@
       "hp": 80,
       "speed": 16,
       "ringLevel": 2,
-      "ringColor": "黄色"
+      "ringColor": "黄色",
+      "element": "fire",
+      "battleRole": "fierce"
     },
     {
       "id": "铁甲熊",
@@ -739,7 +757,9 @@
       "hp": 90,
       "speed": 11,
       "ringLevel": 2,
-      "ringColor": "黄色"
+      "ringColor": "黄色",
+      "element": "metal",
+      "battleRole": "tank"
     },
     {
       "id": "毒蛛",
@@ -808,7 +828,9 @@
       "hp": 80,
       "speed": 16,
       "ringLevel": 2,
-      "ringColor": "黄色"
+      "ringColor": "黄色",
+      "element": "poison",
+      "battleRole": "fierce"
     },
     {
       "id": "冰狼",
@@ -877,7 +899,9 @@
       "hp": 80,
       "speed": 16,
       "ringLevel": 2,
-      "ringColor": "黄色"
+      "ringColor": "黄色",
+      "element": "ice",
+      "battleRole": "fierce"
     },
     {
       "id": "岩蟒",
@@ -946,7 +970,9 @@
       "hp": 80,
       "speed": 16,
       "ringLevel": 2,
-      "ringColor": "黄色"
+      "ringColor": "黄色",
+      "element": "earth",
+      "battleRole": "tank"
     },
     {
       "id": "雷鸟",
@@ -1015,7 +1041,9 @@
       "hp": 55,
       "speed": 22,
       "ringLevel": 2,
-      "ringColor": "黄色"
+      "ringColor": "黄色",
+      "element": "thunder",
+      "battleRole": "swift"
     },
     {
       "id": "暗影狐",
@@ -1084,7 +1112,9 @@
       "hp": 80,
       "speed": 16,
       "ringLevel": 2,
-      "ringColor": "黄色"
+      "ringColor": "黄色",
+      "element": "dark",
+      "battleRole": "swift"
     },
     {
       "id": "黑水蛟龙",
@@ -1153,7 +1183,9 @@
       "hp": 150,
       "speed": 15,
       "ringLevel": 2,
-      "ringColor": "黄色"
+      "ringColor": "黄色",
+      "element": "water",
+      "battleRole": "fierce"
     },
     {
       "id": "人面魔蛛",
@@ -1222,7 +1254,9 @@
       "hp": 80,
       "speed": 16,
       "ringLevel": 2,
-      "ringColor": "黄色"
+      "ringColor": "黄色",
+      "element": "poison",
+      "battleRole": "fierce"
     },
     {
       "id": "大地之熊",
@@ -1291,7 +1325,9 @@
       "hp": 90,
       "speed": 11,
       "ringLevel": 2,
-      "ringColor": "黄色"
+      "ringColor": "黄色",
+      "element": "earth",
+      "battleRole": "tank"
     },
     {
       "id": "风灵燕",
@@ -1360,7 +1396,9 @@
       "hp": 55,
       "speed": 22,
       "ringLevel": 2,
-      "ringColor": "黄色"
+      "ringColor": "黄色",
+      "element": "wind",
+      "battleRole": "swift"
     },
     {
       "id": "千眼蜈蚣",
@@ -1429,7 +1467,9 @@
       "hp": 50,
       "speed": 10,
       "ringLevel": 2,
-      "ringColor": "黄色"
+      "ringColor": "黄色",
+      "element": "poison",
+      "battleRole": "balanced"
     },
     {
       "id": "幽冥狼王",
@@ -1498,7 +1538,9 @@
       "hp": 80,
       "speed": 16,
       "ringLevel": 2,
-      "ringColor": "黄色"
+      "ringColor": "黄色",
+      "element": "dark",
+      "battleRole": "fierce"
     },
     {
       "id": "暗金恐爪熊",
@@ -1567,7 +1609,9 @@
       "hp": 180,
       "speed": 8,
       "ringLevel": 2,
-      "ringColor": "黄色"
+      "ringColor": "黄色",
+      "element": "metal",
+      "battleRole": "fierce"
     },
     {
       "id": "泰坦巨猿",
@@ -1636,7 +1680,9 @@
       "hp": 200,
       "speed": 6,
       "ringLevel": 2,
-      "ringColor": "黄色"
+      "ringColor": "黄色",
+      "element": "earth",
+      "battleRole": "tank"
     },
     {
       "id": "深海魔鲸",
@@ -1705,7 +1751,9 @@
       "hp": 220,
       "speed": 5,
       "ringLevel": 2,
-      "ringColor": "黄色"
+      "ringColor": "黄色",
+      "element": "water",
+      "battleRole": "tank"
     },
     {
       "id": "邪魔虎鲨",
@@ -1774,7 +1822,9 @@
       "hp": 200,
       "speed": 10,
       "ringLevel": 2,
-      "ringColor": "黄色"
+      "ringColor": "黄色",
+      "element": "water",
+      "battleRole": "fierce"
     },
     {
       "id": "冰帝蝎",
@@ -1843,7 +1893,9 @@
       "hp": 140,
       "speed": 14,
       "ringLevel": 2,
-      "ringColor": "黄色"
+      "ringColor": "黄色",
+      "element": "ice",
+      "battleRole": "fierce"
     },
     {
       "id": "天青牛蟒",
@@ -1912,7 +1964,9 @@
       "hp": 190,
       "speed": 9,
       "ringLevel": 2,
-      "ringColor": "黄色"
+      "ringColor": "黄色",
+      "element": "thunder",
+      "battleRole": "tank"
     },
     {
       "id": "泰坦巨猿王",
@@ -1981,7 +2035,9 @@
       "hp": 120,
       "speed": 18,
       "ringLevel": 2,
-      "ringColor": "黄色"
+      "ringColor": "黄色",
+      "element": "earth",
+      "battleRole": "tank"
     },
     {
       "id": "柔骨兔",
@@ -2050,7 +2106,9 @@
       "hp": 60,
       "speed": 14,
       "ringLevel": 2,
-      "ringColor": "黄色"
+      "ringColor": "黄色",
+      "element": "wind",
+      "battleRole": "swift"
     },
     {
       "id": "深海魔鲸王",
@@ -2119,7 +2177,9 @@
       "hp": 200,
       "speed": 10,
       "ringLevel": 2,
-      "ringColor": "黄色"
+      "ringColor": "黄色",
+      "element": "water",
+      "battleRole": "tank"
     }
   ]
 }

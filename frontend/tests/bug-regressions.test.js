@@ -224,7 +224,8 @@ describe('BUG-003 原地休息生命不超过最大生命', () => {
 
     engine.rest()
 
-    const expectedHp = Math.min(maxHp, hpBefore + 50)
+    // 儿童版休息恢复 40% 最大生命（原 50 点），仍不超过实际缺口
+    const expectedHp = Math.min(maxHp, hpBefore + Math.round(maxHp * 0.4))
     expect(player.hp).toBe(expectedHp)
     expect(ui.notifications.at(-1)?.message).toContain(`恢复 ${expectedHp - hpBefore} 点生命`)
   })

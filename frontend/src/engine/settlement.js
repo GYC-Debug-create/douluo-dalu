@@ -53,6 +53,7 @@ export function settleLevelProgress(state, ctx) {
   const pendingRingLv = state.ringCount < 9 && result.level >= gateLevel ? gateLevel : null
   return {
     previousLevel,
+    wasted: result.wasted || 0,
     level: result.level,
     exp: result.exp,
     overflowExp: result.overflowExp,
@@ -133,7 +134,9 @@ export function applyResultRewards(view, result, ctx) {
     const value = Math.round(r.heal * multiplier)
     const before = view.hp
     view.hp = Math.max(1, Math.min(ctx.maxHpFor(view.level, view.bonus, view.spiritBase), view.hp + value))
-    gains.push(`生命恢复+${Math.max(0, view.hp - before)}${multiplier > 1 ? '（武魂共鸣）' : ''}`)
+    const healed = Math.max(0, view.hp - before)
+    // 生命本来就是满的就不显示"生命恢复+0"
+    if (healed > 0) gains.push(`生命恢复+${healed}${multiplier > 1 ? '（武魂共鸣）' : ''}`)
   }
   if (r.damage) {
     const value = Math.max(0, Math.round(Number(r.damage) || 0))
@@ -285,6 +288,14 @@ export function applyResultRewards(view, result, ctx) {
         if (outcome.hp !== null) view.hp = outcome.hp
         if (outcome.spiritPower !== null) view.spiritPower = outcome.spiritPower
         summary.exp += value
+        // 卡在魂环门槛、暂存经验已满：多余经验折成金币（20%），提醒先去猎环
+        if (outcome.wasted > 0) {
+          const bonusGold = Math.max(1, Math.round(outcome.wasted * 0.2))
+          view.gold = Math.max(0, view.gold + bonusGold)
+          view.totalGoldEarned = (Number(view.totalGoldEarned) || 0) + bonusGold
+          summary.gold += bonusGold
+          gains.push(`经验存满啦，多余的转成金币+${bonusGold}（快去猎取魂环吧）`)
+        }
         summary.levelAfter = outcome.level
         summary.levels = outcome.levels || []
         summary.overflowExp = outcome.overflowExp || 0
@@ -364,13 +375,65 @@ export function settleRingBacklash(maxHp, currentHp, absorbChance) {
   return calculateRingBacklash(maxHp, currentHp, Math.round((1 - absorbChance) * 100))
 }
 
+// 选择倾向（儿童版结局依据）：每个剧情选择带一个 path 标签，归入四种倾向之一。
+const PATH_TENDENCY = Object.freeze({
+  guardian: 'guardian', merciful: 'guardian', saint: 'guardian', loyal: 'guardian', light: 'guardian',
+  brave: 'brave', ambitious: 'brave',
+  wise: 'wise', scholar: 'wise', tactician: 'wise', prudent: 'wise', pragmatic: 'wise', sect_master: 'wise',
+  free: 'free', rebel: 'free'
+})
+const TENDENCY_ORDER = ['guardian', 'brave', 'wise', 'free']
+
 /**
- * 结局判定（镜像原 chooseEnding）：特殊结局按 req(G) 判定，普通结局按命运值从高到低。
+ * 统计一路上的选择倾向，返回占比最高的一种（平局时取最近一次出现的那种）。
+ * @param {string[]} storyPath eventStore._storyPath
+ */
+export function dominantTendency(storyPath) {
+  const path = Array.isArray(storyPath) ? storyPath : []
+  const counts = { guardian: 0, brave: 0, wise: 0, free: 0 }
+  const lastSeen = { guardian: -1, brave: -1, wise: -1, free: -1 }
+  path.forEach((tag, index) => {
+    const tendency = PATH_TENDENCY[tag]
+    if (!tendency) return
+    counts[tendency]++
+    lastSeen[tendency] = index
+  })
+  const best = Math.max(...Object.values(counts))
+  if (best === 0) return 'guardian'
+  return TENDENCY_ORDER
+    .filter(key => counts[key] === best)
+    .sort((a, b) => lastSeen[b] - lastSeen[a])[0]
+}
+
+/**
+ * 结局判定。
+ * 儿童版：结局列表里带 tendency 的是主结局，按选择倾向决定；其它带 req 的旧结局改为"额外荣誉"（见 endingHonors）。
+ * 兼容：列表里没有 tendency 结局时（旧数据/单测），沿用旧规则——特殊结局按 req(G) 判定，普通结局按命运值从高到低。
  * @param {Array} ENDINGS
  * @param {number} fatePoints
  * @param {object} G 供 req(G) 读取的运行时快照
  */
+// 海神岛（大分叉 B）的选择直接决定结局的"味道"；一路上的其它记号决定尾声里交代哪些朋友的后来。
+// 没走到海神岛的旧存档，仍按一路选择的倾向判定。
+export const BRANCH_B_TENDENCY = Object.freeze({
+  b_companion: 'brave',
+  b_guardian: 'guardian',
+  b_own_path: 'free',
+  b_wisdom: 'wise'
+})
+
+export function endingTendency(G) {
+  const marks = Array.isArray(G?._storyMarks) ? G._storyMarks : []
+  const branch = Object.keys(BRANCH_B_TENDENCY).find(mark => marks.includes(mark))
+  return branch ? BRANCH_B_TENDENCY[branch] : dominantTendency(G?._storyPath)
+}
+
 export function pickEnding(ENDINGS, fatePoints, G) {
+  const tendencyEndings = ENDINGS.filter(ending => ending.tendency)
+  if (tendencyEndings.length) {
+    const tendency = endingTendency(G)
+    return tendencyEndings.find(ending => ending.tendency === tendency) || tendencyEndings[0]
+  }
   const special = ENDINGS.find(ending => {
     if (!ending.req || fatePoints < ending.minFate) return false
     try { return Boolean(ending.req(G)) } catch { return false }
@@ -381,4 +444,18 @@ export function pickEnding(ENDINGS, fatePoints, G) {
     .slice()
     .sort((a, b) => b.minFate - a.minFate)
   return regular.find(ending => fatePoints >= ending.minFate) || ENDINGS[ENDINGS.length - 1]
+}
+
+// 不适合儿童版展示的旧结局（堕落/黑暗向），不作为荣誉出现。
+const HIDDEN_HONORS = new Set(['abyss_lord', 'dark_redemption', 'shadow_legend', 'soulmate_eternal'])
+
+/**
+ * 额外荣誉：旧版那些"爬完挑战塔""击败 100 只魂兽"之类的结局，现在作为结局页上的荣誉称号展示。
+ * @returns {string[]} 荣誉标题
+ */
+export function endingHonors(ENDINGS, G) {
+  return ENDINGS
+    .filter(ending => !ending.tendency && typeof ending.req === 'function' && !HIDDEN_HONORS.has(ending.id))
+    .filter(ending => { try { return Boolean(ending.req(G)) } catch { return false } })
+    .map(ending => ending.title)
 }

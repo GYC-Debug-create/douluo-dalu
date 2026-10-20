@@ -6,14 +6,34 @@
  * 纯逻辑在 engine/*，场景呈现由 useEventScene 提供，本层只串联。
  */
 import { computed } from 'vue'
-import { normalizeLegacyHealthResult, classifyEventLocation } from '@/engine/rules'
-import { createEventBattleRequest } from '@/engine/battle-contract'
-import { adaptEvent, isEventEligible, nextMainStoryMilestone as nextMainStoryMilestonePure } from '@/engine/event-rules'
+import { normalizeLegacyHealthResult, fillTemplate, plainText } from '@/engine/rules'
+import { createEventBattleRequest, encounterDifficulty } from '@/engine/battle-contract'
+import { adaptEvent, isEventEligible, nextMainStoryMilestone as nextMainStoryMilestonePure, MAIN_STORY_EVENT_IDS } from '@/engine/event-rules'
 import { buildPrologueEvent, buildEarlyLifeEvents } from '@/data/story-intro'
 import { buildTravelArrivalSummary } from '@/utils/travel-arrival'
 import { TRAVEL_ENCOUNTERS, pickTravelEncounter, buildTravelEncounterEvent } from '@/utils/travel-encounters'
 import { buildRingCompletionMessage, buildRingHuntMeta, ringDestination } from '@/utils/ring-hunt'
 import { isLocationExplorationEvent, isLocationExplorationInProgress } from '@/utils/location-exploration'
+import { marksFromChoice } from '@/engine/story-marks'
+
+// 最近经历过的事件在 30 次行动内不会再次出现。
+const RECENT_EVENT_WINDOW = 30
+
+// 剧情里对人物的常用称呼（例如"大师"就是玉小刚），用于识别"和谁一起经历了这件事"。
+const NPC_TEXT_ALIASES = Object.freeze({
+  玉小刚: ['大师'],
+  弗兰德: ['弗兰德院长'],
+  剑斗罗尘心: ['尘心', '剑斗罗'],
+  骨斗罗古榕: ['古榕', '骨斗罗']
+})
+
+// 当地没有新事件时的安静修炼：轮换几种说法，避免同一句话反复出现。
+const QUIET_TRAINING_LINES = Object.freeze([
+  { title: '安静的修炼', text: '这里暂时风平浪静。你找了块安静的地方盘膝打坐，魂力在体内一圈圈运转，比昨天又顺畅了一些。', diary: '静心打坐，魂力更顺畅了。' },
+  { title: '复习魂技', text: '没有新的委托上门，你干脆把每个魂技都练了十遍。动作越来越熟练，出手也更快了。', diary: '反复练习魂技，出手更熟练了。' },
+  { title: '写修炼笔记', text: '你把最近的战斗一场场回想，在本子上写下得失。大师说过：会总结的魂师，进步最快。', diary: '整理修炼笔记，想通了几处破绽。' },
+  { title: '晨跑与体能', text: '天刚亮你就出门晨跑，绕着附近跑了好几圈。汗水湿透了衣服，身体却越来越轻快。', diary: '坚持晨跑，体能变好了。' }
+])
 
 /**
  * @param {object} deps {
@@ -45,6 +65,43 @@ export function useEventFlow(deps) {
     })
   }
 
+  // 主线目标快照：供地点行动界面、引导条和左栏显示"下一段故事"。
+  // due=等级已够；atTarget=就在目标地点（或该节点不限地点）。
+  function mainStoryStatus() {
+    const milestone = nextMainStoryMilestone()
+    if (!milestone) return { milestone: null, due: false, atTarget: false, targetId: '', targetName: '' }
+    const source = EVENTS.find(e => e.id === milestone.id)
+    const targetId = milestone.targetId || ''
+    return {
+      milestone,
+      due: Boolean(source) && player.level >= milestone.minLevel,
+      atTarget: !targetId || gameStore._currentLocation === targetId,
+      targetId,
+      targetName: targetId ? locationName(targetId) : ''
+    }
+  }
+
+  // 玩家主动点"开始主线"：在目标地点就直接进入剧情，不在就给出前往指引。
+  function startMainStory() {
+    if (battleSystem.isActive()) return false
+    const status = mainStoryStatus()
+    if (!status.milestone) {
+      ui.notify('主线故事已经全部完成', 'info')
+      return false
+    }
+    if (!status.due) {
+      ui.notify(`下一段主线「${status.milestone.name}」需要 Lv.${status.milestone.minLevel}`, 'info')
+      return false
+    }
+    if (!status.atTarget) {
+      scene.showTravelGuide('story', status.milestone.name, status.targetId)
+      return false
+    }
+    eventStore._storyMilestoneDeferredUntil = 0
+    scene.showEvent(EVENTS.find(e => e.id === status.milestone.id), { isMainStory: true })
+    return true
+  }
+
   // ==================== 核心: nextEvent ====================
 
   function nextEvent() {
@@ -54,8 +111,8 @@ export function useEventFlow(deps) {
       return
     }
 
-    // 满级且完成最终决战后进入结局；最终决战本身不能被等级条件绕过。
-    if (player.level >= 100 && eventStore.doneEvents.includes('final_evil')) {
+    // 打赢最终决战后就进入结局（儿童版不再要求战后继续刷到 100 级）。
+    if (eventStore.doneEvents.includes('final_evil')) {
       scene.showEnding()
       return
     }
@@ -168,14 +225,17 @@ export function useEventFlow(deps) {
     // 7. 普通事件池
     const pool = candidates.availableEvents()
     if (pool.length === 0) {
-      // 没有可用事件，休整
+      // 当地暂时没有新故事：安排一次有实际收获的修炼，经验按当前等级折算（约 15% 一级），
+      // 保证任何等级都不会因为内容空档而卡死。
       growth.completeWorldAction()
       const fs = deps.finalStats()
-      player.hp = Math.min(player.hp + 50, fs.maxHp)
+      player.hp = Math.min(player.hp + Math.round(fs.maxHp * 0.3), fs.maxHp)
       player.spiritPower = Math.min(player.spiritPower + 30, deps.getMaxSpiritPower())
-      const reward = growth.applyResultRewards({ exp: 25 })
-      growth.addDiaryEntry('在当前地区休整一日，恢复状态并继续修炼。', 'event')
-      scene.showContinue(null, `当前地区暂时没有与你阶段相符的新事件。你休整一日，精气神与魂力都得到恢复，并继续积累了修炼经验。${reward.list.length ? `<br><span class="hl-gold">${reward.list.join('　')}</span>` : ''}`)
+      const exp = Math.max(25, Math.round((deps.expNeeded ? deps.expNeeded(player.level) : 200) * 0.15))
+      const reward = growth.applyResultRewards({ exp })
+      const line = QUIET_TRAINING_LINES[(eventStore._eventCount || 0) % QUIET_TRAINING_LINES.length]
+      growth.addDiaryEntry(`在${scene.currentLocationName.value || locationName(gameStore._currentLocation) || '当地'}${line.diary}`, 'event')
+      scene.showContinue({ id: 'quiet_training', name: line.title }, line.text, reward.list)
       saveGame()
       return
     }
@@ -190,21 +250,41 @@ export function useEventFlow(deps) {
 
   function recordEventDiscoveries(ev) {
     if (!ev) return
-    const location = classifyEventLocation(ev.location, data.value.mapData)
-    if (location.scope === 'mapped' && location.id) gameStore.setLocation(location.id)
-    for (const npcId of Array.isArray(ev.npcIds) ? ev.npcIds : []) gameStore.meetNpc(npcId)
+    // 玩家的位置只由地图旅行改变：事件里写了别的地名（例如出身描述"星斗大森林外围旁的小村庄"、
+    // 动态事件、连锁事件），都不能把玩家"传送"过去，也不能把那里标记为"已去过"。
+    // 一起经历过事件的人物：结识并增加好感（以前好感只能靠菜单送礼刷）。
+    const met = new Set([...(Array.isArray(ev.npcIds) ? ev.npcIds : []), ...(Array.isArray(ev.introduces) ? ev.introduces : [])])
     const text = `${ev.name || ''} ${ev.location || ''} ${(Array.isArray(ev.text) ? ev.text : [ev.text || '']).join(' ')}`
     for (const npc of data.value.npcData || []) {
-      if (npc?.id && npc?.name && text.includes(npc.name)) gameStore.meetNpc(npc.id)
+      if (!npc?.id || !npc?.name) continue
+      const names = [npc.name, ...(NPC_TEXT_ALIASES[npc.id] || [])]
+      if (names.some(name => text.includes(name))) met.add(npc.id)
+    }
+    const storyBond = ev._mainStory || MAIN_STORY_EVENT_IDS.includes(ev.id)
+    const knownNpcIds = new Set((data.value.npcData || []).map(npc => npc?.id).filter(Boolean))
+    for (const npcId of met) {
+      // 只登记图鉴里有的人物（泰坦巨猿这类魂兽朋友记在世界账本里，不进伙伴列表）
+      if (knownNpcIds.size && !knownNpcIds.has(npcId)) continue
+      gameStore.meetNpc(npcId)
+      const gain = storyBond ? 12 : 4
+      gameStore.setNpcRelation(npcId, (Number(gameStore._npcRelations?.[npcId]) || 0) + gain)
     }
   }
 
   function markEventCompleted(ev) {
     if (!ev?.id || ev.ring || ev._ephemeral) return
+    const repeatId = ev._locationSourceEventId || ev.id
+    if (eventStore.doneEvents.includes(repeatId)) {
+      if (!eventStore._eventRepeatCounts || typeof eventStore._eventRepeatCounts !== 'object') eventStore._eventRepeatCounts = {}
+      eventStore._eventRepeatCounts[repeatId] = (Number(eventStore._eventRepeatCounts[repeatId]) || 0) + 1
+    }
     eventStore.markEventDone(ev.id)
-    if (ev._locationSourceEventId && !eventStore._recentEvents.includes(ev._locationSourceEventId)) {
-      eventStore._recentEvents.push(ev._locationSourceEventId)
-      if (eventStore._recentEvents.length > 15) eventStore._recentEvents.shift()
+    if (ev._locationSourceEventId) {
+      if (!eventStore.doneEvents.includes(ev._locationSourceEventId)) eventStore.markEventDone(ev._locationSourceEventId)
+      if (!eventStore._recentEvents.includes(ev._locationSourceEventId)) {
+        eventStore._recentEvents.push(ev._locationSourceEventId)
+        if (eventStore._recentEvents.length > RECENT_EVENT_WINDOW) eventStore._recentEvents.shift()
+      }
     }
     recordEventDiscoveries(ev)
   }
@@ -240,10 +320,42 @@ export function useEventFlow(deps) {
     return true
   }
 
+  // ==================== 世界账本与旅程记录 ====================
+
+  // 名场面完成时写入记号（选项记号 + 收尾记号 + 已认识的人物），并处理入学等身份变化。
+  function commitStoryOutcome(ev, choice, overrideMarks = null) {
+    if (!ev || ev._ephemeral) return []
+    const marks = overrideMarks
+      ? [...overrideMarks, ...marksFromChoice(ev, { marks: [] })]
+      : marksFromChoice(ev, choice)
+    if (marks.length) eventStore.addStoryMarks(marks)
+    // 史莱克入学考核通过：正式成为史莱克学员（旧版"第一堂课"流程随之关闭）
+    if (ev.id === 'p04_shrek_exam') {
+      eventStore._enrollmentComplete = true
+      eventStore._firstClassDone = true
+      eventStore._introPendingEvent = null
+    }
+    return marks
+  }
+
+  function journeyPlace() {
+    return locationName(gameStore._currentLocation) || gameStore._currentLocation || ''
+  }
+
+  function logJourney(entry) {
+    eventStore.logJourney({ lv: player.level, loc: journeyPlace(), ...entry })
+  }
+
   // ==================== 选择处理 ====================
 
   function applyChoice(ev, choice, idx) {
     if (!ev || !choice) return
+    // 天赐淬炼是一次性替代奖励，不能借仍然挂起的猎环入口反复领取。
+    const refinesGift = ev.id === 'ring_hunt_60' && idx === 1
+    if (refinesGift && (eventStore._dynamicFlags._refinedGiftAt60 || eventStore.choices[ev.id] === 'B')) {
+      ui.notify('已完成天赐淬炼，请选择吸收魂环以继续突破', 'warning')
+      return
+    }
 
     // 扣除金币花费
     if (choice.cost?.gold) {
@@ -257,11 +369,17 @@ export function useEventFlow(deps) {
         eventStore._storyDecisions[ev.id] = choice.id
       }
       if (choice.path) {
-        eventStore._storyPath.push(choice.path)
+        // 大分叉的选择在结局倾向里分量更重（pathWeight 次）
+        const times = Math.max(1, Math.min(5, Number(choice.pathWeight) || 1))
+        for (let i = 0; i < times; i++) eventStore._storyPath.push(choice.path)
       }
     }
     if (choice.after === 'registered') eventStore._registeredAtHall = true
     if (choice.after === 'recommended') eventStore._academyRecommendation = choice.id || null
+    if (choice.after === 'nuoding') {
+      // 拿着推荐信去诺丁学院：故事的第一站
+      gameStore.setLocation('nuoding_city')
+    }
     if (choice.after === 'enrolled') {
       eventStore._enrollmentComplete = true
       eventStore._introPendingEvent = 'first_class'
@@ -277,7 +395,7 @@ export function useEventFlow(deps) {
     // 记录最近事件
     if (!eventStore._recentEvents) eventStore._recentEvents = []
     eventStore._recentEvents.push(ev.id)
-    if (eventStore._recentEvents.length > 15) eventStore._recentEvents.shift()
+    if (eventStore._recentEvents.length > RECENT_EVENT_WINDOW) eventStore._recentEvents.shift()
 
     // 处理连锁跳转
     if (choice.next) {
@@ -298,9 +416,19 @@ export function useEventFlow(deps) {
 
     // 应用结果奖励
     const r = normalizeLegacyHealthResult(choice.result || {})
+    // 复制一份再改：result 可能直接引用事件数据，不能被收尾段落等改写污染
     const resolvedResult = effectText || choice.reply
       ? { ...r, text: effectText || choice.reply }
-      : r
+      : { ...r }
+    // 名场面的收尾段落：不论怎么选都会接在结果后面
+    if (ev.closing) resolvedResult.text = [resolvedResult.text, ev.closing].filter(Boolean).join('\n\n')
+    logJourney({
+      k: ev._mainStory ? 'story' : ev.ring ? 'ring' : 'event',
+      id: ev._locationSourceEventId || ev.id,
+      title: plainText(fillTemplate(ev.name || '', { name: player.name, spirit: player.spirit?.name })),
+      pick: plainText(fillTemplate(choice.text || '', { name: player.name, spirit: player.spirit?.name })),
+      ...(Array.isArray(choice.marks) && choice.marks.length ? { marks: choice.marks } : {})
+    })
 
     // 战斗检查
     if (resolvedResult.battle) {
@@ -310,7 +438,8 @@ export function useEventFlow(deps) {
       battleSystem.startEventBattle(createEventBattleRequest({
         event: ev,
         result: resolvedResult,
-        finalBoss: ev.id === 'final_evil'
+        finalBoss: ev.id === 'final_evil',
+        difficulty: encounterDifficulty({ event: ev, choice, ringOrdinal: (player.rings?.length || 0) + 1 })
       }), (result) => {
         if (result.type === 'victory') {
           const rewardResult = { ...resolvedResult }
@@ -321,20 +450,39 @@ export function useEventFlow(deps) {
             if (ring) {
               const released = Math.max(0, overflowBefore - (Number(player.overflowExp) || 0))
               const reward = growth.applyResultRewards(rewardResult)
+              result.ringLabel = ring.name
               result.gains = [
                 ...(result.gains || []),
                 `获得${ring.name}`,
                 ...(released > 0 ? [`释放暂存经验+${released}`] : []),
                 ...reward.list
               ]
+            } else {
+              // 吸收失败：胜利文案描述的是"魂环融入体内"，必须换成失败说明，避免文字与结果相反。
+              result.text = '你打赢了魂兽，可在吸收魂环时，狂暴的魂力在经脉里横冲直撞，你只能先放弃这一次。休整一下，过两次行动后再来挑战。'
             }
           } else {
             markEventCompleted(ev)
+            commitStoryOutcome(ev, choice)
             exploration.completeLocationStage(ev)
             if (ev.id === 'final_evil') eventStore._dynamicFlags._bossKilled = true
             const reward = growth.applyResultRewards(rewardResult)
             result.gains = [...(result.gains || []), ...reward.list]
           }
+        } else if (result.type === 'defeat' && resolvedResult.defeatOutcome && !ev.ring) {
+          // 剧情分叉：这一战输了不用重打，故事改走另一条路（结局仍然是好的）。
+          const outcome = resolvedResult.defeatOutcome
+          markEventCompleted(ev)
+          commitStoryOutcome(ev, choice, Array.isArray(outcome.marks) ? outcome.marks : [])
+          exploration.completeLocationStage(ev)
+          const rewardResult = { ...resolvedResult }
+          delete rewardResult.battle
+          delete rewardResult.defeatOutcome
+          delete rewardResult.text
+          const reward = growth.applyResultRewards(rewardResult)
+          result.text = [outcome.text, ev.closing].filter(Boolean).join('\n\n')
+          result.gains = reward.list
+          logJourney({ k: 'branch', id: ev.id, title: ev.name, pick: '战斗失利，故事改走另一条路', marks: outcome.marks || [] })
         } else {
           // 战败/逃跑：按事件语义挂起目标（原实现由战斗系统直写，现收口到事件层）
           if (ev.ring) {
@@ -350,13 +498,18 @@ export function useEventFlow(deps) {
     }
 
     markEventCompleted(ev)
+    commitStoryOutcome(ev, choice)
     exploration.completeLocationStage(ev)
     const overflowBefore = Number(player.overflowExp) || 0
     const ring = ev.ring ? growth.grantRingForEvent(ev, choice, idx) : null
     if (ev.ring && !ring) {
       eventStore._ringHuntDeferredUntil = (eventStore._eventCount || 0) + 2
     }
-    const reward = growth.applyResultRewards(resolvedResult)
+    // 与战斗猎环保持一致：吸收失败只结算反噬，不能领取成功选项的经验/永久属性。
+    const reward = ev.ring && !ring && !refinesGift
+      ? { list: [] }
+      : growth.applyResultRewards(resolvedResult)
+    if (refinesGift) eventStore._dynamicFlags._refinedGiftAt60 = true
     if (ring) {
       const released = Math.max(0, overflowBefore - (Number(player.overflowExp) || 0))
       if (released > 0) reward.list.unshift(`释放暂存经验+${released}`)
@@ -364,32 +517,39 @@ export function useEventFlow(deps) {
     }
     if (!ev._worldActionAlreadyCounted) growth.completeWorldAction()
 
-    // 添加日记
-    const diaryText = effectText || (resolvedResult.text || '')
-    const cleanText = String(diaryText).replace(/\{name\}|\{spirit\}/g, '').replace(/<[^>]*>/g, '')
-    growth.addDiaryEntry(`经历事件「${ev.name}」：${cleanText}`, 'event')
+    const templateExtra = ring ? { ringLabel: ring.name } : {}
+    if (ev.ring && !ring && !refinesGift) {
+      resolvedResult.text = '魂兽被你制服了，可吸收魂环时，狂暴的魂力在经脉里横冲直撞，你只能先放弃这一次。休整一下，过两次行动后再来挑战。'
+    }
 
-    // 显示继续页面
+    // 添加日记：占位符替换成真实名字，再去掉标签，日记界面按纯文本展示。
+    const diaryText = effectText || (resolvedResult.text || '')
+    const cleanText = plainText(fillTemplate(diaryText, { name: player.name, spirit: player.spirit?.name, origin: player.originName, ...templateExtra }))
+    growth.addDiaryEntry(`经历事件「${plainText(fillTemplate(ev.name, { name: player.name, spirit: player.spirit?.name }))}」：${cleanText}`, 'event')
+
+    // 显示继续页面：正文与奖励分开传，奖励由场景区渲染成一条条小标签。
     const displayText = resolvedResult.text || effectText || '你完成了一次经历。'
-    const rewardSummary = reward.list.length > 0
-      ? `<br><span class="hl-gold">${reward.list.join('　')}</span>`
-      : ''
-    scene.showContinue(ev, displayText + rewardSummary)
+    scene.showContinue(ev, displayText, reward.list, templateExtra)
 
     saveGame()
   }
 
   // ==================== 行动入口 ====================
 
+  // 休息：花一次行动恢复 40% 生命和 30% 魂力（原来只恢复 50 点，后期几乎没用）。
   function rest() {
+    if (battleSystem.isActive()) return
     const fs = deps.finalStats()
-    const healed = Math.max(0, Math.min(50, fs.maxHp - player.hp))
+    const maxMp = deps.getMaxSpiritPower()
+    const healed = Math.max(0, Math.min(Math.round(fs.maxHp * 0.4), fs.maxHp - player.hp))
+    const mpBefore = player.spiritPower
     player.heal(healed)
-    player.spiritPower = Math.min(player.spiritPower + 20, deps.getMaxSpiritPower())
-    ui.notify(`休息片刻，恢复 ${healed} 点生命与 20 点魂力`, 'success')
+    player.spiritPower = Math.min(maxMp, player.spiritPower + Math.round(maxMp * 0.3))
+    ui.notify(`休息了一会儿，恢复 ${healed} 点生命、${player.spiritPower - mpBefore} 点魂力`, 'success')
     growth.completeWorldAction()
-    growth.addDiaryEntry('原地休息，恢复了一些生命与魂力。', 'event')
+    growth.addDiaryEntry('停下来休息，恢复了生命与魂力。', 'event')
     saveGame()
+    if (scene.sceneState.value === 'location') exploration.showLocationAction()
   }
 
   function explore() {
@@ -425,11 +585,12 @@ export function useEventFlow(deps) {
       }))
       return
     }
+    // 玩家选择"先历练"时推迟 6 次行动再提醒；目标始终显示在引导条和左栏，不会丢。
     const guideType = scene.currentEvent.value?._travelGuideType
     if (guideType === 'ring') {
-      eventStore._ringHuntDeferredUntil = (eventStore._eventCount || 0) + 2
+      eventStore._ringHuntDeferredUntil = (eventStore._eventCount || 0) + 6
     } else if (guideType === 'story') {
-      eventStore._storyMilestoneDeferredUntil = (eventStore._eventCount || 0) + 2
+      eventStore._storyMilestoneDeferredUntil = (eventStore._eventCount || 0) + 6
     }
     if (guideType) saveGame()
     nextEvent()
@@ -445,14 +606,13 @@ export function useEventFlow(deps) {
 
   function handleBattleEnd(result) {
     // result: { type: 'victory'|'defeat'|'escape', text, gains, exp, gold }
+    logJourney({ k: 'battle', id: scene.currentEvent.value?.id || '', title: scene.currentEvent.value?.name || '', result: result.type })
     if (!scene.currentEvent.value?._worldActionAlreadyCounted) growth.completeWorldAction()
-    growth.addDiaryEntry(`经历战斗：${result.text}`, 'event')
+    const templateExtra = result.ringLabel ? { ringLabel: result.ringLabel } : {}
+    growth.addDiaryEntry(`经历战斗：${plainText(fillTemplate(result.text, { name: player.name, spirit: player.spirit?.name, ...templateExtra }))}`, 'event')
     growth.checkLevelUp()
 
-    const gainsSummary = result.gains && result.gains.length > 0
-      ? `<br><span class="hl-gold">${result.gains.join('　')}</span>`
-      : ''
-    scene.showContinue(scene.currentEvent.value, result.text + gainsSummary)
+    scene.showContinue(scene.currentEvent.value, result.text, result.gains || [], templateExtra)
     saveGame()
   }
 
@@ -468,6 +628,8 @@ export function useEventFlow(deps) {
     handleBattleEnd,
     recordEventDiscoveries,
     markEventCompleted,
-    nextMainStoryMilestone
+    nextMainStoryMilestone,
+    mainStoryStatus,
+    startMainStory
   }
 }

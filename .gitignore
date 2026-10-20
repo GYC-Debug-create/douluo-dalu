@@ -13,3 +13,6 @@ docs/local/
 docs/archive/*.tgz
 .ocu-*.json
 opencode.json
+
+# 部署打包产物
+deploy/*.tgz

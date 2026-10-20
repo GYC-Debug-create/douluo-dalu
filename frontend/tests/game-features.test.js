@@ -61,6 +61,25 @@ beforeEach(() => {
 })
 
 describe('人物正式切磋', () => {
+  it('禁止在100级或魂环等级上限购买经验丹，余额与经验库不变', () => {
+    const features = useGameFeatures()
+    const player = usePlayerStore()
+    player.gold = 1000
+    player.level = 100
+    player.exp = 12
+    features.buyItem('exp_pill')
+    expect(player.gold).toBe(1000)
+    expect(player.exp).toBe(12)
+
+    player.level = 90
+    player.rings = Array.from({ length: 8 }, (_, id) => ({ id }))
+    player.overflowExp = 3000
+    features.buyItem('exp_pill')
+    expect(player.gold).toBe(1000)
+    expect(player.overflowExp).toBe(3000)
+    expect(features.canBuyItem(features.SHOP_ITEMS.find(item => item.id === 'exp_pill')).ok).toBe(false)
+  })
+
   it('从人物面板进入正式战斗，并在胜利后结算经验、关系、冷却与成就', () => {
     const features = useGameFeatures()
     const player = usePlayerStore()

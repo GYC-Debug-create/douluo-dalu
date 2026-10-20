@@ -2,8 +2,8 @@
   <div class="scene-area">
     <!-- 事件叙事 -->
     <div v-if="sceneState === 'event' && currentEvent" class="scene-event">
-      <div class="scene-location" v-if="currentEvent.location">【{{ displayLocation }}】</div>
-      <div class="event-title">{{ displayTitle }}</div>
+      <div class="scene-location" v-if="displayLocation">【{{ displayLocation }}】</div>
+      <div class="event-title">{{ currentEvent.name }}</div>
       <img
         v-if="currentEvent.image"
         :src="currentEvent.image"
@@ -12,8 +12,7 @@
         decoding="async"
         @error="onImgError"
       />
-      <div v-if="simpleMode" class="event-text">{{ eventText }}</div>
-      <div v-else class="event-text" v-html="eventText"></div>
+      <div class="event-text" v-html="eventText"></div>
       <div class="event-choices">
         <button
           v-for="(choice, idx) in availableChoices"
@@ -24,8 +23,8 @@
         >
           <span class="ck">{{ String.fromCharCode(65 + idx) }}</span>
           <span class="choice-copy">
-            <span class="choice-text">{{ choiceLabel(choice) }}</span>
-            <span v-if="!simpleMode && choice.strategy" class="choice-strategy">
+            <span class="choice-text">{{ choice.text }}</span>
+            <span v-if="choice.strategy" class="choice-strategy">
               <span>{{ choice.strategy.year }}</span>
               <span>{{ choice.strategy.risk }}</span>
               <span>{{ choice.strategy.reward }}</span>
@@ -51,10 +50,27 @@
         </div>
         <div class="location-action-kicker">地点行动<br><span>LOCAL ACTION</span></div>
       </div>
+      <div v-if="currentEvent.completionText" class="round-complete" data-testid="round-complete">
+        <div class="round-complete-text">{{ currentEvent.completionText }}</div>
+        <div v-if="currentEvent.completionRewards?.length" class="reward-chips">
+          <span v-for="(reward, i) in currentEvent.completionRewards" :key="i" class="reward-chip" :class="rewardKind(reward)">{{ reward }}</span>
+        </div>
+      </div>
+
       <div v-if="currentEvent.ringReady" class="ring-priority" data-testid="ring-hunt-priority">
         <div class="ring-priority-title">当前任务 · 第{{ currentEvent.ringOrdinal }}魂环</div>
-        <div class="ring-priority-copy">{{ currentEvent.ringTargetName }}就是本次猎魂目标。正式猎魂入口已解锁，不需要等待随机事件。</div>
+        <div class="ring-priority-copy">「{{ currentEvent.ringTargetName }}」就是猎取这个魂环的地方。准备好了就出发吧！</div>
         <button class="btn btn-gold ring-priority-btn" @click="$emit('hunt')">✦ {{ currentEvent.ringLabel }}</button>
+      </div>
+
+      <div v-else-if="currentEvent.storyReady" class="ring-priority story-priority" data-testid="story-priority">
+        <div class="ring-priority-title">主线故事 · {{ currentEvent.storyName }}</div>
+        <div class="ring-priority-copy">新的故事就在这里等着你。</div>
+        <button class="btn btn-gold ring-priority-btn" @click="$emit('story')">✦ 开始主线：{{ currentEvent.storyName }}</button>
+      </div>
+
+      <div v-else-if="currentEvent.storyElsewhere" class="location-condition story-hint" data-testid="story-elsewhere">
+        主线「{{ currentEvent.storyName }}」在「{{ currentEvent.storyTargetName }}」等你，打开地图就能过去。
       </div>
 
       <p class="location-action-intro">{{ currentEvent.description || '这里有属于当地的线索、人物和行动。' }}</p>
@@ -108,32 +124,37 @@
         <button v-else class="btn btn-gold action-card" aria-label="探索当地" @click="$emit('start-exploration', 'local_exploration')">
           <span class="action-glyph" aria-hidden="true">✦</span><span class="action-copy"><strong>探索当地</strong><small>调查地形，追踪区域线索</small></span><span class="action-arrow" aria-hidden="true">→</span>
         </button>
-        <button v-if="!simpleMode" class="btn action-card" aria-label="接取当地委托" @click="$emit('start-exploration', 'local_commission')">
+        <button class="btn action-card" aria-label="接取当地委托" @click="$emit('start-exploration', 'local_commission')">
           <span class="action-glyph" aria-hidden="true">◆</span><span class="action-copy"><strong>接取当地委托</strong><small>完成一轮当地任务与交付</small></span><span class="action-arrow" aria-hidden="true">→</span>
         </button>
-        <button v-if="!simpleMode" class="btn action-card" aria-label="拜访当地人物" @click="$emit('start-exploration', 'local_contact')">
+        <button class="btn action-card" aria-label="拜访当地人物" @click="$emit('start-exploration', 'local_contact')">
           <span class="action-glyph" aria-hidden="true">◇</span><span class="action-copy"><strong>拜访当地人物</strong><small>交换情报，建立地域关系</small></span><span class="action-arrow" aria-hidden="true">→</span>
         </button>
+        <button class="btn action-card" aria-label="休息恢复" @click="$emit('rest')">
+          <span class="action-glyph" aria-hidden="true">☾</span><span class="action-copy"><strong>休息恢复</strong><small>恢复生命和魂力（花一次行动）</small></span><span class="action-arrow" aria-hidden="true">→</span>
+        </button>
         <button class="btn map-btn action-card action-card-muted" aria-label="返回万象地图" @click="$emit('open-map')">
-          <span class="action-glyph" aria-hidden="true">🗺</span><span class="action-copy"><strong>{{ simpleMode ? '看看地图' : '返回万象地图' }}</strong><small>{{ simpleMode ? '去别的地方走走' : '查看路线、目标与其它地点' }}</small></span><span class="action-arrow" aria-hidden="true">→</span>
+          <span class="action-glyph" aria-hidden="true">🗺</span><span class="action-copy"><strong>看看地图</strong><small>查看路线，去别的地方</small></span><span class="action-arrow" aria-hidden="true">→</span>
         </button>
       </div>
     </div>
 
     <!-- 继续前行（事件结果） -->
     <div v-else-if="sceneState === 'continue'" class="scene-continue">
-      <div class="scene-location" v-if="locationName">【{{ simpleMode ? childCopy(locationName) : locationName }}】</div>
-      <div class="event-title">{{ currentEvent?.name ? (simpleMode ? childCopy(currentEvent.name) : currentEvent.name) : '继续旅程' }}</div>
-      <div v-if="simpleMode" class="event-text">{{ resultDisplayText }}</div>
-      <div v-else class="event-text" v-html="resultDisplayText"></div>
+      <div class="scene-location" v-if="locationName">【{{ locationName }}】</div>
+      <div class="event-title">{{ currentEvent?.name || '继续旅程' }}</div>
+      <div class="event-text" v-html="resultDisplayText"></div>
+      <div v-if="resultRewards.length" class="reward-chips" data-testid="reward-chips">
+        <span v-for="(reward, i) in resultRewards" :key="i" class="reward-chip" :class="rewardKind(reward)">{{ reward }}</span>
+      </div>
       <div class="event-choices">
         <button class="choice-btn continue-btn" @click="$emit('continue')">
           <span class="ck">▶</span>
-          <span class="choice-text">{{ simpleMode ? '继续出发' : '继续前行' }}</span>
+          <span class="choice-text">继续前行</span>
         </button>
         <button class="choice-btn map-btn" @click="$emit('open-map')">
           <span class="ck">🗺</span>
-          <span class="choice-text">{{ simpleMode ? '看看地图' : '查阅万象地图' }}</span>
+          <span class="choice-text">看看地图</span>
         </button>
       </div>
     </div>
@@ -171,9 +192,9 @@
         <div class="scene-idle-desc">{{ idleDesc }}</div>
         <div class="scene-idle-tip">{{ idleTip }}</div>
         <div class="explore-btns">
-          <button class="btn btn-gold" @click="$emit('explore')">{{ simpleMode ? '✦ 去探索' : '✦ 探索四周' }}</button>
-          <button class="btn" @click="$emit('rest')">{{ simpleMode ? '休息一下' : '原地休息' }}</button>
-          <button class="btn" @click="$emit('hunt')" v-if="canHunt">{{ simpleMode ? '去打怪' : '猎杀魂兽' }}</button>
+          <button class="btn btn-gold" @click="$emit('explore')">✦ 探索四周</button>
+          <button class="btn" @click="$emit('rest')">原地休息</button>
+          <button class="btn" @click="$emit('hunt')" v-if="canHunt">猎取魂环</button>
         </div>
       </div>
     </div>
@@ -183,79 +204,65 @@
 <script setup>
 import { computed } from 'vue'
 import BattleArena from './BattleArena.vue'
-import { childCopy, shortChildStory, shortChildChoice } from '@/utils/child-mode'
 
 const props = defineProps({
   sceneState: { type: String, default: 'idle' },
   currentEvent: { type: Object, default: null },
   resultText: { type: String, default: '' },
+  resultRewards: { type: Array, default: () => [] },
   playerName: { type: String, default: '魂师' },
   spiritName: { type: String, default: '武魂' },
   playerLevel: { type: Number, default: 1 },
   canHunt: { type: Boolean, default: false },
   locationName: { type: String, default: '' },
-  checkCond: { type: Function, default: () => true },
-  simpleMode: { type: Boolean, default: false }
+  checkCond: { type: Function, default: () => true }
 })
 
 const emit = defineEmits([
-  'explore', 'rest', 'hunt', 'choose', 'continue', 'open-map',
+  'explore', 'rest', 'hunt', 'story', 'choose', 'continue', 'open-map',
   'start-exploration', 'resume-exploration', 'return-exploration', 'abandon-exploration'
 ])
 
-const idleTitle = computed(() => props.simpleMode ? '准备好出发啦' : '旅途尚待展开')
-const idleDesc = computed(() => props.simpleMode
-  ? '点一下金色大按钮，看看会遇见什么故事。'
-  : '你正站在斗罗大陆的道路上，远处城镇灯火微明，林间传来魂兽的低鸣。')
-const idleTip = computed(() => props.simpleMode ? '' : '你可以探索四周、寻找魂兽，或前往附近城镇。')
+const idleTitle = '旅途尚待展开'
+const idleDesc = '你站在斗罗大陆的道路上，远处城镇灯火微明，林间传来魂兽的低鸣。'
+const idleTip = '点"探索四周"，看看会遇见什么故事。'
 
-// 简单模式：地点/标题去术语，正文压缩到三句以内，选项一行以内。
-const displayLocation = computed(() => props.simpleMode ? childCopy(props.currentEvent?.location || props.locationName) : (props.currentEvent?.location || props.locationName))
-const displayTitle = computed(() => props.simpleMode ? childCopy(props.currentEvent?.name || '') : (props.currentEvent?.name || ''))
+// 事件里写"任意/斗罗大陆各地"这类泛指地点时，引擎已换成玩家所在地点（_displayLocation）。
+const displayLocation = computed(() => props.currentEvent?._displayLocation ?? props.currentEvent?.location ?? props.locationName)
 
+// 占位符已由引擎层 fillEventTemplates 统一替换，这里只负责排版。
 const eventText = computed(() => {
   if (!props.currentEvent?.text) return ''
-  if (props.simpleMode) return shortChildStory(props.currentEvent.text, 3, 150)
   const texts = Array.isArray(props.currentEvent.text) ? props.currentEvent.text : [props.currentEvent.text]
-  return texts
-    .join('<br/><br/>')
-    .replace(/\{name\}/g, props.playerName)
-    .replace(/\{spirit\}/g, props.spiritName)
+  return texts.filter(Boolean).join('<br/><br/>')
 })
 
-const resultDisplayText = computed(() => {
-  if (!props.resultText) return '你休整片刻，准备踏上新的旅程。'
-  if (props.simpleMode) return shortChildStory(props.resultText, 3, 160)
-  return props.resultText
-    .replace(/\{name\}/g, props.playerName)
-    .replace(/\{spirit\}/g, props.spiritName)
-})
+// 结果文字已在场景层转义；这里只把段落换行变成 <br>，让名场面的收尾段落单独成段。
+const resultDisplayText = computed(() => (props.resultText || '你休整片刻，准备踏上新的旅程。').replace(/\n/g, '<br>'))
 
-const availableChoices = computed(() => {
-  if (!props.currentEvent?.choices) return []
-  return props.currentEvent.choices
-})
+const availableChoices = computed(() => props.currentEvent?.choices || [])
 
-function choiceLabel(choice) {
-  return props.simpleMode ? shortChildChoice(choice.text) : choice.text
+// 奖励标签配色：经验/金币/魂环/损失各一种，帮助小朋友一眼看懂得到了什么。
+function rewardKind(text) {
+  const value = String(text)
+  if (/魂环|魂技|进化/.test(value)) return 'ring'
+  if (/-\d|消耗|未消耗|损失/.test(value)) return 'loss'
+  if (/经验|升级|Lv\./.test(value)) return 'exp'
+  if (/金币/.test(value)) return 'gold'
+  return 'gain'
 }
 
 function choiceAvailable(choice) {
   const cond = choice.cond || choice.req
   if (!cond) return true
-  if (typeof cond === 'function') {
-    return props.checkCond(cond)
-  }
   return props.checkCond(cond)
 }
 
 function choiceHint(choice) {
   const cond = choice.cond || choice.req
   if (!cond) return ''
-  if (typeof choice.requirementHint === 'string' && choice.requirementHint.trim()) {
-    return props.simpleMode ? childCopy(choice.requirementHint.trim()) : choice.requirementHint.trim()
-  }
-  if (typeof cond === 'function') return props.simpleMode ? '' : '留意事件描述中的条件线索'
+  if (typeof choice.requirementHint === 'string' && choice.requirementHint.trim()) return choice.requirementHint.trim()
+  if (typeof cond === 'function') return ''
   const parts = []
   if (cond.attack) parts.push(`攻击≥${cond.attack}`)
   if (cond.defense) parts.push(`防御≥${cond.defense}`)
@@ -264,8 +271,7 @@ function choiceHint(choice) {
   if (cond.gold) parts.push(`金币≥${cond.gold}`)
   if (cond.fate) parts.push(`命运≥${cond.fate}`)
   if (cond.item) parts.push(`需要${cond.item}`)
-  const text = parts.join('·')
-  return props.simpleMode ? childCopy(text) : text
+  return parts.join('·')
 }
 
 function chooseOption(choice, idx) {
@@ -737,6 +743,27 @@ function onImgError(e) {
 .map-btn:hover {
   border-color: rgba(139, 92, 246, 0.6) !important;
 }
+
+
+/* 奖励小标签：每项奖励一个标签，代替原来挤成一行的数字 */
+.reward-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: -8px 0 22px; }
+.reward-chip {
+  display: inline-flex; align-items: center; padding: 4px 12px; border-radius: 999px;
+  font-size: 14px; letter-spacing: 1px; border: 1px solid rgba(201, 168, 76, 0.5);
+  background: rgba(201, 168, 76, 0.1); color: var(--gold-hi);
+}
+.reward-chip.exp { border-color: rgba(143, 184, 216, 0.6); background: rgba(143, 184, 216, 0.1); color: #b8d6ec; }
+.reward-chip.gold { border-color: rgba(230, 200, 120, 0.7); color: #f0d68a; }
+.reward-chip.ring { border-color: #1abc9c; background: rgba(26, 188, 156, 0.12); color: #9fe6d4; }
+.reward-chip.loss { border-color: rgba(208, 106, 90, 0.6); background: rgba(208, 106, 90, 0.1); color: #f0b0a5; }
+.round-complete {
+  margin: 4px 0 14px; padding: 12px 14px; border: 1px solid rgba(127, 196, 140, 0.55);
+  border-left: 4px solid #7fc48c; border-radius: 5px; background: rgba(18, 40, 34, 0.45);
+}
+.round-complete-text { color: var(--ink); font-size: 14px; line-height: 1.7; margin-bottom: 10px; }
+.round-complete .reward-chips { margin: 0; }
+.story-priority { border-left-color: var(--gold-hi); background: linear-gradient(120deg, rgba(60, 44, 16, 0.92), rgba(36, 28, 14, 0.7)); }
+.story-hint { border-left-color: var(--gold-hi); color: var(--gold-hi); }
 
 /* ============ 战斗场景 ============ */
 .scene-battle {

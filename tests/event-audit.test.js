@@ -12,8 +12,10 @@ test('事件中央规则审计覆盖基线与地点专属事件且无阻断项',
     encoding: 'utf8'
   });
   assert.equal(result.status, 0, `${result.stdout}\n${result.stderr}`);
-  // 基线 543 = 541 + P0-B 新增 ml_bibi_omen / ml_bibi_hunt（比比东主线铺垫）。
-  assert.match(result.stdout, /事件审计：543 条/);
+  // 基线 543 = 541 + P0-B 新增 ml_bibi_omen / ml_bibi_hunt（比比东主线铺垫）；
+  // 儿童版 594 = 543 + 10 段新主线（ms_*）+ 41 个后期地点事件（late_*）；
+  // 名场面主线 +14 段（data/main-story.js）= 608。
+  assert.match(result.stdout, /事件审计：608 条/);
 });
 
 test('事件资源统一解析审计无缺失文件', () => {

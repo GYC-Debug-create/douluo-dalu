@@ -17,6 +17,7 @@ import {
   normalizeLocationExplorationsByLocation
 } from '@/utils/location-exploration'
 import { buildRingHuntMeta, ringDestination } from '@/utils/ring-hunt'
+import { experienceNeededForLevel } from '@/engine/rules'
 
 export { isLocationExplorationEvent }
 
@@ -111,12 +112,16 @@ export function createLocationExplorationSystem(deps) {
     }
   }
 
-  function showLocationAction(message = '', { arrivalSummary = false } = {}) {
+  function showLocationAction(message = '', { arrivalSummary = false, rewards = [] } = {}) {
     const location = currentMapLocation()
     if (!location) {
       commands.nextEvent()
       return
     }
+    // 主线入口：等级已够且就在目标地点时，地点行动界面直接给出"开始主线"按钮；
+    // 等级够但不在目标地点，则提示去哪里。修复"一直在地点里探索，主线永远不出现"。
+    let story = { milestone: null, due: false, atTarget: false, targetName: '' }
+    try { story = commands.mainStoryStatus() } catch { /* 纯工具测试未注册主线命令时安全降级 */ }
     locNameRef.value = location.name
     const state = explorationState(location.id)
     const activeMode = locationExplorationMode(state?.objectiveType || 'local_exploration')
@@ -157,6 +162,13 @@ export function createLocationExplorationSystem(deps) {
       ringTargetId: ringMeta.ringTargetId,
       ringTargetName: ringMeta.ringTargetName,
       ringLabel: ringReady ? `执行第${ringMeta.ringOrdinal}魂环猎取` : '',
+      // 猎环优先：魂环门槛卡着时先猎环，猎完再进主线。
+      storyReady: Boolean(!ringReady && story.milestone && story.due && story.atTarget),
+      storyElsewhere: Boolean(story.milestone && story.due && !story.atTarget),
+      storyName: story.milestone?.name || '',
+      storyTargetName: story.targetName || '',
+      completionRewards: Array.isArray(rewards) ? rewards.filter(Boolean) : [],
+      completionText: !arrivalSummary && message ? message : '',
       exploration: state,
       explorationObjectiveType: activeMode.id,
       explorationModeLabel: activeMode.label,
@@ -291,11 +303,13 @@ export function createLocationExplorationSystem(deps) {
     }
     const mode = locationExplorationMode(state.objectiveType)
     const level = Math.max(1, Number(player.level) || 1)
+    // 完成一整轮（4 小步）的奖励按当前等级折算，后期也有实际意义。
+    const levelExp = experienceNeededForLevel(level)
     const rewardInput = mode.rewardKey === 'commission'
-      ? { gold: 70 + Math.min(120, level * 2) }
+      ? { gold: 60 + level * 4, exp: Math.round(levelExp * 0.1) }
       : mode.rewardKey === 'contact'
-        ? { fate: 2, exp: 20 + Math.min(50, level) }
-        : { exp: 35 + Math.min(60, level * 2) }
+        ? { fate: 1, exp: Math.round(levelExp * 0.12) }
+        : { exp: Math.round(levelExp * 0.2) }
     const reward = applyResultRewards(rewardInput)
     const prior = gameStore._locationProgress?.[location.id] || {}
     const rounds = Math.max(0, Number(prior.rounds) || 0) + 1
@@ -330,7 +344,7 @@ export function createLocationExplorationSystem(deps) {
       : mode.id === 'local_contact'
         ? `人物关系 ${modeProgress.relationships}，新情报 ${modeProgress.information} 条`
         : `探索度 ${modeProgress.exploration}%，新增线索 ${modeProgress.clues} 条`
-    const summary = `你完成了「${location.name}」的${mode.label}，${progressText}。${reward.list.length ? `<br><span class="hl-gold">${reward.list.join('　')}</span>` : ''}`
+    const summary = `你完成了「${location.name}」的${mode.label}，${progressText}。`
     state.status = LOCATION_EXPLORATION_STATUSES.completed
     state.active = false
     state.stage = state.queuedEventIds.length
@@ -341,7 +355,7 @@ export function createLocationExplorationSystem(deps) {
     setExplorationState(state)
     appendDiarySafe(`完成「${location.name}」第${rounds}轮地点探索，探索度提升至${progress}%。`, 'discovery')
     saveGame()
-    showLocationAction(summary)
+    showLocationAction(summary, { rewards: reward.list })
   }
 
   function abandonLocationExploration(locationId = '') {

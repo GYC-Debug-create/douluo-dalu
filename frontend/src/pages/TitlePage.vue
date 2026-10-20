@@ -18,6 +18,10 @@
       <span class="logo-char">陆</span>
     </div>
     <div class="game-slogan">武 魂 觉 醒</div>
+    <p class="title-premise">成为史莱克第八怪，走进属于你的名场面。</p>
+    <div class="title-highlights" aria-label="玩法亮点">
+      <span>随机武魂</span><span>魂环抉择</span><span>分支冒险</span>
+    </div>
     <div class="title-rule"></div>
     <div class="title-menu">
       <button class="btn btn-gold btn-big" @click="startNew">✦ 新的旅程</button>
@@ -25,7 +29,12 @@
       <button class="btn btn-big" @click="goCodex">万象图鉴</button>
     </div>
 
-    <!-- 账号登录 / 注册 -->
+    <RouterLink class="design-entry" to="/design">
+      <span>全生命周期数值分析</span><small>流程图 · 数据可视化 · 设计与修复</small><span aria-hidden="true">↗</span>
+    </RouterLink>
+    <p class="guest-note">无需登录即可开始 · 试玩进度保存在当前浏览器</p>
+
+    <!-- 账号登录（内测期不开放注册，账号由管理员分配） -->
     <div class="login-bar">
       <template v-if="isLoggedIn">
         <span class="login-hello">👤 {{ authUser }}</span>
@@ -44,7 +53,7 @@
             v-model="newPassword"
             class="login-input"
             type="password"
-            placeholder="新密码（至少 4 位）"
+            placeholder="新密码（至少 6 位）"
             maxlength="128"
             autocomplete="new-password"
           />
@@ -66,6 +75,7 @@
           class="login-input"
           type="text"
           placeholder="账号（2-20 位）"
+          aria-label="账号"
           maxlength="20"
           autocomplete="username"
           @keyup.enter="doLogin"
@@ -74,19 +84,19 @@
           v-model="loginPassword"
           class="login-input"
           type="password"
-          placeholder="密码（至少 4 位）"
+          placeholder="密码"
+          aria-label="密码"
           maxlength="128"
           autocomplete="current-password"
           @keyup.enter="doLogin"
         />
         <button class="btn login-btn" :disabled="authBusy" @click="doLogin">登录</button>
-        <button class="btn login-btn" :disabled="authBusy" @click="doRegister">注册</button>
       </template>
       <span v-if="authMessage" class="login-message">{{ authMessage }}</span>
     </div>
 
-    <div class="title-tip">一场属于你的魂师传奇，即将展开……</div>
-    <div class="title-meta">新手入门约 2 分钟 · 出身可重选 · 觉醒可无限次</div>
+    <div class="title-tip">觉醒你的武魂，让伙伴记住你的选择。</div>
+    <div class="title-meta">出身可重选 · 觉醒可无限次 · 登录后可同步云端存档</div>
 
     <!-- 存档选择弹窗 -->
     <Teleport to="body">
@@ -194,8 +204,8 @@ async function submitPasswordChange() {
     authMessage.value = '请填写当前密码和新密码'
     return
   }
-  if (newPassword.value.length < 4) {
-    authMessage.value = '新密码至少 4 位'
+  if (newPassword.value.length < 6) {
+    authMessage.value = '新密码至少 6 位'
     return
   }
   if (newPassword.value !== newPasswordConfirm.value) {
@@ -300,25 +310,6 @@ async function doLogin() {
   }
 }
 
-async function doRegister() {
-  if (authBusy.value) return
-  const name = loginUsername.value.trim()
-  if (!name || !loginPassword.value) {
-    authMessage.value = '请输入账号和密码'
-    return
-  }
-  authBusy.value = true
-  authMessage.value = ''
-  try {
-    await api.register(name, loginPassword.value)
-    loginPassword.value = ''
-    await refreshCloudSaves()
-  } catch (error) {
-    authMessage.value = error.message || '注册失败'
-  } finally {
-    authBusy.value = false
-  }
-}
 
 function doLogout() {
   api.logout()
@@ -583,13 +574,16 @@ function formatTime(timeStr) {
   border-color: var(--gold);
 }
 .login-input::placeholder {
-  color: #6b5e42;
+  color: var(--ink-dim);
 }
 .login-btn {
   padding: 8px 18px;
   font-size: 14px;
   letter-spacing: 2px;
   background: rgba(201, 168, 76, 0.08);
+  border: 1px solid var(--line-strong);
+  border-radius: 4px;
+  color: var(--ink);
 }
 .login-btn:disabled {
   opacity: 0.5;
@@ -612,7 +606,7 @@ function formatTime(timeStr) {
 }
 
 .title-tip {
-  margin-top: 36px;
+  margin-top: 20px;
   font-size: 14px;
   color: var(--ink-dim);
   letter-spacing: 2px;
@@ -620,8 +614,37 @@ function formatTime(timeStr) {
 .title-meta {
   margin-top: 8px;
   font-size: 11.5px;
-  color: #6b5e42;
+  color: var(--ink-dim);
   letter-spacing: 1px;
+}
+
+.title-premise { margin-top: 10px; padding-inline: 12px; color: var(--ink); font-size: 15px; line-height: 1.7; }
+.title-highlights { display: flex; gap: 18px; margin-top: 12px; color: var(--ink-dim); font-size: 12px; letter-spacing: 2px; }
+.title-highlights span + span { border-left: 1px solid var(--line-strong); padding-left: 18px; }
+.design-entry { display: grid; grid-template-columns: 1fr auto; gap: 4px 14px; align-items: center; width: min(340px, 85vw); margin-top: 14px; padding: 12px 16px; border: 1px solid var(--line-strong); border-radius: 4px; background: rgba(201, 168, 76, 0.07); text-align: left; color: var(--gold-hi); }
+.design-entry small { grid-column: 1; color: var(--ink-dim); font-size: 12px; }
+.design-entry > span:last-child { grid-column: 2; grid-row: 1 / 3; font-size: 23px; }
+.design-entry:hover { border-color: var(--gold-hi); background: rgba(201, 168, 76, 0.13); }
+.design-entry:focus-visible { outline: 2px solid var(--gold-hi); outline-offset: 4px; }
+.guest-note { margin-top: 10px; padding-inline: 8px; font-size: 12px; line-height: 1.6; color: var(--ink); }
+@media (max-height: 850px) {
+  .title-screen { padding-block: 16px; }
+  .title-screen .game-logo { font-size: clamp(40px, 9vh, 70px); }
+  .title-screen .game-slogan { margin: 8px 0 0; font-size: 20px; }
+  .title-screen .title-rule { margin: 12px auto 2px; }
+  .title-screen .title-menu { gap: 9px; margin-top: 10px; }
+  .title-screen .title-menu .btn-big { padding: 11px 20px; font-size: 18px; }
+  .title-screen .title-tip { margin-top: 12px; }
+  .title-screen .title-highlights { margin-top: 8px; }
+}
+@media (max-height: 670px) {
+  .title-screen .title-highlights, .title-screen .title-tip, .title-screen .title-meta { display: none; }
+  .title-screen .title-premise { font-size: 13px; }
+  .title-screen .design-entry { padding-block: 8px; }
+}
+@media (max-height: 520px) {
+  .title-screen { justify-content: flex-start; overflow-y: auto; }
+  .title-screen > :not(.title-rune) { flex-shrink: 0; }
 }
 
 /* ============ 存档选择弹窗 ============ */

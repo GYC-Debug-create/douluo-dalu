@@ -10,6 +10,7 @@ import { useEventStore } from '@/stores/event'
 import { useGameStore } from '@/stores/game'
 import { TITLES } from '@/data/game-data'
 import { experienceNeededForLevel, rankTitleForLevel, RING_LEVELS, phaseForLevel } from '@/engine/rules'
+import { relationshipBonuses } from '@/engine/relationship-rules'
 
 const TIER_NAMES = { low: '低级武魂', mid: '中级武魂', high: '高级武魂', top: '顶级武魂', god: '神级武魂' }
 const TIER_COLORS = { low: '#94a3b8', mid: '#22c55e', high: '#3b82f6', top: '#a855f7', god: '#fbbf24' }
@@ -21,15 +22,6 @@ const FORMATIONS = [
   { id: 'speed', name: '疾风阵', attack: 0, defense: 0, speed: 0.25, spirit: 0 },
   { id: 'spirit', name: '聚灵阵', attack: 0, defense: 0, speed: 0, spirit: 0.30 }
 ]
-
-const NPC_RELATION_REWARDS = {
-  20: { bonus: {} },
-  50: { bonus: { expMul: 1.05 } },
-  100: { bonus: { attack: 3, defense: 2 } },
-  200: { bonus: { attack: 8, defense: 5, hp: 50 } },
-  350: { bonus: { attack: 15, defense: 10, hp: 100, speed: 5, fateMul: 1.1 } },
-  500: { bonus: {} }
-}
 
 function runtimeFlag(key, fallback) {
   const event = useEventStore()
@@ -54,20 +46,7 @@ function titleBonus() {
 
 function npcRelationBonuses() {
   const game = useGameStore()
-  const result = { attack: 0, defense: 0, hp: 0, speed: 0, expMul: 1, fateMul: 1 }
-  for (const affinity of Object.values(game._npcRelations || {})) {
-    for (const [threshold, definition] of Object.entries(NPC_RELATION_REWARDS)) {
-      if (Number(affinity) < Number(threshold)) continue
-      const bonus = definition.bonus || {}
-      result.attack += Number(bonus.attack) || 0
-      result.defense += Number(bonus.defense) || 0
-      result.hp += Number(bonus.hp) || 0
-      result.speed += Number(bonus.speed) || 0
-      if (bonus.expMul) result.expMul *= Number(bonus.expMul)
-      if (bonus.fateMul) result.fateMul *= Number(bonus.fateMul)
-    }
-  }
-  return result
+  return relationshipBonuses(game._npcRelations || {})
 }
 
 function phaseName(level) {
@@ -123,7 +102,7 @@ let statsMemo = null // { pinia, ref }——按 Pinia 实例隔离,测试间互�
 
 /**
  * 最终属性计算（含魂环、魂骨、技能树、称号加成）
- * 从 game.js finalStats 迁移，简化版（暂不含阵法/NPC好感度，后续阶段补全）
+ * 含兼容存档的阵法/称号和当前伙伴好感度；加成顺序见 computeFinalStats。
  *
  * overrides（可选，供引擎结算层在"草稿状态"下复算，不影响语义）：
  *  - level        按该等级计算基础成长

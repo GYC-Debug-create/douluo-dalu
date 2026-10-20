@@ -31,6 +31,10 @@ export function createEngineCommands() {
     /** 进入下一个事件(实现方:useEventFlow.nextEvent) */
     nextEvent: makeSlot('nextEvent'),
     /** 记录事件图鉴发现(实现方:useEventFlow.recordEventDiscoveries) */
-    recordEventDiscoveries: makeSlot('recordEventDiscoveries')
+    recordEventDiscoveries: makeSlot('recordEventDiscoveries'),
+    /** 当前主线目标状态(实现方:useEventFlow.mainStoryStatus),地点行动界面据此显示主线入口 */
+    mainStoryStatus: makeSlot('mainStoryStatus'),
+    /** 立即开始当前主线节点(实现方:useEventFlow.startMainStory) */
+    startMainStory: makeSlot('startMainStory')
   }
 }

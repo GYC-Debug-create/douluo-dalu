@@ -21,7 +21,7 @@ function stores({ visited = ['shrek_academy'], level = 10, met = [] } = {}) {
     _currentLocation: 'shrek_academy', _visitedLocations: [...visited], _metNpcs: met,
     _npcRelations: {}, _discoveredHidden: [], _gameTime: 0, _weather: 0,
     setLocation(id) { if (!this._visitedLocations.includes(id)) this._visitedLocations.push(id); this._currentLocation = id },
-    advanceTime() { this._gameTime += 1 }
+    advanceTime(ticks = 1) { this._gameTime += ticks }
   }
   const eventStore = { _eventCount: 0, pendingRingLv: 10, _dynamicFlags: {}, _diary: [], _dynCooldowns: {} }
   return { player, game, eventStore }
@@ -67,6 +67,35 @@ describe('BUG-DIALOG-007 地图旅行具有可预期的目的地价值', () => {
     expect(result.destinationPlan.primary).toBe('追踪 Lv.10 魂环线索')
     expect(player.gold).toBe(490)
     expect(game._currentLocation).toBe(forest.id)
+    expect(game._gameTime).toBe(80)
+  })
+
+  it('只对已访问地点允许快速旅行，并按显示天数推进完整时段', () => {
+    const { player, game, eventStore } = stores()
+    const firstVisit = performMapTravel({ locations: [shrek, forest], locationId: forest.id, fast: true, player, game, eventStore })
+    expect(firstVisit).toMatchObject({ ok: true, useFast: false, travelDays: 10 })
+    expect(game._gameTime).toBe(80)
+
+    const returnTrip = performMapTravel({ locations: [shrek, forest], locationId: shrek.id, fast: true, player, game, eventStore })
+    expect(returnTrip).toMatchObject({ ok: true, useFast: true, travelDays: 3 })
+    expect(game._gameTime).toBe(104)
+  })
+
+  it('未解锁或金币不足的失败旅行不扣钱、不推进时钟', () => {
+    const { player, game, eventStore } = stores({ level: 2 })
+    const goldBefore = player.gold
+    const timeBefore = game._gameTime
+    const locked = performMapTravel({ locations: [shrek, forest], locationId: forest.id, fast: false, player, game, eventStore })
+    expect(locked.ok).toBe(false)
+    expect(player.gold).toBe(goldBefore)
+    expect(game._gameTime).toBe(timeBefore)
+
+    player.level = 10
+    player.gold = 0
+    const broke = performMapTravel({ locations: [shrek, forest], locationId: forest.id, fast: false, player, game, eventStore })
+    expect(broke.ok).toBe(false)
+    expect(player.gold).toBe(0)
+    expect(game._gameTime).toBe(timeBefore)
   })
 
   it('首次到访与没有 NPC 数据时仍给出可理解的降级计划', () => {

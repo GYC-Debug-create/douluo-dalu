@@ -82,6 +82,8 @@ async function changePassword(oldPassword, newPassword) {
     throw new Error(body.error || '登录已过期，请重新登录')
   }
   if (!res.ok) throw new Error(body.error || '修改密码失败')
+  // 改密后服务端作废全部旧 Token，并为当前设备换发新 Token
+  if (body.token) persistSession(body.token, authUsername.value)
   return body
 }
 

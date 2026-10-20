@@ -16,10 +16,10 @@
     <span v-if="known || selected" class="marker-label" :class="`label-${location.labelPosition || 'below'}`">
       {{ known ? location.name : '未探明' }}
     </span>
-    <span v-if="location.current" class="marker-status current-status">当前</span>
-    <span v-else-if="location.nextHop" class="marker-status next-status">下一站</span>
-    <span v-else-if="location.objective" class="marker-status objective-status">猎魂目标</span>
-    <span v-else-if="location.explorationInProgress" class="marker-status exploration-status">
+    <span v-if="location.current" class="marker-status current-status" :class="statusSide">当前</span>
+    <span v-else-if="location.nextHop" class="marker-status next-status" :class="statusSide">下一站</span>
+    <span v-else-if="location.objective" class="marker-status objective-status" :class="statusSide">猎魂目标</span>
+    <span v-else-if="location.explorationInProgress" class="marker-status exploration-status" :class="statusSide">
       {{ location.explorationActive ? '进行中' : '已暂停' }}
     </span>
   </button>
@@ -37,6 +37,8 @@ const props = defineProps({
 defineEmits(['select'])
 
 const known = computed(() => props.location.known !== false)
+// 状态标签放在地名的另一侧，避免"史莱[当前]克学院"这样压住地名。
+const statusSide = computed(() => (props.location.labelPosition === 'above' ? 'status-below' : 'status-above'))
 const markerStyle = computed(() => ({
   left: `${props.location.mapX}%`,
   top: `${props.location.mapY}%`,
@@ -119,11 +121,12 @@ const markerClasses = computed(() => ({
 .label-above { left: 50%; bottom: calc(100% + 1px); transform: translateX(-50%); }
 .label-left { right: calc(100% + 3px); top: 43%; transform: translateY(-50%); }
 .label-right { left: calc(100% + 3px); top: 43%; transform: translateY(-50%); }
+.marker-status.status-above { bottom: calc(100% + 4px); }
+.marker-status.status-below { top: calc(100% + 4px); }
 .marker-status {
   position: absolute;
   z-index: 3;
   left: 50%;
-  bottom: -24px;
   transform: translateX(-50%);
   padding: 2px 5px;
   border: 1px solid currentColor;

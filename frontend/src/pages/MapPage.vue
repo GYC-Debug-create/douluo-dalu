@@ -27,6 +27,7 @@
       :focus-id="focusId"
       :busy="traveling"
       @travel="handleTravel"
+      @glimpse="handleGlimpse"
     />
   </div>
 </template>
@@ -41,6 +42,7 @@ import { useGameStore } from '@/stores/game'
 import { useUiStore } from '@/stores/ui'
 import { deserializeSave, loadFromLocal, saveToLocal } from '@/stores/serializer'
 import { buildMapState, loadMapLocations, performMapTravel } from '@/utils/mapBridge'
+import { phaseForLevel, rankTitleForLevel } from '@/engine/rules'
 
 const router = useRouter()
 const route = useRoute()
@@ -89,6 +91,23 @@ async function loadLocations() {
   } finally {
     loading.value = false
   }
+}
+
+function diaryEntry(text) {
+  const phaseName = { academy: '初级学院', adventure: '进阶学院', master: '历练期', god: '封神期' }[phaseForLevel(player.level)] || '初级学院'
+  return { turn: eventStore._eventCount || 0, level: player.level, phase: `${phaseName} · ${rankTitleForLevel(player.level)}`, text, type: 'event', time: Date.now() }
+}
+
+// 远远看一眼：记进世界账本、日记和旅程记录（不移动、不花钱、不推进时间）。
+function handleGlimpse(payload) {
+  const locationId = payload?.locationId
+  if (!locationId || !player.playerId) return
+  const mark = `glimpsed:${locationId}`
+  if (eventStore.hasStoryMark(mark)) return
+  eventStore.addStoryMarks([mark])
+  eventStore.logJourney({ k: 'glimpse', id: locationId, title: payload.locationName || locationId, lv: player.level })
+  eventStore.addDiaryEntry(diaryEntry(`远远望见了「${payload.locationName || locationId}」，总有一天要去那里看看。`))
+  try { saveToLocal() } catch { /* 本地存档失败不影响浏览 */ }
 }
 
 function handleTravel(payload) {
@@ -160,6 +179,14 @@ function handleTravel(payload) {
   }
 
   ui.notify(`已抵达「${result.target.name}」，旅费 ${result.cost} 金币（路程约 ${result.travelDays} 天）。`, 'success', 5000)
+  eventStore.logJourney({ k: 'travel', id: result.target.id, title: result.target.name, from: result.current?.name || '', lv: player.level })
+  // 曾经远远望过的地方，第一次真正踏进来时提一句
+  const arrivedMark = `arrived:${result.target.id}`
+  if (eventStore.hasStoryMark(`glimpsed:${result.target.id}`) && !eventStore.hasStoryMark(arrivedMark)) {
+    eventStore.addStoryMarks([arrivedMark])
+    ui.notify(`你终于来到了曾经远远望见的「${result.target.name}」！`, 'gold', 6000)
+    eventStore.addDiaryEntry(diaryEntry(`终于走进了曾经远远望见的「${result.target.name}」。`))
+  }
   for (const hidden of result.revealed) {
     ui.notify(`发现隐藏地点：${hidden.name}`, 'gold', 5000)
   }

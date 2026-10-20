@@ -99,14 +99,13 @@ function drawSnapshot(engine, draws) {
   eventStore._earlyLifeDone = true
   eventStore._enrollmentComplete = true
   eventStore._firstClassDone = true
-  // 主线里程碑全部完成，避免主线分支抢占随机池（快照聚焦动态/连锁/普通池抽取路径）
-  eventStore.doneEvents = [
-    'first_hunt', 'reach_lv10', 'soul_master_prelim', 'spirit_hall_exam',
-    'soul_master_final', 'god_trial_sea', 'final_evil'
-  ]
-  eventStore._mainStoryVersion = 1
+  // 主线推进到"大师的考验"之后（下一段史莱克考核需 Lv.11），避免主线抢占随机池
+  // （快照聚焦动态/连锁/普通池抽取路径）。世界账本里已认识诺丁篇的人物。
+  eventStore.doneEvents = ['p02_nuoding', 'p03_master']
+  eventStore._storyMarks = ['arrived_nuoding', 'met:唐三', 'met:小舞', 'met:王圣', 'met:玉小刚']
+  eventStore._mainStoryVersion = 2
   player.level = 5
-  game.setLocation('shrek_academy')
+  game.setLocation('nuoding_city')
   const ids = []
   for (let i = 0; i < draws; i++) {
     engine.nextEvent()
@@ -145,13 +144,15 @@ describe('M2 抽取一致性快照', () => {
       //   不经过洗牌袋，仅受种子影响位置。同日曲线统一为幂曲线 40*lv^1.15、
       //   事件经验按 academy1000/adventure2000/master4000/god8000 重标定
       //   （数值变更不影响抽取序列，记录备查）。
+      // - 2026-10-06 名场面主线基线：玩家从诺丁学院起步（夹具在 nuoding_city、已认识诺丁篇人物），
+      //   旧"第一堂课"退役（first_class 不再出现）；校园类通用事件发生在当前就读的学院。
       expect(ids).toEqual([
-        'sp_wp_01', 'dyn_lucky', 'first_class', 'spirit_show', 'mentor_1',
-        'sp_wp_01', 'first_class', 'spirit_show', 'first_class', 'spirit_show',
-        'sp_wp_01', 'mentor_1', 'sp_wp_01', 'mentor_1', 'spirit_show',
-        'first_class', 'first_class', 'mentor_1', 'mentor_1', 'sp_wp_01',
-        'spirit_show', 'first_class', 'sp_wp_01', 'spirit_show', 'first_class',
-        'sp_wp_01', 'spirit_show', 'mentor_1', 'mentor_1', 'mentor_1'
+        'spirit_show', 'dyn_lucky', 'sp_wp_01', 'spirit_show', 'mentor_1',
+        'sp_wp_01', 'sp_wp_01', 'spirit_show', 'sp_wp_01', 'mentor_1',
+        'spirit_show', 'mentor_1', 'sp_wp_01', 'mentor_1', 'spirit_show',
+        'spirit_show', 'sp_wp_01', 'spirit_show', 'mentor_1', 'sp_wp_01',
+        'mentor_1', 'sp_wp_01', 'mentor_1', 'spirit_show', 'mentor_1',
+        'sp_wp_01', 'spirit_show', 'sp_wp_01', 'mentor_1', 'spirit_show'
       ])
     } finally {
       random.mockRestore()

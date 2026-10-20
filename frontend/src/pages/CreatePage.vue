@@ -158,7 +158,7 @@
               <div><span class="awaken-tier" :style="{ color: tierColor, borderColor: tierColor }">{{ tierName }}</span></div>
               <div class="awaken-name">{{ awakenedSpirit?.name }}</div>
               <div class="awaken-stats">
-                <div class="awaken-stat">先天魂力 <b>{{ innatePower }}{{ innatePower >= 100 ? '（满魂力！）' : '' }}</b></div>
+                <div class="awaken-stat">觉醒资质 <b>{{ innatePower }}/100{{ innatePower >= 100 ? '（满魂力！）' : '' }}</b></div>
                 <div class="awaken-stat">起始等级 <b>Lv.{{ initialSoulLevel }}</b></div>
                 <div class="awaken-stat">攻击 <b>{{ previewStatValues.attack }}</b></div>
                 <div class="awaken-stat">防御 <b>{{ previewStatValues.defense }}</b></div>

@@ -1,6 +1,6 @@
 import { adaptEvent, isEventEligible } from '@/engine/event-rules'
 import { getEventIndex } from '@/engine/event-index'
-import { classifyEventLocation, phaseForLevel } from '@/engine/rules'
+import { classifyEventLocation, phaseForLevel, experienceNeededForLevel } from '@/engine/rules'
 import { resolveAssetPath } from '@/utils/asset-resolver'
 
 /**
@@ -248,12 +248,15 @@ export function eligibleLocationEvents({
       ascended: eventStore._dynamicFlags?._ascended === true,
       locationMatches: true,
       isMainStory: false,
-      isRingHunt: false
+      isRingHunt: false,
+      storyMarks: Array.isArray(eventStore._storyMarks) ? eventStore._storyMarks : []
     }))
     .filter(event => !event.requiredEventIds?.some(id => !(eventStore.doneEvents || []).includes(id)))
     .filter(event => !(event.requiresAscension && eventStore._dynamicFlags?._ascended !== true))
     .filter(event => event.gameMode === undefined || event.gameMode === game.gameMode || event.gameMode === 'text-rpg')
     .filter(event => !(Array.isArray(eventStore._recentEvents) && eventStore._recentEvents.includes(event.id)))
+    // 已经重温过一次的事件不再进入地点探索（一局最多两次），没有新事件时由模板事件补位
+    .filter(event => !((Number(eventStore._eventRepeatCounts?.[event.id]) || 0) >= 1))
 }
 
 function rotationPool(events, recentEvents = [], completedEvents = []) {
@@ -265,14 +268,8 @@ function rotationPool(events, recentEvents = [], completedEvents = []) {
   const unseen = source.filter(event => !completed.has(event.id) && !recentSet.has(event.id))
   if (unseen.length) return unseen
   const cooled = source.filter(event => !recentSet.has(event.id))
-  if (cooled.length) return cooled
-  if (source.length === 1) return source
-  const counts = new Map()
-  recent.forEach(id => counts.set(id, (counts.get(id) || 0) + 1))
-  const minCount = Math.min(...source.map(event => counts.get(event.id) || 0))
-  const leastRepeated = source.filter(event => (counts.get(event.id) || 0) === minCount)
-  const oldest = Math.min(...leastRepeated.map(event => recent.lastIndexOf(event.id)))
-  return leastRepeated.filter(event => recent.lastIndexOf(event.id) === oldest)
+  // 当地的事件都刚经历过：返回空池，由模板事件补位，而不是马上重复刚看过的故事。
+  return cooled
 }
 
 function stageCandidate(events, stage, usedIds) {
@@ -336,46 +333,52 @@ function npcAt(location, index) {
   return npcs[index % Math.max(1, npcs.length)] || '当地向导'
 }
 
+// 没有专属事件时的模板事件。奖励按当前等级折算（约 10%~12% 一级），
+// 文字按"小魂师亲身经历"来写，不出现"Lv.85 的某某让你判断出"这类程序拼接感。
+function stageExp(level, ratio) {
+  return Math.max(10, Math.round(experienceNeededForLevel(level) * ratio))
+}
+
 function modeChoices(mode, stage, location, player, activity, npc) {
   const level = Math.max(1, Number(player?.level) || 1)
   const name = location?.name || location?.id || '当地'
   if (mode.id === 'local_commission') {
     return [
-      { text: `按委托要求执行「${activity}」`, result: { gold: 18 + Math.floor(level / 2), text: `你按${npc}交代的路线完成「${activity}」，把关键记录带回${name}。` } },
-      { text: `先核对${name}的任务账册`, result: { gold: 8, text: `你逐项核对任务账册，确认了${name}的交付标准与下一步路线。` } }
+      { text: `接下委托，去做「${activity}」`, result: { gold: 18 + level * 2, exp: stageExp(level, 0.1), text: `你按照${npc}说的路线，认认真真完成了「${activity}」。回来交差时，${npc}笑着说："交给你果然放心！"` } },
+      { text: '先问清楚要注意什么', result: { gold: 8 + level, exp: stageExp(level, 0.12), text: `你把每个细节都问得清清楚楚，还记在了小本子上。${npc}夸你做事稳当，这一趟走得格外顺利。` } }
     ]
   }
   if (mode.id === 'local_contact') {
     return [
-      { text: `向${npc}说明来意并交换情报`, result: { fate: 1, text: `你与${npc}完成了一次坦诚交流，获得了关于${name}后续行动的可靠情报。` } },
-      { text: `以武魂特长协助${npc}`, result: { exp: 18 + stage.id.length, fate: 1, text: `你用自己的武魂特长帮助${npc}解决眼前麻烦，双方的信任向前迈了一步。` } }
+      { text: `向${npc}打个招呼，聊聊这里的事`, result: { fate: 1, exp: stageExp(level, 0.1), text: `${npc}很健谈，给你讲了好多${name}的趣事，还告诉你哪里最值得去看看。` } },
+      { text: `主动帮${npc}一个忙`, result: { exp: stageExp(level, 0.12), fate: 1, text: `你用武魂帮${npc}解决了一个小麻烦。对方连声道谢，你们一下子熟络了起来。` } }
     ]
   }
   return [
-    { text: `记录${name}的${stage.focus}`, result: { exp: 18 + level + stage.id.length, text: `你把${name}的${stage.focus}记入行囊，线索逐渐指向更深处。` } },
-    { text: `沿「${activity}」方向谨慎观察`, result: { exp: 10 + stage.id.length, text: `你沿着「${activity}」相关区域观察，暂不冒进，但留下了可继续追查的痕迹。` } }
+    { text: `仔细看看${name}的${stage.focus}`, result: { exp: stageExp(level, 0.12), text: `你蹲下来仔细观察，发现了几处别人没注意到的痕迹，把它们一一记了下来。` } },
+    { text: `跟着「${activity}」的方向走一走`, result: { exp: stageExp(level, 0.1), gold: 5 + level, text: `你沿着「${activity}」的方向慢慢走，一路上看到了不少新鲜事，还捡到了一点零碎的魂币。` } }
   ]
 }
 
-function fallbackText(mode, stage, name, geography, activity, npc, danger, spirit, level) {
+function fallbackText(mode, stage, name, geography, activity, npc, danger, spirit) {
   if (mode.id === 'local_commission') {
     return [
-      `你在${name}确认一份当地委托：${stage.focus}。`,
-      `${npc}把任务账册、路线和验收标准交给你；${geography}。`,
-      `Lv.${level}的${spirit}让你判断出${danger}是这份委托的主要阻碍。`
+      `${npc}找到你，有一件事想拜托你：${stage.focus}。`,
+      `${geography}`,
+      `出发前，${npc}特别叮嘱你：${danger}`
     ]
   }
   if (mode.id === 'local_contact') {
     return [
-      `你在${name}寻找${npc}，从${stage.focus}开始建立联系。`,
-      `${npc}熟悉这里的${geography}，愿意用一段亲身经历交换你的帮助。`,
-      `你以Lv.${level}的${spirit}观察对方反应，确认${danger}不会打断这次对话。`
+      `你在${name}四处打听，终于找到了${npc}。`,
+      `${npc}在这里生活了很多年，对${name}的一草一木都很熟悉。`,
+      `你的${spirit}轻轻亮了一下，好像也对这次见面很期待。`
     ]
   }
   return [
-    `你抵达${name}，先从${stage.focus}开始调查。这里的${geography}提供了清晰的线索方向。`,
-    `当地活动「${activity}」与${npc}掌握的消息交织在一起；${danger}。`,
-    `Lv.${level}的${spirit}让你从细节中辨认出一条适合继续深入的路线。`
+    `你来到${name}，准备好好看看这里：先从${stage.focus}开始。`,
+    `${geography}`,
+    `听说${npc}最近在忙「${activity}」。你握紧拳头，给自己打了打气：${danger}`
   ]
 }
 
@@ -405,10 +408,10 @@ export function buildLocationExplorationEvent({
   const level = Math.max(1, Number(player?.level) || 1)
   const sourceText = source
     ? [
-      `行动模式：${mode.label} · 阶段：${stage.label}`,
+      `${mode.label} · 第${mode.stages.indexOf(stage) + 1}步：${stage.label}`,
       ...(Array.isArray(source.text) ? source.text : [source.text]).filter(Boolean)
     ]
-    : fallbackText(mode, stage, name, geography, activity, npc, danger, spirit, level)
+    : fallbackText(mode, stage, name, geography, activity, npc, danger, spirit)
   const choices = source?.choices?.length
     ? source.choices.map(choice => ({ ...choice, next: undefined }))
     : modeChoices(mode, stage, location, player, activity, npc)

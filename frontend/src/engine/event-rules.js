@@ -6,6 +6,7 @@
  */
 
 import { phaseForLevel } from './rules.js'
+import { storyGate } from './story-marks.js'
 
 // 与 rules.js phaseForLevel 保持同一边界（正典身份期：初级学院 1~10、
 // 进阶学院 11~40、历练 41~70、封神 71~100）。历史版本是 1-6/7-18/19-40/41-100，
@@ -17,58 +18,73 @@ export const PHASE_RANGES = Object.freeze({
   god: [71, 100]
 })
 
-export const MAIN_STORY_EVENT_IDS = Object.freeze([
-  'first_hunt',
-  'reach_lv10',
-  'soul_master_prelim',
-  'spirit_hall_exam',
-  'soul_master_final',
-  'god_trial_sea',
-  'ml_bibi_omen',
-  'ml_bibi_hunt',
-  'final_evil'
-])
-
-export const MAIN_STORY_REQUIREMENTS = Object.freeze({
-  first_hunt: [],
-  reach_lv10: ['first_hunt'],
-  soul_master_prelim: ['reach_lv10'],
-  spirit_hall_exam: ['soul_master_prelim'],
-  soul_master_final: ['soul_master_prelim'],
-  god_trial_sea: ['soul_master_final'],
-  ml_bibi_omen: ['god_trial_sea'],
-  ml_bibi_hunt: ['ml_bibi_omen'],
-  final_evil: ['god_trial_sea', 'ml_bibi_hunt']
-})
-
-// 主线里程碑链（展示文案 + 等级门槛 + 传送目标）。触发顺序由 requires 串联决定。
+// 主线里程碑链（单一来源）：斗罗大陆 1 的名场面，玩家以"史莱克第八怪"的身份参与。
+// 结构是"珍珠串 + 三个大分叉"：每颗珍珠开头按原著走，选择留下记号（engine/story-marks.js），
+// 大分叉在 p11（小舞的秘密）、p14（海神岛）、final_evil（最终决战）。
+// guideLabel 是给引导条用的口语化说法；targetId 为必须抵达的地点。
 export const MAIN_STORY_MILESTONES = Object.freeze([
-  { id: 'first_hunt', name: '第一次魂兽实战', minLevel: 5, targetId: 'star_duo_outer' },
-  { id: 'reach_lv10', name: '修炼至 Lv.10', minLevel: 10, requires: ['first_hunt'] },
-  { id: 'soul_master_prelim', name: '魂师大赛·预赛', minLevel: 30, targetId: 'tian_dou_city', requires: MAIN_STORY_REQUIREMENTS.soul_master_prelim },
-  { id: 'spirit_hall_exam', name: '武魂殿考核', minLevel: 30, targetId: 'spirit_hall', requires: MAIN_STORY_REQUIREMENTS.spirit_hall_exam },
-  { id: 'soul_master_final', name: '魂师大赛·决赛', minLevel: 40, targetId: 'tian_dou_city', requires: MAIN_STORY_REQUIREMENTS.soul_master_final },
-  { id: 'god_trial_sea', name: '神位传承·海神九考', minLevel: 50, targetId: 'sea_god_island', requires: MAIN_STORY_REQUIREMENTS.god_trial_sea },
-  { id: 'ml_bibi_omen', name: '教皇的影子', minLevel: 60, targetId: 'wuhun_city', requires: MAIN_STORY_REQUIREMENTS.ml_bibi_omen },
-  { id: 'ml_bibi_hunt', name: '猎魂封锁线', minLevel: 72, targetId: 'star_duo_deep', requires: MAIN_STORY_REQUIREMENTS.ml_bibi_hunt },
-  { id: 'final_evil', name: '最终决战·讨伐武魂殿', minLevel: 95, targetId: 'wuhun_city', requires: MAIN_STORY_REQUIREMENTS.final_evil }
+  { id: 'p02_nuoding', name: '诺丁学院·初遇小舞', guideLabel: '去诺丁学院报到', minLevel: 2, targetId: 'nuoding_city' },
+  { id: 'p03_master', name: '大师的考验', guideLabel: '去见诺丁学院的"大师"', minLevel: 5, targetId: 'nuoding_city' },
+  { id: 'p04_shrek_exam', name: '史莱克入学考核', guideLabel: '参加史莱克学院的入学考核', minLevel: 11, targetId: 'shrek_academy' },
+  { id: 'p05_eight_monsters', name: '史莱克八怪', guideLabel: '和新伙伴们组成小队', minLevel: 15, targetId: 'shrek_academy' },
+  { id: 'p06_titan', name: '森林之王', guideLabel: '跟大师进星斗大森林历练', minLevel: 22, targetId: 'star_duo_outer' },
+  { id: 'p07_dugubo', name: '冰火两仪眼', guideLabel: '陪唐三去落日森林找仙草', minLevel: 28, targetId: 'sunset_forest' },
+  { id: 'p08_huangdou', name: '对决皇斗战队', guideLabel: '去天斗城打友谊赛', minLevel: 34, targetId: 'tian_dou_city' },
+  { id: 'p09_prelim', name: '精英大赛·预选赛', guideLabel: '参加精英大赛预选赛', minLevel: 41, targetId: 'tian_dou_city' },
+  { id: 'p10_final', name: '精英大赛·决赛', guideLabel: '去武魂城打决赛', minLevel: 47, targetId: 'wuhun_city' },
+  { id: 'p11_xiaowu', name: '小舞的秘密', guideLabel: '去星斗大森林深处找小舞', minLevel: 53, targetId: 'star_duo_deep' },
+  { id: 'p12_haotian', name: '昊天宗', guideLabel: '陪唐三回昊天宗', minLevel: 60, targetId: 'haotian_sect' },
+  { id: 'p13_trial_city', name: '试炼之城', guideLabel: '陪唐三闯试炼之城', minLevel: 68, targetId: 'slaughter_city' },
+  { id: 'p14_sea_god', name: '海神岛', guideLabel: '陪唐三去海神岛', minLevel: 76, targetId: 'sea_god_island' },
+  { id: 'p15_eve', name: '决战前夜', guideLabel: '回史莱克和伙伴们相聚', minLevel: 86, targetId: 'shrek_academy' },
+  { id: 'final_evil', name: '最终决战', guideLabel: '去武魂城打赢最后一战', minLevel: 92, targetId: 'wuhun_city' }
+].map((item, index, list) => ({
+  ...item,
+  requires: index === 0 ? [] : [list[index - 1].id]
+})))
+
+// 旧版主线节点：内容已由上面的名场面取代。数据保留（旧存档的 doneEvents 仍可识别），
+// 但永远不再进入任何事件池。
+export const RETIRED_MAIN_STORY_IDS = Object.freeze([
+  'first_class', 'first_hunt', 'reach_lv10', 'ms_new_friends', 'ms_first_team', 'ms_tournament_prep',
+  'soul_master_prelim', 'spirit_hall_exam', 'ms_seven_treasure', 'soul_master_final', 'ms_graduation',
+  'god_trial_sea', 'ms_spirit_herbs', 'ml_bibi_omen', 'ms_haotian', 'ml_bibi_hunt', 'ms_alliance',
+  'ms_rescue', 'ms_eve'
 ])
+
+// 与新主线冲突、无法改写成立的支线：
+// 泰坦巨猿/天青牛蟒是小舞的守护者（p06 起成为朋友），不能再作为猎杀对象；
+// "初次认识小舞"的偶遇与主线重复；
+// 海神与修罗神位属于唐三，玩家是并肩的伙伴——"你也是神位传承者/百级成神"的事件与结局矛盾。
+export const SEALED_EVENT_IDS = Object.freeze([
+  'shapeshift_beast', 'titan_encounter', 'adv_more_06_titan',
+  'angel_vs_sea', 'ma_daily_08', 'ma_big_16'
+])
+
+const RETIRED_SET = new Set([...RETIRED_MAIN_STORY_IDS, ...SEALED_EVENT_IDS])
+
+export const MAIN_STORY_EVENT_IDS = Object.freeze(MAIN_STORY_MILESTONES.map(item => item.id))
+
+export const MAIN_STORY_REQUIREMENTS = Object.freeze(Object.fromEntries(
+  MAIN_STORY_MILESTONES.map(item => [item.id, item.requires])
+))
 
 /**
- * 下一個应触发的主线里程碑（纯函数）。
+ * 下一个应触发的主线里程碑（纯函数）。
+ * 故事是一条直线：取"已完成的最后一个节点"之后的第一个未完成节点。
+ * 这样旧存档（已打过大赛决赛、却没有新增的中间节点）不会倒回去补 15 级的剧情。
  * 旧主线版本（_mainStoryVersion < 1）没有里程碑链，只关心终局是否完成。
  */
 export function nextMainStoryMilestone({ mainStoryVersion, doneEvents }) {
-  const done = Array.isArray(doneEvents) ? doneEvents : []
+  const done = new Set(Array.isArray(doneEvents) ? doneEvents : [])
   const fullStory = Number(mainStoryVersion) >= 1
   if (!fullStory) {
     const finalMilestone = MAIN_STORY_MILESTONES.find(item => item.id === 'final_evil')
-    return finalMilestone && !done.includes('final_evil') ? finalMilestone : null
+    return finalMilestone && !done.has('final_evil') ? finalMilestone : null
   }
-  return MAIN_STORY_MILESTONES.find(item => {
-    if (done.includes(item.id)) return false
-    return (item.requires || []).every(id => done.includes(id))
-  }) || null
+  let lastDone = -1
+  MAIN_STORY_MILESTONES.forEach((item, index) => { if (done.has(item.id)) lastDone = index })
+  return MAIN_STORY_MILESTONES.slice(lastDone + 1).find(item => !done.has(item.id)) || null
 }
 
 // 当前结局流程在最终主线后结束，没有成神后的自由游玩状态。
@@ -102,15 +118,12 @@ const STATIC_SPIRIT_RULES = Object.freeze({
 })
 
 const EXPLICIT_RULES = Object.freeze({
-  first_hunt: { mainStoryOnly: true, minLevel: 5, phase: 'academy' },
-  reach_lv10: { mainStoryOnly: true, minLevel: 10, phase: 'academy' },
-  soul_master_prelim: { mainStoryOnly: true, minLevel: 30, phase: 'adventure' },
-  spirit_hall_exam: { mainStoryOnly: true, minLevel: 30, phase: 'adventure' },
-  soul_master_final: { mainStoryOnly: true, minLevel: 40, phase: 'adventure' },
-  god_trial_sea: { mainStoryOnly: true, minLevel: 50, phase: 'master' },
-  ml_bibi_omen: { mainStoryOnly: true, minLevel: 60, phase: 'master' },
-  ml_bibi_hunt: { mainStoryOnly: true, minLevel: 72, phase: 'god' },
-  final_evil: { mainStoryOnly: true, minLevel: 95, phase: 'god' },
+  // 主线节点：只由主线里程碑触发，等级门槛与里程碑表一致。
+  ...Object.fromEntries(MAIN_STORY_MILESTONES.map(item => [item.id, {
+    mainStoryOnly: true,
+    minLevel: item.minLevel,
+    phase: phaseForLevel(item.minLevel)
+  }])),
 
   // 身份/能力门槛：等级与魂环数量同时满足，避免只靠 god phase 越级。
   ma_gold_03: { minLevel: 90, minRingCount: 8 },
@@ -120,7 +133,7 @@ const EXPLICIT_RULES = Object.freeze({
   ma_daily_08: { minLevel: 99, maxLevel: 99, minRingCount: 8 },
   angel_vs_sea: { minLevel: 90, minRingCount: 8 },
   ma_big_16: { minLevel: 99, minRingCount: 8 },
-  mortal_world: { minLevel: 90, minRingCount: 8, requiredEventIds: ['soul_master_final'] },
+  mortal_world: { minLevel: 90, minRingCount: 8, requiredEventIds: ['p10_final'] },
 
   // 普通随机池中的高危魂兽遭遇不得代替正式猎环流程。
   shapeshift_beast: { minLevel: 75, minRingCount: 6 },
@@ -137,6 +150,24 @@ const EXPLICIT_RULES = Object.freeze({
   // 连锁事件的第二节点必须与 Lv.8 所在的冒险篇一致。
   mentor_2: { phase: 'adventure', minLevel: 8 }
 })
+
+// 中期延展：这些冒险事件不涉及学院身份、写的是城镇/遗迹/旅途/天气这类通用经历，
+// 41~70 级的历练期同样合理。原来它们被锁在 11~40 级，导致 41 级后内容骤减。
+// 规则：阶段放宽为 any，但不超过 70 级（封神期不再出现，避免"后期事件与前期同构"）。
+export const MIDGAME_EXTENDED_IDS = Object.freeze(new Set([
+  'treasure_map', 'arena_streak', 'wolf_king_den', 'herb_valley', 'hot_spring', 'bandit_king',
+  'meet_partner', 'beast_riot', 'adv_gold_01', 'adv_gold_04', 'adv_gold_05', 'adv_stat_01',
+  'adv_stat_02', 'adv_stat_03', 'adv_stat_04', 'adv_more_01', 'adv_more_02', 'adv_more_04',
+  'adv_more_05', 'adv_extra_01', 'adv_extra_02', 'adv_extra_03', 'adv_extra_04', 'adv_extra_05',
+  'adv_extra_06', 'adv_beast_16', 'adv_beast_17', 'adv_beast_18', 'adv_beast_19', 'adv_beast_20',
+  'adv_town_16', 'adv_town_17', 'adv_town_19', 'adv_ruin_06', 'adv_ruin_07', 'adv_sp_11',
+  'adv_sp_13', 'adv_sp_14', 'adv_more_01_beast', 'adv_more_07', 'adv_more_09', 'adv_more_10',
+  'adv_more_12', 'adv_more_13', 'adv_more_14', 'adv_beast_06', 'adv_beast_07', 'adv_beast_10',
+  'adv_beast_13', 'adv_town_01', 'adv_town_02', 'adv_town_05', 'adv_ruin_01', 'adv_ruin_02',
+  'adv_ruin_03', 'adv_enc_01', 'adv_enc_02', 'adv_enc_03', 'dy_lone_02', 'dy_lone_03',
+  'dy_sect_02', 'dy_adventure_02', 'dy_adventure_03', 'dy_hero_02', 'dy_fate_02', 'dy_fate_03',
+  'gbl_adv_01', 'gbl_adv_02', 'gbl_adv_03',
+]))
 
 const CHOICE_MIN_LEVELS = Object.freeze({
   adv_more_06_titan: { 1: 85 },
@@ -235,15 +266,17 @@ export function adaptEvent(event, options = {}) {
     weaponResonance ? 10 : 1,
     postAscension || legacyGodSpirit ? 100 : 1
   )
+  const midgameExtended = MIDGAME_EXTENDED_IDS.has(source.id)
   const maximum = explicit.maxLevel !== undefined
     ? explicit.maxLevel
-    : (postAscension || legacyGodSpirit ? 100 : source.maxLevel)
+    : (postAscension || legacyGodSpirit ? 100 : (midgameExtended && source.maxLevel === undefined ? 70 : source.maxLevel))
   const rules = {
     ...(source.mainStoryOnly ? { mainStoryOnly: true } : {}),
     ...(storyOnly ? { mainStoryOnly: true } : {}),
     ...(explicit.mainStoryOnly ? { mainStoryOnly: true } : {}),
     ...(postAscension || legacyGodSpirit ? { requiresAscension: true, postAscension: true } : {}),
     ...(explicit.phase ? { phase: explicit.phase } : {}),
+    ...(midgameExtended ? { phase: 'any' } : {}),
     ...(source.spiritId ? { phase: phaseForLevel(minimum) } : {}),
     ...(sourceSpiritRule || jsonSpiritRule.spiritTypes?.length ? {
       spiritTypes: mergeUnique(source.spiritTypes, sourceSpiritRule?.spiritTypes, jsonSpiritRule.spiritTypes)
@@ -267,6 +300,7 @@ export function adaptEvent(event, options = {}) {
   const adapted = {
     ...source,
     ...rules,
+    ...(RETIRED_SET.has(source.id) ? { weight: 0, retired: true } : {}),
     minLevel: minimum,
     ...(maximum !== undefined ? { maxLevel: maximum } : {}),
     ...(rules.phase === undefined && (postAscension || legacyGodSpirit) ? { phase: 'god' } : {}),
@@ -316,6 +350,9 @@ export function isEventEligible(event, ctx = {}) {
   // 避免"夏天抽到初雪""深夜抽到中午的食堂"穿帮。
   if (current.season && ctx.season && current.season !== ctx.season) return false
   if (current.timeOfDay && ctx.timeOfDay && current.timeOfDay !== ctx.timeOfDay) return false
+  // 剧情连贯性闸门（engine/story-marks.js）：只对支线生效；调用方传入 storyMarks 才启用，
+  // 主线与猎环由剧情顺序自己保证。
+  if (Array.isArray(ctx.storyMarks) && !ctx.isMainStory && !current.ringOnly && !storyGate(current, ctx.storyMarks).ok) return false
   return true
 }
 

@@ -93,6 +93,8 @@ export function useEventEngine() {
     player, eventStore, combatStore, finalStats,
     createGProxy: candidates.createGProxy,
     locationName,
+    // 事件写的是"任意/斗罗大陆各地"这类泛指地点时，场景区改显示玩家所在地点。
+    currentLocationLabel: () => locationName(gameStore._currentLocation) || '',
     saveGame,
     ENDINGS
   })
@@ -133,12 +135,14 @@ export function useEventEngine() {
 
   const flow = useEventFlow({
     player, eventStore, gameStore, ui, data, EVENTS, CHAINED_EVENTS,
-    battleSystem, levelCapForRings, finalStats, getMaxSpiritPower,
+    battleSystem, levelCapForRings, finalStats, getMaxSpiritPower, expNeeded,
     scene, candidates, growth, exploration,
     currentMapLocation, locationName, locationCodex, saveGame
   })
   commands.register('nextEvent', flow.nextEvent)
   commands.register('recordEventDiscoveries', flow.recordEventDiscoveries)
+  commands.register('mainStoryStatus', flow.mainStoryStatus)
+  commands.register('startMainStory', flow.startMainStory)
 
   return {
     sceneState: scene.sceneState,
@@ -154,6 +158,8 @@ export function useEventEngine() {
     resumeLocationExploration: exploration.resumeLocationExploration,
     abandonLocationExploration: exploration.abandonLocationExploration,
     nextEvent: flow.nextEvent,
+    mainStoryStatus: flow.mainStoryStatus,
+    startMainStory: flow.startMainStory,
     applyChoice: flow.applyChoice,
     showEvent: scene.showEvent,
     showContinue: scene.showContinue,

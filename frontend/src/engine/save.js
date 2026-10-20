@@ -85,6 +85,8 @@ const DEFAULTS = {
   _titles: [],
   _skillTree: {},
   _diary: [],
+  _storyMarks: [],
+  _journeyLog: [],
   _npcRelations: {},
   _npcCooldowns: {},
   _dailySign: {},

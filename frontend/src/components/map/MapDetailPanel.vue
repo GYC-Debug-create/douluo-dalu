@@ -43,11 +43,20 @@
       <span>{{ travelLabel }}</span>
       <small v-if="travelAllowed">{{ travelCost }}金币 · 约{{ travelDays }}天</small>
     </button>
+
+    <!-- 等级不够时：可以站在相邻的地方远远看一眼，留下"将来要来"的念想 -->
+    <div v-if="canGlimpse" class="glimpse-box" data-testid="glimpse-box">
+      <button v-if="!glimpseShown" type="button" class="glimpse-button" @click="glimpse">
+        👀 远远看一眼
+      </button>
+      <p v-else class="glimpse-text">{{ glimpseText }}</p>
+    </div>
   </aside>
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
+import { glimpseTextFor } from '@/data/glimpses'
 
 const props = defineProps({
   location: { type: Object, required: true },
@@ -56,11 +65,25 @@ const props = defineProps({
   busy: { type: Boolean, default: false }
 })
 
-defineEmits(['close', 'travel'])
+const emit = defineEmits(['close', 'travel', 'glimpse'])
+
+const glimpseShown = ref(false)
+watch(() => props.location.id, () => { glimpseShown.value = false })
+const canGlimpse = computed(() => Boolean(
+  !props.location.current &&
+  props.location.known !== false &&
+  props.playerLevel < props.location.unlockedLevel &&
+  (props.location.adjacent || props.location.visited)
+))
+const glimpseText = computed(() => glimpseTextFor(props.location.id))
+function glimpse() {
+  glimpseShown.value = true
+  emit('glimpse', { locationId: props.location.id, locationName: props.location.name })
+}
 
 const regionNames = {
   shrek: '史莱克领地', star_duo: '星斗森林', wuhun: '武魂帝国', tian_dou: '天斗帝国',
-  sea: '东方海域', ice: '极北冰原', slaughter: '杀戮之地', ancient: '远古遗境',
+  sea: '东方海域', ice: '极北冰原', slaughter: '试炼之地', ancient: '远古遗境',
   abyss: '深渊之地', sky: '天空领域', element: '元素领域', desert: '南境荒漠',
   valley: '灵药山谷', swamp: '暗影湿地', dragon: '龙族领地', evil: '邪魔之地'
 }
@@ -77,7 +100,7 @@ const travelCost = computed(() => useFast.value ? props.location.fastCost : prop
 const travelDays = computed(() => useFast.value ? props.location.fastDays : props.location.normalDays)
 const blockedReason = computed(() => {
   if (props.location.known === false) return '需要先从相邻地点推进路线，才能确认此地。'
-  if (props.playerLevel < props.location.unlockedLevel) return `需要达到 Lv.${props.location.unlockedLevel} 才能前往。`
+  if (props.playerLevel < props.location.unlockedLevel) return `需要达到 Lv.${props.location.unlockedLevel} 才能进去。`
   if (!props.location.adjacent && !props.location.visited) return '只能先探索与当前位置相邻的地点。'
   if (props.playerGold < travelCost.value) return `旅行需要 ${travelCost.value} 金币，当前金币不足。`
   return '当前无法前往。'
@@ -128,6 +151,10 @@ h2 { margin: 5px 34px 9px 0; color: var(--gold-hi); font-family: var(--font-disp
 .travel-button { display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 100%; min-height: 43px; padding: 9px 12px; border: 1px solid var(--gold); border-radius: 3px; background: linear-gradient(180deg, #463619, #2a1e0c); color: var(--gold-hi); text-align: left; }
 .travel-button small { color: var(--ink-dim); font-size: 10px; white-space: nowrap; }
 .travel-button:disabled { border-color: var(--line); color: var(--ink-faint); cursor: not-allowed; }
+.glimpse-box { margin-top: 10px; }
+.glimpse-button { width: 100%; min-height: 40px; border: 1px dashed var(--gold-dim); border-radius: 3px; background: rgba(201,168,76,.08); color: var(--gold-hi); font-size: 13px; }
+.glimpse-button:hover { background: rgba(201,168,76,.16); }
+.glimpse-text { padding: 10px 12px; border-left: 3px solid var(--gold-dim); background: rgba(201,168,76,.07); color: var(--ink); font-size: 12px; line-height: 1.75; }
 @media (max-width: 700px) {
   .detail-panel { top: auto; right: 8px; bottom: 8px; width: calc(100% - 16px); max-height: 47%; padding: 13px; }
   h2 { font-size: 20px; }

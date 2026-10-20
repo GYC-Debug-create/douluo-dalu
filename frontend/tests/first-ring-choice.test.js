@@ -36,7 +36,7 @@ describe('BUG-DIALOG-011 第一魂环提供真实年限风险收益选择', () =
     expect(prepared.choices[0].strategy.assessment).toBe('稳妥推荐')
     expect(prepared.choices[1].strategy.assessment).toBe('当前根基匹配')
     expect(prepared.choices[2].strategy.assessment).toBe('当前根基匹配')
-    expect(prepared.text.at(-1)).toContain('先天魂力 90')
+    expect(prepared.text.at(-1)).toContain('觉醒资质 90/100')
     expect(prepared.text.at(-1)).toContain('生命状态 100%')
   })
 

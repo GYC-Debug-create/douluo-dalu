@@ -25,9 +25,10 @@ export const useGameStore = defineStore('game', {
     _legacyRingOverflow: [],
     _orphanedSkills: [],
     _forgeBonesMigrated: false,
-    // 低龄化：默认简单模式——隐藏技能树/商店/挑战塔等复杂系统，只留
-    // "看故事 → 选选项 → 打怪 → 升级拿魂环"主循环。老玩家可在顶栏切回完整模式。
-    _simpleMode: true
+    // 旧版简单/完整模式开关。儿童版（8~12 岁）只有一种模式，此字段仅为旧存档兼容保留。
+    _simpleMode: false,
+    // 战斗默认自动出招；玩家在战斗里切到手动后会记住这个选择。
+    _autoBattleDefault: true
   }),
   getters: {
     currentLocation: (state) => state._currentLocation,
@@ -49,11 +50,13 @@ export const useGameStore = defineStore('game', {
     setNpcRelation(npcId, level) {
       this._npcRelations[npcId] = Math.max(this._npcRelations[npcId] || 0, level)
     },
-    advanceTime() {
-      this._gameTime++
+    advanceTime(ticks = 1) {
+      const amount = Number(ticks)
+      if (!Number.isFinite(amount) || amount <= 0) return
+      this._gameTime += Math.floor(amount)
     },
-    setSimpleMode(value) {
-      this._simpleMode = value !== false
+    setAutoBattleDefault(value) {
+      this._autoBattleDefault = value !== false
     }
   }
 })

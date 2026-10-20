@@ -6,6 +6,8 @@
 
 import { EVENTS } from './game-data.js';
 import { LOCATION_EVENTS } from './location-events.js';
+import { LATE_GAME_EVENTS } from './late-game-events.js';
+import { MAIN_STORY_EVENTS } from './main-story.js';
 
 /**
  * 斗罗大陆·万象图鉴 —— 剧情事件扩充包
@@ -120,7 +122,7 @@ EVENTS.push(
     '这是唐三遗失的！你翻了几页，发现里面有一段正是你最近卡住的修炼难点。'
   ],
   choices: [
-    { text: '原封不动还给他', result: { text: '你在下课后追上唐三把笔记还给他。他有些意外，接过笔记时冲你笑了笑："谢谢你，以后有问题可以互相切磋。"', fate: 2, exp: 630 } },
+    { text: '原封不动还给他', result: { text: '你在下课后追上唐三把笔记还给他。他接过笔记，松了一口气："原来掉在你这儿了，谢谢！你卡住的那一段，晚上我们一起琢磨。"', fate: 2, exp: 630 } },
     { text: '偷偷抄一份再还', result: { text: '你连夜把关键内容抄了下来，第二天再把笔记还回去。唐三似乎察觉了什么，但只是笑了笑没说破。你学到了很多。', exp: 1250 } },
     { text: '据为己有', result: { text: '你把笔记藏了起来。可是从那以后每次看到唐三，你都心里发虚，修炼也静不下心来。', fate: -2, exp: 310 } }
   ]
@@ -141,17 +143,17 @@ EVENTS.push(
   ]
 },
 {
-  id: 'ac_food_02', name: '食堂的赌约', location: '史莱克学院·食堂',
+  id: 'ac_food_02', name: '食堂的比赛', location: '史莱克学院·食堂',
   phase: 'adventure', minLevel: 10, weight: 2,
   image: 'assets/scenes/cafeteria.jpg',
   text: [
-    '胖虎学长端着满满一大盘包子跟你打赌："你要是能一口吞下三个大肉包，这盘全归你！输了就帮我洗一周碗！"',
+    '胖虎学长端着满满一大盘包子跟你比赛："你要是能一口吞下三个大肉包，这盘全归你！输了就帮我洗一周碗！"',
     '周围的同学开始起哄。'
   ],
   choices: [
     { text: '接受挑战！', cond: { attack: 10 }, result: { text: '你运起魂力撑开口腔，居然真的一口塞下了三个包子！虽然腮帮子疼了半天，但赢得了满盘包子和满场喝彩。', hp: 30, exp: 1250, fate: 1 } },
     { text: '拒绝，这不科学', result: { text: '你翻了个白眼："学长你自己吃吧，小心噎着。"胖虎哈哈大笑，自己把包子吃了。', exp: 630 } },
-    { text: '换个比法——比谁吃得快', result: { text: '你提议比速度。结果你凭借敏捷的身手吃得比胖虎还快，虽然没有赌注，但围观的同学们笑成了一团。', speed: 1, exp: 940 } }
+    { text: '换个比法——比谁吃得快', result: { text: '你提议比速度。结果你凭借敏捷的身手吃得比胖虎还快，虽然没有奖品，但围观的同学们笑成了一团。', speed: 1, exp: 940 } }
   ]
 },
 {
@@ -277,7 +279,7 @@ EVENTS.push(
     '其中一本黑色封皮的书散发着诡异的气息，书名叫《邪魂师速成要诀》。'
   ],
   choices: [
-    { text: '好奇心起，翻开看看', result: { text: '你翻开书，里面的内容让你毛骨悚然——都是些吞噬他人魂力的邪术。你赶紧合上书放回原处，心脏怦怦直跳。', exp: 1000, fate: -1 } },
+    { text: '好奇心起，翻开看看', result: { text: '你翻开书，里面的内容让你心里发毛——都是些偷取他人魂力的邪门功夫。你赶紧合上书放回原处，心脏怦怦直跳。', exp: 1000, fate: -1 } },
     { text: '报告大师', result: { text: '你立刻告诉了大师。大师检查后说这些书是用来警示学员的，他夸你定力好。', fate: 2, exp: 1250 } },
     { text: '把书偷偷带出去研究', result: { text: '你把书藏在衣服里带出了图书馆。当晚你越看越心惊，那些邪术虽然威力惊人，但代价极大。第二天你偷偷把书放了回去。', exp: 750, fate: -2 } }
   ]
@@ -336,7 +338,7 @@ EVENTS.push(
   choices: [
     { text: '先吃一颗试试', result: { text: '你摘了一颗小心翼翼地尝了一口——酸甜多汁，好吃极了！这居然是一株罕见的朱果，吃完你感觉神清气爽。', hp: 30, spiritPowerGain: 2, exp: 1000 } },
     { text: '摘回去给大师看看', result: { text: '你摘了几颗带回学院。大师确认这是朱果后分给大家一起吃，还夸你谨慎。', hp: 15, exp: 1250, fate: 1 } },
-    { text: '不认识的果子不乱吃', result: { text: '你咽了咽口水，克制住了诱惑。大师说过，在森林里乱吃东西是新人最容易犯的致命错误。', exp: 500 } }
+    { text: '不认识的果子不乱吃', result: { text: '你咽了咽口水，克制住了诱惑。大师说过，在森林里乱吃东西是新人最容易犯的大错。', exp: 500 } }
   ]
 },
 {
@@ -364,7 +366,7 @@ EVENTS.push(
   choices: [
     { text: '把它带回宿舍养伤', result: { text: '你偷偷把小兔子带回宿舍养伤。它很快就康复了，但和你产生了感情，怎么也不肯走。从此你的宿舍多了一个小伙伴。', fate: 2, exp: 1250 } },
     { text: '给它包扎好放归森林', result: { text: '你用草药给它包扎好伤口，把它放回了草丛。小兔子跑了几步又回头看你，然后蹦蹦跳跳地走了。', fate: 1, exp: 940 } },
-    { text: '它迟早要成为魂兽的猎物，不如给我练手', result: { text: '你狠了狠心，但举起手时对上它那双无辜的眼睛，怎么也下不了手。最终你还是把它放了。', exp: 630, fate: 1 } }
+    { text: '先不管它，在附近找找那只狐狸', result: { text: '你顺着脚印找到了狐狸的窝，原来它是饿坏了才出来找吃的。你把带着的干粮分给它一半，它就再也不去追小兔子了。', exp: 630, fate: 1 } }
   ]
 },
 {
@@ -469,7 +471,7 @@ EVENTS.push(
   text:['老铁匠看到你的{spirit}后眼睛一亮："好兵器！——哦不，好武魂！小伙子，你是器武魂吧？老夫打了一辈子铁，一眼就能看出兵器的好坏。"'],
   choices:[
     { text:'请老铁匠点评武魂', result:{ text:'老铁匠仔细端详了你的武魂，指出了几个你不曾注意到的细节——武魂的受力点、最佳发力角度、薄弱环节。这些看似简单的指点，却让你对武魂的理解精进了许多。', attack:3, defense:1, exp:1380 } },
-    { text:'帮老铁匠打铁，换取指点', result:{ text:'你帮老铁匠打了一天的铁，他一边干活一边指点你。晚上他请你喝酒，说"你这个小伙子不错，以后有武器上的问题随时来找我"。', gold:15, attack:2, exp:860 } }
+    { text:'帮老铁匠打铁，换取指点', result:{ text:'你帮老铁匠打了一天的铁，他一边干活一边指点你。晚上他请你吃了顿饭，说"你这个小伙子不错，以后有武器上的问题随时来找我"。', gold:15, attack:2, exp:860 } }
   ]},
 { id:'sp_wp_03', name:'器物亲和测试', location:'天斗城·器物研究所', phase: 'adventure', minLevel: 18, weight:2, tags:['器武魂','灵巧','实用'],
   image:'assets/scenes/blacksmith.jpg',
@@ -503,7 +505,7 @@ EVENTS.push(
     { text:'用兽武魂的威压回应', result:{ text:'你释放出兽武魂的威压，兽王感受到了你的力量，低吼一声退开了。虽然没有战斗，但你的武魂气息变得更加强大了。', spiritPowerGain:10, exp:1280 } }
   ]},
 // ---- 生活器物专属 ----
-{ id:'sp_tl_01', name:'物尽其用', location:'诺丁初级魂师学院', phase: 'academy', minLevel: 2, weight:2, tags:['生活器物','实用','生存'],
+{ id:'sp_tl_01', name:'物尽其用', location:'史莱克学院', unique: true, phase: 'academy', minLevel: 2, weight:2, tags:['生活器物','实用','生存'],
   image:'assets/scenes/academy_classroom.jpg',
   text:['大师说你的武魂虽然看起来不起眼，但任何武魂都有它的价值。他让你思考——你的{spirit}在实战之外，在生活中能发挥什么作用？'],
   choices:[
@@ -544,7 +546,7 @@ EVENTS.push(
   image:'assets/scenes/abyss_godrealm.jpg',
   text:['你感受到一股来自遥远之地的召唤——那是神位对你的感召。你的{spirit}作为神级武魂，天生与神位有所联系。'],
   choices:[
-    { text:'追寻感召', result:{ text:'你循着感召的方向前行，来到了一座古老的祭坛前。祭坛上有与你武魂相似的图腾，当你触碰它时，一缕古老魂力残响化为修炼感悟。', attack:3, defense:3, spiritPowerGain:15, exp:8610 } },
+    { text:'追寻感召', result:{ text:'你循着感召的方向前行，来到了一座古老的石台前。石台上有与你武魂相似的图腾，当你触碰它时，一缕古老魂力残响化为修炼感悟。', attack:3, defense:3, spiritPowerGain:15, exp:8610 } },
     { text:'现在还不是时候', result:{ text:'你记下了感召的方向，但决定等实力更强了再去探索。你能感觉到，那里有你的宿命。', fate:2, exp:2300 } }
   ]},
 // ---- 防御系专属 ----
@@ -649,12 +651,12 @@ EVENTS.push(
     { text:'只采一半，留种', result:{ text:'你只采了一半，留了一半让它继续生长。这样做虽然少赚了金币，但下次来还能采。', gold:12, fate:1, exp:830 } },
     { text:'不认识，不敢乱采', result:{ text:'你怕采到毒草，没敢动。后来才知道这些是普通的草药，后悔不已。', exp:210 } }
   ]},
-{ id:'adv_gold_03', name:'赌场', location:'天斗城·地下赌场', phase: 'adventure', minLevel: 15, weight:1, image:'assets/scenes/tavern.jpg',
-  text:['你在天斗城的暗巷里发现了一个地下赌场，里面人声鼎沸，有人一夜暴富，也有人倾家荡产。'],
+{ id:'adv_gold_03', name:'集市的套圈摊', location:'天斗城·集市', phase: 'adventure', minLevel: 15, weight:1, image:'assets/scenes/tavern.jpg',
+  text:['天斗城的集市上有个套圈摊，摊主吆喝着："十个金币套十个圈，套中什么拿什么！"最远处摆着一枚闪闪发光的魂力水晶。'],
   choices:[
-    { text:'小赌怡情，押10金币', result:{ text:'你押了10金币，运气不错，赢了15金币！见好就收，你拿着钱离开了。', gold:15, exp:1780 } },
-    { text:'All in！押50金币！', result:{ text:'你押了50金币，结果全输了。赌场老板笑眯眯地看着你，你感觉被坑了。', gold:-50, exp:890 } },
-    { text:'赌场不是好地方，离开', result:{ text:'你转身离开，听到身后有人输光了的哭嚎声。你庆幸自己没有沾上赌博。', fate:1, exp:890 } }
+    { text:'花10金币，瞄准近处的小奖品', result:{ text:'你稳稳地套中了一袋糖炒栗子和几枚铜钱，摊主笑着说："小魂师眼神真准！"', gold:15, exp:1780 } },
+    { text:'花50金币，非要套中那枚水晶', result:{ text:'你一口气套了五十个圈，水晶却总是差一点。摊主偷偷告诉你：那个架子是斜的。你哭笑不得，以后可不能被大奖冲昏头脑了。', gold:-50, exp:890 } },
+    { text:'看看就好，去旁边帮老奶奶推车', result:{ text:'你没有去套圈，而是帮旁边卖菜的老奶奶把车推上了坡。老奶奶塞给你两个热乎乎的烤红薯。', fate:1, exp:890 } }
   ]},
 { id:'adv_gold_04', name:'矿洞探险', location:'废弃矿洞', phase: 'adventure', minLevel: 18, weight:2, image:'assets/scenes/mountain_path.jpg',
   text:['你发现了一个废弃的矿洞，洞口有矿工留下的工具。据说这里曾经出产过稀有矿石，但后来因为魂兽出没被废弃了。'],
@@ -695,11 +697,11 @@ EVENTS.push(
     { text:'适可而止', result:{ text:'你跑了一会儿就停下来休息。虽然没到极限，但也是一次不错的锻炼。', exp:520 } }
   ]},
 // ---- 封号·金币与财富事件 ----
-{ id:'ma_gold_01', name:'宗门供奉', location:'你的宗门', phase: 'master', minLevel: 42, weight:2, image:'assets/scenes/wuhun_city.jpg',
-  text:['你的宗门日渐壮大，弟子上供的财物也越来越多。这个月宗门库房收了不少金币和物资。'],
+{ id:'ma_gold_01', name:'委托的酬金', location:'天斗城·佣兵公会', phase: 'master', minLevel: 42, weight:2, image:'assets/scenes/wuhun_city.jpg',
+  text:['这段时间你帮佣兵公会完成了不少委托。会长亲自把一袋酬金交到你手上，还说城里的孤儿院最近正缺过冬的棉衣。'],
   choices:[
-    { text:'取一部分作为个人修炼资金', result:{ text:'你从宗门库房取了100金币作为修炼资金。身为宗主，这是你应得的。', gold:100, exp:1870 } },
-    { text:'全部留给宗门发展', result:{ text:'你把所有财物都留给宗门发展，买了更好的训练设备和丹药给弟子们。虽然自己没拿钱，但宗门实力的提升让你声望更高了。', fate:3, exp:3110 } }
+    { text:'收下酬金，当作修炼资金', result:{ text:'你把酬金收好，买了几颗修炼用的丹药。会长拍拍你的肩："干得漂亮，下次有好委托还找你。"', gold:100, exp:1870 } },
+    { text:'把一半酬金捐给孤儿院', result:{ text:'你把一半酬金捐给了孤儿院。孩子们穿上新棉衣，围着你唱了一首歌，你觉得这比收到金币还开心。', fate:3, exp:3110 } }
   ]},
 { id:'ma_gold_02', name:'帝国赏赐', location:'天斗帝国·皇宫', phase: 'master', minLevel: 45, weight:2, image:'assets/scenes/wuhun_city.jpg',
   text:['你为帝国剿灭了一伙作乱的邪魂师，皇帝龙颜大悦，派人送来了丰厚的赏赐。'],
@@ -751,12 +753,12 @@ EVENTS.push(
     { text:'可能是母兽的蛋，快走', result:{ text:'你赶紧离开了巢穴。刚走不远就听到身后传来一声愤怒的吼叫——母兽回来了！你庆幸自己跑得快。', exp:440 } },
     { text:'……烤了吃', result:{ text:'你生火把蛋烤了。蛋的味道鲜美无比，吃完后你感觉体内充满了力量。但总觉得自己做了什么不太对的事。', attack:2, defense:2, hp:20, fate:-2, exp:1100 } }
   ]},
-{ id:'adv_more_03', name:'路遇花痴', location:'天斗城·花园', phase: 'adventure', minLevel: 15, weight:2, image:'assets/scenes/border_town.jpg',
-  text:['一个打扮得花枝招展的姑娘拦住了你，上下打量了一番后说："这位魂师大人，你长得真好看，要不要考虑娶我？"'],
+{ id:'adv_more_03', name:'小粉丝', location:'天斗城·花园', phase: 'adventure', minLevel: 15, weight:2, image:'assets/scenes/border_town.jpg',
+  text:['一个扎着小辫子的小女孩拦住了你，眼睛亮晶晶的："你就是那个在森林里打败魂兽的魂师吗？可以给我签个名吗？"'],
   choices:[
-    { text:'婉拒，说已有心上人', result:{ text:'你礼貌地婉拒了。姑娘也不纠缠，只是叹了口气说"好男人都有主了"，然后转身走了。', exp:590 } },
-    { text:'逃跑！', result:{ text:'你转身就跑，姑娘在后面追了两条街才放弃。你在天斗城留下了一个"被姑娘追了三条街"的笑话。', speed:1, exp:1190 } },
-    { text:'……也不是不行', result:{ text:'你犹豫了一下。姑娘高兴地拉着你就要去见她爹——原来她爹是天斗城一个富商，可惜姑娘发现你是个穷魂师后，又反悔了。', gold:20, exp:1780 } }
+    { text:'认真地给她签个名', result:{ text:'你一笔一画地写下自己的名字。小女孩高兴得蹦了起来："等我长大了，也要成为像你一样的魂师！"', exp:590, fate:1 } },
+    { text:'不好意思地跑开了', result:{ text:'你脸一红，转身就跑，小女孩在后面追了两条街。第二天，整个天斗城都在传"那个害羞的魂师"。', speed:1, exp:1190 } },
+    { text:'给她表演一下武魂', result:{ text:'你放出武魂转了个圈，周围的孩子全都围了过来拍手叫好。一位卖糖人的老爷爷还送了你一个糖人。', gold:20, exp:1780 } }
   ]},
 { id:'adv_more_04', name:'野炊', location:'野外·河边', phase: 'adventure', minLevel: 15, weight:3, image:'assets/scenes/forest_outer.jpg',
   text:['天气不错，你决定在河边生火做饭。你抓了两条鱼，采了些野菜，准备做一顿美味的烤鱼。'],
@@ -790,10 +792,10 @@ EVENTS.push(
     { text:'深入研究双生武魂', result:{ text:'你潜心研究，发现自己的{spirit}虽然只有一个，但通过特殊方法可以激发出第二属性！虽然不是真正的双生武魂，但让你的武魂多了一种能力。', spiritPowerGain:15, attack:2, defense:2, exp:3800 } },
     { text:'太危险，不研究了', result:{ text:'古籍中记载强行觉醒第二武魂可能导致武魂崩溃，你选择了保守。', exp:570 } }
   ]},
-{ id:'ma_more_02', name:'魂兽王者来访', location:'你的宗门', phase: 'master', minLevel: 55, weight:2, image:'assets/beasts/titan_giant_ape_king.jpg',
+{ id:'ma_more_02', name:'魂兽王者来访', location:'星斗大森林外围', phase: 'master', minLevel: 55, weight:2, image:'assets/beasts/titan_giant_ape_king.jpg',
   text:['星斗大森林外围的魂兽王者派使者来访——他们希望与你达成和平协议，互不侵犯对方的领地。'],
   choices:[
-    { text:'同意和平协议', result:{ text:'你同意了和平协议。从此你的宗门弟子进入星斗大森林外围猎取魂环时，不会遭到高阶魂兽的主动攻击。魂兽们也获得了安全感。', fate:5, exp:4240 } },
+    { text:'同意和平协议', result:{ text:'你同意了和平协议。从此年轻魂师们进入星斗大森林外围猎取魂环时，不会遭到高阶魂兽的主动攻击。魂兽们也获得了安全感。', fate:5, exp:4240 } },
     { text:'拒绝，魂兽凭什么和人类谈判', result:{ text:'你拒绝了和平协议。虽然短期内猎取魂环更方便了，但你也因此得罪了魂兽王者，以后可能会被报复。', fate:-2, exp:1410 } }
   ]},
 { id:'ma_more_03', name:'魂骨融合', location:'密室', phase: 'master', minLevel: 52, weight:2, image:'assets/scenes/blacksmith.jpg',
@@ -899,7 +901,7 @@ EVENTS.push(
   text:['天空突然乌云密布，暴风雨来了！你需要找个地方避雨。'],
   choices:[
     { text:'躲进山洞', result:{ text:'你找到一个山洞躲了进去。外面风雨交加，你在洞里生了堆火，居然还舒舒服服地睡了一觉。', hp:15, exp:1780 } },
-    { text:'冒雨赶路', result:{ text:'你选择冒雨继续赶路，被淋成了落汤鸡，还差点被山洪冲走。第二天你感冒了。', damage:20, exp:1190 } },
+    { text:'冒雨赶路', result:{ text:'你选择冒雨继续赶路，被淋成了落汤鸡，还差点在湍急的溪水里滑倒。第二天你感冒了。', damage:20, exp:1190 } },
     { text:'在大树下躲雨', result:{ text:'你在一棵大树下躲雨，结果一道闪电差点劈到树上！你吓得赶紧换了个地方。', damage:5, exp:1190 } }
   ]},
 { id:'adv_extra_03', name:'野果', location:'野外·山林', phase: 'adventure', minLevel: 15, weight:2, image:'assets/scenes/forest_outer.jpg',
@@ -934,20 +936,20 @@ EVENTS.push(
 { id:'ma_extra_01', name:'其他封号斗罗的挑战', location:'武魂城·竞技场', phase: 'god', minLevel: 90, weight:2, image:'assets/scenes/arena.jpg',
   text:['另一位封号斗罗公开挑战你，想试试你的实力。这在封号斗罗之间是常有的事。'],
   choices:[
-    { text:'接受挑战，堂堂正正一战', result:{ text:'你接受了挑战，两人在竞技场上大战了三百回合，最终你以一招之差险胜。对手对你心服口服，你们成了不打不相识的朋友。', damage:30, battle:'final_fighter', exp:8610, attack:2, fate:2 } },
+    { text:'接受挑战，堂堂正正一战', result:{ text:'你接受了挑战，两人在竞技场上打得难分难解，最终你以一招之差险胜。对手对你心服口服，你们成了不打不相识的朋友。', damage:30, battle:'titled_rival', exp:8610, attack:2, fate:2 } },
     { text:'婉拒，不想争强好胜', result:{ text:'你婉拒了挑战，表示自己修炼不是为了争强斗胜。对方有些失望，但也尊重你的选择。', fate:1, exp:1440 } }
   ]},
 { id:'ma_extra_02', name:'发现秘境', location:'虚空裂缝', phase: 'master', minLevel: 60, weight:1, image:'assets/scenes/abyss_godrealm.jpg',
   text:['你在修炼中感知到了一个隐藏的空间裂缝，里面似乎是一个上古强者留下的秘境。'],
   choices:[
-    { text:'进入秘境探索', result:{ text:'你进入秘境，里面有上古强者的遗骸和传承。你获得了他的修炼心得和一块魂骨，实力大进！', attack:3, defense:3, spiritPowerGain:20, exp:4680 } },
+    { text:'进入秘境探索', result:{ text:'你进入秘境，里面有上古强者留下的石像和传承。你获得了他刻在玉简上的修炼心得，实力大进！', attack:3, defense:3, spiritPowerGain:20, exp:4680 } },
     { text:'太危险，先封印再说', result:{ text:'你觉得秘境太危险，先用魂力封印了裂隙，等以后准备充分了再来探索。', fate:1, exp:470 } }
   ]},
-{ id:'ma_extra_03', name:'亲人来访', location:'你的府邸', phase: 'master', minLevel: 45, weight:2, image:'assets/scenes/wuhun_city.jpg',
-  text:['你的亲人（或你在村里的老朋友）来看你了。他们看着你如今的地位和成就，既骄傲又有些拘谨。'],
+{ id:'ma_extra_03', name:'亲人来访', location:'你的住处', phase: 'master', minLevel: 45, weight:2, image:'assets/scenes/wuhun_city.jpg',
+  text:['你的亲人（或你在村里的老朋友）来看你了。他们看着如今这么厉害的你，既骄傲又有点拘谨。'],
   choices:[
-    { text:'好好招待他们，陪他们叙旧', result:{ text:'你放下所有身段陪他们喝酒聊天，像小时候一样。临走时你给了他们很多钱财和丹药，让他们安享晚年。', hp:30, fate:2, exp:3370 } },
-    { text:'太忙了，让人招待他们', result:{ text:'你正在修炼关键期，让仆人好好招待他们，但没有亲自陪伴。他们理解你，但你能看出他们眼中的失落。', fate:-1, exp:670 } }
+    { text:'好好招待他们，陪他们叙旧', result:{ text:'你放下手里的事，陪他们喝茶聊天，像小时候一样。临走时你给了他们很多钱财和丹药，让他们安享晚年。', hp:30, fate:2, exp:3370 } },
+    { text:'太忙了，让人招待他们', result:{ text:'你正在修炼关键期，请朋友帮忙好好招待他们，但没有亲自陪伴。他们理解你，但你能看出他们眼中的失落。', fate:-1, exp:670 } }
   ]},
 // ---- 成神·更多事件 ----
 { id:'god_extra_01', name:'神的宠物', location:'神界·你的神殿', phase: 'god', minLevel: 84, weight:1, image:'assets/beasts/titan_giant_ape_king.jpg',
@@ -1030,13 +1032,13 @@ EVENTS.push(
   text:['明月楼正在举办诗会，文人雅士齐聚一堂。有人看到你腰上的魂师徽章，邀请你也参加。'],
   choices:[
     { text:'吟一首诗助兴', result:{ text:'你虽然是魂师，但也读过几年书。你沉吟片刻，吟了一首关于武魂修炼的诗，虽然不算文采斐然，但气势磅礴，赢得满堂喝彩！', fate:2, exp:2480 } },
-    { text:'婉拒，在一旁喝酒听歌', result:{ text:'你笑着拒绝了，坐在一旁喝酒听歌，享受难得的悠闲时光。', hp:20, exp:500 } }
+    { text:'婉拒，在一旁喝茶听歌', result:{ text:'你笑着拒绝了，坐在一旁喝茶听歌，享受难得的悠闲时光。', hp:20, exp:500 } }
   ]},
 { id:'adv_town_20', name:'流浪铁匠', location:'路边·破庙', phase: 'adventure', minLevel: 20, weight:2, image:'assets/scenes/blacksmith.jpg',
   text:['你在一个破庙里避雨，遇到一个邋里邋遢的老铁匠。他看到你的武器后眼睛一亮："小伙子，你这兵器的打造手法不错，但还差了点火候。要不要老夫帮你重新淬淬火？"'],
   choices:[
     { text:'请他帮忙锻造', result:{ text:'老铁匠升起炉火，叮叮当当敲打了半夜。当你接过武器时，发现它比之前锋利了许多，也坚韧了许多！他不肯收钱，只说"好兵器就该配英雄"。', attack:3, exp:2480, fate:1 } },
-    { text:'礼貌拒绝', result:{ text:'你婉言谢绝了。老铁匠也不生气，嘿嘿一笑继续喝酒。第二天你离开时，他已经不在了，只在地上留下一块黑铁片，似乎是什么矿石。', item:{ name:'寒铁碎片', desc:'锻造材料', effect:{ attack:1 } }, exp:930 } }
+    { text:'礼貌拒绝', result:{ text:'你婉言谢绝了。老铁匠也不生气，嘿嘿一笑继续打铁。第二天你离开时，他已经不在了，只在地上留下一块黑铁片，似乎是什么矿石。', item:{ name:'寒铁碎片', desc:'锻造材料', effect:{ attack:1 } }, exp:930 } }
   ]},
 // ---- 冒险·秘境探险 ----
 { id:'adv_ruin_06', name:'地下迷宫', location:'远古遗迹·地下', phase: 'adventure', minLevel: 33, weight:2, image:'assets/scenes/abyss_godrealm.jpg',
@@ -1071,7 +1073,7 @@ EVENTS.push(
   text:['连日暴雨引发了山洪！浑浊的洪水从山上倾泻而下，你听到不远处有人在呼救——一个猎户的孩子被困在洪水中的一棵树上。'],
   choices:[
     { text:'冒险救人', result:{ text:'你不顾危险冲入洪水中，艰难地游到树边救下了孩子。猎户感激涕零，一定要把家传的一块玉佩送给你。', damage:20, item:{ name:'护身符玉佩', desc:'据说能辟邪', effect:{ fate:2, defense:1 } }, exp:1780, fate:2 } },
-    { text:'洪水太急，不敢下水', result:{ text:'你试图救但洪水太急，你无法靠近。你只能眼睁睁看着孩子被冲走……这件事让你久久不能释怀。', fate:-2 } }
+    { text:'洪水太急，不敢下水', result:{ text:'你试图救但洪水太急，你无法靠近。你急得大喊，引来了附近的村民，大家用绳子把孩子拉了上来。孩子得救了，可你一直在想：刚才要是自己再勇敢一点就好了。', fate:-2 } }
   ]},
 { id:'adv_sp_13', name:'流星雨', location:'野外·夜晚', phase: 'adventure', minLevel: 15, weight:1, image:'assets/scenes/abyss_godrealm.jpg',
   text:['夜晚露宿野外时，你看到一场壮观的流星雨。无数流星划过天际，其中一颗似乎朝着你的方向坠落！'],
@@ -1113,8 +1115,8 @@ EVENTS.push(
     { text:'答应条件，换取魂兽材料', result:{ text:'十万年魂兽把一枚珍贵材料交给你。你没有吸收魂环，只记录了这份承诺；正式魂环仍需在魂环猎取节点完成。', item:{ name:'十万年魂兽鳞片', desc:'蕴含强大生命力的稀有材料', effect:{ hp:50 } }, attack:3, defense:3, spiritPowerGain:10, exp:6990, fate:3 } },
     { text:'拒绝交换，保持距离', result:{ text:'你拒绝了交换，选择先离开核心区。十万年魂兽看着你，眼中闪过一丝敬意，转身回到族群中。', fate:2, exp:4660 } }
   ]},
-{ id:'ma_big_14', name:'武魂殿的暗杀', location:'任意', phase: 'god', minLevel: 90, weight:2, image:'assets/scenes/swamp.jpg',
-  text:['你被武魂殿的刺客盯上了！三名封号斗罗级别的邪魂师在你修炼的关键时刻偷袭了你！'],
+{ id:'ma_big_14', name:'武魂殿的偷袭', location:'任意', phase: 'god', minLevel: 90, weight:2, image:'assets/scenes/swamp.jpg',
+  text:['你被武魂殿的人盯上了！三名封号斗罗级别的邪魂师在你修炼的关键时刻偷袭了你！'],
   choices:[
     { text:'拼死反击！', result:{ text:'你以一敌三，身受重伤但成功击杀一人、击退两人！这场战斗虽然凶险，但也让你在生死之间有所突破。', damage:60, battle:'evil_master', exp:8610, attack:3, defense:2 } },
     { text:'用底牌逃生', result:{ text:'你用出了压箱底的逃生手段，虽然受了重伤，但成功逃脱了。武魂殿已经把你列为必杀目标，你需要更加小心了。', damage:40, exp:3230 } }
@@ -1138,10 +1140,10 @@ EVENTS.push(
     { text:'让他们自己悟', result:{ text:'你说"修炼靠自己悟"，让他们自己去体会。晚辈们有些失望，但也只能自己去琢磨了。', exp:950 } }
   ]},
 { id:'ma_daily_02', name:'老友来访', location:'你的住处', phase: 'master', minLevel: 45, weight:2, image:'assets/scenes/tavern.jpg',
-  text:['多年不见的老友突然来访，你们一起喝酒叙旧，谈起当年在学院的日子，感慨万千。'],
+  text:['多年不见的老友突然来访，你们一起喝茶叙旧，谈起当年在学院的日子，感慨万千。'],
   choices:[
-    { text:'大醉一场', result:{ text:'你们喝了一整夜的酒，聊了一整夜的往事。第二天虽然宿醉头痛，但心情无比畅快。', damage:10, fate:1, exp:1690 } },
-    { text:'切磋一局', result:{ text:'酒过三巡，你们兴致来了切磋了一场。点到为止，不分胜负，但都觉得酣畅淋漓。', attack:1, exp:3370 } }
+    { text:'聊个通宵', result:{ text:'你们泡了一壶又一壶茶，聊了一整夜的往事。第二天虽然困得直打哈欠，但心情无比畅快。', damage:10, fate:1, exp:1690 } },
+    { text:'切磋一局', result:{ text:'聊到兴头上，你们干脆切磋了一场。点到为止，不分胜负，但都觉得酣畅淋漓。', attack:1, exp:3370 } }
   ]},
 { id:'ma_daily_03', name:'丹药炼成', location:'炼丹房', phase: 'master', minLevel: 52, weight:2, image:'assets/scenes/blacksmith.jpg',
   text:['你花费了七七四十九天，终于炼成了一炉高阶丹药！'],
@@ -1163,10 +1165,10 @@ EVENTS.push(
     { text:'出手铲除邪魂师！', result:{ text:'你找到了邪魂师的巢穴，经过一场恶战将其铲除！城镇居民感恩戴德，为你立了生祠。', damage:25, battle:'evil_master', exp:3970, fate:3 } },
     { text:'这不是我的事', result:{ text:'你选择不管闲事，径直离开了。身后是居民绝望的眼神。', fate:-3 } }
   ]},
-{ id:'ma_daily_06', name:'海神岛的邀请', location:'海神岛', phase: 'master', minLevel: 62, weight:2, image:'assets/scenes/sea_god_island.jpg',
+{ id:'ma_daily_06', name:'海神岛的邀请', location:'海神岛', phase: 'master', minLevel: 62, weight:2, forbidsMarks: ['sea_god_done'], image:'assets/scenes/sea_god_island.jpg',
   text:['海神岛的大祭司派人来邀请你前往海神岛，说你与海神有缘。'],
   choices:[
-    { text:'应邀前往', result:{ text:'你来到海神岛，大祭司亲自接待了你。她告诉你，你有接受海神九考的资质，这是成神的契机！', spiritPowerGain:20, exp:4870, fate:3 } },
+    { text:'应邀前往', result:{ text:'你来到海神岛，大祭司亲自接待了你。她说海神岛一直在等一位能接受九考的人，看着你笑了笑："也许，那个人就在你身边。"', spiritPowerGain:20, exp:4870, fate:3 } },
     { text:'暂时不去', result:{ text:'你表示还有事情需要处理，处理完后再去。大祭司理解，给了你一枚海神令，让你随时可以来。', item:{ name:'海神令', desc:'海神岛通行证', effect:{} }, exp:610 } }
   ]},
 { id:'ma_daily_07', name:'传功', location:'你的修炼室', phase: 'master', minLevel: 60, weight:2, image:'assets/scenes/academy_classroom.jpg',
@@ -1302,7 +1304,7 @@ EVENTS.push(
   choices:[
     { text:'用魂力震开蚊子', result:{ text:'你运转魂力在周身形成一层微弱的屏障，蚊子果然近不了身。不过魂力消耗不小，第二天起来有点困。', mp:-15, defense:1, exp:1250 } },
     { text:'裹紧被子忍一夜', result:{ text:'你把自己裹成粽子，只露出鼻孔。虽然热了点，但总算没被咬多少。', damage:5, exp:420 } },
-    { text:'起来打蚊子', result:{ text:'你爬起来和蚊子大战三百回合，最后拍死了十几只，自己也累得够呛。不过宿舍其他人都感激你。', fate:1, exp:830 } }
+    { text:'起来打蚊子', result:{ text:'你爬起来和蚊子大战了好一阵，最后把它们全赶跑了，自己也累得够呛。不过宿舍其他人都感激你。', fate:1, exp:830 } }
   ]},
 { id:'ac_more_06', name:'鸟窝', location:'史莱克学院·古树', phase: 'adventure', minLevel: 10, weight:1, image:'assets/scenes/forest_outer.jpg',
   text:['你发现老槐树上有一个鸟窝，几只幼鸟在叽叽喳喳叫，却不见大鸟回来。树下，一只野猫正虎视眈眈地往上爬。'],
@@ -1378,7 +1380,7 @@ EVENTS.push(
 
 // ==================== 五、冒险篇继续扩充（更多战斗/探索/城镇/奇缘） ====================
 EVENTS.push(
-{ id:'adv_more_01_beast', name:'人面魔蛛', location:'星斗大森林外围·中层', phase: 'adventure', minLevel: 25, weight:3, image:'assets/beasts/human_faced_spider.jpg',
+{ id:'adv_more_01_beast', name:'人面魔蛛', location:'星斗大森林深处', phase: 'adventure', minLevel: 25, weight:3, image:'assets/beasts/human_faced_spider.jpg',
   text:['一张人脸朝你微笑——不，那不是人脸，是一只磨盘大的蜘蛛背上的花纹！人面魔蛛！它的八条腿像长矛一样刺向你。'],
   choices:[
     { text:'迎战，积累实战经验！', result:{ text:'人面魔蛛的毒液和蛛腿都极其危险——你在战斗中寻找破绽，最终逼退了它。正式魂环需要通过魂环猎取节点获得。', battle:'human_faced_spider', exp:3210, gold:120 } },
@@ -1492,7 +1494,7 @@ EVENTS.push(
     { text:'弃权，太危险了', result:{ text:'你觉得这种比赛容易结仇，选择弃权。有人说你胆小，但也有人佩服你的冷静。', exp:630 } }
   ]},
 { id:'ma_more_02_evil', name:'邪魂师巢穴', location:'废弃教堂', phase: 'master', minLevel: 52, weight:3, image:'assets/scenes/swamp.jpg',
-  text:['你追踪邪魂师来到一处废弃教堂，里面阴气森森，地上画着血色符文。十几个邪魂师正在举行邪恶仪式。'],
+  text:['你追踪邪魂师来到一处废弃教堂，里面阴气森森，地上画着暗红色的怪符号。十几个邪魂师正在举行邪恶仪式。'],
   choices:[
     { text:'冲进去破坏仪式！', result:{ text:'你大吼一声冲入教堂——', battle:'evil_master', exp:3970, gold:300, fate:3 } },
     { text:'先回去叫人', result:{ text:'你悄悄退出，火速通知了武魂殿和附近的魂师。大队人马赶到时邪魂师还在仪式中，被一网打尽。', fate:2, exp:2270 } },
@@ -1513,10 +1515,10 @@ EVENTS.push(
     { text:'我自己还没成气候，不收徒', result:{ text:'你婉拒了。孩子磕了三个头离开了。你有点不忍心，但觉得自己的决定是对的。', exp:1270 } }
   ]},
 { id:'ma_more_05', name:'旧友重逢', location:'天斗城·酒楼', phase: 'master', minLevel: 45, weight:2, image:'assets/scenes/tavern.jpg',
-  text:['你在酒楼遇到了一个熟悉的身影——是当年学院里和你一起抢红烧肉的胖虎学长！他现在已经是个小有名气的战魂师了。'],
+  text:['你在茶楼遇到了一个熟悉的身影——是当年学院里和你一起抢红烧肉的胖虎学长！他现在已经是个小有名气的战魂师了。'],
   choices:[
-    { text:'坐下来喝一杯叙旧', result:{ text:'你们喝了一晚上酒，回忆学院的趣事。临走时胖虎送给你一块他亲手打造的护心镜。', defense:3, fate:2, exp:2810 } },
-    { text:'切磋一下，看看彼此进步', result:{ text:'你们找了个比武场切磋了几十回合，不分胜负。两人哈哈大笑，都觉得对方进步很大。', attack:2, exp:3370 } },
+    { text:'坐下来喝一杯叙旧', result:{ text:'你们喝了一晚上茶，回忆学院的趣事。临走时胖虎送给你一块他亲手打造的护心镜。', defense:3, fate:2, exp:2810 } },
+    { text:'切磋一下，看看彼此进步', result:{ text:'你们找了个比武场切磋了好一会儿，不分胜负。两人哈哈大笑，都觉得对方进步很大。', attack:2, exp:3370 } },
     { text:'客气两句就走', result:{ text:'你寒暄几句就匆匆离开了。胖虎看着你的背影有点失落。', exp:840 } }
   ]},
 { id:'ma_more_06', name:'九品灵芝', location:'万丈悬崖·顶端', phase: 'master', minLevel: 55, weight:2, image:'assets/scenes/mountain_path.jpg',
@@ -1643,7 +1645,7 @@ EVENTS.push(
   ],
   choices: [
     { text: '冷静分辨真身！', cond: { speed: 18 }, result: { text: '你闭上眼用心感知，瞬间找到了影狐的真身所在——一剑刺出！影狐惊叫一声化作黑烟逃走，留下一尾黑色的狐毛。', speed: 2, exp: 2200, item: { name: '影狐尾', type: 'misc', value: 80, count: 1 } } },
-    { text: '不管了，乱打一通！', result: { text: '你对着幻影一阵猛攻，结果被真正的影狐从背后偷袭，后腿受了伤。但你也反手打伤了它，影狐惨叫着逃走了。', damage:25, exp: 1570, attack: 1 } },
+    { text: '不管了，乱打一通！', result: { text: '你对着幻影一阵猛攻，结果被真正的影狐从背后偷袭，后腿受了伤。但你也反手打伤了它，影狐哀叫着逃走了。', damage:25, exp: 1570, attack: 1 } },
     { text: '扔出食物示好', result: { text: '你把干粮扔向远处，影狐犹豫了一下，叼起干粮跳进了密林深处。你平安通过了它的领地。', exp: 790, fate: 1 } }
   ]
 },
@@ -1656,7 +1658,7 @@ EVENTS.push(
     '低沉的咆哮声从身后传来。你缓缓转头，一头两人高的铁甲熊人立而起，熊掌闪着金属般的光泽。'
   ],
   choices: [
-    { text: '正面迎战！', result: { text: '铁甲熊的防御恐怖至极，你打了整整半个时辰才找到它腋下的破绽——', battle: 'iron_armor_bear', exp: 2480, gold: 80 } },
+    { text: '正面迎战！', result: { text: '铁甲熊的防御硬得惊人，你打了整整半个时辰才找到它腋下的破绽——', battle: 'iron_armor_bear', exp: 2480, gold: 80 } },
     { text: '爬树躲避！', cond: { speed: 20 }, result: { text: '你敏捷地爬上一棵最高的树。铁甲熊在树下咆哮拍击了半个时辰，最终悻悻离去。你在树上等到天黑才敢下来。', exp: 990, speed: 1 } },
     { text: '装死！', result: { text: '你屏住呼吸倒在地上一动不动。铁甲熊过来嗅了嗅你，用熊掌拨了你两下，见你没反应就慢悠悠地走了。你吓得浑身冷汗，但活下来了。', exp: 870, fate: 1 } }
   ]
@@ -1672,7 +1674,7 @@ EVENTS.push(
   choices: [
     { text: '运功震开蛛丝，拼死一战！', cond: { attack: 25 }, result: { text: '你大喝一声震开蛛丝，{spirit}全力出击！', battle: 'poison_spider', exp: 2770, gold: 100 } },
     { text: '用火（如果你有火属性）烧断蛛丝', result: { text: '你用魂力引燃身边的干草烧断蛛丝，在毒蜘蛛扑来的瞬间滚了出去。虽然狼狈，但你逃出了陷阱。', damage:15, exp: 1390, speed: 1 } },
-    { text: '放弃挣扎，大喊救命', result: { text: '你大喊救命，就在毒蜘蛛快要咬到你的时候，一道黑影掠过——一位路过的老魂师一剑斩杀了毒蜘蛛。他训了你几句"年轻人不要莽撞"，你连连点头。', fate: 2, exp: 1150 } }
+    { text: '放弃挣扎，大喊救命', result: { text: '你大喊救命，就在毒蜘蛛快要咬到你的时候，一道黑影掠过——一位路过的老魂师一剑击退了毒蜘蛛。他训了你几句"年轻人不要莽撞"，你连连点头。', fate: 2, exp: 1150 } }
   ]
 },
 {
@@ -1713,7 +1715,7 @@ EVENTS.push(
   ],
   choices: [
     { text: '躲进山洞里避雷！', result: { text: '你连滚带爬地躲进一个山洞。雷鸟在洞外盘旋了半个时辰，发出数道雷电都被岩壁引走，最终不甘地飞走了。', exp: 1560, defense: 1 } },
-    { text: '拉弓/用武魂反击！', result: { text: '你等它俯冲下来时全力一击！雷鸟惨叫着坠向山谷——', battle: 'thunder_bird', exp: 3650, gold: 120 } },
+    { text: '拉弓/用武魂反击！', result: { text: '你等它俯冲下来时全力一击！雷鸟尖叫一声，扑腾着翅膀逃回了山谷——', battle: 'thunder_bird', exp: 3650, gold: 120 } },
     { text: '往山下狂奔！', result: { text: '你玩命地往山下跑，雷鸟在后面追着你放电。你左躲右闪狼狈不堪，但最终跑出了它的领地范围。', damage:30, speed: 2, exp: 1300 } }
   ]
 },
@@ -1798,7 +1800,7 @@ EVENTS.push(
   choices: [
     { text: '渡河，挑战蛟龙！', result: { text: '你跳上一艘小船向河心划去——黑水蛟龙破水而出！', battle: 'black_water_dragon', exp: 4720, gold: 200, fate: 1 } },
     { text: '绕路走桥', result: { text: '你绕了三天的路从上游的石桥过了河。虽然多花了时间，但安全第一。路上你还采到了几株灵药。', item: { name: '回魂丹', type: 'heal', value: 60, count: 2 }, exp: 1180 } },
-    { text: '帮老船工清理河道', result: { text: '你决定帮老船工解决这个问题。你联合了三个路过的魂师一起设下陷阱，虽然没有杀死蛟龙，但把它赶到了下游。老船工免费摆渡你过河，还送了你一包河鲜。', gold: 50, fate: 2, exp: 2360 } }
+    { text: '帮老船工清理河道', result: { text: '你决定帮老船工解决这个问题。你联合了三个路过的魂师一起设下陷阱，虽然没有打败蛟龙，但把它赶到了下游。老船工免费摆渡你过河，还送了你一包河鲜。', gold: 50, fate: 2, exp: 2360 } }
   ]
 },
 {
@@ -1840,7 +1842,7 @@ EVENTS.push(
   ],
   choices: [
     { text: '捡走锦盒', result: { text: '你悄悄伸手把锦盒勾了进来，打开一看是一本残缺的魂技秘籍！你连夜离开客栈，找了个安全的地方研究，学会了一招实用的魂技。', attack: 3, exp: 2480 } },
-    { text: '出声示警', result: { text: '你大喊"有刺客！"两个黑衣人一惊，双双跳窗逃走。店家上来道谢，免了你三天房钱。', gold: 0, fate: 1, exp: 1030 } },
+    { text: '出声示警', result: { text: '你大喊"有贼！"两个黑衣人一惊，双双跳窗逃走。店家上来道谢，免了你三天房钱。', gold: 0, fate: 1, exp: 1030 } },
     { text: '装睡不管', result: { text: '你用被子蒙住头假装睡着。打斗声很快消失了，第二天一切如常。你不知道那锦盒里是什么，也不想知道。', exp: 410 } }
   ]
 },
@@ -1909,7 +1911,7 @@ EVENTS.push(
     '但大殿中央刻着一行古字："只可取一，贪则死。"'
   ],
   choices: [
-    { text: '取头部魂骨', result: { text: '你恭敬地向其他石台行礼，取走了头部魂骨。一股暖流涌入头颅，你的精神力大幅增强！', spiritPowerGain: 14, exp: 3950, fate: 2 } },
+    { text: '取头部魂骨', result: { text: '你恭敬地向其他石台行礼，取走了头部魂骨。一股暖流涌入脑海，你的精神力大幅增强！', spiritPowerGain: 14, exp: 3950, fate: 2 } },
     { text: '取右臂魂骨', result: { text: '你取走右臂魂骨，右臂瞬间充满了爆炸性的力量！', attack: 7, exp: 3290, fate: 1 } },
     { text: '取左腿魂骨', result: { text: '你取走左腿魂骨，双腿轻盈得像要飘起来！', speed: 7, exp: 3290, fate: 1 } },
     { text: '太贪了，多拿几块', result: { text: '你忍不住拿了两块——大殿剧烈震动，箭矢从四面八方射来！你连滚带爬地逃出去，只带出一块魂骨，还中了两箭。', damage:40, attack: 2, exp: 1980, fate: -2 } }
@@ -1954,7 +1956,7 @@ EVENTS.push(
   ],
   choices: [
     { text: '洗耳恭听', result: { text: '汉子讲了一个年轻时闯荡江湖的故事，讲到最后他说："记住，刀是用来保护人的，不是用来杀人的。"雨停后他飘然而去，你发现他坐过的地方留下了一本刀谱。', attack: 2, exp: 1530, fate: 1 } },
-    { text: '婉拒，独自修炼', result: { text: '你礼貌地拒绝了，在角落打坐修炼。汉子也不恼，自顾自地喝酒。雨停后你离开了，总觉得错过了什么。', spiritPowerGain: 2, exp: 640 } },
+    { text: '婉拒，独自修炼', result: { text: '你礼貌地拒绝了，在角落打坐修炼。汉子也不恼，自顾自地烤火。雨停后你离开了，总觉得错过了什么。', spiritPowerGain: 2, exp: 640 } },
     { text: '他看起来很厉害，求他指点', result: { text: '你跪下来求他指点几招。汉子愣了一下，哈哈大笑，当场教了你三招基础刀法。这三招看似简单，但实战中非常管用。', attack: 3, exp: 1780 } }
   ]
 },
@@ -2085,7 +2087,7 @@ EVENTS.push(
     '她的课和大师完全不同，不讲理论，直接实战！'
   ],
   choices: [
-    { text: '积极举手第一个上', result: { text: '你第一个站出来和她对练，三招就被放倒了，但她指出了你三个致命的坏习惯。你心服口服。', attack: 2, exp: 1250, damage:10 } },
+    { text: '积极举手第一个上', result: { text: '你第一个站出来和她对练，三招就被放倒了，但她指出了你三个最要紧的坏习惯。你心服口服。', attack: 2, exp: 1250, damage:10 } },
     { text: '先观察别人再上', result: { text: '你仔细观察她和其他同学的对练，总结出她的出招规律。轮到你时居然接了她五招！她惊讶地挑了挑眉。', speed: 2, exp: 1090 } },
     { text: '躲在后面不想被点名', result: { text: '你缩在最后一排，可惜她眼光毒辣，还是点到了你。你硬着头皮上，被打得最惨。', damage:15, exp: 630 } }
   ]
@@ -2142,7 +2144,7 @@ EVENTS.push(
     '裁判宣布开始，他已经亮出身披铁甲的武魂，像一座小山一样压了过来。'
   ],
   choices: [
-    { text: '硬碰硬，正面硬刚！', cond: { attack: 13 }, result: { text: '你毫无畏惧地迎上去，{spirit}和铁甲熊碰撞出耀眼的火花！二十回合后，你以一招险胜。全班欢呼！', attack: 2, exp: 1250, fate: 1 } },
+    { text: '硬碰硬，正面硬刚！', cond: { attack: 13 }, result: { text: '你毫无畏惧地迎上去，{spirit}和铁甲熊碰撞出耀眼的火花！一番苦战之后，你以一招险胜。全班欢呼！', attack: 2, exp: 1250, fate: 1 } },
     { text: '以柔克刚，游走消耗', cond: { speed: 12 }, result: { text: '你不跟他硬拼，凭借身法绕着他转，等他力竭时一击制胜。大师在记录本上写了什么，冲你点了点头。', speed: 1, exp: 1130 } },
     { text: '主动认输，保留实力', result: { text: '你知道打不过，干脆举手认输。虽然输了考试，但保存了体力。大师课后告诉你："知道什么时候该认输，也是智慧。"', defense: 1, exp: 500 } }
   ]
@@ -2323,7 +2325,7 @@ EVENTS.push(
   text:['你发现了一片被魂兽破坏的森林——树木被连根拔起，花草被践踏得不成样子。你的植物系武魂感受到了森林的"痛苦"，一种愤怒在你心中升起。'],
   choices:[
     { text:'用武魂的力量帮助森林恢复', result:{ text:'你运转魂力，{spirit}散发出柔和的绿光。在光芒的照耀下，被破坏的草木开始重新生长！虽然只是幼苗，但生命的希望重新回到了这片土地。森林似乎记住了你的善意。', hp:30, spiritPowerGain:8, fate:3, exp:2200 } },
-    { text:'追踪破坏森林的魂兽', result:{ text:'你循着痕迹追踪到了破坏森林的魂兽，一番战斗后击败了它。虽然为森林报了仇，但你觉得真正的胜利不是杀戮，而是守护。', attack:3, defense:1, exp:1760 } }
+    { text:'追踪破坏森林的魂兽', result:{ text:'你循着痕迹追踪到了破坏森林的魂兽，一番战斗后击败了它。虽然为森林报了仇，但你觉得真正的胜利不是打倒对手，而是守护。', attack:3, defense:1, exp:1760 } }
   ]},
 // ---- 神器/神兽进阶 ----
 { id:'sp_gd_03', name:'神迹显现', location:'上古遗迹', phase: 'god', minLevel: 90, weight:1, tags:['神器','神兽','神圣','远古','命运'],
@@ -2388,11 +2390,11 @@ EVENTS.push(
   image:'assets/scenes/border_town.jpg',
   text:['你回到村子时，发现村民们都躲在家里不敢出来——原来最近有一只魂兽经常在村外徘徊，吓得大家不敢出门干活。村长看到你回来了，眼中燃起了希望。'],
   choices:[
-    { text:'主动出击，解决魂兽', result:{ text:'你追踪魂兽的踪迹，在村外五里的山洞里找到了它。一番激战后你击败了它，把它的尸体拖回村里。村民们欢呼雀跃，当晚全村为你庆功。', attack:3, defense:2, fate:3, gold:20, exp:2480 } },
+    { text:'主动出击，解决魂兽', result:{ text:'你追踪魂兽的踪迹，在村外五里的山洞里找到了它。一番激战后你击败了它，把它赶回了深山。村民们放起了鞭炮。村民们欢呼雀跃，当晚全村为你庆功。', attack:3, defense:2, fate:3, gold:20, exp:2480 } },
     { text:'设陷阱驱赶魂兽', result:{ text:'你利用刘伯教的狩猎技巧，在村外设置了陷阱和驱兽装置。虽然没能彻底解决魂兽，但它被吓跑了，村民们终于可以安心生活了。', defense:2, speed:1, exp:1240 } }
   ]},
 // ---- 武魂城世家 ----
-{ id:'or_noble_01', name:'家族来信', location:'诺丁初级魂师学院', origin: 'spirit_city', phase: 'academy', minLevel: 1, weight:3, tags:['social','sect','noble'],
+{ id:'or_noble_01', name:'家族来信', location:'史莱克学院', origin: 'spirit_city', phase: 'academy', minLevel: 1, weight:3, tags:['social','sect','noble'],
   image:'assets/scenes/academy_classroom.jpg',
   text:['你收到了家族的家书。父亲在信中说族中长辈们都在关注你的修炼进展，还随信寄来了一个包裹——"这是家族对你的一点心意，好好修炼，莫要辱没了家族的名声。"'],
   choices:[
@@ -2410,7 +2412,7 @@ EVENTS.push(
   image:'assets/scenes/temple.jpg',
   text:['家族传来急报——对头家族联合了几个小势力对家族生意进行打压，族中长辈焦头烂额。父亲虽然没让你回来，但你知道，现在是你回报家族的时候了。'],
   choices:[
-    { text:'回去帮助家族', result:{ text:'你连夜赶回武魂城，利用你的实力和智慧帮助家族化解了危机。对头家族没想到家族中还有你这么强的后辈，只能灰溜溜地撤了。族长亲自为你斟酒，你是家族的骄傲。', attack:3, defense:2, gold:50, fate:3, exp:3210 } },
+    { text:'回去帮助家族', result:{ text:'你连夜赶回武魂城，利用你的实力和智慧帮助家族化解了危机。对头家族没想到家族中还有你这么强的后辈，只能灰溜溜地撤了。族长亲自为你斟了一杯茶，你是家族的骄傲。', attack:3, defense:2, gold:50, fate:3, exp:3210 } },
     { text:'用你在学院的人脉帮家族', result:{ text:'你联系了在学院认识的朋友和老师，利用他们的资源帮助家族度过了难关。虽然没有亲自出手，但让大家看到了你的智慧和影响力。', fate:2, gold:30, exp:1710 } }
   ]},
 // ---- 边境小城 ----
@@ -2454,7 +2456,7 @@ EVENTS.push(
   image:'assets/scenes/sea_god_island.jpg',
   text:['一只巨大的海兽袭击了渔村！渔船被掀翻，码头被毁坏，村民们惊慌失措地往高处跑。你从小在这片海长大，决不允许任何东西伤害你的家乡！'],
   choices:[
-    { text:'正面迎战海兽', result:{ text:'你跳入海中，与海兽展开了一场惊天动地的战斗！海浪翻涌，水花四溅。经过一番苦战，你终于击败了海兽，拖着它的尸体回到岸边。村民们把你当成了海神的化身。', attack:5, defense:2, fate:3, exp:2770 } },
+    { text:'正面迎战海兽', result:{ text:'你跳入海中，与海兽展开了一场惊天动地的战斗！海浪翻涌，水花四溅。经过一番苦战，你终于击败了海兽，看着它灰溜溜地游回深海，才回到岸边。村民们把你当成了海神的化身。', attack:5, defense:2, fate:3, exp:2770 } },
     { text:'利用地形智斗海兽', result:{ text:'你利用对这片海域的熟悉，把海兽引到礁石区。海兽庞大的身躯在礁石间行动不便，你趁机攻击它的要害，最终成功击退。', speed:3, defense:2, exp:1850 } }
   ]}
 );
@@ -2517,7 +2519,7 @@ EVENTS.push(
   image:'assets/scenes/border_town.jpg',
   text:['你在旧货市场淘到一张泛黄的羊皮地图，上面标注了一个从未听说过的地名——"失落之谷"。旁边的摊主说："那张图啊，我爷爷传下来的，说是藏宝图，但从来没人找到过那个地方。"'],
   choices:[
-    { text:'按图索骥，寻找失落之谷', result:{ text:'你按照地图的指引，翻山越岭，终于在一个隐蔽的山谷中找到了失落之谷。谷中有一座废弃的祭坛，祭坛上放着一件古老的宝物。', item:{ name:'古老护符', desc:'失落之谷出土的远古护符', effect:{ defense:3, fate:2 } }, fate:2, exp:1650 } },
+    { text:'按图索骥，寻找失落之谷', result:{ text:'你按照地图的指引，翻山越岭，终于在一个隐蔽的山谷中找到了失落之谷。谷中有一座废弃的石台，石台上放着一件古老的宝物。', item:{ name:'古老护符', desc:'失落之谷出土的远古护符', effect:{ defense:3, fate:2 } }, fate:2, exp:1650 } },
     { text:'研究地图，推测更多线索', result:{ text:'你花了很多时间研究地图上的每一个细节，发现它可能连接着更大的秘密——地图只是某个藏宝图的四分之一。你决定以后继续寻找其他碎片。', fate:3, exp:830 } }
   ]},
 { id:'dy_adventure_03', name:'秘境入口', location:'未知山脉', phase: 'adventure', minLevel: 28, weight:2, tags:['explore','secret','mystery','ruin'],
@@ -2539,8 +2541,8 @@ EVENTS.push(
   image:'assets/scenes/forest_deep.jpg',
   text:['一个偏僻的山村被一只妖魔骚扰，村民苦不堪言。他们听说你是魂师，跪在地上求你帮忙。妖魔盘踞在村后的山洞里，已经伤害了好几个村民。'],
   choices:[
-    { text:'深入山洞，斩杀妖魔', result:{ text:'你带着村民们的希望踏入山洞。妖魔虽然凶残，但你的{spirit}更胜一筹！经过一番激战，你成功斩杀了妖魔。村民们欢呼着把你抬起来，称你为"救星"。', attack:5, defense:2, fate:4, gold:20, exp:2200 } },
-    { text:'设陷阱引诱妖魔，智取', result:{ text:'你没有正面对抗，而是在洞口设下陷阱，引诱妖魔出来。妖魔落入陷阱后，你趁机给予致命一击。虽然不够"英雄气概"，但效果一样好。', attack:3, speed:2, exp:1470 } }
+    { text:'深入山洞，降服妖魔', result:{ text:'你带着村民们的希望踏入山洞。妖魔虽然凶残，但你的{spirit}更胜一筹！经过一番激战，你成功降服了妖魔。村民们欢呼着把你抬起来，称你为"救星"。', attack:5, defense:2, fate:4, gold:20, exp:2200 } },
+    { text:'设陷阱引诱妖魔，智取', result:{ text:'你没有正面对抗，而是在洞口设下陷阱，引诱妖魔出来。妖魔落入陷阱后，你趁机给予最后一击。虽然不够"英雄气概"，但效果一样好。', attack:3, speed:2, exp:1470 } }
   ]},
 { id:'dy_hero_03', name:'英雄之名', location:'天斗城·广场', phase: 'adventure', minLevel: 30, weight:2, tags:['justice','hero','protect','fate'],
   image:'assets/scenes/temple.jpg',
@@ -2581,7 +2583,7 @@ EVENTS.push(
   image: 'assets/scenes/forest_outer.jpg',
   text: [
     '赶路途中，你在驿站遇到一位风尘仆仆的旅人。他腰挎长剑，眼中却有化不开的疲惫。',
-    '他请你喝了一碗热汤，讲起大陆各地的见闻：哪里的魂兽最凶，哪座城的酒最烈，哪条路上埋着前人遗骨。'
+    '他请你喝了一碗热汤，讲起大陆各地的见闻：哪里的魂兽最凶，哪座城的点心最好吃，哪条路最难走。'
   ],
   choices: [
     { text: '认真听讲，记下要点', result: { text: '你把这些见闻牢牢记下。旅人赞你是个有心人，临别又给你指了一条通往灵药谷的近路。', exp: 940, gold: 40, fate: 1 } },
@@ -2650,11 +2652,11 @@ EVENTS.push(
   id: 'gbl_mas_01', name: '云游剑客', phase: 'adventure', weight: 5, minLevel: 19,
   image: 'assets/locations/天斗城.jpg',
   text: [
-    '一位独臂剑客在酒馆独酌，桌上横着一柄古朴的长剑。',
-    '他忽然开口："小友，看得出你也是魂师。陪我喝一杯？"'
+    '一位独臂剑客在茶馆里独坐，桌上横着一柄古朴的长剑。',
+    '他忽然开口："小友，看得出你也是魂师。陪我喝杯茶？"'
   ],
   choices: [
-    { text: '举杯相迎', result: { text: '剑客话不多，但句句在理。他说自己年轻时也曾意气风发，如今只求一剑纵横。临别他赠你一句忠告。', exp: 1760, fate: 2 } },
+    { text: '以茶相迎', result: { text: '剑客话不多，但句句在理。他说自己年轻时也曾意气风发，如今只求一剑纵横。临别他赠你一句忠告。', exp: 1760, fate: 2 } },
     { text: '请教剑法', result: { text: '"剑法？"他轻笑，"剑是手的延伸，手是心的延伸。心不静，剑再快也是虚的。"你似有所悟。', exp: 2340, attack: 1 } },
     { text: '与他切磋', result: { text: '他只用单手，你却连他的衣角都摸不到。败北之后，他指点你三处破绽，收益匪浅。', exp: 2110, speed: 1, fate: 1 } },
     { text: '说出你一路走来的道路', effect: G => {
@@ -2696,3 +2698,8 @@ EVENTS.push(
 // ==================== 地点专属探索事件 ====================
 // 保持统一事件库与地点探索队列共用同一份数据，避免 Vue 与审计看到不同事件集合。
 EVENTS.push(...LOCATION_EVENTS);
+// 主线名场面（儿童版珍珠串主线，见 data/main-story.js）
+EVENTS.push(...MAIN_STORY_EVENTS);
+
+// ==================== 儿童版后期事件（41~100 级，按地点补齐） ====================
+EVENTS.push(...LATE_GAME_EVENTS);

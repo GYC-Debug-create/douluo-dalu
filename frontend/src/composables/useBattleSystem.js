@@ -13,7 +13,7 @@ import { resolveAssetPath } from '@/utils/asset-resolver'
 import {
   ELEMENT_ICONS, ELEMENT_NAMES, STATUS_INFO, clamp,
   normalizeElement, elementMultiplier, statusDamageModifier, statusHtml,
-  buildEnemy, addStatus, damageFormula, maybeApplyElementStatus, skillElement
+  buildEnemy, addStatus, damageFormula, maybeApplyElementStatus, skillElement, scaleEnemyToPlayer
 } from '@/engine/battle-core'
 import { resolveConsumable } from '@/engine/item-effects'
 import { applyExpGain } from '@/engine/settlement'
@@ -76,8 +76,8 @@ export function useBattleSystem() {
   const gameStore = useGameStore()
   const { data } = useGameData()
   const { finalStats, getMaxSpiritPower } = useGameRules()
-  // 简单模式（低龄化默认）：战斗自动开打、只留"攻击/逃跑"按钮。
-  const simpleMode = computed(() => gameStore._simpleMode !== false)
+  // 儿童版：战斗默认自动出招；玩家切到手动后记住选择（gameStore._autoBattleDefault）。
+  const autoBattleDefault = computed(() => gameStore._autoBattleDefault !== false)
 
   const enemy = computed(() => battleState?.enemy || null)
   const logs = computed(() => battleState?.logs || [])
@@ -264,6 +264,13 @@ export function useBattleSystem() {
     if (elemental < 1) line += '（元素受阻）'
     line += `，当前 ${battleState.combo} 连击。`
     addLog(line, crit ? 'crit' : 'player')
+    const extraAttackChance = clamp(Number(sb.extraAttack) || 0, 0, 1)
+    if (battleState.enemy.hp > 0 && extraAttackChance > 0 && Math.random() < extraAttackChance) {
+      const extraDamage = Math.min(damage, battleState.enemy.hp)
+      battleState.enemy.hp = Math.max(0, battleState.enemy.hp - damage)
+      setFeedback('player', 'enemy', `-${extraDamage}`, 'damage', '影分身')
+      addLog(`影分身触发，追加一次等额攻击，造成 ${extraDamage} 点伤害。`, 'player')
+    }
     player.spiritPower = Math.min(playerMaxSpirit(), player.spiritPower + (sb.mpRecovery || 2))
     if (sb.alwaysStatus) {
       const applied = maybeApplyElementStatus(element, battleState.enemyStatuses, true)
@@ -574,14 +581,9 @@ export function useBattleSystem() {
       eventName: battleState.options.huntingMeta?.eventName || ''
     })
     if (huntingRecord.gain > 0) gains.push(`猎魂历练+${huntingRecord.gain}`)
-    // 魂骨碎片掉落（T15，判例 21）：普通魂兽 3%、Boss 15%——魂骨为原著至宝，
-    // 碎片不应成为日常产出；挑战塔碎片另按首通发放。
-    if (!battleState.enemy.isNpc && Math.random() < (battleState.enemy.isBoss ? 0.15 : 0.03)) {
-      if (!player._forgeBones) player._forgeBones = []
-      player._forgeBones.push({ source: battleState.enemy.name, tier: battleState.enemy.isBoss ? 3 : 1, obtainedAt: Date.now() })
-      gains.push('魂骨碎片×1')
-    }
-    ui.notify(`战斗胜利！经验+${rewardExp}`, 'success', 3000)
+    // 儿童版不提供锻造入口，战斗不再掉落用不上的魂骨碎片。
+    // 剧情战斗的奖励由事件层在结果页统一展示（deferResult），这里只在真有经验时提示，避免"经验+0"。
+    if (rewardExp > 0) ui.notify(`战斗胜利！经验+${rewardExp}`, 'success', 3000)
     const onVictory = battleState.options.onVictory
     if (typeof onVictory === 'function') {
       const currentState = battleState
@@ -620,15 +622,19 @@ export function useBattleSystem() {
     player.setHp(Math.max(1, Math.round(finalStats().maxHp * 0.3)))
     battleState.combo = 0
     const onDefeat = battleState.options.onDefeat
+    // 猎环战败时告诉小朋友下一步怎么办，而不是只说"没能战胜"。
+    const defeatTip = battleState.options.huntingMeta?.ringHunt
+      ? '先在地点行动里点「休息恢复」把生命补满，或者下次选一只更稳妥的魂兽。'
+      : ''
     if (typeof onDefeat === 'function') {
       const currentState = battleState
       const generation = battleGeneration
-      _callOnEnd('defeat', `你没能战胜${battleState.enemy.name}。同伴将你带到安全处，生命恢复至30%${goldLoss > 0 ? `，损失${goldLoss}金币` : ''}。`)
+      _callOnEnd('defeat', `你没能战胜${battleState.enemy.name}。同伴将你带到安全处，生命恢复至30%${goldLoss > 0 ? `，损失${goldLoss}金币` : ''}。${defeatTip}`)
       setTimeout(() => {
         if (isCurrentBattleInstance(currentState, generation)) onDefeat(currentState.enemy)
       }, 80)
     } else {
-      _callOnEnd('defeat', `你没能战胜${battleState.enemy.name}。同伴将你带到安全处，生命恢复至30%${goldLoss > 0 ? `，损失${goldLoss}金币` : ''}。`)
+      _callOnEnd('defeat', `你没能战胜${battleState.enemy.name}。同伴将你带到安全处，生命恢复至30%${goldLoss > 0 ? `，损失${goldLoss}金币` : ''}。${defeatTip}`)
     }
   }
 
@@ -712,8 +718,8 @@ export function useBattleSystem() {
     battleState.cooldowns = (player.skills || []).map(() => 0)
     battleActive.value = true
     combat._battleActive = true
-    // 简单模式默认自动战斗：小朋友只看故事和结果，不需要理解魂力/冷却。
-    if (simpleMode.value && !options.training) {
+    // 默认自动战斗：小朋友可以先看战斗怎么打，想自己指挥随时点招式接管。
+    if (autoBattleDefault.value && !options.training) {
       battleState.auto = true
       scheduleAutoAction()
     }
@@ -744,7 +750,11 @@ export function useBattleSystem() {
   // 事件战斗入口：只接收 engine/battle-contract.js 的请求单，不理解事件语义。
   // 奖励结算（deferResult）与战败/逃跑的剧情处理都由事件层完成。
   function startEventBattle(request, onEnd) {
-    const enemyData = buildEnemy(request.enemyRef, player.level, finalStats, data.value.beasts)
+    const built = buildEnemy(request.enemyRef, player.level, finalStats, data.value.beasts)
+    // 儿童版：敌人按难度档位换算到玩家当前强度（预构建的特殊敌人对象保持原样）。
+    const enemyData = request.difficulty && !(request.enemyRef && typeof request.enemyRef === 'object')
+      ? scaleEnemyToPlayer(built, finalStats(), request.difficulty, Math.random, player.skills || [])
+      : built
     return start(enemyData, {
       rewardResult: request.rewardResult,
       finalBoss: Boolean(request.finalBoss),
@@ -840,6 +850,7 @@ export function useBattleSystem() {
   function toggleAuto() {
     if (!battleState || battleState.ended) return
     battleState.auto = !battleState.auto
+    gameStore.setAutoBattleDefault(battleState.auto)
     if (battleState.auto) {
       addLog('已开启自动战斗，魂师将自动出击。', 'status')
       scheduleAutoAction()
@@ -873,6 +884,6 @@ export function useBattleSystem() {
     start, startEventBattle, startTraining, isActive, cancelTraining, resetBattle,
     buildEnemy, normalizeElement, elementMultiplier,
     ELEMENT_ICONS, ELEMENT_NAMES, STATUS_INFO,
-    simpleMode
+    autoBattleDefault
   }
 }

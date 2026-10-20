@@ -23,8 +23,8 @@
     <div class="main-area">
       <TopBar @action="onTopAction" />
 
-      <!-- 儿童引导条：简单模式常驻"下一步"提示与主按钮 -->
-      <ChildGuideBar v-if="simpleMode" :guide="childGuide" @action="onGuideAction" />
+      <!-- 引导条：常驻"下一步"提示与主按钮 -->
+      <ChildGuideBar :guide="childGuide" @action="onGuideAction" />
 
       <!-- 通知浮层：最多同时显示三条，其余由 UI store 排队 -->
       <div class="notification-rail" aria-label="游戏通知" aria-live="polite">
@@ -50,16 +50,17 @@
         :scene-state="engine.sceneState.value"
         :current-event="engine.currentEvent.value"
         :result-text="engine.resultText.value"
+        :result-rewards="engine.resultRewards.value"
         :player-name="player.name"
         :spirit-name="player.spirit?.name || '武魂'"
         :player-level="player.level"
         :can-hunt="engine.canHunt.value"
         :location-name="currentLocationName"
         :check-cond="engine.checkCond"
-        :simple-mode="simpleMode"
         @explore="engine.explore"
         @rest="engine.rest"
         @hunt="engine.hunt"
+        @story="engine.startMainStory"
         @choose="onChoose"
         @continue="engine.continueAction"
          @open-map="onOpenMap"
@@ -132,7 +133,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter, onBeforeRouteLeave } from 'vue-router'
 import { usePlayerStore } from '@/stores/player'
 import { useEventStore } from '@/stores/event'
@@ -200,15 +201,14 @@ const engine = useEventEngine()
 const features = useGameFeatures()
 const battle = useBattleSystem()
 
-// 简单模式（低龄化默认）：常驻"下一步"引导条，任何时刻告诉孩子现在该点什么。
-const simpleMode = computed(() => gameStore._simpleMode !== false)
-const childGuide = computed(() => simpleMode.value ? buildChildGuide({
+// 常驻"下一步"引导条：任何时刻告诉小朋友现在该点什么。
+const childGuide = computed(() => buildChildGuide({
   player,
   eventStore,
   gameStore,
   sceneState: engine.sceneState.value,
   currentEvent: engine.currentEvent.value
-}) : null)
+}))
 
 // 引导条主按钮：全部指向这条主线上已有的动作，不引入新状态。
 function onGuideAction(action) {
@@ -221,6 +221,9 @@ function onGuideAction(action) {
       break
     case 'hunt':
       engine.hunt()
+      break
+    case 'story':
+      engine.startMainStory()
       break
     case 'map':
       onOpenMap()
@@ -236,16 +239,35 @@ function onGuideAction(action) {
   }
 }
 
-// 简单模式自动代办：签到/任务/技能树等隐藏页面里的确定收益，进档时静默结算并提示。
-function runChildAutomation() {
+// 每天第一次进游戏自动签到，并明确告诉玩家领到了什么（不再在背后偷偷加点、领任务、换称号）。
+function runDailyWelcome() {
   if (!player.name || !player.spirit) return
   try {
-    const result = features.runSimpleModeAutomation()
-    for (const message of result?.messages || []) ui.notify(message, 'success', 5000)
+    const sign = features.dailySign(undefined, { silent: true })
+    if (sign.changed) ui.notify(`今日签到 · ${sign.items.join('，')}`, 'gold', 6000)
+    remindSkillPoints()
   } catch (error) {
-    console.warn('简单模式自动代办失败', error)
+    console.warn('每日签到失败', error)
   }
 }
+
+// 有没用的技能点时提醒一次，告诉小朋友去哪里加点。
+let remindedSkillPoints = -1
+function remindSkillPoints() {
+  const free = features.totalSkillPoints() - features.usedSkillPoints()
+  if (free > 0 && free !== remindedSkillPoints) {
+    remindedSkillPoints = free
+    ui.notify(`你有 ${free} 个技能点还没用，去「成长 → 技能树」学新本领吧`, 'info', 6000)
+  }
+}
+
+// 每完成一次行动就检查成就，解锁时立刻提示（原来只在签到、锻造时才检查）。
+watch(() => eventStore._eventCount, () => {
+  try { features.checkAchievements(true) } catch (error) { console.warn('成就检查失败', error) }
+})
+watch(() => player.level, (level, previous) => {
+  if (previous && level > previous) remindSkillPoints()
+})
 
 // 当前地点名称
 const currentLocationName = computed(() => {
@@ -253,6 +275,7 @@ const currentLocationName = computed(() => {
   if (!loc) return ''
   const locationMap = {
     'holy_soul_village': '圣魂村',
+    'nuoding_city': '诺丁城',
     'shrek_academy': '史莱克学院',
     'star_duo_outer': '星斗大森林·外围',
     'star_duo_deep': '星斗大森林·深处',
@@ -263,7 +286,7 @@ const currentLocationName = computed(() => {
     'sunset_forest': '落日森林',
     'sea_god_island': '海神岛',
     'ice_forest': '冰封森林',
-    'slaughter_city': '杀戮之都',
+    'slaughter_city': '试炼之城',
     'ancient_ruins': '远古遗迹',
     'abyss_rift': '深渊裂缝',
     'dragon_valley': '龙之谷',
@@ -316,7 +339,7 @@ onMounted(async () => {
   // 从地图/图鉴返回时 Pinia 仍保留最新状态，禁止再次请求云端覆盖刚发生的旅行或事件。
   if (player.name && player.spirit) {
     resumeCurrentGame()
-    runChildAutomation()
+    runDailyWelcome()
     return
   }
 
@@ -328,7 +351,7 @@ onMounted(async () => {
     return
   }
   resumeCurrentGame()
-  runChildAutomation()
+  runDailyWelcome()
 })
 
 onBeforeRouteLeave((to, from, next) => {
@@ -470,9 +493,6 @@ function onTopAction(action) {
     case 'map':
       router.push('/map')
       break
-    case 'travel':
-      router.push('/map')
-      break
     case 'codex':
       router.push('/codex')
       break
@@ -482,27 +502,26 @@ function onTopAction(action) {
     case 'help':
       modalTitle.value = '怎么玩'
       modalContent.value = `
-        <h3>三步就能玩</h3>
-        <p>1. 点【探索四周】看故事，选一个你喜欢的选项</p>
-        <p>2. 打不过就点【原地休息】，把血补满再打</p>
-        <p>3. 升到 10 级、20 级……可以【猎杀魂兽】拿魂环，角色会越来越厉害！</p>
+        <h3>跟着上方的金色提示条走</h3>
+        <p>提示条会一直告诉你"下一步做什么"，点它右边的按钮就行。</p>
+        <h3>基本玩法</h3>
+        <p>1. 读故事，选一个你想做的选项，会得到经验、金币或新本领。</p>
+        <p>2. 到了一个地方，可以【探索当地】【接取当地委托】【拜访当地人物】，每轮 4 小步。</p>
+        <p>3. 每到 10 级、20 级……要先去指定的地方猎取魂环，才能继续变强。</p>
+        <p>4. 左边的【下一段主线】告诉你故事接下来去哪里，打开地图走过去，点【开始主线】。</p>
+        <h3>战斗</h3>
+        <p>· 战斗默认自动出招；点任意招式就换成你自己指挥，再点【自动】交回去。</p>
+        <p>· 魂力不够时用【防御】可以回魂力；血少了用背包里的丹药。</p>
+        <p>· 打输了也没关系：会回到安全的地方，休息一下再来。</p>
         <h3>小贴士</h3>
-        <p>· 打架的时候点一下【自动】，角色就会自己打</p>
-        <p>· 想自己出招？直接点【技能】按钮，就会换成你操作；再点【自动】就交回给它</p>
-        <p>· 不知道去哪？看左边的【猎环目标】，点【查看地图】跟着走</p>
-        <p>· 玩完了记得点【存档】保存进度</p>
+        <p>· 升级会得到技能点，去「成长 → 技能树」学新本领。</p>
+        <p>· 「伙伴与图鉴 → 冒险日记」可以回看你经历过的故事。</p>
+        <p>· 游戏会自动存档，也可以在「系统 → 存档」手动保存。</p>
       `
       showModal.value = true
       break
-    case 'mode': {
-      const next = !(gameStore._simpleMode !== false)
-      gameStore.setSimpleMode(next)
-      ui.notify(next ? '已切换到简单模式：只保留最简单的玩法' : '已切换到完整模式：技能树、商店等全部功能已恢复', 'info')
-      break
-    }
-    case 'bag': case 'shop': case 'quests': case 'signin': case 'skilltree':
-    case 'bone': case 'forge': case 'train': case 'tower': case 'formation':
-    case 'achievement': case 'title': case 'npc': case 'relation':
+    case 'bag': case 'shop': case 'signin': case 'skilltree': case 'tower':
+    case 'achievement': case 'npc': case 'diary':
       if (action === 'achievement') features.checkAchievements()
       activeFeature.value = action
       showFeatureModal.value = true
@@ -515,7 +534,7 @@ function onTopAction(action) {
 function onChallengeTower(floorNumber) {
   showFeatureModal.value = false
   const started = features.startTower(floorNumber, {
-    onVictory: floor => engine.showContinue(null, `挑战塔第${floor.floor}层「${floor.name}」通关！奖励与魂骨碎片已收入存档。`),
+    onVictory: floor => engine.showContinue(null, `挑战塔第${floor.floor}层「${floor.name}」通关！奖励已经收好。`),
     onDefeat: floor => engine.showContinue(null, `挑战塔第${floor.floor}层挑战失败。恢复后可再次挑战。`)
   })
   if (started) engine.sceneState.value = 'battle'

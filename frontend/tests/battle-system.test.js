@@ -30,7 +30,7 @@ beforeEach(() => {
   globalThis.sessionStorage = new MemoryStorage()
   initNewCharacter({ name: '战斗验收', origin: ORIGINS[0], spirit, innatePower: 70 })
   // 本文件验证完整模式的手动战斗闭环；简单模式的默认行为单独用例覆盖。
-  useGameStore()._simpleMode = false
+  useGameStore()._autoBattleDefault = false
 })
 
 afterEach(() => {
@@ -39,6 +39,46 @@ afterEach(() => {
 })
 
 describe('Vue 正式战斗状态闭环', () => {
+  it('影分身仅在普通攻击未击杀时追加一次等额伤害，且不重复结算', async () => {
+    const player = usePlayerStore()
+    const combat = useCombatStore()
+    const battle = useBattleSystem()
+    player._skillBonuses = { extraAttack: 0.15 }
+    battle.start({ id: 'clone_target', name: '影分身木偶', hp: 100000, maxHp: 100000, attack: 1, defense: 0, speed: 1 }, { allowFlee: false })
+    const startingHp = battle.enemy.value.hp
+    const random = vi.spyOn(Math, 'random').mockReturnValue(0.1)
+    battle.performAttack()
+    const hpAfterAttack = battle.enemy.value.hp
+    expect(startingHp - hpAfterAttack).toBeGreaterThan(0)
+    expect(battle.logs.value.filter(log => log.text.includes('影分身触发'))).toHaveLength(1)
+    expect(combat.battleStats.wins).toBe(0)
+    random.mockRestore()
+    battle.resetBattle()
+  })
+
+  it('影分身未触发或本击已击杀时不追加攻击', async () => {
+    const player = usePlayerStore()
+    const battle = useBattleSystem()
+    player._skillBonuses = { extraAttack: 0 }
+    battle.start({ id: 'zero_clone_target', name: '零概率木偶', hp: 100000, maxHp: 100000, attack: 1, defense: 0, speed: 1 }, { allowFlee: false, countKill: false })
+    battle.performAttack()
+    expect(battle.logs.value.filter(log => log.text.includes('影分身触发'))).toHaveLength(0)
+    battle.resetBattle()
+    player._skillBonuses = { extraAttack: 0.15 }
+    const random = vi.spyOn(Math, 'random').mockReturnValue(0.99)
+    battle.start({ id: 'no_clone_target', name: '木偶', hp: 100000, maxHp: 100000, attack: 1, defense: 0, speed: 1 }, { allowFlee: false })
+    battle.performAttack()
+    expect(battle.logs.value.filter(log => log.text.includes('影分身触发'))).toHaveLength(0)
+    battle.resetBattle()
+    random.mockReturnValue(0.1)
+    battle.start({ id: 'one_hit_target', name: '一击木偶', hp: 1, maxHp: 1, attack: 1, defense: 0, speed: 1 }, { allowFlee: false })
+    battle.performAttack()
+    await vi.advanceTimersByTimeAsync(500)
+    expect(battle.logs.value.filter(log => log.text.includes('影分身触发'))).toHaveLength(0)
+    expect(useCombatStore().battleStats.wins).toBe(1)
+    random.mockRestore()
+  })
+
   it('持久记录连击终结、元素反应、已用元素和武魂融合', async () => {
     const player = usePlayerStore()
     const combat = useCombatStore()
@@ -143,6 +183,19 @@ describe('自动战斗闭环（BUG-006）', () => {
     expect(battle.logs.value.some(l => /发动普通攻击/.test(l.text))).toBe(true)
   })
 
+  it('自动普通攻击同样应用15%影分身并只记录一次战斗胜场', async () => {
+    const player = usePlayerStore()
+    const combat = useCombatStore()
+    const battle = startDummy()
+    player._skillBonuses = { extraAttack: 0.15 }
+    const random = vi.spyOn(Math, 'random').mockReturnValue(0.1)
+    battle.toggleAuto()
+    await vi.advanceTimersByTimeAsync(1600)
+    expect(battle.logs.value.some(log => log.text.includes('影分身触发'))).toBe(true)
+    expect(combat.battleStats.wins).toBe(0)
+    random.mockRestore()
+  })
+
   it('再次点击自动后停止自动推进', async () => {
     const battle = startDummy()
     battle.toggleAuto()
@@ -184,9 +237,9 @@ describe('自动战斗闭环（BUG-006）', () => {
     expect(battle.isActive()).toBe(false)
   })
 
-  it('简单模式（低龄化默认）下战斗默认自动开启，无需手动点击', async () => {
+  it('儿童版默认战斗自动开启，无需手动点击', async () => {
     const gameStore = useGameStore()
-    gameStore._simpleMode = true
+    gameStore._autoBattleDefault = true
     const player = usePlayerStore()
     player.skills = []
     player.rings = []

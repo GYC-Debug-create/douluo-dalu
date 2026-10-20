@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { EVENTS, DYNAMIC_EVENTS, CHAINED_EVENTS } from '@/data/game-data'
 import { LOCATION_EVENTS } from '@/data/location-events'
+import { LATE_GAME_EVENTS } from '@/data/late-game-events'
+import { MAIN_STORY_EVENTS } from '@/data/main-story'
 import '@/data/events-expanded'
 import {
   adaptEvent,
@@ -31,8 +33,11 @@ function ctx(overrides = {}) {
 
 describe('事件中央触发规则', () => {
   it('扩展后的静态事件 ID 唯一，并包含地点专属事件', () => {
-    // 基线 350 = 348 + P0-B 新增 ml_bibi_omen / ml_bibi_hunt（比比东主线铺垫）。
-    expect(EVENTS).toHaveLength(350 + LOCATION_EVENTS.length)
+    // 基线 350 = 348 + P0-B 新增 ml_bibi_omen / ml_bibi_hunt（比比东主线铺垫）；
+    // 儿童版 +10 段主线（ms_*，已退役但保留数据）+ 后期地点事件（LATE_GAME_EVENTS）
+    // + 名场面主线 14 段（MAIN_STORY_EVENTS）。
+    expect(EVENTS).toHaveLength(360 + LOCATION_EVENTS.length + LATE_GAME_EVENTS.length + MAIN_STORY_EVENTS.length)
+    expect(MAIN_STORY_EVENTS).toHaveLength(14)
     expect(new Set(EVENTS.map(event => event.id)).size).toBe(EVENTS.length)
     expect(EVENTS.filter(event => event.locationActionType === 'local_exploration')).toHaveLength(6)
     expect(EVENTS.filter(event => event.locationActionType === 'local_commission')).toHaveLength(6)
@@ -40,15 +45,17 @@ describe('事件中央触发规则', () => {
   })
 
   it('主线事件不能从普通随机池进入，但可按主线入口触发并遵守前置', () => {
-    const firstHunt = adaptEvent(byId('first_hunt'))
-    expect(firstHunt.mainStoryOnly).toBe(true)
-    expect(isEventEligible(firstHunt, ctx({ level: 5, phase: 'academy' }))).toBe(false)
-    expect(isEventEligible(firstHunt, ctx({ level: 5, phase: 'academy', isMainStory: true }))).toBe(true)
+    const nuoding = adaptEvent(byId('p02_nuoding'))
+    expect(nuoding.mainStoryOnly).toBe(true)
+    expect(isEventEligible(nuoding, ctx({ level: 2, phase: 'academy' }))).toBe(false)
+    expect(isEventEligible(nuoding, ctx({ level: 2, phase: 'academy', isMainStory: true }))).toBe(true)
 
-    const levelTen = adaptEvent(byId('reach_lv10'))
-    // 2026-08-15 T6 阶段表重划：Lv.10 归属初级学院（academy），reach_lv10 phase 同步
-    expect(isEventEligible(levelTen, ctx({ level: 10, phase: 'academy', isMainStory: true }))).toBe(false)
-    expect(isEventEligible(levelTen, ctx({ level: 10, phase: 'academy', isMainStory: true, doneEvents: ['first_hunt'] }))).toBe(true)
+    const master = adaptEvent(byId('p03_master'))
+    expect(isEventEligible(master, ctx({ level: 5, phase: 'academy', isMainStory: true }))).toBe(false)
+    expect(isEventEligible(master, ctx({ level: 5, phase: 'academy', isMainStory: true, doneEvents: ['p02_nuoding'] }))).toBe(true)
+
+    // 旧主线节点退役：主线入口也不会再触发
+    expect(isEventEligible(adaptEvent(byId('first_hunt')), ctx({ level: 5, phase: 'academy', isMainStory: true }))).toBe(false)
   })
 
   it('高危魂兽和身份事件同时受等级、魂环数与章节控制', () => {
@@ -68,8 +75,8 @@ describe('事件中央触发规则', () => {
     const tribulation = adaptEvent(byId('ma_daily_08'))
     expect(tribulation.maxLevel).toBe(99)
     expect(isEventEligible(tribulation, ctx({ level: 98, phase: 'god', ringCount: 8 }))).toBe(false)
-    expect(isEventEligible(tribulation, ctx({ level: 99, phase: 'god', ringCount: 8 }))).toBe(true)
-    expect(isEventEligible(tribulation, ctx({ level: 99, phase: 'god', ringCount: 8, doneEvents: ['ma_daily_08'] }))).toBe(false)
+    // 儿童版名场面主线：神位属于唐三，"百级成神"事件已封存，任何等级都不出现
+    expect(isEventEligible(tribulation, ctx({ level: 99, phase: 'god', ringCount: 8 }))).toBe(false)
   })
 
   it('普通遭遇不会直接授予正式魂环', () => {

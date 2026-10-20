@@ -11,6 +11,8 @@ services:
     environment:
       NODE_ENV: production
       PORT: 3000
+      # 内测期关闭注册，账号用 scripts/account-admin.js 创建；改成 "1" 才开放注册
+      ALLOW_REGISTER: "0"
     volumes:
       - douluo-data:/app/data
     mem_limit: 768m

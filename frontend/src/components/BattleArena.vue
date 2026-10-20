@@ -32,9 +32,9 @@
           <span v-else>{{ player.spirit?.icon || '✦' }}</span>
         </div>
         <div class="battle-bar hp"><i :style="{ width: playerHpPct + '%' }"></i></div>
-        <div class="battle-value">{{ simpleMode ? '体力' : '生命' }} {{ Math.max(0, Math.round(player.hp)) }}/{{ maxHp }}</div>
+        <div class="battle-value">生命 {{ Math.max(0, Math.round(player.hp)) }}/{{ maxHp }}</div>
         <div class="battle-bar mp"><i :style="{ width: mpPct + '%' }"></i></div>
-        <div class="battle-value">{{ simpleMode ? '能量' : '魂力' }} {{ Math.round(player.spiritPower) }}/{{ maxMp }}</div>
+        <div class="battle-value">魂力 {{ Math.round(player.spiritPower) }}/{{ maxMp }}</div>
         <div class="battle-statuses">
           <span v-for="s in playerStatusDisplay" :key="s.name" class="battle-status" :class="s.harmful ? 'bad' : 'good'" :title="`${s.name}，剩余${s.turns}回合`">
             {{ s.icon }}{{ s.name }} {{ s.turns }}
@@ -81,21 +81,18 @@
       <div v-for="(log, i) in logs" :key="i" :class="log.type">{{ log.text }}</div>
     </div>
 
-    <!-- 行动按钮：简单模式保留 攻击/魂技/逃跑——玩家亲自出手即切回手动 -->
+    <!-- 行动按钮：玩家亲自出手即从自动切回手动 -->
     <div class="battle-actions">
-      <button class="battle-action primary" :disabled="!canAct" @click="onManualAction(performAttack)">{{ simpleMode ? '攻击' : '普通攻击' }}</button>
+      <button class="battle-action primary" :disabled="!canAct" @click="onManualAction(performAttack)">普通攻击</button>
       <button v-for="s in skills" :key="s.index" class="battle-action skill" :disabled="s.disabled" @click="onManualAction(() => performSkill(s.index))">
         <span>{{ ELEMENT_ICONS[s.element] }} {{ s.skill.name }}</span>
-        <small v-if="simpleMode">{{ s.cooldown ? `还要等${s.cooldown}下` : `${s.cost}能量` }}</small>
-        <small v-else>{{ s.cooldown ? `冷却${s.cooldown}` : `${s.cost}魂力` }}</small>
+        <small>{{ s.cooldown ? `还要等${s.cooldown}回合` : `${s.cost}魂力` }}</small>
       </button>
-      <template v-if="!simpleMode">
-        <button class="battle-action" :disabled="!canAct || fusionUsed || ringCount < 3" :title="ringCount < 3 ? '至少获得三个魂环后才能施展武魂融合' : '武魂融合：40魂力，高额伤害并获得护盾'" @click="onManualAction(performFusion)">
-          武魂融合<small>{{ fusionUsed ? '本场已使用' : (ringCount < 3 ? '需≥3魂环' : '40魂力') }}</small>
-        </button>
-        <button class="battle-action" :disabled="!canAct" @click="onManualAction(performDefend)">防御</button>
-        <button class="battle-action" :disabled="!canAct" @click="onManualAction(toggleItems)">道具</button>
-      </template>
+      <button class="battle-action" :disabled="!canAct || fusionUsed || ringCount < 3" :title="ringCount < 3 ? '至少获得三个魂环后才能施展武魂融合' : '武魂融合：40魂力，高额伤害并获得护盾'" @click="onManualAction(performFusion)">
+        武魂融合<small>{{ fusionUsed ? '本场已使用' : (ringCount < 3 ? '需≥3魂环' : '40魂力') }}</small>
+      </button>
+      <button class="battle-action" :disabled="!canAct" @click="onManualAction(performDefend)">防御</button>
+      <button class="battle-action" :disabled="!canAct" @click="onManualAction(toggleItems)">道具</button>
       <button class="battle-action danger" :disabled="!canAct || enemy?.isBoss || allowFlee === false" @click="attemptFlee">逃跑</button>
     </div>
 
@@ -126,7 +123,7 @@ const {
   playerStatusDisplay, enemyStatusDisplay,
   playerHpPct, enemyHpPct, mpPct, playerElement, enemyElement,
   skills, usableItems, showItems, autoMode, speedLabel, fusionUsed, allowFlee, isBoss,
-  ELEMENT_ICONS, ELEMENT_NAMES, simpleMode,
+  ELEMENT_ICONS, ELEMENT_NAMES,
   performAttack, performSkill, performFusion, performDefend,
   toggleItems, useItem, attemptFlee, toggleAuto, cycleSpeed
 } = battle
